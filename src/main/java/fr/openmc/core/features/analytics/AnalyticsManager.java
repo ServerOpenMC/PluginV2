@@ -61,10 +61,9 @@ public class AnalyticsManager extends Feature implements HasDatabase {
      *
      */
     public void incrementStatistic(String scope, UUID playerUUID, int value) {
-        if (!isEnabled())
-            return;
+        if (!isEnabled()) return;
 
-        assert value > 0;
+        if (value <= 0) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {

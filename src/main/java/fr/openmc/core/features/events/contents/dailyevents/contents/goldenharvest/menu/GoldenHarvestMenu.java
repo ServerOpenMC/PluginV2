@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GoldenHarvestMenu extends Menu {
-    private final static DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private static final GoldenHarvestManager goldenHarvestManager = OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.feature();
 
     public GoldenHarvestMenu(Player owner) {
         super(owner);
@@ -59,8 +60,8 @@ public class GoldenHarvestMenu extends Menu {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.golden_harvest.menu.info.golden_crops.name"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.dailyevents.golden_harvest.menu.info.golden_crops.lore",
-                    Component.text(GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE * 100 + "%", NamedTextColor.AQUA),
-                    Component.text(GoldenHarvestManager.GOLDEN_CROP_ON_OBESE_CHANCE * 100 + "%", NamedTextColor.AQUA)));
+                    Component.text(goldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE * 100 + "%", NamedTextColor.AQUA),
+                    Component.text(goldenHarvestManager.GOLDEN_CROP_ON_OBESE_CHANCE * 100 + "%", NamedTextColor.AQUA)));
             itemMeta.setEnchantmentGlintOverride(isActived);
         }).setOnClick(_ -> new GoldenCropsInfoMenu(getOwner()).open()));
 

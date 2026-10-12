@@ -167,11 +167,11 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             CATEGORY_COOLDOWNS.put(getOwner().getUniqueId(), now);
 
             getOwner().playSound(getOwner().getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
-            HomeIcon.IconCategory[] CATEGORIES = HomeIcon.IconCategory.values();
+            HomeIcon.IconCategory[] categories = HomeIcon.IconCategory.values();
             if (event.getClick().isLeftClick()) {
-                currentCategory = CATEGORIES[(currentCategory.ordinal() + 1) % CATEGORIES.length];
+                currentCategory = categories[(currentCategory.ordinal() + 1) % categories.length];
             } else if (event.getClick().isRightClick()) {
-                currentCategory = CATEGORIES[(currentCategory.ordinal() - 1 + CATEGORIES.length) % CATEGORIES.length];
+                currentCategory = categories[(currentCategory.ordinal() - 1 + categories.length) % categories.length];
             }
 
             searchQuery = "";

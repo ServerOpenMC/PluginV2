@@ -17,6 +17,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;
 
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CityChangeAction {
+    private CityChangeAction() {}
+
     private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     private static final long COOLDOWN_CHANGE_TYPE = 2 * 24 * 60 * 60 * 1000L; // 2 jours
@@ -74,12 +77,12 @@ public class CityChangeAction {
     public static void finishChange(OMCPlayer sender) {
         City city = sender.city().getCity();
 
+        if (city == null) return;
+
         if (!CityTypeConditions.canCityChangeType(city, sender, city.getType() == CityType.WAR ? CityType.PEACE : CityType.WAR)) {
             sender.message().sendError(TranslationManager.translation("messages.global.cannot_do_this"), Prefix.CITY, false);
             return;
         }
-
-        if (city == null) return;
 
         Mascot mascot = city.getMascot();
 
@@ -104,7 +107,7 @@ public class CityChangeAction {
         dynamicCooldownManager.use(city.getUniqueId(), "city:type", COOLDOWN_CHANGE_TYPE);
 
         LivingEntity mob = (LivingEntity) mascot.getEntity();
-        MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
+        MascotsLevels mascotsLevels = MascotsLevels.valueOf("LEVEL_" + mascot.getLevel());
 
         double lastHealth = mascotsLevels.getHealth();
         int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", "")) - 1;
@@ -113,12 +116,14 @@ public class CityChangeAction {
         }
 
         mascot.setLevel(newLevel);
-        mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
+        mascotsLevels = MascotsLevels.valueOf("LEVEL_" + mascot.getLevel());
 
         try {
             double maxHealth = mascotsLevels.getHealth();
-            mob.getAttribute(Attribute.MAX_HEALTH).removeModifier(MAX_HEALTH_KEY);
-            mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
+            AttributeInstance maxHealthInst = mob.getAttribute(Attribute.MAX_HEALTH);
+            if (maxHealthInst == null) return;
+            maxHealthInst.removeModifier(MAX_HEALTH_KEY);
+            maxHealthInst.addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
             if (mob.getHealth() >= lastHealth) {
                 mob.setHealth(maxHealth);
             }

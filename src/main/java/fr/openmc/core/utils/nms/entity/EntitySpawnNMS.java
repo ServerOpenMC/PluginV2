@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class EntitySpawnNMS {
+    private EntitySpawnNMS() {}
 
     public static void sendSpawnPacket(Player receiver, EntityType<?> entityType, int entityId, UUID entityUUID, Location loc) {
         ServerPlayer nmsReceiver = ((CraftPlayer) receiver).getHandle();

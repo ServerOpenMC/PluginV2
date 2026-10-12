@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class IronBloodPerk implements Listener {
+    private IronBloodPerk() {}
+
     private static final Map<City, Long> perkIronBloodCooldown = new HashMap<>();
     private static final long COOLDOWN_TIME = 3 * 60 * 1000L; // 3 minutes
 

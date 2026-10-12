@@ -17,7 +17,6 @@ public class BlockBreakListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (event.isCancelled()) return;
-        if (event.getBlock() == null) return;
 
         OMCRegistry.CITY_FEATURES.PROTECTIONS.verify(player, event, event.getBlock().getLocation());
 

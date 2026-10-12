@@ -97,13 +97,13 @@ public class PersonalBankWithdrawMenu extends Menu {
         inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.withdraw.input.name"));
             itemMeta.lore(loreBankWithdrawInput);
-        }).setOnClick(_ -> {
+        }).setOnClick(_ ->
             player.inputs().sendStringDialogInput(TranslationManager.translation("feature.economy.bank.withdraw.input.prompt"), MAX_LENGTH, input -> {
                 if (input == null) return;
 
                 bankManager.withdraw(player.getUniqueId(), input);
-            });
-        }));
+            })
+        ));
 
         inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 

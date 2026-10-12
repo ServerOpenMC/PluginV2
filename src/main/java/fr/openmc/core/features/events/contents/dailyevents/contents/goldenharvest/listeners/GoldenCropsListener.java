@@ -35,6 +35,7 @@ import static fr.openmc.core.features.events.contents.dailyevents.contents.golde
  */
 public class GoldenCropsListener implements Listener {
     private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private final GoldenHarvestManager goldenHarvestManager = OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.feature();
 
     @EventHandler(ignoreCancelled = true)
     public void onCropBreak(BlockBreakEvent event) {
@@ -44,7 +45,7 @@ public class GoldenCropsListener implements Listener {
 
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
-        ItemLoot itemLoot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
+        ItemLoot itemLoot = goldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (itemLoot == null) return;
 
         List<CustomLoot> loots = itemLoot.run(event.getPlayer(), event.getBlock().getLocation()).loots();
@@ -63,7 +64,7 @@ public class GoldenCropsListener implements Listener {
         CustomBlock customBlock = CustomBlock.byItemStack(event.getCustomBlockItem());
         KeyBlock keyBlock = KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.getOrThrow(customBlock.getItemStack()));
 
-        ItemLoot itemLoot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
+        ItemLoot itemLoot = goldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (itemLoot == null) return;
 
         giveRewards(itemLoot, event.getPlayer(), event.getBlock());
@@ -75,7 +76,7 @@ public class GoldenCropsListener implements Listener {
                 || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
         BlockType blockType = event.getNewState().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
-        KeyBlock keyBlockGolden = GoldenHarvestManager.getGoldenCropsOnGrowMapping().get(keyBlock);
+        KeyBlock keyBlockGolden = goldenHarvestManager.getGoldenCropsOnGrowMapping().get(keyBlock);
         if (keyBlockGolden == null) return;
 
         if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE) return;

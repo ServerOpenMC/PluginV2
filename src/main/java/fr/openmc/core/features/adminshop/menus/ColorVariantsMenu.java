@@ -52,12 +52,12 @@ public class ColorVariantsMenu extends Menu {
 
             try {
                 materials.add(Material.valueOf(type));
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException _){}
 
             for (String color : colors) {
                 try {
                     materials.add(Material.valueOf(color + "_" + type));
-                } catch (IllegalArgumentException ignored) {}
+                } catch (IllegalArgumentException _){}
             }
 
             if (!materials.isEmpty()) {

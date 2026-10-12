@@ -22,8 +22,8 @@ public record ObeseCropBlock(Location location) implements ConfigurationSerializ
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ObeseCropBlock other)) return false;
-        return location.equals(other.location);
+        if (!(o instanceof ObeseCropBlock(Location location1))) return false;
+        return location.equals(location1);
     }
 
     @Override

@@ -5,7 +5,10 @@ import fr.openmc.core.features.milestones.models.MilestoneType;
 import org.bukkit.entity.Player;
 
 public class MilestoneUtils {
-    private final static MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
+    private MilestoneUtils() {}
+
+    private static final MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
+
     public static void completeStep(MilestoneType type, Player player, Enum<? extends MilestoneStep> step) {
         int stepInt = step.ordinal() + 1;
 

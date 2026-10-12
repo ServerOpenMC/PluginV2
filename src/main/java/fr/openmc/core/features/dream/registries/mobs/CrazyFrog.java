@@ -71,9 +71,8 @@ public class CrazyFrog extends DreamMob<Frog> implements Listener {
         jumpTasks.put(frog, Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 VelocityUtils.jump(frog, RandomUtils.randomBetween(14, 15));
                 for (int i = 0; i <= 3; i++) {
-                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                        VelocityUtils.jump(frog, RandomUtils.randomBetween(9, 13));
-                    }, 40L * i);
+                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                            VelocityUtils.jump(frog, RandomUtils.randomBetween(9, 13)), 40L * i);
                 }},5L));
     }
 

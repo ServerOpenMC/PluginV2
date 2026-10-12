@@ -35,10 +35,8 @@ public class ColdTask extends BukkitRunnable {
         // Retrait du froid si dans une structure BASE_CAMP
         if (isInBaseCamp) {
             cold = Math.max(0, cold - 15);
-        } else if (nearHeat) {
-            if (counter % 40 == 0) {
-                cold = Math.max(0, cold - 1);
-            }
+        } else if (nearHeat && counter % 40 == 0) {
+            cold = Math.max(0, cold - 1);
         }
 
         // Retrait du froid si pas dans une glacite grotto
@@ -58,9 +56,9 @@ public class ColdTask extends BukkitRunnable {
         }
 
         int newLevel = coldManager.getColdLevel(cold);
-        if (newLevel > lastColdLevel) {
+        if (newLevel > lastColdLevel)
             coldManager.sendColdLevelMessage(player, newLevel);
-        }
+
         lastColdLevel = newLevel;
 
         coldManager.applyColdEffects(player, cold);

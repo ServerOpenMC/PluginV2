@@ -29,7 +29,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent
 public class VampireBossLootManager {
 
     public final Map<UUID, Double> damageContributions = new HashMap<>();
-    private final CustomLootTable VAMPIRE_BOSS_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.VAMPIRE;
+    private final CustomLootTable vampireBossLootTable = OMCRegistry.CUSTOM_LOOT_TABLES.VAMPIRE;
 
     private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final MailboxManager mailBoxManager = OMCRegistry.FEATURES.MAILBOX.get();
@@ -122,7 +122,7 @@ public class VampireBossLootManager {
         Player player = offlinePlayer.getPlayer();
         List<ItemStack> rewards = new ArrayList<>();
 
-        for (CustomLoot loot : VAMPIRE_BOSS_LOOT_TABLE.getLoots()) {
+        for (CustomLoot loot : vampireBossLootTable.getLoots()) {
             if (!(loot instanceof ItemLoot) && !(loot instanceof MoneyLoot)) continue;
 
             double finalChance = loot.getChance() * chanceMultiplier;

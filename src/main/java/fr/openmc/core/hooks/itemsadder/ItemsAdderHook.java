@@ -59,7 +59,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
         mergeResourcePack(Set.of("OpenMC/generated-rp-langs"));
 
         // * Unzip (néccesite que les protections soient désactivé)
-        this.extractedGeneratedResourcePack = extractResourcePack();
+        extractedGeneratedResourcePack = extractResourcePack();
     }
 
     private Path extractResourcePack() throws IOException {
@@ -238,7 +238,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
             File generatedDir = new File(outputDir, "generated.zip"); // * root/plugins/ItemsAdder/output/generated.zip
 
             return generatedDir.toPath();
-        } catch (Exception e) {
+        } catch (Exception _) {
             return null;
         }
     }

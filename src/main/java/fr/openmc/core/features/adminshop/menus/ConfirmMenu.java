@@ -135,18 +135,22 @@ public class ConfirmMenu extends Menu {
                                 ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())));
                     }
                 }
+                default -> {}
             }
         }));
 
-        content.put(14, createQuantityButton("+1", OMCRegistry.CUSTOM_ITEMS.BTN_1, event -> increaseQuantity(1)));
+        content.put(14, createQuantityButton("+1", OMCRegistry.CUSTOM_ITEMS.BTN_1,
+                _ -> increaseQuantity(1)));
 
-        content.put(15, createQuantityButton("+10", OMCRegistry.CUSTOM_ITEMS.BTN_10, event -> increaseQuantity(10)));
+        content.put(15, createQuantityButton("+10", OMCRegistry.CUSTOM_ITEMS.BTN_10,
+                _ -> increaseQuantity(10)));
 
-        content.put(16, createQuantityButton("+64", OMCRegistry.CUSTOM_ITEMS.BTN_64, event -> increaseQuantity(64)));
+        content.put(16, createQuantityButton("+64", OMCRegistry.CUSTOM_ITEMS.BTN_64,
+                _ -> increaseQuantity(64)));
 
-        content.put(17, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN, meta -> {
-            meta.displayName(TranslationManager.translation("messages.global.accept"));
-        }).setOnClick(event -> {
+        content.put(17, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN, meta ->
+            meta.displayName(TranslationManager.translation("messages.global.accept"))
+        ).setOnClick(_ -> {
             getOwner().closeInventory();
             if (isBuying) manager.buyItem(getOwner(), shopItem.getId(), quantity);
             else manager.sellItem(getOwner(), shopItem.getId(), quantity);
@@ -167,8 +171,7 @@ public class ConfirmMenu extends Menu {
         boolean plus = text.contains("+");
         return new ItemMenuBuilder(this, itemStack, meta ->
             meta.displayName(TranslationManager.translation("feature.adminshop.menu.confirm.quantity",
-                    plus ?
-                            TranslationManager.translation("feature.adminshop.menu.confirm.add") :
+                    plus ? TranslationManager.translation("feature.adminshop.menu.confirm.add") :
                     TranslationManager.translation("feature.adminshop.menu.confirm.remove"),
                     Component.text(text.replace("+", "").replace("-", "")))
                     .color(plus ? NamedTextColor.GREEN : NamedTextColor.RED)

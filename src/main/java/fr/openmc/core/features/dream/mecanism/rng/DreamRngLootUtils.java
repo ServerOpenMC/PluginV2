@@ -10,6 +10,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 public class DreamRngLootUtils {
+    private DreamRngLootUtils() {}
+
     public static void sendMessageLoot(DreamRngLootEvent event) {
         double chance = event.getChance() != null ? event.getChance() : 0.0;
         Component prefix;

@@ -88,7 +88,7 @@ public class InteractProtection implements Listener {
         protectionsManager.verify(player, event, location);
     }
 
-    private final Set<EntityType> INTERACTION_REFUSED = new HashSet<>(Set.of(
+    private static final Set<EntityType> INTERACTION_REFUSED = new HashSet<>(Set.of(
             EntityType.ITEM_FRAME,
             EntityType.GLOW_ITEM_FRAME,
             EntityType.SULFUR_CUBE

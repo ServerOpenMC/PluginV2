@@ -212,7 +212,7 @@ public class DBCityRank {
 			for (String perm : perms) {
 				try {
 					permissionsSet.add(CityPermission.valueOf(perm.trim()));
-				} catch (IllegalArgumentException e) {
+				} catch (IllegalArgumentException _) {
 					// Ignore invalid permissions
 				}
 			}
@@ -234,7 +234,7 @@ public class DBCityRank {
 			for (String uuid : membersUUIDs) {
 				try {
 					membersSet.add(UUID.fromString(uuid.trim()));
-				} catch (IllegalArgumentException e) {
+				} catch (IllegalArgumentException _) {
 					// Ignore invalid UUIDs
 				}
 			}

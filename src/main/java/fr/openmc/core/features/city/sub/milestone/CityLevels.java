@@ -82,7 +82,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_2,
                     MemberLimitRewards.LEVEL_2
             ),
-            60 * 10
+            60 * 10L
     ),
     LEVEL_3(
             "feature.city.levels.level_3.name",
@@ -166,7 +166,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_3,
                     RankLimitRewards.LEVEL_3
             ),
-            60 * 30
+            60 * 30L
     ),
     LEVEL_4(
             "feature.city.levels.level_4.name",
@@ -251,7 +251,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_4,
                     RankLimitRewards.LEVEL_4
             ),
-            60 * 90
+            60 * 90L
     ),
     LEVEL_5(
             "feature.city.levels.level_5.name",
@@ -325,7 +325,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_5,
                     RankLimitRewards.LEVEL_5
             ),
-            60 * 60 * 3
+            60 * 60 * 3L
     ),
     LEVEL_6(
             "feature.city.levels.level_6.name",
@@ -403,7 +403,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_6,
                     RankLimitRewards.LEVEL_6
             ),
-            60 * 60 * 5
+            60 * 60 * 5L
     ),
     LEVEL_7(
             "feature.city.levels.level_7.name",
@@ -494,7 +494,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_7,
                     RankLimitRewards.LEVEL_7
             ),
-            60 * 60 * 10
+            60 * 60 * 10L
     ),
     LEVEL_8(
             "feature.city.levels.level_8.name",
@@ -568,7 +568,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_8,
                     RankLimitRewards.LEVEL_8
             ),
-            60 * 60 * 16
+            60 * 60 * 16L
     ),
     LEVEL_9(
             "feature.city.levels.level_9.name",
@@ -643,14 +643,14 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_9,
                     RankLimitRewards.LEVEL_9
             ),
-            60 * 60 * 24
+            60 * 60 * 24L
     ),
     LEVEL_10(
             "feature.city.levels.level_10.name",
             "feature.city.levels.level_10.description",
             List.of(
                     new TemplateRequirement(
-                            city -> city.isTop10Notation(),
+                            City::isTop10Notation,
                             city -> ItemStack.of(Material.HONEYCOMB),
                             (city, level) -> TranslationManager.translation("feature.city.levels.requirements.notation.top10")
                     ),
@@ -721,7 +721,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_10,
                     RankLimitRewards.LEVEL_10
             ),
-            60 * 60 * 24 * 2
+            60 * 60 * 24 * 2L
     ),
     ;
 

@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
@@ -23,12 +22,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Random;
 
 public class AyweniterPerk implements Listener {
-    private final CityManager cityManager;
-
-    public AyweniterPerk() {
-        this.cityManager = OMCRegistry.FEATURES.CITY.get();
-    }
-
     private static final double DROP_CHANCE = 0.01; //1%
     private final Random random = new Random();
 
@@ -44,8 +37,7 @@ public class AyweniterPerk implements Listener {
         if (playerCity == null) return;
         
         City blockCity = City.of(block);
-	    if (blockCity != null)
-            if (blockCity != playerCity) return;
+        if (blockCity != null && blockCity != playerCity) return;
 
         if (playerCity.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
             if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;

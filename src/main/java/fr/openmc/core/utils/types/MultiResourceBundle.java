@@ -45,18 +45,16 @@ public class MultiResourceBundle {
     }
 
     private Map<String, String> getBundle(String name) {
-        return cache.computeIfAbsent(name, this::loadBundle);
+        return cache.computeIfAbsent(name, e -> loadBundle(name, "/"));
     }
 
-    private Map<String, String> loadBundle(String name) {
+    private Map<String, String> loadBundle(String name, String delimiter) {
         Map<String, String> result = new HashMap<>();
 
         for (String localePath : getLocaleHierarchy()) {
-            String path = folderName + "/" + localePath + "/" + name + ".properties";
+            String path = folderName + delimiter + localePath + delimiter + name + ".properties";
             Properties properties = loadProperties(path);
-            if (properties == null) {
-                continue;
-            }
+            if (properties == null) continue;
 
             for (String key : properties.stringPropertyNames()) {
                 result.put(key, properties.getProperty(key));
@@ -68,9 +66,8 @@ public class MultiResourceBundle {
 
     private Properties loadProperties(String resourcePath) {
         try (InputStream is = classLoader.getResourceAsStream(resourcePath)) {
-            if (is == null) {
-                return null;
-            }
+            if (is == null) return null;
+
             Properties properties = new Properties();
             properties.load(new InputStreamReader(is, StandardCharsets.UTF_8));
             return properties;
@@ -83,9 +80,8 @@ public class MultiResourceBundle {
         List<String> locales = new ArrayList<>();
 
         locales.add("default");
-        if (!locale.getCountry().isEmpty()) {
+        if (!locale.getCountry().isEmpty())
             locales.add(locale.toString());
-        }
 
         return locales;
     }

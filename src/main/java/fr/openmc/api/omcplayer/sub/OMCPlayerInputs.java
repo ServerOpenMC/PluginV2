@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class OMCPlayerInputs extends OMCPlayerFeat {
     public OMCPlayerInputs(Player player) {
@@ -55,7 +55,7 @@ public class OMCPlayerInputs extends OMCPlayerFeat {
                                   int chronometerTime,
                                   String startMessage,
                                   Component endMessage,
-                                  Function<Location, Boolean> result,
+                                  Predicate<Location> result,
                                   Runnable onFail) {
         ItemInteraction.runLocationInteraction(getPlayer(), item, chronometerGroup, chronometerTime, startMessage, endMessage, result, onFail);
     }

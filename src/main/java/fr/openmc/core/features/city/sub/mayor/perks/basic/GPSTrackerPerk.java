@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
@@ -26,12 +25,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class GPSTrackerPerk implements Listener {
-    private final CityManager cityManager;
-
-    public GPSTrackerPerk() {
-        this.cityManager = OMCRegistry.FEATURES.CITY.get();
-    }
-
     private final Map<UUID, City> lastCityMap = new HashMap<>();
 
     @EventHandler

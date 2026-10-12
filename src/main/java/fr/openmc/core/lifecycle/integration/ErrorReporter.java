@@ -32,13 +32,13 @@ public class ErrorReporter {
     public ErrorReporter() {
         originalErr = System.err;
 
-        if (!OMCPlugin.getInstance().getConfig().isConfigurationSection("error")) {
+        if (!OMCPlugin.getInstance().getConfigs().isConfigurationSection("error")) {
             OMCLogger.errorFormatted("ErrorHandler désactivé (pas de section error)");
             return;
         }
 
-        webhookUrl = OMCPlugin.getInstance().getConfig().getString("error.webhook", "").trim();
-        notifIds = OMCPlugin.getInstance().getConfig().getStringList("error.notif");
+        webhookUrl = OMCPlugin.getInstance().getConfigs().getString("error.webhook", "").trim();
+        notifIds = OMCPlugin.getInstance().getConfigs().getStringList("error.notif");
 
         if (webhookUrl.isBlank()) {
             OMCLogger.warnFormatted("ErrorHandler désactivé (pas de webhook)");

@@ -47,9 +47,8 @@ public class MinerPerk implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            updatePlayerEffects(player);
-        }, 1L);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                updatePlayerEffects(player), 1L);
     }
 
     @EventHandler

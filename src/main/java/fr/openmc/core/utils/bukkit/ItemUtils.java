@@ -35,6 +35,8 @@ import java.util.UUID;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 
 public class ItemUtils {
+    private ItemUtils() {}
+
     /**
      * Return a {@link TranslatableComponent} from a {@link ItemStack}
      *

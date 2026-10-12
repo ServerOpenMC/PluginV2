@@ -19,13 +19,14 @@ import org.joml.Vector3f;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 @Credit(developers = {"iambibi_", "miseur"})
 public class HologramLoader extends Feature implements HasCommands {
 
-    public final HashMap<String, HologramInfo> displays = new HashMap<>();
+    public final Map<String, HologramInfo> displays = new HashMap<>();
     private BukkitTask taskTimer;
     private File hologramFolder;
 
@@ -115,7 +116,7 @@ public class HologramLoader extends Feature implements HasCommands {
 
     public void loadAllFromFolder(File folder) {
         if (!folder.exists() || !folder.isDirectory()) return;
-        for (File file : Objects.requireNonNull(folder.listFiles((f) -> f.getName().endsWith(".yml")))) {
+        for (File file : Objects.requireNonNull(folder.listFiles(f -> f.getName().endsWith(".yml")))) {
             loadHologramFromFile(file);
         }
     }

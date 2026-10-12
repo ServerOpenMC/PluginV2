@@ -20,7 +20,9 @@ import java.util.List;
 import static fr.openmc.core.features.city.sub.mayor.menu.MayorLawMenu.COOLDOWN_TIME_WARP;
 
 public class MayorSetWarpAction {
-    private final static DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+    private MayorSetWarpAction() {}
+
+    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public static void setWarp(OMCPlayer player) {
         City city = player.city().getCity();

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.cube.multiblocks;
 
+import fr.openmc.core.OMCRegistry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -9,37 +10,39 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 public class MultiBlocksListeners implements Listener {
+    private final MultiBlockManager multiBlockManager = OMCRegistry.FEATURES.MULTIBLOCKS.get();
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+        for (MultiBlock mb : multiBlockManager.getMultiBlocks()) {
             mb.onBlockBreak(event);
         }
     }
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+        for (MultiBlock mb : multiBlockManager.getMultiBlocks()) {
             mb.onExplosion(event);
         }
     }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+        for (MultiBlock mb : multiBlockManager.getMultiBlocks()) {
             mb.onExplosion(event);
         }
     }
 
     @EventHandler
     public void onPistonExtend(BlockPistonExtendEvent event) {
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+        for (MultiBlock mb : multiBlockManager.getMultiBlocks()) {
             mb.onPiston(event);
         }
     }
 
     @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent event) {
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+        for (MultiBlock mb : multiBlockManager.getMultiBlocks()) {
             mb.onPiston(event);
         }
     }

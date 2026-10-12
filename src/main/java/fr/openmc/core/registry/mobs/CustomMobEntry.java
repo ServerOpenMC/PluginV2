@@ -9,9 +9,9 @@ import java.util.function.Function;
 
 public record CustomMobEntry(
         String id,
-        Function<String, CustomMob<?>> factory
+        Function<String, CustomMob<? extends LivingEntity>> factory
 ) {
-    public CustomMob<?> getMob() {
+    public CustomMob<? extends LivingEntity> getMob() {
         return this.factory().apply(id);
     }
 

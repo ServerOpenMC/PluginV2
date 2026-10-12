@@ -20,6 +20,8 @@ import java.util.Set;
 
 
 public class CityClaimAction {
+    private CityClaimAction() {}
+
     private static final CityManager CITY_MANAGER = OMCRegistry.FEATURES.CITY.get();
     private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
 

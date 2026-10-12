@@ -14,13 +14,13 @@ import java.util.List;
 public abstract class DreamMob<T extends LivingEntity> extends CustomMob<T> {
     private final Long damageTime;
 
-    public DreamMob(String id, Component name, Class<T> entityClass, double health, Long damageTime, double speed, double scale) {
+    protected DreamMob(String id, Component name, Class<T> entityClass, double health, Long damageTime, double speed, double scale) {
         super(id, name, entityClass, health, 0f, speed,
                 new CustomMobAttribute(Attribute.SCALE, scale));
         this.damageTime = damageTime;
     }
 
-    public DreamMob(String id, Component name, Class<T> entityClass, double health, Long damageTime, double speed, double scale, List<CustomLoot> loots) {
+    protected DreamMob(String id, Component name, Class<T> entityClass, double health, Long damageTime, double speed, double scale, List<CustomLoot> loots) {
         super(id, name, entityClass, health, 0f, speed, loots,
                 new CustomMobAttribute(Attribute.SCALE, scale));
         this.damageTime = damageTime;

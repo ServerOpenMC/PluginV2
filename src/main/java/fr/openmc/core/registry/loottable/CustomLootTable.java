@@ -21,8 +21,8 @@ public abstract class CustomLootTable {
 
     public double getChanceOf(ItemStack item) {
         return this.getLoots().stream()
-                .filter(loot -> loot instanceof ItemLoot)
-                .map(loot -> (ItemLoot) loot)
+                .filter(ItemLoot.class::isInstance)
+                .map(ItemLoot.class::cast)
                 .filter(loot -> ItemUtils.isSimilar(loot.getItemLootWithAmount(), item))
                 .mapToDouble(CustomLoot::getChance)
                 .sum();

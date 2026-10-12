@@ -269,7 +269,7 @@ public class TicketManager extends Feature implements HasListeners {
             if (stats.isTicketGiven()) return 0;
 
             int playtime = getPlayTimeFromUUID(uuid);
-            float secondsPerTicket = hoursPerTicket * 3600;
+            float secondsPerTicket = hoursPerTicket * 3600f;
             float ticketsToGiveF = playtime / secondsPerTicket;
 
             int ticketsToGive = (int) Math.ceil(ticketsToGiveF);

@@ -5,7 +5,7 @@ import fr.openmc.mock.ServerMock;
 import org.junit.jupiter.api.*;
 import org.mockbukkit.mockbukkit.MockBukkit;
 
-public class OMCPluginTest {
+class OMCPluginTest {
 
     public OMCPlugin plugin;
     public ServerMock server;

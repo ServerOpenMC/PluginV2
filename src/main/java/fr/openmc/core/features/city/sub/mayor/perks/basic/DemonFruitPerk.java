@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
@@ -22,11 +21,9 @@ public class DemonFruitPerk implements Listener {
     private static final NamespacedKey RANGE_MODIFIER_KEY = new NamespacedKey("mayor_perks","demon_fruit");
     private static final double BONUS_VALUE = 1.0;
 
-    private final CityManager cityManager;
     private final MayorManager mayorManager;
 
-    public DemonFruitPerk(CityManager cityManager, MayorManager mayorManager) {
-        this.cityManager = cityManager;
+    public DemonFruitPerk(MayorManager mayorManager) {
         this.mayorManager = mayorManager;
     }
 

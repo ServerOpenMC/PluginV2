@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.view.CityClaimViewManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.registries.KeyedRegistry;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
@@ -21,7 +20,6 @@ import fr.openmc.core.registry.features.Feature;
 public class CityFeaturesRegistry extends SubRegistry<String, Feature> {
     private final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
     private final FancyNpcsHook fancyNpcsHook = OMCRegistry.HOOKS.FANCY_NPCS;
-    private final ItemsAdderHook itemsAdderHook = OMCRegistry.HOOKS.ITEMS_ADDER;
 
     public final MayorManager MAYOR = register(new MayorManager(cityManager, fancyNpcsHook));
     public final ProtectionsManager PROTECTIONS = register(new ProtectionsManager(cityManager));

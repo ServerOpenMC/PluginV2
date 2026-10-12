@@ -28,7 +28,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class GoldenCropsInfoMenu extends PaginatedMenu {
-    private final static DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private final GoldenHarvestManager goldenHarvestManager = OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.feature();
 
     public GoldenCropsInfoMenu(Player owner) {
         super(owner);
@@ -140,7 +141,7 @@ public class GoldenCropsInfoMenu extends PaginatedMenu {
     private List<GoldenCropInfo> generateGoldenCropInfos() {
         Map<CustomItem, GoldenCropInfoBuilder> goldenCrops = new LinkedHashMap<>();
 
-        GoldenHarvestManager.getGoldenCropsOnBreakMapping().forEach((source, loot) -> {
+        goldenHarvestManager.getGoldenCropsOnBreakMapping().forEach((source, loot) -> {
             CustomItem goldenItem = OMCRegistry.CUSTOM_ITEMS.get(loot.getRepresentativeItem()).orElse(null);
 
             if (goldenItem == null) return;
@@ -151,7 +152,7 @@ public class GoldenCropsInfoMenu extends PaginatedMenu {
             ).addBreakSource(source);
         });
 
-        GoldenHarvestManager.getGoldenCropsOnGrowMapping().forEach((source, result) -> {
+        goldenHarvestManager.getGoldenCropsOnGrowMapping().forEach((source, result) -> {
             CustomItem goldenItem = result.getCustomItem();
 
             if (goldenItem == null) return;

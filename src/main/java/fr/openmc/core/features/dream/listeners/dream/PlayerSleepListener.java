@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.event.world.ClockTimeSkipEvent;
 import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -31,7 +32,7 @@ public class PlayerSleepListener implements Listener {
     }
 
     private final Set<Player> isPlayerSleeping = new HashSet<>();
-    private final int DREAM_TELEPORT_DELAY = 20 * 3;
+    private static final int DREAM_TELEPORT_DELAY = 20 * 3;
 
     @EventHandler
     public void onPlayerEnterBed(PlayerBedEnterEvent event) {
@@ -49,7 +50,7 @@ public class PlayerSleepListener implements Listener {
 
     @EventHandler
     public void onNightSkip(TimeSkipEvent event) {
-        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP) {
+        if (event.getSkipReason() == ClockTimeSkipEvent.SkipReason.NIGHT_SKIP) {
             if (isPlayerSleeping.isEmpty()) return;
 
             for (Player player : isPlayerSleeping) {

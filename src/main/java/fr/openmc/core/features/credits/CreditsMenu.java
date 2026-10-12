@@ -92,9 +92,9 @@ public class CreditsMenu extends PaginatedMenu {
 
         map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setPreviousPageButton());
         map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setNextPageButton());
-        map.put(49, new ItemMenuBuilder(this, Material.BARRIER, meta -> {
-            meta.displayName(TranslationManager.translation("feature.credits.menu.close"));
-        }).setOnClick(e -> getOwner().closeInventory()));
+        map.put(49, new ItemMenuBuilder(this, Material.BARRIER, meta ->
+                meta.displayName(TranslationManager.translation("feature.credits.menu.close"))
+        ).setOnClick(_ -> getOwner().closeInventory()));
 
         return map;
     }

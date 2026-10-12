@@ -4,6 +4,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryUtils {
+	private InventoryUtils() {}
 	
 	public static int removeItemsFromInventory(Inventory inventory, ItemStack item, int amountToRemove) {
 		if (item == null || amountToRemove <= 0) return 0;

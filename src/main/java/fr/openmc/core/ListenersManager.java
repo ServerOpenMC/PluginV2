@@ -11,6 +11,8 @@ import fr.openmc.core.utils.nms.entity.EntityGlowNMS;
  * Centralise l'enregistrement des listeners Bukkit du plugin.
  */
 public class ListenersManager {
+    private ListenersManager() {}
+
     /**
      * Enregistre les listeners.
      */

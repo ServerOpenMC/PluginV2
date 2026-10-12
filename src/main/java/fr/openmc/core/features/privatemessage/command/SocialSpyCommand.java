@@ -37,9 +37,9 @@ public class SocialSpyCommand {
     ) {
         manager.toggleSocialSpy(target);
 
-        Component status = manager.hasSocialSpyEnabled(target)
-                ? TranslationManager.translation("feature.privatemessage.socialspy.status.enabled")
-                : TranslationManager.translation("feature.privatemessage.socialspy.status.disabled");
+        Component status = TranslationManager.translation(manager.hasSocialSpyEnabled(target)
+                ? "feature.privatemessage.socialspy.status.enabled"
+                : "feature.privatemessage.socialspy.status.disabled");
 
         MessagesManager.sendMessage(admin,
                 TranslationManager.translation("feature.privatemessage.socialspy.status_changed",

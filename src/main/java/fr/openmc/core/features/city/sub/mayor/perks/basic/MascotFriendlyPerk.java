@@ -32,11 +32,11 @@ public class MascotFriendlyPerk implements Listener {
         if (phase.equals(MayorPhase.MAYOR_ELECTED)) {
             if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) return;
 
-            for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
+            for (PotionEffect potionEffect : MascotsLevels.valueOf("LEVEL_" + level).getBonus()) {
                 player.addPotionEffect(potionEffect);
             }
         } else {
-            for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
+            for (PotionEffect potionEffect : MascotsLevels.valueOf("LEVEL_" + level).getBonus()) {
                 player.removePotionEffect(potionEffect.getType());
             }
         }
@@ -51,9 +51,8 @@ public class MascotFriendlyPerk implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            updatePlayerEffects(player);
-        }, 1L);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+            updatePlayerEffects(player), 1L);
     }
 
     @EventHandler
@@ -64,7 +63,7 @@ public class MascotFriendlyPerk implements Listener {
         if (playerCity.getMascot() == null) return;
 
         int level = playerCity.getMascot().getLevel();
-        for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
+        for (PotionEffect potionEffect : MascotsLevels.valueOf("LEVEL_"+level).getBonus()){
             player.removePotionEffect(potionEffect.getType());
         }
     }
@@ -89,7 +88,7 @@ public class MascotFriendlyPerk implements Listener {
         if (playerCity.getMascot() == null) return;
 
         int level = playerCity.getMascot().getLevel();
-        for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
+        for (PotionEffect potionEffect : MascotsLevels.valueOf("LEVEL_" + level).getBonus()) {
             player.removePotionEffect(potionEffect.getType());
         }
     }

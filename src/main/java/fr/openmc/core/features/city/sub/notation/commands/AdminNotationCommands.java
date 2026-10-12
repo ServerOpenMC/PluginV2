@@ -53,7 +53,7 @@ public class AdminNotationCommands {
 
                     try {
                         NotationEditionDialog.send(sender, weekStr, cities, null);
-                    } catch (Exception e) {
+                    } catch (Exception _) {
                         sender.message().sendError(TranslationManager.translation("feature.city.notation.admin.edit.error"), Prefix.STAFF, false);
                     }
                 });

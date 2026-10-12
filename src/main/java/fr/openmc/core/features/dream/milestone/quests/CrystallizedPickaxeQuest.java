@@ -26,9 +26,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener {
 	
-	private static final int cubeX = -171;
-	private static final int cubeZ = -117;
-	private static final Location cubeLoc = new Location(DreamDimensionManager.DREAM_WORLD, cubeX, DreamDimensionManager.DREAM_WORLD.getHighestBlockYAt(cubeX, cubeZ), cubeZ);
+	private static final int CUBE_X = -171;
+	private static final int CUBE_Z = -117;
+	private static final Location cubeLoc = new Location(DreamDimensionManager.DREAM_WORLD, CUBE_X, DreamDimensionManager.DREAM_WORLD.getHighestBlockYAt(CUBE_X, CUBE_Z), CUBE_Z);
 
 	public CrystallizedPickaxeQuest() {
 		super(
@@ -39,10 +39,10 @@ public class CrystallizedPickaxeQuest extends MilestoneQuest implements Listener
 				DreamSteps.CRYSTALLIZED_PICKAXE,
 				new QuestTier(1),
 				TranslationManager.translationLore("feature.dream.milestone.quest.crystallized_pickaxe.dialog",
-						Component.text(cubeX).color(NamedTextColor.RED),
-						Component.text(cubeZ).color(NamedTextColor.BLUE)
+						Component.text(CUBE_X).color(NamedTextColor.RED),
+						Component.text(CUBE_Z).color(NamedTextColor.BLUE)
 				),
-				(player) -> new BukkitRunnable() {
+				player -> new BukkitRunnable() {
 					@Override
 					public void run() {
 						if (!player.isOnline() || !DreamUtils.isInDream(player)) {

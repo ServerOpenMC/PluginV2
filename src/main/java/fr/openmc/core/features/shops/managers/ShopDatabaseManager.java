@@ -40,10 +40,9 @@ public class ShopDatabaseManager extends Feature implements HasDatabase {
 		List<Shop> shops = shopTable.queryForAll();
 		for (Shop shop : shops) {
 			Location loc = new Location(Bukkit.getWorld("world"), shop.getX(), shop.getY(), shop.getZ());
-			if (shop.getMultiblock() == null) {
-				if (!shop.setMultiblock(new Shop.Multiblock(loc, loc.clone().add(0, 1, 0)))) {
-					OMCLogger.error("Cannot set multiblock for {} {}, but shop is registered", shop.getName(), shop.getShopUUID());
-				}
+			if (shop.getMultiblock() == null
+					&& !shop.setMultiblock(new Shop.Multiblock(loc, loc.clone().add(0, 1, 0)))) {
+				OMCLogger.error("Cannot set multiblock for {} {}, but shop is registered", shop.getName(), shop.getShopUUID());
 			}
 			shopsByLocation.put(loc, shop);
 		}

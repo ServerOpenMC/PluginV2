@@ -52,9 +52,9 @@ public class AdminMayorCommands {
             return;
         }
 
-        ElectionType E = electionType.equals("owner_choose") ? ElectionType.OWNER_CHOOSE : ElectionType.ELECTION;
+        ElectionType election = electionType.equals("owner_choose") ? ElectionType.OWNER_CHOOSE : ElectionType.ELECTION;
 
-        city.getMayor().setElectionType(E);
+        city.getMayor().setElectionType(election);
 
         sender.message().sendInfo(TranslationManager.translation(
                 "feature.city.mayor.admin.changeelection.success",

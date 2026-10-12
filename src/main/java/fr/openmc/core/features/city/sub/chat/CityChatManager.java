@@ -83,7 +83,7 @@ public class CityChatManager extends Feature implements HasCommands, HasListener
 			return;
 		}
 		
-		Component msg_component = TranslationManager.translation("feature.city.chat.prefix").color(NamedTextColor.GOLD)
+		Component msgComponent = TranslationManager.translation("feature.city.chat.prefix").color(NamedTextColor.GOLD)
 				.appendSpace()
 				.append(sender.displayName().color(NamedTextColor.WHITE)).append(
 				Component.text(" » ").color(NamedTextColor.GRAY).append(
@@ -94,7 +94,7 @@ public class CityChatManager extends Feature implements HasCommands, HasListener
 		for (UUID uuid : city.getMembers()) {
 			OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
 			if (offlinePlayer.isOnline() && offlinePlayer instanceof Player player) {
-				player.sendMessage(msg_component);
+				player.sendMessage(msgComponent);
 			}
 		}
 	}

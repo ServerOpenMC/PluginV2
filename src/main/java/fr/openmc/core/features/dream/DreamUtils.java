@@ -15,6 +15,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class DreamUtils {
+    private DreamUtils() {}
+
     public static boolean isInDreamWorld(Player player) {
         return isDreamWorld(player.getLocation());
     }

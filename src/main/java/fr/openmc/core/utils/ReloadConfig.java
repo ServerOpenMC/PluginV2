@@ -17,6 +17,8 @@ import java.io.IOException;
  * - Donc cela nécessite 2 lancements pour faire tourner une premiere fois le plugin.
  */
 public class ReloadConfig {
+    private ReloadConfig() {}
+
     private static File registriesConfigFile;
     private static FileConfiguration registriesConfig;
     @Getter

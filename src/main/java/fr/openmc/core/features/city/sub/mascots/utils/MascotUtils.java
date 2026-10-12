@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MascotUtils {
+	private MascotUtils() {}
+
 	private static final Set<EntityType> POSSIBLE_MASCOT_TYPES = Arrays.stream(MascotType.values())
 			.map(MascotType::getEntityType)
 			.collect(Collectors.toUnmodifiableSet());

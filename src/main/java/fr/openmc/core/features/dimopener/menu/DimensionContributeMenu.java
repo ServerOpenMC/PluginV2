@@ -336,7 +336,6 @@ public class DimensionContributeMenu extends Menu {
         }
 
         long remainingMs = Math.max(0, progress.getCooldownEndTimestamp() - System.currentTimeMillis());
-        long remainingSeconds = remainingMs / 1000;
 
         return new ItemMenuBuilder(this, Material.CLOCK, meta -> {
             meta.itemName(TranslationManager.translation("feature.dimopener.menu.waiting.title"));

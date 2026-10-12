@@ -8,8 +8,13 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LocationUtils {
+    private LocationUtils() {}
+    
+    private static final Random random = ThreadLocalRandom.current();
+
     public static Location findSafeSpawnLocation(World world, Location center, double minDistance, double maxDistance, int maxTries) {
         WorldBorder border = world.getWorldBorder();
 
@@ -92,7 +97,6 @@ public class LocationUtils {
     }
 
     public static Location findLocationInBiome(World world, Biome biome) {
-        Random random = new Random();
         WorldBorder border = world.getWorldBorder();
 
         Location center = border.getCenter();

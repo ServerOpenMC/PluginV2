@@ -36,12 +36,12 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 
 public class ItemInteraction implements Listener {
 
-    private static final Map<UUID, HashMap<String, Function<Location, Boolean>>> playerCallbacks = new HashMap<>();
+    private static final Map<UUID, HashMap<String, Predicate<Location>>> playerCallbacks = new HashMap<>();
     private static final Map<UUID, HashMap<String, Runnable>> playerCallbacksFail = new HashMap<>();
     private static final Map<UUID, HashMap<String, InteractionInfo>> playerChronometerData = new HashMap<>();
     private static final Map<UUID, HashMap<String, ItemStack>> playerOldItemHand = new HashMap<>();
@@ -57,7 +57,7 @@ public class ItemInteraction implements Listener {
                                               int chronometerTime,
                                               String startMessage,
                                               Component endMessage,
-                                              Function<Location, Boolean> result,
+                                              Predicate<Location> result,
                                               Runnable onFail) {
         if (!ItemUtils.hasAvailableSlot(player)) {
             player.message().sendError(
@@ -121,15 +121,15 @@ public class ItemInteraction implements Listener {
             }
 
             if (targetBlock != null) {
-                HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
+                HashMap<String, Predicate<Location>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
                 HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
 
                 if (playerCallbacksMap != null && playerChronometerMap != null) {
-                    Function<Location, Boolean> callback = playerCallbacksMap.get(interactionId);
+                    Predicate<Location> callback = playerCallbacksMap.get(interactionId);
                     InteractionInfo interactionInfo = playerChronometerMap.get(interactionId);
 
                     if (callback != null && interactionInfo != null) {
-                        boolean success = callback.apply(targetBlock.getLocation().add(0.5, 0, 0.5));
+                        boolean success = callback.test(targetBlock.getLocation().add(0.5, 0, 0.5));
 
                         if (success) {
                             playerCallbacksMap.remove(interactionId);
@@ -202,12 +202,11 @@ public class ItemInteraction implements Listener {
                 player.message().sendError(
                         TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, false);
             }
-        } else if (MaterialUtils.isBundle(cursorItem)) {
-            if (isItemInteraction(clickedItem)) {
-                event.setCancelled(true);
-                player.message().sendError(
-                        TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, false);
-            }
+        } else if (MaterialUtils.isBundle(cursorItem)
+                && isItemInteraction(clickedItem)) {
+            event.setCancelled(true);
+            player.message().sendError(
+                    TranslationManager.translation("api.iteminteraction.cant_move_item"), Prefix.OPENMC, false);
         }
     }
 
@@ -335,11 +334,11 @@ public class ItemInteraction implements Listener {
      * Méthode qui permet d'arreter une interaction
      */
     public static void stopInteraction(OMCPlayer player, String chronometerGroup) {
-        HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
+        HashMap<String, Predicate<Location>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
         HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
 
         if (playerCallbacksMap != null && playerChronometerMap != null) {
-            Function<Location, Boolean> callback = playerCallbacksMap.get(chronometerGroup);
+            Predicate<Location> callback = playerCallbacksMap.get(chronometerGroup);
             ItemStack item = playerChronometerMap.get(chronometerGroup).item();
             ChronometerInfo chronoInfo = playerChronometerMap.get(chronometerGroup).chronometerInfo();
             ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(chronometerGroup);
@@ -362,7 +361,7 @@ public class ItemInteraction implements Listener {
             playerCallbacksMap.remove(chronometerGroup);
             playerChronometerMap.remove(chronometerGroup);
 
-            callback.apply(null);
+            callback.test(null);
         }
     }
 
@@ -372,7 +371,7 @@ public class ItemInteraction implements Listener {
     public static void stopAllInteractions(OMCPlayer player) {
         if (player == null) return;
 
-        HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
+        HashMap<String, Predicate<Location>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
         HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
 
         if (playerCallbacksMap != null) {

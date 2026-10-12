@@ -23,6 +23,8 @@ import java.util.stream.Stream;
  * Utilitaires pour la gestion des fichiers et dossiers
  */
 public class FilesUtils {
+    private FilesUtils() {}
+
     private static final Set<String> TEXT_EXTENSIONS = Set.of(
             "yml",
             "yaml",

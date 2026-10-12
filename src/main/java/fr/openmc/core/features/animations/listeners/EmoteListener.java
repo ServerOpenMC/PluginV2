@@ -21,9 +21,10 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class EmoteListener implements Listener, NotLoadInUnitTest {
-    public static final HashMap<Player, PlayerAnimationInfo> playingAnimations = new HashMap<>();
+    public static final Map<Player, PlayerAnimationInfo> playingAnimations = new HashMap<>();
 
     @EventHandler
     public void onAnimationStart(PlayerEmotePlayEvent e) {

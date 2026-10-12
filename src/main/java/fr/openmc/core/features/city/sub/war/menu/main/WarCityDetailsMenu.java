@@ -76,8 +76,8 @@ public class WarCityDetailsMenu extends Menu {
             Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
             ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            Component namePerk1 = (perk1 != null) ? TranslationManager.translation(perk1.getNameKey()) :
-                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+            Component namePerk1 = TranslationManager.translation((perk1 != null) ? perk1.getNameKey() :
+                    "feature.city.mayor.perk.none.name");
             List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey())) : null;
             map.put(11, new ItemMenuBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.customName(namePerk1);
@@ -85,8 +85,8 @@ public class WarCityDetailsMenu extends Menu {
             }).hide((perk1 != null) ? perk1.getToHide() : null));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            Component namePerk2 = (perk2 != null) ? TranslationManager.translation(perk2.getNameKey()) :
-                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+            Component namePerk2 = TranslationManager.translation((perk2 != null) ? perk2.getNameKey() :
+                    "feature.city.mayor.perk.none.name");
             List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(TranslationManager.translationLore(perk2.getLoreKey())) : null;
             map.put(13, new ItemMenuBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(namePerk2);
@@ -94,8 +94,8 @@ public class WarCityDetailsMenu extends Menu {
             }).hide((perk2 != null) ? perk2.getToHide() : null));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            Component namePerk3 = (perk3 != null) ? TranslationManager.translation(perk3.getNameKey()) :
-                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+            Component namePerk3 = TranslationManager.translation((perk3 != null) ? perk3.getNameKey() :
+                    "feature.city.mayor.perk.none.name");
             List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(TranslationManager.translationLore(perk3.getLoreKey())) : null;
             map.put(15, new ItemMenuBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(namePerk3);

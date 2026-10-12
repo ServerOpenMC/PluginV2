@@ -30,6 +30,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class WarActions {
+    private WarActions() {}
+
     private static final WarManager warManager = OMCRegistry.CITY_FEATURES.WAR;
 
     /**

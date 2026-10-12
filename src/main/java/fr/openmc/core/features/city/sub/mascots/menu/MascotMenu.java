@@ -207,13 +207,13 @@ public class MascotMenu extends Menu {
         }
 
         List<Component> requiredAmount = new ArrayList<>();
-        MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
+        MascotsLevels mascotsLevels = MascotsLevels.valueOf("LEVEL_" + mascot.getLevel());
 
         int maxMascotLevel = MascotsLevelsRewards.getMascotsLevelLimit(city.getLevel());
 
         int currentMascotLevel = mascot.getLevel();
 
-        if (mascotsLevels.equals(MascotsLevels.level10)) {
+        if (mascotsLevels.equals(MascotsLevels.LEVEL_10)) {
             requiredAmount.add(TranslationManager.translation("feature.city.mascots.menu.main.upgrade.max_level"));
         } else if (currentMascotLevel >= maxMascotLevel) {
             requiredAmount.add(TranslationManager.translation(
@@ -237,7 +237,7 @@ public class MascotMenu extends Menu {
         itemBuilder.setData(DataComponentTypes.ITEM_MODEL, Key.key("minecraft:netherite_upgrade_smithing_template"));
         map.put(15, itemBuilder
                 .setOnClick(_ -> {
-                    if (mascotsLevels.equals(MascotsLevels.level10)) return;
+                    if (mascotsLevels.equals(MascotsLevels.LEVEL_10)) return;
                     if (currentMascotLevel >= maxMascotLevel) return;
 
                     if (city == null) {

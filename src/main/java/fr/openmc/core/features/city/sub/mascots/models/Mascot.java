@@ -90,14 +90,12 @@ public class Mascot {
             chunk.load();
             toUnload = true;
         }
-        UUID mascot_uuid = this.getMascotUUID();
-        if (mascot_uuid == null) {
-            return null;
-        }
-        LivingEntity mob = (LivingEntity) Bukkit.getEntity(mascot_uuid);
-        if (mob == null) {
-            return null;
-        }
+        UUID mascotUUID = this.getMascotUUID();
+        if (mascotUUID == null) return null;
+
+        LivingEntity mob = (LivingEntity) Bukkit.getEntity(mascotUUID);
+        if (mob == null) return null;
+
         if (toUnload) chunk.unload();
         return mob;
     }

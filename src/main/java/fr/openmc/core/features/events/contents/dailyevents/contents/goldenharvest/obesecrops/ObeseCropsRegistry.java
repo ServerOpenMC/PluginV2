@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ObeseCropsRegistry {
+    private ObeseCropsRegistry() {}
+
     private static File file;
     private static FileConfiguration config;
 

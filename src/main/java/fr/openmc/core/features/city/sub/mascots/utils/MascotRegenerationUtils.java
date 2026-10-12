@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MascotRegenerationUtils {
+    private MascotRegenerationUtils() {}
+
     public static final Map<UUID, BukkitRunnable> regenTasks = new HashMap<>();
     private static final Map<UUID, BukkitRunnable> cooldownTasks = new HashMap<>();
 

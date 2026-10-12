@@ -10,6 +10,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class CityPermsConditions {
+    private CityPermsConditions() {}
+
     public static boolean canSeePerms(OMCPlayer sender, UUID playerUUID) {
         City city = City.ofPlayer(playerUUID);
         City senderCity = sender.city().getCity();

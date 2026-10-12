@@ -18,13 +18,13 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
  */
 public class PlainsMobSpawningListener implements Listener {
 
-    private final double DREAM_SPIDER_PROBABILITY = 0.05;
+    private final double dreamSpiderProbability = 0.05;
 
     /**
      * Gère l'événement de spawn de créature.
      * <p>
      * L'événement est annulé si la créature se trouve dans le biome SCULK_PLAINS
-     * de la dimension Dream et qu'un mob est généré selon une probabilité définie dans le {@link DreamMobsRegistry}.
+     * de la dimension Dream et qu'un mob est généré selon une probabilité définie dans le {@link fr.openmc.core.features.dream.registries.DreamMobsRegistry}.
      * </p>
      *
      * @param e l'événement de spawn de créature
@@ -48,7 +48,7 @@ public class PlainsMobSpawningListener implements Listener {
         }
 
         double choice = Math.random();
-        if (choice < DREAM_SPIDER_PROBABILITY) {
+        if (choice < dreamSpiderProbability) {
             OMCRegistry.DREAM_MOB.DREAM_SPIDER.spawn(spawningLoc);
             e.setCancelled(true);
         }

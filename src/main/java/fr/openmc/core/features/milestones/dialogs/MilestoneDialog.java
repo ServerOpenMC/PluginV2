@@ -22,7 +22,9 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings("UnstableApiUsage")
 public class MilestoneDialog {
-	public static final Set<Player> isInMilestoneDialog = new HashSet<>();
+ 	private MilestoneDialog() {}
+
+	protected static final Set<Player> inMilestoneDialog = new HashSet<>();
 
 	/**
 	 * Envoie le dialogue de narration
@@ -79,7 +81,7 @@ public class MilestoneDialog {
 	 * @param player le joueur
 	 */
 	public static void addToMilestoneDialog(Player player) {
-		isInMilestoneDialog.add(player);
+		inMilestoneDialog.add(player);
 	}
 
 	/**
@@ -87,7 +89,7 @@ public class MilestoneDialog {
 	 * @param player le joueur
 	 */
 	public static void removeToMilestoneDialog(Player player) {
-		isInMilestoneDialog.remove(player);
+		inMilestoneDialog.remove(player);
 	}
 
 	/**
@@ -96,6 +98,6 @@ public class MilestoneDialog {
 	 * @return boolean indiquant si le joueur est dans un dialogue ou non
 	 */
 	public static boolean isInMilestoneDialog(Player player) {
-		return isInMilestoneDialog.contains(player);
+		return inMilestoneDialog.contains(player);
 	}
 }

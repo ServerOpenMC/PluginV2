@@ -9,6 +9,8 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class SkullNMS {
+    private SkullNMS() {}
+
     public static ItemStack getPlayerSkullNMS(Player player) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         ItemStack skull = new ItemStack(Items.PLAYER_HEAD);

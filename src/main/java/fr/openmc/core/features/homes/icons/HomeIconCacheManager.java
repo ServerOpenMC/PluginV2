@@ -15,12 +15,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class HomeIconCacheManager extends Feature {
 
-    private final ConcurrentHashMap<HomeIcon.IconCategory, List<CachedIconItem>> CACHED_ITEMS = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, List<CachedIconItem>> CACHED_SEARCH_RESULTS = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, List<ItemStack>> RENDERED_ITEMS_CACHE = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<HomeIcon.IconCategory, List<CachedIconItem>> cachedItems = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, List<CachedIconItem>> cachedSearchResults = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, List<ItemStack>> renderedItemsCache = new ConcurrentHashMap<>();
     private volatile boolean initialized = false;
 
-    private final Integer MAX_CACHE_SIZE = 50;
+    private static final Integer MAX_CACHE_SIZE = 50;
 
     @Override
     public void onEnable() {
@@ -71,7 +71,7 @@ public class HomeIconCacheManager extends Feature {
             }
         }
 
-        CACHED_ITEMS.put(category, cachedItems);
+        this.cachedItems.put(category, cachedItems);
     }
 
     /**
@@ -86,15 +86,15 @@ public class HomeIconCacheManager extends Feature {
     public List<ItemStack> getItemsForCategory(HomeIcon.IconCategory category, HomeChangeIconMenu menu, Home home, Player player) {
         if (!initialized) initializeCategoryCache(category);
 
-        List<CachedIconItem> cachedItems = CACHED_ITEMS.get(category);
+        List<CachedIconItem> cachedItems = this.cachedItems.get(category);
         if (cachedItems == null) {
             initializeCategoryCache(category);
-            cachedItems = CACHED_ITEMS.get(category);
+            cachedItems = this.cachedItems.get(category);
         }
 
         String cacheKey = category.name() + "_" + home.getIcon().id();
 
-        List<ItemStack> cachedRenderedItems = RENDERED_ITEMS_CACHE.get(cacheKey);
+        List<ItemStack> cachedRenderedItems = renderedItemsCache.get(cacheKey);
         if (cachedRenderedItems != null && cachedRenderedItems.size() == cachedItems.size()) return cloneItemList(cachedRenderedItems);
 
         List<ItemStack> items = new ArrayList<>();
@@ -102,9 +102,9 @@ public class HomeIconCacheManager extends Feature {
                 items.add(cachedItem.createItemForMenu(menu, home, player))
         );
 
-        if (RENDERED_ITEMS_CACHE.size() > MAX_CACHE_SIZE) RENDERED_ITEMS_CACHE.clear(); // Limit cache size to avoid memory issues
+        if (renderedItemsCache.size() > MAX_CACHE_SIZE) renderedItemsCache.clear(); // Limit cache size to avoid memory issues
 
-        RENDERED_ITEMS_CACHE.put(cacheKey, cloneItemList(items));
+        renderedItemsCache.put(cacheKey, cloneItemList(items));
         return items;
     }
 
@@ -123,12 +123,12 @@ public class HomeIconCacheManager extends Feature {
         String normalizedQuery = query.toLowerCase().trim();
         String cacheKey = "search_" + normalizedQuery + "_" + home.getIcon().id();
 
-        List<ItemStack> cachedRenderedItems = RENDERED_ITEMS_CACHE.get(cacheKey);
+        List<ItemStack> cachedRenderedItems = renderedItemsCache.get(cacheKey);
         if (cachedRenderedItems != null) {
             return cloneItemList(cachedRenderedItems);
         }
 
-        List<CachedIconItem> cachedItems = CACHED_SEARCH_RESULTS.get(normalizedQuery);
+        List<CachedIconItem> cachedItems = cachedSearchResults.get(normalizedQuery);
 
         if (cachedItems == null) {
             List<HomeIcon> searchResults = HomeIconRegistry.searchIcons(normalizedQuery);
@@ -142,15 +142,15 @@ public class HomeIconCacheManager extends Feature {
                 }
             }
 
-            if (CACHED_SEARCH_RESULTS.size() > MAX_CACHE_SIZE) CACHED_SEARCH_RESULTS.clear(); // Limit cache size to avoid memory issues
-            CACHED_SEARCH_RESULTS.put(normalizedQuery, cachedItems);
+            if (cachedSearchResults.size() > MAX_CACHE_SIZE) cachedSearchResults.clear(); // Limit cache size to avoid memory issues
+            cachedSearchResults.put(normalizedQuery, cachedItems);
         }
 
         List<ItemStack> items = new ArrayList<>();
         cachedItems.forEach(cachedItem -> items.add(cachedItem.createItemForMenu(menu, home, player)));
 
-        if (RENDERED_ITEMS_CACHE.size() > MAX_CACHE_SIZE) RENDERED_ITEMS_CACHE.clear(); // Limit cache size to avoid memory issues
-        RENDERED_ITEMS_CACHE.put(cacheKey, cloneItemList(items));
+        if (renderedItemsCache.size() > MAX_CACHE_SIZE) renderedItemsCache.clear(); // Limit cache size to avoid memory issues
+        renderedItemsCache.put(cacheKey, cloneItemList(items));
 
         return items;
     }
@@ -173,14 +173,14 @@ public class HomeIconCacheManager extends Feature {
      * This method can be used to reset the cache if needed.
      */
     public synchronized void clearCache() {
-        CACHED_ITEMS.clear();
-        CACHED_SEARCH_RESULTS.clear();
-        RENDERED_ITEMS_CACHE.clear();
+        cachedItems.clear();
+        cachedSearchResults.clear();
+        renderedItemsCache.clear();
         initialized = false;
     }
 
     public void clearRenderedCache() {
-        RENDERED_ITEMS_CACHE.clear();
+        renderedItemsCache.clear();
     }
 
     /**
@@ -202,15 +202,15 @@ public class HomeIconCacheManager extends Feature {
         StringBuilder stats = new StringBuilder();
         stats.append("HomeIconCacheManager Stats:\n");
         stats.append("- Initialisé: ").append(initialized).append("\n");
-        stats.append("- Catégories en cache: ").append(CACHED_ITEMS.size()).append("\n");
+        stats.append("- Catégories en cache: ").append(cachedItems.size()).append("\n");
 
-        for (HomeIcon.IconCategory category : CACHED_ITEMS.keySet()) {
-            List<CachedIconItem> items = CACHED_ITEMS.get(category);
+        for (HomeIcon.IconCategory category : cachedItems.keySet()) {
+            List<CachedIconItem> items = cachedItems.get(category);
             stats.append("  - ").append(category).append(": ").append(items != null ? items.size() : 0).append(" items\n");
         }
 
-        stats.append("- Recherches en cache: ").append(CACHED_SEARCH_RESULTS.size()).append("\n");
-        stats.append("- Items rendus en cache: ").append(RENDERED_ITEMS_CACHE.size()).append("\n");
+        stats.append("- Recherches en cache: ").append(cachedSearchResults.size()).append("\n");
+        stats.append("- Items rendus en cache: ").append(renderedItemsCache.size()).append("\n");
 
         return stats.toString();
     }

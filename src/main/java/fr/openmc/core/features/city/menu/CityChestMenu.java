@@ -101,18 +101,17 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
-        if (Restart.isRestarting) return null;
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        if (Restart.isRestarting) return map;
 
         Player player = getOwner();
-
-        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
         map.put(45, new ItemMenuBuilder(this, Material.ARROW, true)
                 .setOnClick(_ -> exit(city, getInventory())));
 
-        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
-        }).setOnClick(_ -> {
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta ->
+                itemMeta.displayName(TranslationManager.translation("messages.menus.close")))
+        .setOnClick(_ -> {
             exit(city, getInventory());
             player.closeInventory();
         }));
@@ -194,8 +193,7 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
-    }
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
     public @NotNull InventorySize getInventorySize() {

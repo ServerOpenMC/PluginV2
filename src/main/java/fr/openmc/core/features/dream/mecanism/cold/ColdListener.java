@@ -25,14 +25,14 @@ public class ColdListener implements Listener {
         Player player = event.getPlayer();
 		if (!player.getGameMode().equals(GameMode.SURVIVAL)) return;
 
-        if (DreamBiome.isInDreamBiome(player, DreamBiome.GLACITE_GROTTO)) {
-            DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
-            if (dreamPlayer == null) return;
+        if (!DreamBiome.isInDreamBiome(player, DreamBiome.GLACITE_GROTTO)) return;
 
-            if (dreamPlayer.getColdTask() != null) return;
+        DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
+        if (dreamPlayer == null) return;
 
-            dreamPlayer.scheduleColdTask();
-        }
+        if (dreamPlayer.getColdTask() != null) return;
+
+        dreamPlayer.scheduleColdTask();
     }
 
     @EventHandler(ignoreCancelled = true)

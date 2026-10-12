@@ -33,21 +33,21 @@ public class TextDisplay {
     // Code pris de l'un de mes plugins et inspiré de HologramLib (Misieur)
 
     private final Set<UUID> viewerList = new HashSet<>();
-    private final Display.TextDisplay textDisplay;
+    private final Display.TextDisplay textDisplayEntity;
     private Location location;
 
     public TextDisplay(Component text, Location location, Vector3f scale) {
         this.location = location;
 
-        textDisplay = new Display.TextDisplay(EntityTypes.TEXT_DISPLAY, ((CraftWorld) location.getWorld()).getHandle());
-        textDisplay.setPos(location.getX(), location.getY(), location.getZ());
-        textDisplay.setRot(location.getYaw(), location.getPitch());
-        textDisplay.setBillboardConstraints(Display.BillboardConstraints.CENTER);
-        textDisplay.getEntityData().set(new EntityDataAccessor<>(24, EntityDataSerializers.INT),Integer.MAX_VALUE);
-        textDisplay.setInvisible(true);
-        textDisplay.setBrightnessOverride(Brightness.FULL_BRIGHT);
-        textDisplay.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), scale, new Quaternionf()));
-        textDisplay.setText(PaperAdventure.asVanilla(text));
+        textDisplayEntity = new Display.TextDisplay(EntityTypes.TEXT_DISPLAY, ((CraftWorld) location.getWorld()).getHandle());
+        textDisplayEntity.setPos(location.getX(), location.getY(), location.getZ());
+        textDisplayEntity.setRot(location.getYaw(), location.getPitch());
+        textDisplayEntity.setBillboardConstraints(Display.BillboardConstraints.CENTER);
+        textDisplayEntity.getEntityData().set(new EntityDataAccessor<>(24, EntityDataSerializers.INT),Integer.MAX_VALUE);
+        textDisplayEntity.setInvisible(true);
+        textDisplayEntity.setBrightnessOverride(Brightness.FULL_BRIGHT);
+        textDisplayEntity.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), scale, new Quaternionf()));
+        textDisplayEntity.setText(PaperAdventure.asVanilla(text));
         update();
         updateViewersList();
     }
@@ -65,13 +65,13 @@ public class TextDisplay {
 
         // Add Entity Packet
         ClientboundAddEntityPacket addEntityPacket = new ClientboundAddEntityPacket(
-                textDisplay.getId(),
-                textDisplay.getUUID(),
-                textDisplay.getX(),
-                textDisplay.getY(),
-                textDisplay.getZ(),
-                textDisplay.getXRot(),
-                textDisplay.getYRot(),
+                textDisplayEntity.getId(),
+                textDisplayEntity.getUUID(),
+                textDisplayEntity.getX(),
+                textDisplayEntity.getY(),
+                textDisplayEntity.getZ(),
+                textDisplayEntity.getXRot(),
+                textDisplayEntity.getYRot(),
                 EntityTypes.TEXT_DISPLAY,
                 0,
                 Vec3.ZERO,
@@ -80,9 +80,9 @@ public class TextDisplay {
         nmsViewer.connection.send(addEntityPacket);
 
         // Entity Data Packet
-        List<SynchedEntityData.DataValue<?>> dataValues = textDisplay.getEntityData().getNonDefaultValues();
+        List<SynchedEntityData.DataValue<?>> dataValues = textDisplayEntity.getEntityData().getNonDefaultValues();
         if (dataValues == null || dataValues.isEmpty()) return;
-        ClientboundSetEntityDataPacket entityDataPacket = new ClientboundSetEntityDataPacket(textDisplay.getId(), textDisplay.getEntityData().getNonDefaultValues());
+        ClientboundSetEntityDataPacket entityDataPacket = new ClientboundSetEntityDataPacket(textDisplayEntity.getId(), textDisplayEntity.getEntityData().getNonDefaultValues());
         nmsViewer.connection.send(entityDataPacket);
     }
 
@@ -95,7 +95,7 @@ public class TextDisplay {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return;
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-        ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(textDisplay.getId());
+        ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(textDisplayEntity.getId());
         nmsPlayer.connection.send(removeEntitiesPacket);
     }
 
@@ -123,15 +123,15 @@ public class TextDisplay {
     }
 
     public void updateText(Component text) {
-        textDisplay.setText(PaperAdventure.asVanilla(text));
+        textDisplayEntity.setText(PaperAdventure.asVanilla(text));
         update();
     }
 
     public void update() {
         if (viewerList.isEmpty()) return;
-        List<SynchedEntityData.DataValue<?>> dataValues = textDisplay.getEntityData().getNonDefaultValues();
+        List<SynchedEntityData.DataValue<?>> dataValues = textDisplayEntity.getEntityData().getNonDefaultValues();
         if (dataValues == null || dataValues.isEmpty()) return;
-        ClientboundSetEntityDataPacket entityDataPacket = new ClientboundSetEntityDataPacket(textDisplay.getId(), textDisplay.getEntityData().getNonDefaultValues());
+        ClientboundSetEntityDataPacket entityDataPacket = new ClientboundSetEntityDataPacket(textDisplayEntity.getId(), textDisplayEntity.getEntityData().getNonDefaultValues());
         viewerList.forEach(uuid -> {
             Player viewer = Bukkit.getPlayer(uuid);
             if (viewer != null) {
@@ -142,7 +142,7 @@ public class TextDisplay {
     }
 
     public void remove() {
-        ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(textDisplay.getId());
+        ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(textDisplayEntity.getId());
         viewerList.forEach(uuid -> {
             Player viewer = Bukkit.getPlayer(uuid);
             if (viewer != null) {
@@ -151,21 +151,21 @@ public class TextDisplay {
             }
         });
         viewerList.clear();
-        textDisplay.remove(Entity.RemovalReason.CHANGED_DIMENSION);
+        textDisplayEntity.remove(Entity.RemovalReason.CHANGED_DIMENSION);
     }
 
     public void setScale(Vector3f scale) {
-        textDisplay.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), scale, new Quaternionf()));
+        textDisplayEntity.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), scale, new Quaternionf()));
         update();
     }
 
     public void setLocation(Location location) {
         this.location = location;
-        textDisplay.setPos(location.getX(), location.getY(), location.getZ());
-        textDisplay.setRot(location.getYaw(), location.getPitch());
+        textDisplayEntity.setPos(location.getX(), location.getY(), location.getZ());
+        textDisplayEntity.setRot(location.getYaw(), location.getPitch());
         ClientboundTeleportEntityPacket teleportEntityPacket = ClientboundTeleportEntityPacket.teleport(
-                textDisplay.getId(),
-                PositionMoveRotation.of(textDisplay),
+                textDisplayEntity.getId(),
+                PositionMoveRotation.of(textDisplayEntity),
                 new HashSet<>(),
                 false
         );

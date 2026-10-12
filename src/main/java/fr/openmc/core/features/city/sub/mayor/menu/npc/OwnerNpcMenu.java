@@ -6,7 +6,6 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -97,8 +96,7 @@ public class OwnerNpcMenu extends Menu {
             }));
 
             ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-	        Component namePerk1 = (perk1 != null) ? TranslationManager.translation(perk1.getNameKey()) :
-                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+	        Component namePerk1 = TranslationManager.translation((perk1 != null) ? perk1.getNameKey() : "feature.city.mayor.perk.none.name");
             List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey())) : null;
             inventory.put(31, new ItemMenuBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(namePerk1);
@@ -185,8 +183,6 @@ public class OwnerNpcMenu extends Menu {
                             if (locationClick == null) return true;
 
                             Chunk chunk = locationClick.getChunk();
-
-                            CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
                             City cityByChunk = City.of(chunk);
                             if (cityByChunk == null) {
                                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);

@@ -19,6 +19,7 @@ import java.util.UUID;
  * pour inviter une personne (utile pour faire une modif sur menu et commandes).
  */
 public class CityInviteConditions {
+    private CityInviteConditions() {}
     private static final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
     /**

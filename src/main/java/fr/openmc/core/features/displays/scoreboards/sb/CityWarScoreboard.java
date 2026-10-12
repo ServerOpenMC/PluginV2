@@ -165,7 +165,6 @@ public class CityWarScoreboard extends BaseScoreboard {
     }
 
     private Component getColoredHealth(LivingEntity entity) {
-        // todo glyph
         if (entity.isDead())
             return TranslationManager.translation(
                     "feature.displays.scoreboard.citywar.mascot.dead", true,

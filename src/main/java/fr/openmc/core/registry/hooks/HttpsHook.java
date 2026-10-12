@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 
 public abstract class HttpsHook extends Hooks {
-    abstract public String getName();
+    public abstract String getName();
 
     public boolean isEnable() {
         return Hooks.isEnabled(HttpsHook.class);

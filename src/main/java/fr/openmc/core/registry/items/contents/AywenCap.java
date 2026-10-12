@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class AywenCap extends CustomItem implements EquipableItem {
     public AywenCap(String name) {
@@ -15,9 +16,7 @@ public class AywenCap extends CustomItem implements EquipableItem {
 
     @Override
     public HashMap<PotionEffectType, Integer> getEffects() {
-        return new HashMap<>(){{
-            put(PotionEffectType.NIGHT_VISION, 0);
-        }};
+        return new HashMap<>(Map.of(PotionEffectType.NIGHT_VISION, 0));
     }
 
     @Override

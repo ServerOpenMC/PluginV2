@@ -39,7 +39,7 @@ public class JoinQuitMessageListener implements Listener {
     private final LuckPermsHook luckPermsHook;
 
     public JoinQuitMessageListener() {
-        this.balanceOnJoin = OMCPlugin.getInstance().getConfig().getDouble("money-on-first-join", 500D);
+        this.balanceOnJoin = OMCPlugin.getInstance().getConfigs().getDouble("money-on-first-join", 500D);
         this.luckPermsHook = OMCRegistry.HOOKS.LUCK_PERMS;
     }
 

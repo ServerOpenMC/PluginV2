@@ -30,7 +30,7 @@ public class ChallengeLootTable extends CustomLootTable {
         return Set.of(
                 new MoneyLoot(200, 450, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL,
-                        (player) -> weeklyEventsManager.isEventActive()
+                        (_) -> weeklyEventsManager.isEventActive()
                                 && weeklyEventsManager.getCurrentEvent() instanceof Contest contest
                                 && ContestPhase.TRADE_PHASE.getPhase().equals(contest.getActivePhase()),
                         1,

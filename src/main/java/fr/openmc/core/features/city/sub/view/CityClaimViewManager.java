@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.sub.view;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
@@ -118,7 +117,6 @@ public class CityClaimViewManager extends Feature {
     private Object2ObjectMap<ChunkPos, City> collectClaimsInRadius(@NotNull Player player) {
         Object2ObjectMap<ChunkPos, City> claims = new Object2ObjectOpenHashMap<>();
         ChunkPos playerChunk = ChunkPos.fromChunk(player.getChunk());
-        CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
         for (int x = -VIEW_RADIUS_CHUNKS; x <= VIEW_RADIUS_CHUNKS; x++) {
             for (int z = -VIEW_RADIUS_CHUNKS; z <= VIEW_RADIUS_CHUNKS; z++) {
@@ -150,9 +148,14 @@ public class CityClaimViewManager extends Feature {
             if (viewData == null)
                 return;
 
-            viewData.claims().forEach((chunkPos, city) -> {
-                showChunkBorders(player, chunkPos, city, city.equals(playerCity), OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunkPos.getChunkInWorld()), player.getLocation().getBlockY() + 1);
-            });
+            viewData.claims().forEach((chunkPos, city) ->
+                showChunkBorders(player,
+                        chunkPos,
+                        city,
+                        city.equals(playerCity),
+                        OMCRegistry.HOOKS.WORLD_GUARD.doesChunkContainWGRegion(chunkPos.getChunkInWorld()),
+                        player.getLocation().getBlockY() + 1)
+            );
         }, 0L, VIEW_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 

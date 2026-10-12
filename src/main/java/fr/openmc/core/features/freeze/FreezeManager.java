@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class FreezeManager extends Feature implements HasCommands, HasListeners {
 	
-	public final Set<Player> FROZEN_PLAYERS = new HashSet<>();
+	public final Set<Player> frozenPlayers = new HashSet<>();
 	private Player player;
 
 	@Override
@@ -46,9 +46,9 @@ public class FreezeManager extends Feature implements HasCommands, HasListeners 
 		if (target == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("command.admin.freeze.player_not_found"), Prefix.OPENMC, MessageType.ERROR, false);
 		} else {
-			if (FROZEN_PLAYERS.contains(target)) {
+			if (frozenPlayers.contains(target)) {
 				target.setInvulnerable(false);
-				FROZEN_PLAYERS.remove(target);
+				frozenPlayers.remove(target);
 				MessagesManager.sendMessage(player,
 						TranslationManager.translation("command.admin.freeze.player_unfreeze",
 								Component.text(target.getName()).color(NamedTextColor.GOLD)), Prefix.OPENMC, MessageType.SUCCESS, false);
@@ -56,9 +56,9 @@ public class FreezeManager extends Feature implements HasCommands, HasListeners 
 			} else {
 				target.setInvulnerable(true);
 				Location location = target.getLocation();
-				location.setY(location.getWorld().getHighestBlockYAt(location) + 1);
+				location.setY(location.getWorld().getHighestBlockYAt(location) + 1d);
 				target.teleport(location);
-				FROZEN_PLAYERS.add(target);
+				frozenPlayers.add(target);
                 target.sendTitlePart(TitlePart.TITLE, TranslationManager.translation("command.admin.freeze.title"));
                 target.sendTitlePart(TitlePart.SUBTITLE, TranslationManager.translation("command.admin.freeze.subtitle"));
                 MessagesManager.sendMessage(player,

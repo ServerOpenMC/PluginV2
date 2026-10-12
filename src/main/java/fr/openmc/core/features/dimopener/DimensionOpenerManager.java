@@ -9,7 +9,6 @@ import fr.openmc.core.features.dimopener.commands.DimensionCommands;
 import fr.openmc.core.features.dimopener.data.DimensionData;
 import fr.openmc.core.features.dimopener.data.StepDimensionData;
 import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
@@ -41,13 +40,10 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class DimensionOpenerManager extends Feature implements HasListeners, HasCommands {
-
-    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private final String DIMENSIONS_FOLDER = "data/dimensions";
+    private static final String DIMENSIONS_FOLDER = "data/dimensions";
 
     private final Map<String, DimensionData> dimensions = new ConcurrentHashMap<>();
     private final Map<String, DimensionProgress> progressMap = new ConcurrentHashMap<>();
@@ -103,7 +99,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
                 data.setId(id);
                 dimensions.put(id, data);
                 progressMap.computeIfAbsent(id, DimensionProgress::new);
-            } catch (IOException e) {
+            } catch (IOException _) {
                 OMCLogger.error("Failed to load dimensions file: " + file.getName());
             }
         }
@@ -118,7 +114,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
     public List<DimensionData> getEnabledDimensions() {
         return dimensions.values().stream()
                 .filter(DimensionData::isEnabled)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public DimensionData getDimension(String id) {
@@ -239,8 +235,7 @@ public class DimensionOpenerManager extends Feature implements HasListeners, Has
                     openDimension(progress);
                     changed = true;
                 }
-                default -> {
-                }
+                default -> {}
             }
         }
         if (changed) saveProgress();

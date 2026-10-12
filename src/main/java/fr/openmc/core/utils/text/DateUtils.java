@@ -11,8 +11,9 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 
 public class DateUtils {
+    private DateUtils() {}
 
-    private final static DateTimeFormatter foratterWeekFormat = DateTimeFormatter.ofPattern("u-w", Locale.FRENCH);
+    private static final DateTimeFormatter foratterWeekFormat = DateTimeFormatter.ofPattern("u-w", Locale.FRENCH);
 
     public static LocalDateTime getLocalDateTime() {
         return LocalDateTime.now(ZoneId.of("Europe/Paris"));

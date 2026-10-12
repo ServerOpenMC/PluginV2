@@ -16,7 +16,7 @@ import java.util.UUID;
 @DatabaseTable(tableName = "cooldowns")
 @Getter
 public class Cooldown {
-    private final static DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+    private static final DynamicCooldownManager DYNAMIC_COOLDOWN_MANAGER = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     @DatabaseField(generatedId = true)
     private int id;

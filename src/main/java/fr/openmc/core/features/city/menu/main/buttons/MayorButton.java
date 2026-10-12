@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class MayorButton {
+    private MayorButton() {}
+
     public static void init(Menu menu, City city, int[] slots) {
         OMCPlayer player = menu.getOwner();
 

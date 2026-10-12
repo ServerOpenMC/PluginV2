@@ -21,8 +21,8 @@ public class OMCDatapack {
     private final String namespace;
     private final Set<DatapackInjector> injectors = new HashSet<>();
 
-    public final String ID_DATAPACK_INJECTED = "openmc-injected";
-    private final String ID_TEMP_DATAPACK_FOLDER = "datapacks-openmc";
+    public static final String ID_DATAPACK_INJECTED = "openmc-injected";
+    private static final String ID_TEMP_DATAPACK_FOLDER = "datapacks-openmc";
 
     public OMCDatapack(String namespace) {
         this.namespace = namespace;

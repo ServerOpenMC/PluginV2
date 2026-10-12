@@ -36,14 +36,12 @@ public class EatKebabFermentedListener implements Listener {
     private void proutAction(Player player) {
         player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.eat_kebab_fermented.smelt"));
 
-        if(player.isInsideVehicle()){
-            if(player.getVehicle() instanceof Boat boat){
-                ItemStack itemBoat = ItemStack.of(boat.getBoatMaterial());
-                player.getVehicle().remove();
-                player.getWorld().dropItemNaturally(boat.getLocation(), itemBoat);
+        if (player.isInsideVehicle() && player.getVehicle() instanceof Boat boat) {
+            ItemStack itemBoat = ItemStack.of(boat.getBoatMaterial());
+            player.getVehicle().remove();
+            player.getWorld().dropItemNaturally(boat.getLocation(), itemBoat);
 
-                player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.eat_kebab_fermented.boat"));
-            }
+            player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.eat_kebab_fermented.boat"));
         }
 
         // Make the player jump

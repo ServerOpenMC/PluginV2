@@ -33,13 +33,17 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CityChunkMenu extends Menu {
-    public static final Map<String, ChunkDataCache> CHUNK_CACHE = new ConcurrentHashMap<>();
+    private static final Map<String, ChunkDataCache> CHUNK_CACHE = new ConcurrentHashMap<>();
 
     private final OMCPlayer player;
-    private final int playerChunkX, playerChunkZ, startX, startZ;
+    private final int playerChunkX;
+    private final int playerChunkZ;
+    private final int startX;
+    private final int startZ;
     private final City playerCity;
     private final UUID playerCityUUID;
-    private final boolean hasPermissionClaim, hasFreeClaimAvailable;
+    private final boolean hasPermissionClaim;
+    private final boolean hasFreeClaimAvailable;
     private final int freeClaims;
     private final double price;
     private final int aywenite;
@@ -163,7 +167,6 @@ public class CityChunkMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        long startTime = System.currentTimeMillis();
 
         addNavigationButtons(inventory);
 

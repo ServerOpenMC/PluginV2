@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DatapackLoader {
+    private DatapackLoader() {}
+
     /**
      * Charge tout les datapacks qui sont dans la ressource resources/datapacks
      */

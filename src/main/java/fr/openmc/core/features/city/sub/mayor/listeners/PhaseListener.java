@@ -21,12 +21,12 @@ public class PhaseListener {
                 MayorPhase phase = mayorManager.getMayorPhase();
 
                 // PHASE 1 - Elections - Mardi à Mercredi
-                if (phase.equals(MayorPhase.MAYOR_ELECTED) && MayorPhase.OPEN_ELECTION.getStartDay() == DateUtils.getCurrentDayOfWeek()) {
+                if (phase.equals(MayorPhase.MAYOR_ELECTED) && MayorPhase.OPEN_ELECTION.getStartDay().equals(DateUtils.getCurrentDayOfWeek())) {
                     phase.getRunnable().run();
                 }
 
                 // PHASE 2 - Maire Elu - Jeudi à Jeudi Prochain
-                if (phase.equals(MayorPhase.OPEN_ELECTION) && MayorPhase.MAYOR_ELECTED.getStartDay() == DateUtils.getCurrentDayOfWeek()) {
+                if (phase.equals(MayorPhase.OPEN_ELECTION) && MayorPhase.MAYOR_ELECTED.getStartDay().equals(DateUtils.getCurrentDayOfWeek())) {
                     phase.getRunnable().run();
                 }
             }

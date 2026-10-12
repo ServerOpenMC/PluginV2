@@ -30,7 +30,7 @@ public class UpdateManager extends Feature implements HasCommands, HasListeners 
                 Component.text(version, NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD)
         ).clickEvent(ClickEvent.openUrl(milestoneUrl));
 
-        long period = 14400 * 20;
+        long period = 14400 * 20L;
 
         new BukkitRunnable() {
             @Override

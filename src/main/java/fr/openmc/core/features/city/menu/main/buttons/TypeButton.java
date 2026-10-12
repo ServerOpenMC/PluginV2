@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class TypeButton {
+    private TypeButton() {}
+
     private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {

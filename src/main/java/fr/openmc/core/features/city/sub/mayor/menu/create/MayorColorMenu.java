@@ -35,6 +35,23 @@ public class MayorColorMenu extends Menu {
     private final Perks perk3;
     private final MenuType menuType;
 
+    private static final Map<NamedTextColor, Integer> COLOR_SLOT = new HashMap<>();
+    static {
+        COLOR_SLOT.put(NamedTextColor.RED, 12);
+        COLOR_SLOT.put(NamedTextColor.GOLD, 13);
+        COLOR_SLOT.put(NamedTextColor.YELLOW, 14);
+        COLOR_SLOT.put(NamedTextColor.GREEN, 21);
+        COLOR_SLOT.put(NamedTextColor.DARK_GREEN, 22);
+        COLOR_SLOT.put(NamedTextColor.BLUE, 23);
+        COLOR_SLOT.put(NamedTextColor.AQUA, 30);
+        COLOR_SLOT.put(NamedTextColor.DARK_BLUE, 31);
+        COLOR_SLOT.put(NamedTextColor.DARK_PURPLE, 32);
+        COLOR_SLOT.put(NamedTextColor.LIGHT_PURPLE, 39);
+        COLOR_SLOT.put(NamedTextColor.WHITE, 40);
+        COLOR_SLOT.put(NamedTextColor.GRAY, 41);
+        COLOR_SLOT.put(NamedTextColor.DARK_GRAY, 49);
+    }
+
     public MayorColorMenu(Player owner, Perks perk1, Perks perk2, Perks perk3, String type, MenuType menuType) {
         super(owner);
         this.type = type;
@@ -76,23 +93,8 @@ public class MayorColorMenu extends Menu {
         MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
 
         City city = City.ofPlayer(player);
-        Map<NamedTextColor, Integer> colorSlot = new HashMap<>();
-        {
-            colorSlot.put(NamedTextColor.RED, 12);
-            colorSlot.put(NamedTextColor.GOLD, 13);
-            colorSlot.put(NamedTextColor.YELLOW, 14);
-            colorSlot.put(NamedTextColor.GREEN, 21);
-            colorSlot.put(NamedTextColor.DARK_GREEN, 22);
-            colorSlot.put(NamedTextColor.BLUE, 23);
-            colorSlot.put(NamedTextColor.AQUA, 30);
-            colorSlot.put(NamedTextColor.DARK_BLUE, 31);
-            colorSlot.put(NamedTextColor.DARK_PURPLE, 32);
-            colorSlot.put(NamedTextColor.LIGHT_PURPLE, 39);
-            colorSlot.put(NamedTextColor.WHITE, 40);
-            colorSlot.put(NamedTextColor.GRAY, 41);
-            colorSlot.put(NamedTextColor.DARK_GRAY, 49);
-        }
-        colorSlot.forEach((color, slot) -> {
+
+        COLOR_SLOT.forEach((color, slot) -> {
             List<Component> loreColor = TranslationManager.translationLore(
                     "feature.city.mayor.menu.color.option.lore",
                     ColorUtils.getNameFromColor(color).color(color)

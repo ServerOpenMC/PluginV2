@@ -31,17 +31,16 @@ public class HangingProtection implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
         Entity remover = event.getRemover();
-        if (remover != null) {
-            protectionsManager.verify(remover, event, event.getEntity().getLocation());
-        }
+        if (remover == null) return;
+
+        protectionsManager.verify(remover, event, event.getEntity().getLocation());
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onHangingBreak(HangingBreakEvent event) {
-        if (event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION) {
-            if (!protectionsManager.canExplodeNaturally(event.getEntity().getLocation())) {
-                event.setCancelled(true);
-            }
+        if (event.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION
+                && !protectionsManager.canExplodeNaturally(event.getEntity().getLocation())) {
+            event.setCancelled(true);
         }
     }
 }

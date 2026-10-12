@@ -31,8 +31,10 @@ import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
 @SuppressWarnings("UnstableApiUsage")
 public class NotationDialog {
-    private final static String FONT = "minecraft:mono";
-    private final static int LENGTH_CASE = 9;
+    private NotationDialog() {}
+
+    private static final String FONT = "minecraft:mono";
+    private static final int LENGTH_CASE = 9;
 
     public static void send(Player player, String weekStr) {
         NotationManager notationManager = OMCRegistry.CITY_FEATURES.NOTATION;
@@ -65,9 +67,8 @@ public class NotationDialog {
                 )
                 .type(DialogType.notice(
                         ActionButton.builder(ButtonType.BACK.getLabelComponent())
-                                .action(DialogAction.customClick((response, audience) -> {
-                                    player.closeInventory();
-                                }, ClickCallback.Options.builder().build()))
+                                .action(DialogAction.customClick((response, audience) ->
+                                    player.closeInventory(), ClickCallback.Options.builder().build()))
                                 .build()
                 ))
         );

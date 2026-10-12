@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
  * pour unclaim une zone (utile pour faire une modif sur menu et commandes).
  */
 public class CityUnclaimCondition {
+    private CityUnclaimCondition() {}
 
     /**
      * Retourne un booleen pour dire si la ville peut etre retrécie ou non.

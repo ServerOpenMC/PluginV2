@@ -15,6 +15,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.List;
 
 public class CityTransferAction {
+    private CityTransferAction() {}
+
     public static void transfer(OMCPlayer player, City city, OMCOfflinePlayer playerToTransfer) {
         OMCOfflinePlayer owner = OMCOfflinePlayer.of(city.getPlayerWithPermission(CityPermission.OWNER));
 

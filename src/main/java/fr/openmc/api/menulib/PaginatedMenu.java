@@ -106,11 +106,9 @@ public abstract class PaginatedMenu extends Menu {
         // Check if the page is out of bounds
         int index = 0;
         for (int i = 0; i < getInventory().getSize(); i++) {
-            if (!staticSlots.contains(i)) {
-                if (index + maxItems * page < getItems().size()) {
-                    map.put(i, new ItemMenuBuilder(this, getItems().get(index + maxItems * page)));
-                    index++;
-                }
+            if (!staticSlots.contains(i) && index + maxItems * page < getItems().size()) {
+                map.put(i, new ItemMenuBuilder(this, getItems().get(index + maxItems * page)));
+                index++;
             }
         }
 

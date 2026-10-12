@@ -24,6 +24,7 @@ import java.util.List;
 
 public class PlantationLootListener implements Listener {
     private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private final GoldenHarvestManager goldenHarvestManager = OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.feature();
 
     @EventHandler(ignoreCancelled = true)
     public void onCropBreak(BlockBreakEvent event) {
@@ -32,7 +33,7 @@ public class PlantationLootListener implements Listener {
 
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
-        ItemLoot itemLoot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
+        ItemLoot itemLoot = goldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (itemLoot == null) return;
         if (!(event.getBlock().getBlockData() instanceof Ageable ageable)) return;
         if (ageable.getAge() != ageable.getMaximumAge()) return;

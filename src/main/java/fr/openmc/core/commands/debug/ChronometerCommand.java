@@ -45,9 +45,9 @@ public class ChronometerCommand {
     private void chronometerList(OMCPlayer owner, @Named("target") OMCPlayer target) {
         UUID entitytUUID = target.getUniqueId();
 
-        if (Chronometer.chronometer.containsKey(entitytUUID)) {
+        if (Chronometer.chronometerMap.containsKey(entitytUUID)) {
             owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on"));
-            Chronometer.chronometer.get(entitytUUID).forEach((group, time) ->
+            Chronometer.chronometerMap.get(entitytUUID).forEach((group, time) ->
                     owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on_list",
                             Component.text(group), Component.text(time).color(NamedTextColor.GOLD)).color(NamedTextColor.YELLOW)));
         } else {

@@ -6,6 +6,8 @@ import java.text.NumberFormat;
 import java.util.*;
 
 public class EconomyUtils {
+    private EconomyUtils() {}
+
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     public static final NavigableMap<Long, String> SUFFIXES = new TreeMap<>(Map.of(
             1_000L, "k",

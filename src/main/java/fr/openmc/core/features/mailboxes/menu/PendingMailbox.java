@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PendingMailbox extends PaginatedMenu {
-    private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
+    private static final MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
 
     public PendingMailbox(Player player) {
         super(player);
@@ -54,11 +54,11 @@ public class PendingMailbox extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        MAILBOX_MANAGER.getSentLetters(getOwner()).forEach(letter -> {
-            items.add(letter.toSenderLetterItemBuilder(this).setOnClick(e -> {
-                MAILBOX_MANAGER.sendConfirmMenuToCancelLetter(getOwner(), letter);
-            }));
-        });
+        MAILBOX_MANAGER.getSentLetters(getOwner()).forEach(letter ->
+            items.add(letter.toSenderLetterItemBuilder(this).setOnClick(e ->
+                MAILBOX_MANAGER.sendConfirmMenuToCancelLetter(getOwner(), letter)
+            ))
+        );
 
         return items;
     }

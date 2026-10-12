@@ -13,7 +13,7 @@ import java.util.UUID;
 public class ContestPlayer {
     @Getter
     @DatabaseField(id = true, columnName = "uuid")
-    private UUID UUID;
+    private UUID playerUUID;
     @Getter
     @Setter
     @DatabaseField(canBeNull = false)
@@ -29,7 +29,7 @@ public class ContestPlayer {
     }
 
     public ContestPlayer(UUID uuid, int points, int camp, NamedTextColor color) {
-        this.UUID = uuid;
+        this.playerUUID = uuid;
         this.points = points;
         this.camp = camp;
         this.color = color.value();
@@ -40,6 +40,6 @@ public class ContestPlayer {
     }
 
     public String getName() {
-        return CacheOfflinePlayer.getOfflinePlayer(UUID).getName();
+        return CacheOfflinePlayer.getOfflinePlayer(playerUUID).getName();
     }
 }

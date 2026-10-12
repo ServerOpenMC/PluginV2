@@ -81,9 +81,9 @@ public class MayorModifyMenu extends Menu {
                     TranslationManager.translation("feature.city.mayor.label.color").color(mayorCandidate.getCandidateColor())
             ));
             itemMeta.lore(loreColor);
-        }).setOnClick(inventoryClickEvent -> {
-            new MayorColorMenu(player, null, null, null, "change", null).open();
-        }));
+        }).setOnClick(_ ->
+            new MayorColorMenu(player, null, null, null, "change", null).open()
+        ));
 
         inventory.put(46, new ItemMenuBuilder(this, Material.ARROW, true));
 

@@ -19,6 +19,8 @@ import org.bukkit.entity.Player;
  * pour claim une zone (utile pour faire une modif sur menu et commandes).
  */
 public class CityClaimCondition {
+    private CityClaimCondition() {}
+
     private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
 
     /**

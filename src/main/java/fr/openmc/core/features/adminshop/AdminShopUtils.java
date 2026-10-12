@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminShopUtils {
+    private AdminShopUtils() {}
+
     public static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
 
     /**

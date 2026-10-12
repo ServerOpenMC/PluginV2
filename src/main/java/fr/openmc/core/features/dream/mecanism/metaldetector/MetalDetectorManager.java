@@ -8,9 +8,11 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MetalDetectorManager extends Feature implements HasListeners {
     public final Map<UUID, MetalDetectorTask> hiddenChests = new HashMap<>();
+    private final Random random = ThreadLocalRandom.current();
 
     @Override
     public Set<ListenerFactory> getListeners() {
@@ -21,7 +23,6 @@ public class MetalDetectorManager extends Feature implements HasListeners {
 
     public Location findRandomChestLocation(Location origin) {
         World world = origin.getWorld();
-        Random random = new Random();
 
         for (int i = 0; i < 30; i++) {
             int dx = random.nextInt(41) - 20;
@@ -35,6 +36,6 @@ public class MetalDetectorManager extends Feature implements HasListeners {
             }
         }
 
-        return origin.clone().add(random.nextInt(41) - 20, 0, random.nextInt(41) - 20);
+        return origin.clone().add(random.nextInt(41) - 20d, 0, random.nextInt(41) - 20d);
     }
 }

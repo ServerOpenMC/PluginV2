@@ -21,15 +21,13 @@ public record QuestTextReward(Component text, Prefix prefix, MessageType message
      */
     @Override
     public void giveReward(OMCPlayer player) {
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
             MessagesManager.sendMessage(
                     player,
                     text,
                     prefix,
                     messageType,
                     false
-            );
-        }, 1L);
-
+            ), 1L);
     }
 }

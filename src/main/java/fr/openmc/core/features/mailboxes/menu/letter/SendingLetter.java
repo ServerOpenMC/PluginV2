@@ -36,7 +36,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHead;
 
 public class SendingLetter extends Menu {
     private final OMCOfflinePlayer receiver;
-    private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
+    private static final MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
 
     private boolean hasSent = false;
 

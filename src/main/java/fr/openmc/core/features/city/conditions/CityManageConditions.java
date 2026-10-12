@@ -15,6 +15,8 @@ import java.util.UUID;
  * pour modifier une ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityManageConditions {
+    private CityManageConditions() {}
+
     /**
      * Retourne un booleen pour dire si la ville peut etre rename
      *

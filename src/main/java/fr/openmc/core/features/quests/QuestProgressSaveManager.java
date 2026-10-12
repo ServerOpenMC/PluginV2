@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class QuestProgressSaveManager extends Feature {
 
-    private final String SAVE_FOLDER = "quests";
+    private static final String SAVE_FOLDER = "quests";
     private final Map<UUID, Map<String, Object>> playerQuestProgress = new ConcurrentHashMap<>();
     private QuestsManager questsManager;
 

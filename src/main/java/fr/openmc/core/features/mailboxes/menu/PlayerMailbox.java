@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerMailbox extends PaginatedMenu {
-    private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
+    private static final MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
 
     public PlayerMailbox(Player player) {
         super(player);

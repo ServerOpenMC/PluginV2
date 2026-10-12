@@ -19,6 +19,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 
 public class MayorCommandAction {
+    private MayorCommandAction() {}
 
     public static void launchInteractionMenu(OMCPlayer player) {
         City city = City.ofPlayer(player);
@@ -48,16 +49,13 @@ public class MayorCommandAction {
             if (city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
                 MayorMandateMenu menu = new MayorMandateMenu(player);
                 menu.open();
-            } else if (city.getMayorPhase().equals(MayorPhase.OPEN_ELECTION)) {
-                if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
-                    if (!city.hasMayor()) {
-                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                            new MayorCreateMenu(player, null, null, null, MenuType.OWNER).open();
-                        });
-                    } else {
-                        new MayorColorMenu(player, null, null, null, "change", null).open();
-                    }
-
+            } else if (city.getMayorPhase().equals(MayorPhase.OPEN_ELECTION)
+                    && city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
+                if (!city.hasMayor()) {
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                            new MayorCreateMenu(player, null, null, null, MenuType.OWNER).open());
+                } else {
+                    new MayorColorMenu(player, null, null, null, "change", null).open();
                 }
             }
         }

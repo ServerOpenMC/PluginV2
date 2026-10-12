@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public class Registry<K, V> implements LifecycleRegistry {
 
-    protected final Map<K, V> entries = new LinkedHashMap<>();;
+    protected final Map<K, V> entries = new LinkedHashMap<>();
 
     public V register(K key, V value) {
         entries.put(key, value);

@@ -33,7 +33,7 @@ public class Restart {
     @Command("omcrestart")
     @Description("Redémarre le serveur après 1min")
     @CommandPermission("omc.admin.commands.restart")
-    public void restart(CommandSender sender) {
+    public static void restart(CommandSender sender) {
         if (sender instanceof Player player) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.cannot_do_this"), Prefix.OPENMC, MessageType.ERROR, false);
             return;

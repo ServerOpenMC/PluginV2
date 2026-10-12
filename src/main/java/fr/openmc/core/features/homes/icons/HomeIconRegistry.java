@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * The HomeIconRegistry manages the registration and retrieval of {@link HomeIcon} objects,
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
  * It allows initialization, querying, and conversion between legacy icons.
  */
 public class HomeIconRegistry {
+    private HomeIconRegistry() {}
 
     private static final Map<String, HomeIcon> icons = new LinkedHashMap<>();
     private static final List<HomeIcon> customIcons = new ArrayList<>();
@@ -144,7 +144,7 @@ public class HomeIconRegistry {
                                 icon.id().toLowerCase().contains(lowerQuery) ||
                                 (icon.isVanilla() && icon.getMaterial().name().toLowerCase().contains(lowerQuery))
                 )
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -169,7 +169,7 @@ public class HomeIconRegistry {
             String iconName = icon.id().replace("custom:", "").toUpperCase();
             try {
                 return LegacyHomeIcon.valueOf(iconName);
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException _) {
                 return LegacyHomeIcon.DEFAULT;
             }
         }

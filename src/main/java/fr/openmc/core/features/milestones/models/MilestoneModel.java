@@ -12,8 +12,8 @@ import java.util.UUID;
 public class MilestoneModel {
 	@DatabaseField(generatedId = true)
 	private int milestoneID;
-    @DatabaseField(uniqueCombo = true, columnName = "uuid")
-    private UUID UUID;
+    @DatabaseField(uniqueCombo = true, columnName = "player_uuid")
+    private UUID playerUUID;
     @DatabaseField(uniqueCombo = true)
     private String type;
     @DatabaseField(canBeNull = false)
@@ -27,8 +27,8 @@ public class MilestoneModel {
         // required for ORMLite
     }
 
-    public MilestoneModel(UUID uuid, MilestoneType type, int step, int progress) {
-        this.UUID = uuid;
+    public MilestoneModel(UUID playerUUID, MilestoneType type, int step, int progress) {
+        this.playerUUID = playerUUID;
         this.type = type.name();
         this.step = step;
 		this.progress = progress;

@@ -40,11 +40,9 @@ public class OldAxeQuest extends MilestoneQuest implements Listener {
 		
 		DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(item);
 		if (dreamItem == null) return;
-		if (dreamItem instanceof OldCreakingAxe) {
-			if (e.getWhoClicked() instanceof Player player) {
-				if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
-				this.incrementProgressInDream(player.getUniqueId());
-			}
+		if (dreamItem instanceof OldCreakingAxe && e.getWhoClicked() instanceof Player player) {
+			if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+			this.incrementProgressInDream(player.getUniqueId());
 		}
 	}
 }

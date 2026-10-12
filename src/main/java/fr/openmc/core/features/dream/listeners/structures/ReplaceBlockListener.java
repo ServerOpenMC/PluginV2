@@ -91,6 +91,7 @@ public class ReplaceBlockListener implements Listener {
                         case COAL_BLOCK -> StrayCloudSpawner.replaceBlockWithMobCloudSpawner(block);
                         case LAPIS_BLOCK -> PhantomCloudSpawner.replaceBlockWithMobCloudSpawner(block);
                         case DIAMOND_BLOCK -> CloudVault.replaceBlockWithVault(block);
+                        default -> {}
                     }
                 }
             });

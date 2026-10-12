@@ -40,7 +40,7 @@ public class PlayerFinishJoiningListener implements Listener, NotLoadInUnitTest 
                 player.getWorld().playSound(player.getLocation(), "omc_sounds:ambient.join_rift", 1.0f, 1.0f);
                 try {
                     CustomPlayer.playEmote(player, Animation.JOIN_RIFT.getNameAnimation());
-                } catch (Exception e) {
+                } catch (Exception _) {
                     playingAnimations.remove(player);
                     EmoteListener.sendCamera(player, player);
                     player.setInvulnerable(false);

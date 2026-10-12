@@ -13,6 +13,7 @@ import org.bukkit.OfflinePlayer;
  * pour kick une personne (utile pour faire une modif sur menu et commandes).
  */
 public class CityKickCondition {
+    private CityKickCondition() {}
 
     /**
      * Retourne un booleen pour dire si le joueur peut etre kick

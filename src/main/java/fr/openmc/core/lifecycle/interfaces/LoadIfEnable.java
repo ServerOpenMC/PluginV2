@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
  * Le hook est determine par le parametre generique de l'interface.
  */
 public interface LoadIfEnable <T extends Hooks> {
+    // todo; reimpl l'interface dans les listeners ?
+
     /**
      * Indique si la feature doit etre chargee selon l'etat du hook cible.
      *

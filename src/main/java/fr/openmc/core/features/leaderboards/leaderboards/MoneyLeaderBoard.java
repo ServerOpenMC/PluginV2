@@ -6,7 +6,6 @@ import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -59,7 +58,7 @@ public class MoneyLeaderBoard extends LeaderBoard {
                     .append(TranslationManager.translation(
                             "feature.leaderboards.line.money",
                             rank,
-                            CachePlayerName.name(balance.getKey()).color(NamedTextColor.LIGHT_PURPLE),
+                            player.getNameWithHead().color(NamedTextColor.LIGHT_PURPLE),
                             Component.text(EconomyUtils.getFormattedSimplifiedNumber(balance.getValue())
                                             + " " + economyManager.getEconomyIcon())
                                     .color(NamedTextColor.WHITE)

@@ -8,10 +8,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class SingularityManager extends Feature implements HasDatabase {
-    public final HashMap<UUID, SingularityContents> singularityContents = new HashMap<>();
+    public final Map<UUID, SingularityContents> singularityContents = new HashMap<>();
     private final DBTable<SingularityContents, String> singularityContentsTable = DBTable.of(SingularityContents.class);
 
     @Override

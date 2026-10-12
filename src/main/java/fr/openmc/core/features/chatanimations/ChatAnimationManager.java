@@ -39,7 +39,7 @@ public class ChatAnimationManager extends Feature implements HasListeners, HasRe
     private static final long MIN_DELAY_TICKS = 20 * 60 * 20L; // 20 min
     private static final long MAX_DELAY_TICKS = 20 * 60 * 30L; // 30 min
 
-    private Set<ChatAnimation> ANIMATIONS;
+    private Set<ChatAnimation> animations;
 
     @Getter
     private ChatAnimation currentAnimation;
@@ -55,7 +55,7 @@ public class ChatAnimationManager extends Feature implements HasListeners, HasRe
 
     @Override
     public void onEnable() {
-        ANIMATIONS = new HashSet<>(Set.of(
+        animations = new HashSet<>(Set.of(
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.DIAMOND_ORE), 2, 60L),
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.SCULK), 15, 60L),
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.BEEHIVE), 1, 60L),
@@ -158,7 +158,7 @@ public class ChatAnimationManager extends Feature implements HasListeners, HasRe
     public void startNext() {
         if (isAnimationRunning()) return;
 
-        List<ChatAnimation> pool = ANIMATIONS.stream()
+        List<ChatAnimation> pool = animations.stream()
                 .filter(a -> !a.equals(lastAnimation))
                 .toList();
         if (pool.isEmpty()) return;

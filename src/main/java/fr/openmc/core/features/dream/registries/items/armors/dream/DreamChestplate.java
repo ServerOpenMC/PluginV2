@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class DreamChestplate extends DreamItem implements DreamEquipableItem, EquipableItem {
     public DreamChestplate() {
@@ -40,8 +41,6 @@ public class DreamChestplate extends DreamItem implements DreamEquipableItem, Eq
 
     @Override
     public HashMap<PotionEffectType, Integer> getEffects() {
-        return new HashMap<>(){{
-            put(PotionEffectType.HASTE, 0);
-        }};
+        return new HashMap<>(Map.of(PotionEffectType.HASTE, 0));
     }
 }

@@ -45,8 +45,8 @@ public class CloudVault implements Listener {
 
         List<ItemLoot> itemLoots = CLOUD_VAULT_LOOT_TABLE.rollLootsWithAmount(player, 3).loots()
                 .stream()
-                .filter(loot -> loot instanceof ItemLoot)
-                .map(item -> (ItemLoot) item).toList();
+                .filter(ItemLoot.class::isInstance)
+                .map(ItemLoot.class::cast).toList();
 
         List<ItemStack> itemStacks = itemLoots.stream()
                 .map(ItemLoot::getItemLootWithAmount)

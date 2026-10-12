@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorldTemplateConfig {
+    private WorldTemplateConfig() {}
+
     private static File worldTemplateFile;
     private static FileConfiguration worldTemplateConfig;
 

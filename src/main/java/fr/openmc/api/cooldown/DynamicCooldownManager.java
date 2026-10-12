@@ -67,8 +67,8 @@ public class DynamicCooldownManager extends Feature implements HasDatabase, HasC
     public void saveCooldowns() {
         OMCLogger.info("Saving cooldowns...");
 
-        cooldowns.forEach((uuid, groupCooldowns) -> {
-            groupCooldowns.forEach((group, cooldown) -> {
+        cooldowns.forEach((_, groupCooldowns) -> {
+            groupCooldowns.forEach((_, cooldown) -> {
                 if (!cooldown.isReady()) {
                     try {
                         cooldownTable.createOrUpdate(cooldown);

@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.protections.listeners;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.protections.ProtectionsManager;
 import org.bukkit.entity.Entity;
@@ -17,13 +16,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import java.util.List;
 
 public class ExplodeProtection implements Listener {
-    private final CityManager cityManager;
-    private final ProtectionsManager protectionsManager;
-
-    public ExplodeProtection(CityManager cityManager) {
-        this.cityManager = cityManager;
-        this.protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
-    }
+    private final ProtectionsManager protectionsManager = OMCRegistry.CITY_FEATURES.PROTECTIONS;
 
     private static final List<EntityType> NATURAL_EXPLOSIVE_ENTITIES = List.of(
             EntityType.CREEPER,

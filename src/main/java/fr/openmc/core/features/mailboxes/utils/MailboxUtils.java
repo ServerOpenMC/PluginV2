@@ -14,6 +14,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 public class MailboxUtils {
+    private MailboxUtils() {}
+
     public static Component getPlayerName(OMCOfflinePlayer player) {
         Component displayName = player.getNameWithHead() == null
                 ? TranslationManager.translation("feature.mailboxes.player.unknown")

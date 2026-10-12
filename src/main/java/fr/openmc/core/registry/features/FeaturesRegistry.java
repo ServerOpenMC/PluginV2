@@ -1,6 +1,5 @@
 package fr.openmc.core.registry.features;
 
-import com.google.common.base.Supplier;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -57,6 +56,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class FeaturesRegistry extends Registry<String, Feature>
         implements KeyedRegistry<String, Feature> {

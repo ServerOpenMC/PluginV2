@@ -194,15 +194,15 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
 
         if (!MascotUtils.canBeAMascot(mob)) return;
 
-        MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + level);
+        MascotsLevels mascotsLevels = MascotsLevels.valueOf("LEVEL_" + level);
         double lastHealth = mascotsLevels.getHealth();
-        if (mascotsLevels == MascotsLevels.level10) return;
+        if (mascotsLevels == MascotsLevels.LEVEL_10) return;
 
         mascot.setLevel(level + 1);
 
         level = mascot.getLevel();
 
-        mascotsLevels = MascotsLevels.valueOf("level" + level);
+        mascotsLevels = MascotsLevels.valueOf("LEVEL_" + level);
 
         double maxHealth = mascotsLevels.getHealth();
         mob.getAttribute(Attribute.MAX_HEALTH).setBaseValue(maxHealth);

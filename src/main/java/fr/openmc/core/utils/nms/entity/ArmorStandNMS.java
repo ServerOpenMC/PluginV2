@@ -7,6 +7,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 
 public class ArmorStandNMS {
+    private ArmorStandNMS() {}
 
     public static ArmorStand createFakeStand(Player playerOf, int entityId, Location loc) {
         ServerLevel level = ((CraftWorld) playerOf.getWorld()).getHandle();

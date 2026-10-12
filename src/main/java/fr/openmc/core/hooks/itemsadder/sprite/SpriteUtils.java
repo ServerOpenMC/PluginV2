@@ -12,6 +12,8 @@ import net.kyori.adventure.text.object.ObjectContents;
 import java.util.Set;
 
 public class SpriteUtils {
+    private SpriteUtils() {}
+
     public static ObjectComponent getSprite(CustomItem item) {
         ItemEntry itemEntry = item.getItemEntry();
 

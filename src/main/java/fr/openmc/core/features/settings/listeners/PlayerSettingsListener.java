@@ -10,10 +10,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.UUID;
 
 public class PlayerSettingsListener implements Listener {
-    private final PlayerSettingsManager PLAYER_SETTINGS = OMCRegistry.FEATURES.PLAYER_SETTINGS.get();
+    private static final PlayerSettingsManager PLAYER_SETTINGS = OMCRegistry.FEATURES.PLAYER_SETTINGS.get();
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-
         PLAYER_SETTINGS.loadPlayerSettings(event.getPlayer().getUniqueId());
     }
 

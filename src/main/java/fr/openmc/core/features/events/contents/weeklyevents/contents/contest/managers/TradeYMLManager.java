@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
  */
 public class TradeYMLManager extends Feature {
     private final ContestManager contestManager = OMCRegistry.WEEKLY_EVENTS.CONTEST.feature();
+
+    private final Random random = ThreadLocalRandom.current();
 
     @Getter
     private File contestFile;
@@ -76,7 +79,7 @@ public class TradeYMLManager extends Feature {
                 .collect(Collectors.toList());
 
         Collections.shuffle(filteredTrades);
-        return filteredTrades.stream().limit(12).collect(Collectors.toList());
+        return filteredTrades.stream().limit(12).toList();
     }
 
     /**
@@ -107,7 +110,7 @@ public class TradeYMLManager extends Feature {
      * @return une liste de chaînes contenant les ressources (ex : NETHERITE_BLOCK).
      */
     public List<String> getRessListFromConfig() {
-        FileConfiguration config = OMCPlugin.getInstance().getConfig();
+        FileConfiguration config = OMCPlugin.getInstance().getConfigs();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
         List<String> ressList = new ArrayList<>();
 
@@ -137,8 +140,8 @@ public class TradeYMLManager extends Feature {
                 Object selectedObj = fusionContestList.get("selected");
                 int selected = 0;
 
-                if (selectedObj instanceof Integer) {
-                    selected = (Integer) selectedObj;
+                if (selectedObj instanceof Integer integer) {
+                    selected = integer;
                 } else if (selectedObj instanceof String s && s.matches("\\d+")) {
                     selected = Integer.parseInt(s);
                 } else {
@@ -193,7 +196,6 @@ public class TradeYMLManager extends Feature {
                 .filter(c -> (int) c.get("selected") == minSelected)
                 .toList();
 
-        Random random = new Random();
         Map<String, Object> selectedContest = leastSelectedContests.get(random.nextInt(leastSelectedContests.size()));
 
         contestManager.setData(new ContestData(

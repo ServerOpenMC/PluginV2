@@ -33,7 +33,7 @@ public class AsyncChatListener implements Listener {
         final Player player = event.getPlayer();
 
         String message = PlainTextComponentSerializer.plainText().serialize(event.message());
-        String rawMessage = plugin.getConfig().getString("chat.message", "{prefix}{name}§7: {message}")
+        String rawMessage = plugin.getConfigs().getString("chat.message", "{prefix}{name}§7: {message}")
                 .replace("{prefix}", luckPermsHook.getFormattedPAPIPrefix(player))
                 .replace("{suffix}", luckPermsHook.getSuffix(player))
                 .replace("{name}", player.getName())

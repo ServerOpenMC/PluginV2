@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class CachePlaytime {
+    private CachePlaytime() {}
 
     private static final TtlCache<UUID, Long> cache = new TtlCache<>(5, TimeUnit.MINUTES);
 

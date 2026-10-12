@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CityCreateAction {
+    private CityCreateAction() {}
+
     private static final CityManager CITY_MANAGER = OMCRegistry.FEATURES.CITY.get();
     private static final MayorManager MAYOR_MANAGER = OMCRegistry.CITY_FEATURES.MAYOR;
     private static final MascotsManager MASCOTS_MANAGER = OMCRegistry.CITY_FEATURES.MASCOTS;

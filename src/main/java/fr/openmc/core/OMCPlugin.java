@@ -26,9 +26,9 @@ import java.util.Collection;
  */
 public class OMCPlugin extends JavaPlugin {
     @Getter
-    static OMCPlugin instance;
+    public static OMCPlugin instance;
     @Getter
-    static FileConfiguration configs;
+    public static FileConfiguration configs;
 
     public static final String VANISH_META_KEY = "omcstaff.vanished";
 
@@ -46,7 +46,7 @@ public class OMCPlugin extends JavaPlugin {
 
         /* CONFIG */
         saveDefaultConfig();
-        configs = this.getConfig();
+        configs = this.getConfigs();
         OMCLogger.setRuntimeLogger(this.getSLF4JLogger());
         DatabaseManager.init();
 
@@ -120,9 +120,8 @@ public class OMCPlugin extends JavaPlugin {
         }
 
         // If the plugin crashes, shutdown the server
-        if (!isUnitTestVersion())
-            if (!Bukkit.isStopping())
-                Bukkit.shutdown();
+        if (!isUnitTestVersion() && !Bukkit.isStopping())
+            Bukkit.shutdown();
     }
 
     /**

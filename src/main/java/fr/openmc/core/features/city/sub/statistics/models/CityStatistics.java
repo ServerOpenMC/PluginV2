@@ -37,15 +37,15 @@ public class CityStatistics {
     }
 
     public int asInt() {
-        return value instanceof Number ? ((Number) value).intValue() : 0;
+        return value instanceof Number n ? n.intValue() : 0;
     }
 
     public long asLong() {
-        return value instanceof Number ? ((Number) value).longValue() : 0L;
+        return value instanceof Number n ? n.longValue() : 0L;
     }
 
     public double asDouble() {
-        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
+        return value instanceof Number n ? n.doubleValue() : 0.0;
     }
 
     public String asString() {

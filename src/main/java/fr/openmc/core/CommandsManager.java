@@ -27,8 +27,9 @@ import revxrsal.commands.bukkit.actor.BukkitCommandActor;
  * Initialise Lamp et ajoute l'ensemble des commandes exposees.
  */
 public class CommandsManager {
+    private CommandsManager() {}
     @Getter
-    static Lamp handler;
+    static Lamp<BukkitCommandActor> handler;
 
     /**
      * Initialise le handler de commandes et enregistre les commandes.

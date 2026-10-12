@@ -64,7 +64,7 @@ public class AdminDreamCommands {
         MilestoneQuest quest;
         try {
             quest = DreamSteps.valueOf(stepName).getQuest();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException _) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.dream.admin.commands.showdialog.invalid_step"), Prefix.DREAM, MessageType.ERROR, false);
             return;
         }

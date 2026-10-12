@@ -62,9 +62,9 @@ public class DBCorpse {
 
     public void setLocation(Location location) {
         world = location.getWorld().getName();
-        x = (double) Math.round(location.getX() * 10d) / 10d;
-        y = (double) Math.round(location.getY() * 10d) / 10d;
-        z = (double) Math.round(location.getZ() * 10d) / 10d;
+        x = Math.round(location.getX() * 10d) / 10d;
+        y = Math.round(location.getY() * 10d) / 10d;
+        z = Math.round(location.getZ() * 10d) / 10d;
         yaw = location.getYaw();
         pitch = location.getPitch();
     }

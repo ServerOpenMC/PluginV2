@@ -203,10 +203,10 @@ public class BankManager extends Feature implements HasDatabase, HasCommands {
         double interest = .01; // base interest is 1%
 
         City city = City.ofPlayer(playerUUID);
-        if (city != null && city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
-            if (PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
-                interest += .02; // interest is +2% when perk Business Man enabled
-            }
+        if (city != null
+                && city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)
+                && PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
+            interest += .02; // interest is +2% when perk Business Man enabled
         }
 
         return interest;
@@ -225,15 +225,15 @@ public class BankManager extends Feature implements HasDatabase, HasCommands {
         deposit(playerUUID, allowedAmount);
 
         OMCOfflinePlayer sender = OMCOfflinePlayer.of(playerUUID);
-        if (sender != null)
-            sender.message().send(
-                    TranslationManager.translation(
-                            "feature.economy.bank.interest.received",
-                            Component.text(interest * 100 + "%").color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(EconomyUtils.getFormattedSimplifiedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(economyManager.getEconomyIcon())
-                    ),
-                    Prefix.CITY, MessageType.SUCCESS, false);
+
+        sender.message().send(
+                TranslationManager.translation(
+                        "feature.economy.bank.interest.received",
+                        Component.text(interest * 100 + "%").color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(economyManager.getEconomyIcon())
+                ),
+                Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT

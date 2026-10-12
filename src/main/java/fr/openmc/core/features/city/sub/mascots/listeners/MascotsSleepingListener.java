@@ -27,10 +27,11 @@ public class MascotsSleepingListener implements Listener {
         double radiusY = 5.0;
         double radiusZ = 8.0;
 
-        Collection<Entity> nearby = player.getWorld().getNearbyEntities(bedLocation, radiusX, radiusY, radiusZ, e -> e instanceof Monster);
+        Collection<Entity> nearby = player.getWorld().getNearbyEntities(bedLocation,
+                radiusX, radiusY, radiusZ, Monster.class::isInstance);
 
         boolean realThreat = nearby.stream()
-                .filter(entity -> entity instanceof LivingEntity)
+                .filter(LivingEntity.class::isInstance)
                 .anyMatch(entity -> !MascotUtils.canBeAMascot(entity));
 
         if (!realThreat) {

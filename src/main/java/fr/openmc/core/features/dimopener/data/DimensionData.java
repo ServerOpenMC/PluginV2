@@ -22,8 +22,7 @@ public class DimensionData {
 
     private List<StepDimensionData> steps;
 
-    public DimensionData() {
-    }
+    public DimensionData() {}
 
     public List<StepDimensionData> getDimensionsStep() {
         return steps == null ? List.of() : List.copyOf(steps);

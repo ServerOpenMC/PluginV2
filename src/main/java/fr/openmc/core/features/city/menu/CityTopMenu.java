@@ -312,9 +312,9 @@ public class CityTopMenu extends PaginatedMenu {
      */
     private double getGlobalScore(City city) {
         double moneyScore = city.getBalance() / 4000.0;
-        double claimScore = city.getChunks().size() * 6;
-        double populationScore = city.getMembers().size() * 5;
-        double powerScore = city.getPowerPoints() * 10;
+        double claimScore = city.getChunks().size() * 6d;
+        double populationScore = city.getMembers().size() * 5d;
+        double powerScore = city.getPowerPoints() * 10d;
 
         return moneyScore + claimScore + populationScore + powerScore;
     }

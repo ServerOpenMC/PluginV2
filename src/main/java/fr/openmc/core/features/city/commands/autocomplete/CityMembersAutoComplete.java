@@ -12,7 +12,6 @@ import revxrsal.commands.node.ExecutionContext;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class CityMembersAutoComplete implements SuggestionProvider<BukkitCommandActor> {
     private final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
@@ -28,6 +27,6 @@ public class CityMembersAutoComplete implements SuggestionProvider<BukkitCommand
         return playerCity.keySet().stream()
                 .filter(uuid -> playerCity.get(uuid).getUniqueId().equals(playerCityUUID))
                 .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
-                .collect(Collectors.toList());
+                .toList();
     }
 }

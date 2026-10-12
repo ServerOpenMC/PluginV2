@@ -27,10 +27,9 @@ public class FreezeListener implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		if (freezeManager.FROZEN_PLAYERS.contains(player)) {
-			if (event.getReason() != PlayerQuitEvent.QuitReason.DISCONNECTED) {
-				freezeManager.contactFreezer(event.getReason());
-			}
+		if (freezeManager.frozenPlayers.contains(player)
+				&& event.getReason() != PlayerQuitEvent.QuitReason.DISCONNECTED) {
+			freezeManager.contactFreezer(event.getReason());
 		}
 	}
 	
@@ -42,7 +41,7 @@ public class FreezeListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		if (freezeManager.FROZEN_PLAYERS.contains(player)) {
+		if (freezeManager.frozenPlayers.contains(player)) {
 			player.setInvulnerable(true);
 			player.showTitle(Title.title(TranslationManager.translation("command.admin.freeze.title"),
 					TranslationManager.translation("command.admin.freeze.subtitle")));
@@ -57,7 +56,7 @@ public class FreezeListener implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
-		if (freezeManager.FROZEN_PLAYERS.contains(event.getPlayer())) {
+		if (freezeManager.frozenPlayers.contains(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}
@@ -70,7 +69,7 @@ public class FreezeListener implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof Player player && freezeManager.FROZEN_PLAYERS.contains(player)) {
+		if (entity instanceof Player player && freezeManager.frozenPlayers.contains(player)) {
 			event.setCancelled(true);
 		}
 	}
@@ -82,7 +81,7 @@ public class FreezeListener implements Listener {
 	 */
 	@EventHandler
 	public void onTeleport(PlayerTeleportEvent event) {
-		if (freezeManager.FROZEN_PLAYERS.contains(event.getPlayer())) {
+		if (freezeManager.frozenPlayers.contains(event.getPlayer())) {
 			event.setCancelled(true);
 		}
 	}

@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.sub.rank;
 
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
@@ -25,7 +24,7 @@ public class CityRankManager extends Feature implements HasDatabase, HasCommands
 	@Override
 	public Set<Object> getCommands() {
 		return Set.of(
-				new CityRankCommands(OMCRegistry.FEATURES.CITY.get())
+				new CityRankCommands()
 		);
 	}
 

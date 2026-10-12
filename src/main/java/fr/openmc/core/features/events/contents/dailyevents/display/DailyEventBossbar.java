@@ -34,7 +34,7 @@ public class DailyEventBossbar extends BaseBossbar {
     @Override
     protected void update(Player player, BossBar bar) {
         DailyEvent event = dailyEventsManager.getActiveDailyEvent();
-        if (!(event instanceof HasBossBar hasBossBar)) return;
+        if (!(event instanceof HasBossBar)) return;
 
         bar.name(TranslationManager.translation("feature.dailyevents.bossbar.name",
                 Component.text(

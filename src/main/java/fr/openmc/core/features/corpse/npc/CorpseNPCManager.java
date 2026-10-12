@@ -18,11 +18,12 @@ import org.bukkit.entity.Pose;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class CorpseNPCManager {
-    public final HashMap<UUID, CorpseNPC> corpseNpcMap = new HashMap<>();
-    public final String COOLDOWN_GROUP = "corpse";
+    public final Map<UUID, CorpseNPC> corpseNpcMap = new HashMap<>();
+    public static final String COOLDOWN_GROUP = "corpse";
 
     private final CorpseManager corpseManager;
 
@@ -133,7 +134,7 @@ public class CorpseNPCManager {
         if (owner.cooldown().getCooldowns() != null
                 && owner.cooldown().getCooldowns().containsKey(COOLDOWN_GROUP))
             owner.cooldown().clear(COOLDOWN_GROUP, false);
-        owner.cooldown().use(COOLDOWN_GROUP, 20 * 60 * 60 * 100); // 2h -> 7200000
+        owner.cooldown().use(COOLDOWN_GROUP, 20 * 60 * 60 * 100L); // 2h -> 7200000
 
         return true;
     }

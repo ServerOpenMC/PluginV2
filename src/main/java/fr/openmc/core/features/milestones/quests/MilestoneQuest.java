@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 @Getter
 public class MilestoneQuest extends Quest {
-    protected final static MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
+    protected static final MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
 
     protected final MilestoneType type;
     protected final Enum<? extends MilestoneStep> step;

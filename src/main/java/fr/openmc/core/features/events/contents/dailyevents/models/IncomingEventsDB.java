@@ -11,8 +11,6 @@ import lombok.Setter;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Getter
 @DatabaseTable(tableName = "daily_event_incoming")
 public class IncomingEventsDB {
@@ -41,6 +39,6 @@ public class IncomingEventsDB {
                         .filter(event -> event.getEventId().equals(id))
                         .findFirst()
                         .orElseThrow(() -> new IllegalStateException("Aucun daily event trouvé pour l'id : " + id)))
-                .collect(toList());
+                .toList();
     }
 }

@@ -95,14 +95,14 @@ public class PersonalBankDepositMenu extends Menu {
         inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.deposit.input.name"));
             itemMeta.lore(loreBankDepositInput);
-        }).setOnClick(_ -> {
+        }).setOnClick(_ ->
             player.inputs().sendStringDialogInput(TranslationManager.translation("feature.economy.bank.deposit.input.prompt"), MAX_LENGTH, input -> {
                         if (input == null) return;
 
                         bankManager.deposit(player.getUniqueId(), input);
                     }
-            );
-        }));
+            )
+        ));
 
         inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 

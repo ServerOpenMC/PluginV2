@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MiraculousFishingMenu extends Menu {
-    private final static DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     public MiraculousFishingMenu(Player owner) {
         super(owner);

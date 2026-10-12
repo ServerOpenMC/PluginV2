@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component;
 
 
 public class CityLeaveAction {
+    private CityLeaveAction() {}
 
     public static void startLeave(OMCPlayer player) {
         City city = player.city().getCity();

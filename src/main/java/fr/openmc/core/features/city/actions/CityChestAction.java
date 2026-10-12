@@ -13,6 +13,7 @@ import static fr.openmc.core.features.city.conditions.CityChestConditions.UPGRAD
 import static fr.openmc.core.features.city.conditions.CityChestConditions.UPGRADE_PER_MONEY;
 
 public class CityChestAction {
+    private CityChestAction() {}
 
     public static void upgradeChest(Player player, City city) {
         if (!CityChestConditions.canCityChestUpgrade(city, player)) return;

@@ -18,6 +18,8 @@ import java.util.UUID;
 
 
 public class CityDeleteAction {
+    private CityDeleteAction() {}
+
     private static final CityManager CITY_MANAGER = OMCRegistry.FEATURES.CITY.get();
 
     public static void startDeleteCity(OMCPlayer player) {

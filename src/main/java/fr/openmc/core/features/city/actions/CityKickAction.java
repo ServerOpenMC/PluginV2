@@ -11,6 +11,8 @@ import net.kyori.adventure.text.Component;
 
 
 public class CityKickAction {
+    private CityKickAction() {}
+
     public static void startKick(OMCPlayer sender, OMCOfflinePlayer playerKick) {
         City city = sender.city().getCity();
 

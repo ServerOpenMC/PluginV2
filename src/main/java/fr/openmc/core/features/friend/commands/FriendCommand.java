@@ -5,7 +5,6 @@ import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsAutoComplete;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsRequestAutoComplete;
@@ -32,7 +31,6 @@ import java.util.UUID;
 
 @Command({"friends", "friend", "ami", "f"})
 public class FriendCommand {
-    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
 
     @Subcommand("add")

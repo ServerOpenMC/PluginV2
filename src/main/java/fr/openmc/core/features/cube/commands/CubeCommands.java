@@ -1,6 +1,7 @@
 package fr.openmc.core.features.cube.commands;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.events.CubeDisableBubbleEvent;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
@@ -23,6 +24,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command("cube")
 @CommandPermission("omc.admins.commands.cube")
 public class CubeCommands {
+    private final MultiBlockManager multiBlockManager = OMCRegistry.FEATURES.MULTIBLOCKS.get();
 
     @Subcommand("startShock")
     @CommandPermission("omc.admins.commands.cube.shock")
@@ -149,8 +151,8 @@ public class CubeCommands {
         int y = Integer.parseInt(coords[1]);
         int z = Integer.parseInt(coords[2]);
 
-        MultiBlock mb = MultiBlockManager.getMultiBlocks().stream()
-                .filter(m -> m instanceof Cube)
+        MultiBlock mb = multiBlockManager.getMultiBlocks().stream()
+                .filter(Cube.class::isInstance)
                 .filter(m -> m.origin.getBlockX() == x
                         && m.origin.getBlockY() == y
                         && m.origin.getBlockZ() == z

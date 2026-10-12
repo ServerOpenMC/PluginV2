@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
-	private final static MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
+	private static final MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
 
     public OpenContestMenuQuest() {
         super(

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class YmlUtils {
+    private YmlUtils() {}
+
     public static Map<String, Object> loadYml(Path path) throws IOException {
         try (InputStream in = Files.newInputStream(path)) {
             return new Yaml().load(in);
@@ -45,22 +47,26 @@ public class YmlUtils {
     }
 
     public static Object deepCopyObject(Object value) {
-        if (value instanceof Map<?, ?> map) {
-            Map<String, Object> copy = new HashMap<>();
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                if (entry.getKey() != null) {
-                    copy.put(entry.getKey().toString(), deepCopyObject(entry.getValue()));
+        switch (value) {
+            case Map<?, ?> map -> {
+                Map<String, Object> copy = new HashMap<>();
+                for (Map.Entry<?, ?> entry : map.entrySet()) {
+                    if (entry.getKey() != null) {
+                        copy.put(entry.getKey().toString(), deepCopyObject(entry.getValue()));
+                    }
                 }
+                return copy;
             }
-            return copy;
-        } else if (value instanceof List<?> list) {
-            List<Object> copy = new ArrayList<>();
-            for (Object item : list) {
-                copy.add(deepCopyObject(item));
+            case List<?> list -> {
+                List<Object> copy = new ArrayList<>();
+                for (Object item : list) {
+                    copy.add(deepCopyObject(item));
+                }
+                return copy;
             }
-            return copy;
-        } else {
-            return value;
+            default -> {
+                return value;
+            }
         }
     }
 

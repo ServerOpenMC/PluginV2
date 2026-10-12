@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 
 public class CityMilestoneMenu extends Menu {
 
-    private final static DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private final City city;
 
     public CityMilestoneMenu(Player owner, City city) {

@@ -14,7 +14,7 @@ import java.util.Map;
  * Scan le cache des CustomModelData qui sont assignés par ItemsAdder
  */
 public class CustomModelDataScanner extends AbstractScanner<Map<Material, Map<String, Integer>>, Void> {
-    private final String CACHE_FILE_NAME = "items_ids_cache.yml";
+    private static final String CACHE_FILE_NAME = "items_ids_cache.yml";
 
     public Map<Material, Map<String, Integer>> scan(Void voyd) throws Exception {
         Path cmdPath = ItemsAdderHook.getItemsAdderPath(OMCPlugin.getInstance().getDataPath())

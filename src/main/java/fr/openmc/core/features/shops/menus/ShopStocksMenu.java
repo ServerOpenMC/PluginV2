@@ -73,11 +73,11 @@ public class ShopStocksMenu extends PaginatedMenu {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
         
         map.put(45, ItemMenuTemplate.BTN_CANCEL.apply(this).setBackButton());
-        map.put(48, new ItemMenuBuilder(this, Material.BARREL, itemMeta -> {
+        map.put(48, new ItemMenuBuilder(this, Material.BARREL, itemMeta ->
             itemMeta.displayName(item.isFull() ?
                     TranslationManager.translation("feature.shop.menu.stocks.fill.name.full") :
-                    TranslationManager.translation("feature.shop.menu.stocks.fill.name.not_full", Component.text(barrelStocks).color(NamedTextColor.GREEN)));
-        }).setOnClick(_ -> {
+                    TranslationManager.translation("feature.shop.menu.stocks.fill.name.not_full", Component.text(barrelStocks).color(NamedTextColor.GREEN)))
+        ).setOnClick(_ -> {
             if (barrelStocks == 0) return;
             if (item.isFull()) return;
             

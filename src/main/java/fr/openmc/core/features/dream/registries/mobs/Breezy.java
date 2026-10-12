@@ -60,7 +60,7 @@ public class Breezy extends DreamMob<Breeze> implements Listener {
             if (!breeze.isValid() || breeze.isDead()) return;
 
             breeze.getNearbyEntities(15, 15, 15).stream()
-                    .filter(e -> e instanceof Player)
+                    .filter(Player.class::isInstance)
                     .map(e -> (Player) e)
 		            .filter(p -> p.getGameMode().equals(GameMode.SURVIVAL))
                     .min(Comparator.comparingDouble(p -> p.getLocation().distanceSquared(breeze.getLocation())))
@@ -102,11 +102,11 @@ public class Breezy extends DreamMob<Breeze> implements Listener {
         world.playSound(loc, Sound.ENTITY_BREEZE_WIND_BURST, 1f, 0.8f);
 
         for (Entity e : world.getNearbyEntities(loc, 1.5, 1.5, 1.5)) {
-            if (e instanceof Player p) {
-	            if (MilestoneDialog.isInMilestoneDialog(p)) continue;
-                DreamUtils.removeDreamTime(p, this.getDamageTime(), true);
-                p.setVelocity(p.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(1.2).setY(0.6));
-            }
+            if (!(e instanceof Player p)) continue;
+
+            if (MilestoneDialog.isInMilestoneDialog(p)) continue;
+            DreamUtils.removeDreamTime(p, this.getDamageTime(), true);
+            p.setVelocity(p.getLocation().toVector().subtract(loc.toVector()).normalize().multiply(1.2).setY(0.6));
         }
         charge.remove();
     }

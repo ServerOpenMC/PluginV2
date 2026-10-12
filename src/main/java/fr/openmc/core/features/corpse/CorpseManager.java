@@ -114,8 +114,8 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
 
                 Location loc = player.getLocation();
 
-                if (lastSafeLocation.containsKey(player.getUniqueId()))
-                    if (lastSafeLocation.get(player.getUniqueId()).equals(loc)) continue;
+                if (lastSafeLocation.containsKey(player.getUniqueId())
+                        && lastSafeLocation.get(player.getUniqueId()).equals(loc)) continue;
 
                 Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
 

@@ -31,7 +31,9 @@ import java.util.*;
  */
 @SuppressWarnings("UnstableApiUsage")
 public class TranslationManager {
-    public static Map<String, String> fallbackTranslations = new HashMap<>();
+    private TranslationManager() {}
+
+    protected static Map<String, String> fallbackTranslations = new HashMap<>();
 
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()

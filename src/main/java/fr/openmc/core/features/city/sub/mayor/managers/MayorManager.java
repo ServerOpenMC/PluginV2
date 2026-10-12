@@ -39,6 +39,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MayorManager extends Feature implements HasListeners, HasCommands, HasDatabase {
     private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
@@ -66,7 +67,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     @Getter
     private final Map<UUID, List<MayorVote>> playerVote = new HashMap<>();
 
-    private final Random RANDOM = new Random();
+    private final Random random = ThreadLocalRandom.current();
 
     public MayorManager(CityManager cityManager, FancyNpcsHook fancyNpcsHook) {
         this.cityManager = cityManager;
@@ -121,11 +122,11 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
                 RagePerk::new,
                 MinerPerk::new,
                 MascotFriendlyPerk::new,
-                () -> new DemonFruitPerk(cityManager, this),
+                () -> new DemonFruitPerk(this),
                 CityHunterPerk::new,
                 AyweniterPerk::new,
                 GPSTrackerPerk::new,
-                () -> new SymbiosisPerk(cityManager),
+                () -> new SymbiosisPerk(),
                 ImpotCollection::new,
                 () -> new AgriculturalEssorPerk(this),
                 () -> new MineralRushPerk(this),
@@ -589,7 +590,8 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
      * @param color      The color of the mayor
      * @param type       The type of the election
      */
-    public void createMayor(String playerName, UUID playerUUID, City city, Perks perk1, Perks perk2, Perks perk3,
+    public void createMayor(String playerName, UUID playerUUID, City city,
+                            Perks perk1, Perks perk2, Perks perk3,
                             NamedTextColor color, ElectionType type) {
         Mayor mayor = cityMayor.get(city.getUniqueId());
         int idPerk1 = perk1 != null ? perk1.getId() : 0;
@@ -614,7 +616,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
      * Get random mayor color from the list.
      */
     public NamedTextColor getRandomMayorColor() {
-        return LIST_MAYOR_COLOR.get(RANDOM.nextInt(LIST_MAYOR_COLOR.size()));
+        return LIST_MAYOR_COLOR.get(random.nextInt(LIST_MAYOR_COLOR.size()));
     }
 
     /**

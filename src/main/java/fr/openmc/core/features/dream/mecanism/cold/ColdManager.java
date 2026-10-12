@@ -112,7 +112,7 @@ public class ColdManager extends Feature implements HasListeners {
                 applyMiningSpeedModifier(player, -0.9);
                 player.damage(0.25, DamageSource.builder(DamageType.FREEZE).build());
             }
-            case 5 -> player.setHealth(0);
+            default -> player.setHealth(0);
         }
 
         if (level > 0) {

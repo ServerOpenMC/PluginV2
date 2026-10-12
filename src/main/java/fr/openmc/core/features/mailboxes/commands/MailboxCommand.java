@@ -90,25 +90,24 @@ public class MailboxCommand {
     @Description("Refuser une lettre")
     public void refuseMailbox(OMCPlayer player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
         Letter letter = mailboxManager.getById(player, id);
-        if (letter != null && !letter.isRefused()) {
-            if (letter.refuse()) {
-                player.message().send(
-                        TranslationManager.translation(
-                                "feature.mailboxes.message.refuse_success",
-                                Component.text(id).color(NamedTextColor.GREEN)
-                        ).color(NamedTextColor.DARK_GREEN),
-                        Prefix.MAILBOX,
-                        MessageType.SUCCESS,
-                        true
-                );
-                return;
-            }
+        if (letter != null && !letter.isRefused() && letter.refuse()) {
+            player.message().send(
+                    TranslationManager.translation(
+                            "feature.mailboxes.message.refuse_success",
+                            Component.text(id).color(NamedTextColor.GREEN)
+                    ).color(NamedTextColor.DARK_GREEN),
+                    Prefix.MAILBOX,
+                    MessageType.SUCCESS,
+                    true
+            );
+            return;
         }
 
         Component message = TranslationManager.translation(
                 "feature.mailboxes.message.letter_not_found",
                 Component.text(id).color(NamedTextColor.RED)
         ).color(NamedTextColor.DARK_RED);
+
         player.message().send(
                 message,
                 Prefix.MAILBOX,

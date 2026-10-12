@@ -12,7 +12,6 @@ import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
 import org.bukkit.Sound;
@@ -38,7 +37,7 @@ public class CorpseListener implements Listener {
         this.corpseNPCManager = corpseManager.corpseNPCManager;
     }
 
-    private final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;
+    private static final Sound equipSound = Sound.ITEM_ARMOR_EQUIP_CHAIN;
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -62,8 +61,8 @@ public class CorpseListener implements Listener {
 
         boolean killByPlayer = false;
 
-        if (player.city().hasCity())
-            if (player.city().getCity().isInWar()) return;
+        if (player.city().hasCity()
+                && player.city().getCity().isInWar()) return;
 
         EntityDamageEvent.DamageCause cause = null;
 
@@ -74,11 +73,10 @@ public class CorpseListener implements Listener {
             killByPlayer = true;
 
         if (!player.corpse().hasCorpseDB()
-                && !corpseNPCManager.hasNPC(player.getUniqueId())) {
-            if (player.corpse().createCorpse(killByPlayer, cause)) {
-                event.setDroppedExp(0);
-                event.getDrops().clear();
-            }
+                && !corpseNPCManager.hasNPC(player.getUniqueId())
+                && player.corpse().createCorpse(killByPlayer, cause)) {
+            event.setDroppedExp(0);
+            event.getDrops().clear();
         }
     }
 
@@ -119,7 +117,7 @@ public class CorpseListener implements Listener {
                 OMCOfflinePlayer offlineOwner = OMCOfflinePlayer.of(ownerUUID);
 
                 offlinePlayer.message().sendInfo(TranslationManager.translation("feature.corpse.messages.strip",
-                                            Component.text(offlineOwner != null ? offlineOwner.getName() : "Unknow Player"))
+                                            offlineOwner.getNameWithHead())
                                     .color(TextColor.color(Color.YELLOW.asRGB())),
                             Prefix.CORPSE, true);
 

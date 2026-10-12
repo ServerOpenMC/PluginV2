@@ -8,6 +8,8 @@ import org.bukkit.Bukkit;
 import java.util.UUID;
 
 public class CachePlayerProfile {
+    private CachePlayerProfile() {}
+
     private static final Object2ObjectMap<UUID, PlayerProfile> playerProfileCache = new Object2ObjectOpenHashMap<>();
 
     /**

@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
  * autour d'un rank (utile pour faire une modif sur menu et commandes).
  */
 public class CityRankCondition {
+    private CityRankCondition() {}
 
     /**
      * Retourne un booleen pour dire si un rank peut etre créer

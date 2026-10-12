@@ -37,7 +37,7 @@ import static fr.openmc.core.features.events.contents.dailyevents.contents.blood
 @SuppressWarnings("UnstableApiUsage")
 @Getter
 public class VampireBoss extends CustomMob<Mannequin> implements MobBossbarImpl, Listener {
-    private final static VampireBossLootManager VAMPIRE_BOSS_LOOT = new VampireBossLootManager();
+    private static final VampireBossLootManager VAMPIRE_BOSS_LOOT = new VampireBossLootManager();
     private final Random random = ThreadLocalRandom.current();
     private final List<MobAttack> attacks;
     private Mannequin mannequin;

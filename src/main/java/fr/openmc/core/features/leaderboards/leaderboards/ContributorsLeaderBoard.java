@@ -20,7 +20,7 @@ public class ContributorsLeaderBoard extends LeaderBoard {
 
     @Override
     public double getUpdateDelay() {
-        return 45 * 60;
+        return 45 * 60d;
     }
 
     @Override

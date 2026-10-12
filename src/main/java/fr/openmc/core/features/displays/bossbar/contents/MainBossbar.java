@@ -18,7 +18,7 @@ public class MainBossbar extends BaseBossbar {
         this.helpConfigManager = OMCRegistry.FEATURES.HELP_CONFIG.get();
     }
 
-    private static int indexMessage = 0;
+    private int indexMessage = 0;
 
     /**
      * @return L'identifiant unique de cette boss bar

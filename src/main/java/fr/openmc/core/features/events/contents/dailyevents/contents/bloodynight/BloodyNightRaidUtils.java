@@ -12,7 +12,8 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BloodyNightRaidManager {
+public class BloodyNightRaidUtils {
+    private BloodyNightRaidUtils() {}
 
     private static final int MIN_MOBS_PER_RAID = 7;
     private static final int MAX_MOBS_PER_RAID = 14;
@@ -32,9 +33,12 @@ public class BloodyNightRaidManager {
 
     public static void startRaid(World world) {
         for (Player player : world.getPlayers()) {
-            if (player.getGameMode() == GameMode.SPECTATOR ||
-                    player.getGameMode() == GameMode.CREATIVE) continue;
-            if (player.isDead()) continue;
+            GameMode gameMode = player.getGameMode();
+            if (gameMode == GameMode.SPECTATOR
+                    || gameMode == GameMode.CREATIVE
+                    || player.isDead()) {
+                continue;
+            }
 
             spawnRaidAroundPlayer(player);
         }

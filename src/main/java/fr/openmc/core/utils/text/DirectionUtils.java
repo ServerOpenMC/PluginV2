@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class DirectionUtils {
+    private DirectionUtils() {}
+
     /**
      * Retourne une flèche directionnelle (↑, ↗, →, etc.) indiquant la direction de point1 à point2.
      *

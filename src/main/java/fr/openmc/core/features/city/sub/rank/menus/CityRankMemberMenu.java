@@ -87,11 +87,13 @@ public class CityRankMemberMenu extends PaginatedMenu {
 					return;
 				}
 				
-				if (city.getRankOfMember(player.getUniqueId()) != null) {
-					if (!CityRankCondition.canModifyRankPermissions(city, getOwner(), city.getRankOfMember(player.getUniqueId()).getPriority())) {
-						return;
-					}
-				}
+				if (city.getRankOfMember(player.getUniqueId()) != null
+						&& !CityRankCondition.canModifyRankPermissions(
+								city,
+								getOwner(),
+								city.getRankOfMember(player.getUniqueId()).getPriority())
+				) return;
+
 
 				new CityRankAssignMenu(getOwner(), uuid, city).open();
 			}));

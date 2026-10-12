@@ -11,6 +11,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
  * pour quitter une ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityLeaveCondition {
+    private CityLeaveCondition() {}
 
     /**
      * Retourne un booleen pour dire si le joueur peut quitter

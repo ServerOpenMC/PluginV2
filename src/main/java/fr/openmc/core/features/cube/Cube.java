@@ -32,6 +32,9 @@ public class Cube extends MultiBlock {
     public BossBar cubeBossBar;
     public boolean showBossBar;
 
+    public final int radiusBubble = this.radius * 4;
+    private final Random random = ThreadLocalRandom.current();
+
     public Cube(Location origin, int size, Material material, boolean showBossBar) {
         super(origin, size, material);
         this.showBossBar = showBossBar;
@@ -207,8 +210,6 @@ public class Cube extends MultiBlock {
         }
     }
 
-    public final int RADIUS_BUBBLE = this.radius * 4;
-
     public void startCorruptedBubble() {
         startBubbleParticles();
 
@@ -216,7 +217,7 @@ public class Cube extends MultiBlock {
 
         int intervalCorruption = 20 * 15;
         int totalTicks = 20 * 1300;
-        corruptedBubbleTask = new CorruptedBubbleTask(this, RADIUS_BUBBLE, intervalCorruption, totalTicks)
+        corruptedBubbleTask = new CorruptedBubbleTask(this, radiusBubble, intervalCorruption, totalTicks)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, intervalCorruption);
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
@@ -226,7 +227,7 @@ public class Cube extends MultiBlock {
     public void startBubbleParticles() {
         World world = this.origin.getWorld();
         Location center = this.getCenter();
-        double radius = RADIUS_BUBBLE;
+        double radius = radiusBubble;
 
         if (particuleBubbleTask != null) particuleBubbleTask.cancel();
 
@@ -333,7 +334,7 @@ public class Cube extends MultiBlock {
                     playSoundArrondCube("omc_sounds:cube_idle2");
                 }
             }
-        }.runTaskTimer(OMCPlugin.getInstance(), new Random().nextLong(20L, 20L * 60), 20L * 60);
+        }.runTaskTimer(OMCPlugin.getInstance(), random.nextLong(20L, 20L * 60), 20L * 60);
     }
 
     private void playSoundArrondCube(String soundName) {

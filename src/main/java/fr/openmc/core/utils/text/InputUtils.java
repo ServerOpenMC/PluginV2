@@ -30,7 +30,7 @@ public class InputUtils {
         try {
             double value = Double.parseDouble(numericPart);
             return value > 0;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             return false;
         }
     }
@@ -63,7 +63,7 @@ public class InputUtils {
 
             return value;
 
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             return -1;
         }
     }

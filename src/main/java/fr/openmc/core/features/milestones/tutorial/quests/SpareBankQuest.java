@@ -53,7 +53,7 @@ public class SpareBankQuest extends MilestoneQuest implements Listener {
 
     @EventHandler
     public void onDepositBank(BankDepositEvent event) {
-        Player player = Bukkit.getPlayer(event.getUUID());
+        Player player = Bukkit.getPlayer(event.getPlayerUUID());
 
         if (player == null || !player.isOnline()) return;
 

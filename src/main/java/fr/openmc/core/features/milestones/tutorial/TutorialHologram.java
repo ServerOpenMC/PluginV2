@@ -1,7 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.features.displays.holograms.Hologram;
-import fr.openmc.core.utils.text.fonts.CustomFonts;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,7 +11,7 @@ public class TutorialHologram extends Hologram {
     public TutorialHologram() {
         super("tutorial");
 
-        String icon = CustomFonts.getBest("omc_icons:openmc", "");
+        String icon = "§r" + new FontImageWrapper("omc_icons:openmc").getString();
         this.setLines(
                 TranslationManager.translation(
                         "feature.milestones.tutorial.hologram.icon",

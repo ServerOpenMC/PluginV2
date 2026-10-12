@@ -20,6 +20,8 @@ import org.bukkit.entity.Player;
  * pour tout ce qui est autour du coffre de ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityChestConditions {
+    private CityChestConditions() {}
+
     private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
 
     public static final int UPGRADE_PER_MONEY = 5000;

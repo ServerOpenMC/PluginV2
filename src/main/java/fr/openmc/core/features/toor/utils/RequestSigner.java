@@ -13,6 +13,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 public class RequestSigner {
+    private RequestSigner() {}
 
     private static PrivateKey PRIVATE_KEY;
 
@@ -27,7 +28,7 @@ public class RequestSigner {
             byte[] keyBytes = Base64.getDecoder().decode(cleaned);
             KeyFactory kf = KeyFactory.getInstance("Ed25519");
             PRIVATE_KEY = kf.generatePrivate(new PKCS8EncodedKeySpec(keyBytes));
-        } catch (IOException e) {
+        } catch (IOException _) {
             throw new DisableFeatureException("Impossible de lire la cle privee a " + pemPath);
         } catch (Exception e) {
             throw new DisableFeatureException("Cle privee invalide", e);

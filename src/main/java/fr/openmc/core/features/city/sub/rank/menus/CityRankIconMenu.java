@@ -31,7 +31,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 	private final DBCityRank oldRank;
 	private final City city;
 	private final int page;
-	private static String filter = null;
+	private String filter;
 	
 	public CityRankIconMenu(Player owner, City city, int page, DBCityRank oldRank, DBCityRank newRank, String filter) {
 		super(owner);
@@ -39,7 +39,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 		this.oldRank = oldRank;
 		this.city = city;
 		this.page = page;
-		CityRankIconMenu.filter = filter;
+		this.filter = filter;
 	}
 	
 	@Override
@@ -102,12 +102,14 @@ public class CityRankIconMenu extends PaginatedMenu {
 		
 		if (hasPreviousPage())
 			map.put(48, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE,
-					itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"))).setOnClick(inventoryClickEvent -> {
+					itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page")))
+			.setOnClick(_ -> {
 				new CityRankIconMenu(getOwner(), city, page - 1, oldRank, newRank, filter).open();
 			}));
 		if (hasNextPage())
 			map.put(50, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE,
-					itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"))).setOnClick(inventoryClickEvent -> {
+					itemMeta -> itemMeta.displayName(TranslationManager.translation("messages.menus.next_page")))
+			.setOnClick(_ -> {
 				new CityRankIconMenu(getOwner(), city, page + 1, oldRank, newRank, filter).open();
 			}));
 		

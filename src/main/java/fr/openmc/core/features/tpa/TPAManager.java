@@ -88,21 +88,20 @@ public class TPAManager extends Feature implements HasCommands {
 	 * @param target The target player
 	 */
 	public void expireRequest(OMCPlayer player, OMCPlayer target) {
-		if (tpaRequests.containsKey(target.getUniqueId())) {
-			if (tpaRequests.get(target.getUniqueId()).contains(player.getUniqueId())) {
-				long requestTime = tpaRequestTime.get(player.getUniqueId());
-				if (System.currentTimeMillis() - requestTime >= 30000) {
-					player.message().send(TranslationManager.translation(
-							"feature.tpa.expire.sender",
-							target.getNameWithHead().color(NamedTextColor.GOLD)
-					), Prefix.OPENMC, MessageType.WARNING, true);
-					target.message().send(TranslationManager.translation(
-							"feature.tpa.expire.target",
-							player.getNameWithHead().color(NamedTextColor.GOLD)
-					), Prefix.OPENMC, MessageType.INFO, true);
+		if (tpaRequests.containsKey(target.getUniqueId())
+				&& tpaRequests.get(target.getUniqueId()).contains(player.getUniqueId())) {
+			long requestTime = tpaRequestTime.get(player.getUniqueId());
+			if (System.currentTimeMillis() - requestTime >= 30000) {
+				player.message().send(TranslationManager.translation(
+						"feature.tpa.expire.sender",
+						target.getNameWithHead().color(NamedTextColor.GOLD)
+				), Prefix.OPENMC, MessageType.WARNING, true);
+				target.message().send(TranslationManager.translation(
+						"feature.tpa.expire.target",
+						player.getNameWithHead().color(NamedTextColor.GOLD)
+				), Prefix.OPENMC, MessageType.INFO, true);
 
-					removeRequest(player, target);
-				}
+				removeRequest(player, target);
 			}
 		}
 	}

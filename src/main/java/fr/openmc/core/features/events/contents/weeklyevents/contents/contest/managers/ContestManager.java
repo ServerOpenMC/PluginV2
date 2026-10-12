@@ -46,6 +46,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -69,12 +70,15 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
             "DARK_GREEN","DARK_BLUE"
     );
+
     private final Set<Class<? extends Menu>> contestMenus = new HashSet<>(Set.of(
             ContributionMenu.class,
             MoreInfoMenu.class,
             TradeMenu.class,
             VoteMenu.class
     ));
+
+    private final Random random = ThreadLocalRandom.current();
 
     /**
      * Constructeur du ContestManager :
@@ -173,7 +177,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
      */
     public void loadContestPlayerData() {
         dataPlayer.clear();
-        dataPlayer.putAll(playerTable.loadMap(ContestPlayer::getUUID));
+        dataPlayer.putAll(playerTable.loadMap(ContestPlayer::getPlayerUUID));
     }
 
     /**
@@ -253,10 +257,9 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
             InventoryView openInv = player.getOpenInventory();
             InventoryHolder holder = openInv.getTopInventory().getHolder();
 
-            if (holder instanceof Menu menu) {
-                if (contestMenus.contains(menu.getClass())) {
-                    player.closeInventory();
-                }
+            if (holder instanceof Menu menu
+                    && contestMenus.contains(menu.getClass())) {
+                player.closeInventory();
             }
 
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0F, 2F);
@@ -446,8 +449,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
                 moneyMin = (int) (moneyMin * multiplicator);
                 moneyMax = (int) (moneyMax * multiplicator);
 
-                Random randomMoney = new Random();
-                money = randomMoney.nextInt(moneyMin, moneyMax);
+                money = random.nextInt(moneyMin, moneyMax);
                 offlinePlayer.economy().addBalance(money, "Récompense contest - Gagnant");
  
                 // Gagnant - Aywenite
@@ -455,8 +457,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
                 int ayweniteMax = 60;
                 ayweniteMin = (int) (ayweniteMin * multiplicator);
                 ayweniteMax = (int) (ayweniteMax * multiplicator);
-                Random randomAwyenite = new Random();
-                aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
+                aywenite = random.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Gagnant - EVENT
                 winners.add(offlinePlayer.getUniqueId());
@@ -467,8 +468,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
                 moneyMin = (int) (moneyMin * multiplicator);
                 moneyMax = (int) (moneyMax * multiplicator);
 
-                Random randomMoney = new Random();
-                money = randomMoney.nextInt(moneyMin, moneyMax);
+                money = random.nextInt(moneyMin, moneyMax);
                 offlinePlayer.economy().addBalance(money, "Récompense contest - Perdant");
 
                 // Perdant - Aywenite
@@ -476,8 +476,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
                 int ayweniteMax = 25;
                 ayweniteMin = (int) (ayweniteMin * multiplicator);
                 ayweniteMax = (int) (ayweniteMax * multiplicator);
-                Random randomAwyenite = new Random();
-                aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
+                aywenite = random.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Perdant - EVENT
                 losers.add(offlinePlayer.getUniqueId());

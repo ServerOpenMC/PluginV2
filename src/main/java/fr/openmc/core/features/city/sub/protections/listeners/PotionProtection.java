@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.sub.protections.listeners;
 
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityType;
 import fr.openmc.core.features.city.models.city.City;
 import org.bukkit.Location;
@@ -15,12 +14,6 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 public class PotionProtection implements Listener {
-    private final CityManager cityManager;
-
-    public PotionProtection(CityManager cityManager) {
-        this.cityManager = cityManager;
-    }
-
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPotionSplash(PotionSplashEvent event) {
         ThrownPotion potion = event.getPotion();
@@ -37,12 +30,10 @@ public class PotionProtection implements Listener {
         boolean isCityInWar = city.getType().equals(CityType.WAR);
 
         for (LivingEntity affectedEntity : event.getAffectedEntities()) {
-            if (!(affectedEntity instanceof Player player))
-                continue;
+            if (!(affectedEntity instanceof Player player)) continue;
 
             boolean isNotMember = !city.isMember(player);
-            if (!isNotMember || isCityInWar)
-                continue;
+            if (!isNotMember || isCityInWar) continue;
 
             event.setCancelled(true);
         }

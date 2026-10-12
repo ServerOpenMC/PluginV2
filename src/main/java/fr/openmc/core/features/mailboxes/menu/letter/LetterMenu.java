@@ -34,7 +34,7 @@ import java.util.Map;
 import static fr.openmc.core.utils.text.InputUtils.pluralize;
 
 public class LetterMenu extends Menu {
-    private final static MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
+    private static final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
     private final Letter letter;
     private final LetterHead letterHead;
     private ItemStack[] letterItems;

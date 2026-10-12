@@ -78,6 +78,7 @@ public class DreamBlocksManager extends Feature implements HasListeners {
         }
     }
 
+    @Override
     public void onDisable() {
         config.set("blocks", dreamBlocks);
 

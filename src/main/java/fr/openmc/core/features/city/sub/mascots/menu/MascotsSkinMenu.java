@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MascotsSkinMenu extends Menu {
-    private final Sound selectSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    private final Sound deniedSound = Sound.BLOCK_NOTE_BLOCK_BASS;
+    private static final Sound SELECT_SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+    private static final Sound DENIED_SOUND = Sound.BLOCK_NOTE_BLOCK_BASS;
     private final Material egg;
     private final Mascot mascot;
 
@@ -116,7 +116,7 @@ public class MascotsSkinMenu extends Menu {
                         ItemStack isAywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
                         if (ItemUtils.hasEnoughItems(getOwner(), isAywenite, aywenite)) {
                             mascot.changeMascotsSkin(type.getEntityType(), getOwner(), aywenite);
-                            getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
+                            getOwner().playSound(getOwner().getLocation(), SELECT_SOUND, 1, 1);
                             getOwner().closeInventory();
                         } else {
                             MessagesManager.sendMessage(getOwner(), TranslationManager.translation("core.utils.aywenite.not_enough",
@@ -126,7 +126,7 @@ public class MascotsSkinMenu extends Menu {
                             getOwner().closeInventory();
                         }
                     } else {
-                        getOwner().playSound(getOwner().getLocation(), deniedSound, 1, 1);
+                        getOwner().playSound(getOwner().getLocation(), DENIED_SOUND, 1, 1);
                     }
         });
     }

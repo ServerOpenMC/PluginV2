@@ -99,7 +99,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
 
         int numberOfBiomeVariant = numberOfAmbient * numberOfVanillaBiome;
         int numberOfBiomeVarientInDatapack = ambientDatapack.getInjectors().stream()
-                .filter(injector -> injector instanceof BiomesInjector).toList().size();
+                .filter(BiomesInjector.class::isInstance).toList().size();
 
         // * On regarde si notre nombre de variante de biome, est pas égale aux nombres de variente de biome dans le datapack
         // si ça a changé ça veut dire qu'il y a des nouveaux biomes ou des nouvelles ambiences

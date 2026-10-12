@@ -64,11 +64,12 @@ public class TpHomeCommand {
                             Bukkit.getPluginManager().callEvent(new HomeTpEvent(h, player));
                         }
                     }.runTask(OMCPlugin.getInstance());
+
                     player.message().sendSuccess(
                             TranslationManager.translation(
                                     "feature.homes.command.teleport.other.success",
                                     Component.text(h.getName()).color(NamedTextColor.YELLOW),
-                                    Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                                    target.getNameWithHead().color(NamedTextColor.YELLOW)
                             ),
                             Prefix.HOME,
                             true

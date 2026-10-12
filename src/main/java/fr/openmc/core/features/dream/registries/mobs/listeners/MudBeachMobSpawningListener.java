@@ -16,7 +16,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
  */
 public class MudBeachMobSpawningListener implements Listener {
 
-    private final double CORRUPTED_TADPOLE_PROBABILITY = 0.05;
+    private static final double CORRUPTED_TADPOLE_PROBABILITY = 0.05;
 
     /**
      * Gère l'événement de spawn de créature.

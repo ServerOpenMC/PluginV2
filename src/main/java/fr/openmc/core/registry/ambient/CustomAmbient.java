@@ -32,7 +32,7 @@ public abstract class CustomAmbient {
     // ** UUID playerUUID -> String idAmbient
     public static final Map<UUID, String> ACTIVE_AMBIENTS = new HashMap<>();
 
-    public Holder<DimensionType> CACHED_DIMENSION_TYPE = null;
+    public Holder<DimensionType> cachedDimensionType = null;
 
     public abstract String getId();
     public abstract AmbientBuilder getAmbientBuilder();
@@ -226,8 +226,8 @@ public abstract class CustomAmbient {
     }
 
     private Holder<DimensionType> getDimensionType() {
-        if (CACHED_DIMENSION_TYPE != null)
-            return CACHED_DIMENSION_TYPE;
+        if (cachedDimensionType != null)
+            return cachedDimensionType;
 
         ResourceKey<DimensionType> key = ResourceKey.create(
                 Registries.DIMENSION_TYPE,
@@ -237,9 +237,9 @@ public abstract class CustomAmbient {
         Registry<DimensionType> dimRegistry =
                 MinecraftServer.getServer().registryAccess().lookupOrThrow(Registries.DIMENSION_TYPE);
 
-        CACHED_DIMENSION_TYPE = dimRegistry.get(key).orElseThrow(() ->
+        cachedDimensionType = dimRegistry.get(key).orElseThrow(() ->
                 new IllegalStateException("DimensionType " + CustomAmbientRegistry.NAMESPACE + ":"+ this.getId() +" introuvable")
         );
-        return CACHED_DIMENSION_TYPE;
+        return cachedDimensionType;
     }
 }

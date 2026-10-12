@@ -54,7 +54,8 @@ public class Letter {
     }
 
     public boolean refuse() {
-        return refused = true;
+        refused = true;
+        return true;
     }
 
     public LetterHead toLetterHead() {

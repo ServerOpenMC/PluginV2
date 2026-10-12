@@ -49,8 +49,8 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
 
     public final InternalToorApiClient toorApiClient = new InternalToorApiClient(this);
 
-    private final long CODE_TTL_MS = 10 * 60 * 1000;
-    private final long POLL_INTERNAL_TICKS = 20L * 3;
+    private static final long CODE_TTL_MS = 10 * 60 * 1000L;
+    private static final long POLL_INTERNAL_TICKS = 20L * 3;
 
     @Getter
     private String botUrl = "http://localhost:3000";

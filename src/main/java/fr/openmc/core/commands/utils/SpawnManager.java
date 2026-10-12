@@ -62,7 +62,7 @@ public class SpawnManager extends Feature implements HasCommands, HasListeners {
             spawnLocation = new Location(
                     world,
                     x,
-                    spawnConfig.getDouble("spawn.y", world.getHighestBlockYAt((int) x, (int) z) + 1),
+                    spawnConfig.getDouble("spawn.y", world.getHighestBlockYAt((int) x, (int) z) + 1d),
                     z,
                     (float) spawnConfig.getDouble("spawn.yaw", 0.0),
                     (float) spawnConfig.getDouble("spawn.pitch", 0.0)

@@ -15,13 +15,13 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
  */
 public class SoulForestMobSpawningListener implements Listener {
 
-    private final double SOUL_PROBABILITY = 0.5;
+    private static final double SOUL_PROBABILITY = 0.5;
 
     /**
      * Gère l'événement de spawn de créature.
      * <p>
      * L'événement est annulé si la créature se trouve dans le biome SOUL_FOREST
-     * de la dimension Dream et qu'un mob est généré selon une probabilité définie dans le {@link DreamMobsRegistry}.
+     * de la dimension Dream et qu'un mob est généré selon une probabilité définie dans le {@link fr.openmc.core.features.dream.registries.DreamMobsRegistry}.
      * </p>
      *
      * @param e l'événement de spawn de créature

@@ -73,9 +73,9 @@ public class WarChooseSizeMenu extends PaginatedMenu {
                         "feature.city.war.menu.size.lore",
                         Component.text(count).color(NamedTextColor.GRAY)
                 ));
-            }).setOnClick(event -> {
-                WarActions.preFinishLaunchWar(getOwner(), cityLaunch, cityAttack, count);
-            }));
+            }).setOnClick(_ ->
+                WarActions.preFinishLaunchWar(getOwner(), cityLaunch, cityAttack, count)
+            ));
         }
 
         return items;

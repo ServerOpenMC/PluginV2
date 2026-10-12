@@ -17,6 +17,8 @@ import net.kyori.adventure.text.Component;
  * touchant aux mascottes (utile pour faire une modif sur menu et commandes).
  */
 public class CityTypeConditions {
+    private CityTypeConditions() {}
+
     private static final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
     private static final int REQUIRED_MONEY_TYPE = 40000;

@@ -2,11 +2,9 @@ package fr.openmc.core.features.adminshop;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
 import fr.openmc.core.features.adminshop.menus.*;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
@@ -29,8 +27,6 @@ public class AdminShopManager extends Feature implements HasCommands {
     public final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
     public final Map<UUID, String> currentCategory = new HashMap<>();
     public final DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
-
-    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     private AdminShopYAML adminShopYAML;
 
@@ -112,9 +108,9 @@ public class AdminShopManager extends Feature implements HasCommands {
         double totalPrice = item.getActualBuyPrice() * amount;
         if (player.economy().withdrawBalance(totalPrice, "Achat AdminShop - " + amount + "x " + itemId)) {
             player.getInventory().addItem(new ItemStack(item.getMaterial(), amount));
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new BuyEvent(player, item));
-            });
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new BuyEvent(player, item))
+            );
             sendInfo(player, TranslationManager.translation("feature.adminshop.player_buy_item",
                     Component.text(amount), item.getName(), Component.text(AdminShopUtils.formatPrice(totalPrice))
             ));
@@ -155,9 +151,9 @@ public class AdminShopManager extends Feature implements HasCommands {
         double totalPrice = item.getActualSellPrice() * amount; // Calculate the total price for the items
         ItemUtils.removeItemsFromPlayerInventory(player, item.getMaterial(), amount); // Remove items from the player's inventory
         player.economy().addBalance(totalPrice, "Vente AdminShop"); // Add money to the player's balance
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new SellEvent(player, item));
-        });
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+            Bukkit.getPluginManager().callEvent(new SellEvent(player, item))
+        );
         sendInfo(player, TranslationManager.translation("feature.adminshop.player_sell_item",
                 Component.text(amount), item.getName(), Component.text(AdminShopUtils.formatPrice(totalPrice))));
         adjustPrice(getPlayerCategory(player), itemId, amount, false); // Adjust the price based on the transaction

@@ -19,7 +19,8 @@ import java.util.Objects;
 
 @SuppressWarnings("UnstableApiUsage")
 public class ItemUtils {
-	
+	private ItemUtils() {}
+
 	/**
 	 * Creates an {@link ItemStack} with the specified display name and material.
 	 *

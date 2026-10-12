@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Set;
 
 public class MaterialUtils {
+    private MaterialUtils() {}
 
     private static final Set<Material> BUNDLES = Tag.ITEMS_BUNDLES.getValues();
 

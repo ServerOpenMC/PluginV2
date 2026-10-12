@@ -1,6 +1,7 @@
 package fr.openmc.core.utils;
 
 public class MathUtils {
+    private MathUtils() {}
 
     /**
      * Linearly interpolates between two colors.

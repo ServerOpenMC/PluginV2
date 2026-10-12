@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BankButton {
+    private BankButton() {}
+
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
         OMCPlayer player = menu.getOwner();
         MenuUtils.createButtonItem(

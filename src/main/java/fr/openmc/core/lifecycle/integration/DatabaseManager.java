@@ -17,6 +17,8 @@ import java.sql.SQLException;
  * Gere la connexion base de donnees et l'initialisation des features persistantes.
  */
 public class DatabaseManager {
+    private DatabaseManager() {}
+
     @Getter
     private static ConnectionSource connectionSource;
 

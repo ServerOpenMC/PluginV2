@@ -61,9 +61,9 @@ public class City implements CityInterface, CityChunks, CityMembers, CityChest,
     private String name;
     private Set<UUID> members;
     private Set<ChunkPos> chunks;
-    private HashMap<UUID, Set<CityPermission>> permissions;
+    private Map<UUID, Set<CityPermission>> permissions;
     private final Set<DBCityRank> cityRanks = new HashSet<>();
-    private HashMap<Integer, ItemStack[]> chestContent;
+    private Map<Integer, ItemStack[]> chestContent;
     private UUID chestWatcher;
     private double balance;
     private CityType type;

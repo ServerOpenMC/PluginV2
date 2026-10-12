@@ -12,6 +12,8 @@ import org.slf4j.Logger;
  * org.slf4j.Logger est prioritaire sur le net.kyori.adventure.text.logger.slf4j.ComponentLogger.
  */
 public class OMCLogger {
+    private OMCLogger() {}
+
     @Setter
     private static ComponentLogger bootstrapLogger = null;
     @Setter

@@ -88,9 +88,8 @@ public class HomeUpgradeManager extends Feature {
 
             int updatedHomesLimit = player.home().getHomeLimit().getLimit();
 
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new HomeUpgradeEvent(player));
-            });
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new HomeUpgradeEvent(player)));
 
             player.message().sendSuccess(
                     TranslationManager.translation(

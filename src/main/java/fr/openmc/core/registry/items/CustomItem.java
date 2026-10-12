@@ -28,12 +28,12 @@ public abstract class CustomItem {
     @Getter
     private CustomItemMeta meta;
 
-    public CustomItem(String id) {
+    protected CustomItem(String id) {
         this.id = id;
         this.meta = null;
     }
 
-    public CustomItem(CustomItemMeta meta) {
+    protected CustomItem(CustomItemMeta meta) {
         this(meta.getId());
         this.meta = meta;
     }
@@ -99,7 +99,7 @@ public abstract class CustomItem {
             ObjectComponent sprite = SpriteUtils.getSprite(this);
             if (sprite != null) {
                 HoverEvent<?> hoverEvent = this.getBest().displayName().hoverEvent();
-                if (hoverEvent != null && hoverEvent.asHoverEvent() != null)
+                if (hoverEvent != null)
                     this.sprite = sprite.hoverEvent(hoverEvent.asHoverEvent());
             }
         } else {

@@ -14,6 +14,7 @@ import java.nio.file.Path;
  */
 @SuppressWarnings("UnstableApiUsage")
 public class ResourcePacksGenerator {
+    private ResourcePacksGenerator() {}
 
     // https://minecraft.wiki/w/Pack_format
     private static final String FORMAT_VERSION = "88";

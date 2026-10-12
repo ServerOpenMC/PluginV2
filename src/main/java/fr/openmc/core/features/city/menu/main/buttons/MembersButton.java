@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 
 public class MembersButton {
+    private MembersButton() {}
+
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int slot) {
         Player player = menu.getOwner();
 

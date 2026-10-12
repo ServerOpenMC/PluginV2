@@ -36,8 +36,8 @@ import java.util.Map;
 
 public class ProfileMenu extends Menu {
     private final OMCOfflinePlayer target;
-    private final static DiscordLinkManager DISCORD_LINK_MANAGER = OMCRegistry.FEATURES.DISCORD_LINK.get();
-    private final static FriendManager FRIEND_MANAGER = OMCRegistry.FEATURES.FRIENDS.get();
+    private static final DiscordLinkManager DISCORD_LINK_MANAGER = OMCRegistry.FEATURES.DISCORD_LINK.get();
+    private static final FriendManager FRIEND_MANAGER = OMCRegistry.FEATURES.FRIENDS.get();
 
     public ProfileMenu(OMCPlayer owner) {
         this(owner, owner);

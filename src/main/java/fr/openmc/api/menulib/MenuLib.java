@@ -43,7 +43,7 @@ public final class MenuLib implements Listener {
         ignoredMenus.add(HomeDeleteConfirmMenu.class);
     }
     @Getter
-    private static NamespacedKey itemIdKey;
+    private static final NamespacedKey itemIdKey = new NamespacedKey(OMCPlugin.getInstance(), "itemId");
 
     /**
      * Constructs a new {@code MenuLib} instance and registers it as an event listener.
@@ -53,7 +53,6 @@ public final class MenuLib implements Listener {
      */
     private MenuLib(JavaPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        itemIdKey = new NamespacedKey(plugin, "itemId");
     }
 
     /**

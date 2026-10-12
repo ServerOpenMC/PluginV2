@@ -46,8 +46,9 @@ public class Mayor {
         // required for ORMLite
     }
 
-    public Mayor(UUID cityUUID, String mayorName, UUID mayorUUID, NamedTextColor mayorColor, int idPerk1, int idPerk2,
-            int idPerk3, ElectionType electionType) {
+    public Mayor(UUID cityUUID, String mayorName, UUID mayorUUID,
+                 NamedTextColor mayorColor, int idPerk1, int idPerk2,
+                 int idPerk3, ElectionType electionType) {
         this.cityUUID = cityUUID;
         this.name = mayorName;
         this.mayorUUID = mayorUUID;

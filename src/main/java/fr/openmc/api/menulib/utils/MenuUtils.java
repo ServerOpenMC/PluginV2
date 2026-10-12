@@ -11,6 +11,8 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public class MenuUtils {
+	private MenuUtils() {}
+
 	/**
 	 * Creates button items in the specified slots of the inventory content map.
 	 * @param inventoryContent the map representing the menu content

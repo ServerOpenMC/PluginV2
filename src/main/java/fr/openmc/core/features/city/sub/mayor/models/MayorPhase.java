@@ -7,10 +7,8 @@ import java.time.DayOfWeek;
 
 @Getter
 public enum MayorPhase {
-    OPEN_ELECTION(DayOfWeek.TUESDAY, () ->
-            OMCRegistry.CITY_FEATURES.MAYOR.initOpenElectionPhase()),
-    MAYOR_ELECTED(DayOfWeek.THURSDAY, () ->
-            OMCRegistry.CITY_FEATURES.MAYOR.initElectedMayorPhase())
+    OPEN_ELECTION(DayOfWeek.TUESDAY, OMCRegistry.CITY_FEATURES.MAYOR::initOpenElectionPhase),
+    MAYOR_ELECTED(DayOfWeek.THURSDAY, OMCRegistry.CITY_FEATURES.MAYOR::initElectedMayorPhase)
     ;
 
     private final DayOfWeek startDay;

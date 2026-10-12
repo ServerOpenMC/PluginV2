@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainMilestonesMenu extends Menu {
-    private final static MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
+    private static final MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
 
     public MainMilestonesMenu(Player owner) {
         super(owner);

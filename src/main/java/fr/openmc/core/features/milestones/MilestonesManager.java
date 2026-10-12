@@ -72,7 +72,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
 	            MilestoneType type = MilestoneType.valueOf(data.getType());
                 Milestone<?> milestone = type.getMilestone();
                 bossbarManager.registerBossbars(new MilestoneBossBar(milestone));
-	            milestone.getPlayerData().put(data.getUUID(), data);
+	            milestone.getPlayerData().put(data.getPlayerUUID(), data);
             }
 			OMCLogger.infoFormatted("Milestones loaded successfully from the database!");
         } catch (SQLException e) {

@@ -11,9 +11,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MotdUtils extends Feature {
     private YamlConfiguration motdConfig = null;
+    private final Random random = ThreadLocalRandom.current();
 
     @Override
     public void onEnable() {
@@ -31,7 +33,7 @@ public class MotdUtils extends Feature {
             public void run() {
                 List<Map<?, ?>> motds = motdConfig.getMapList("motds");
 
-                int randomIndex = new Random().nextInt(motds.size());
+                int randomIndex = random.nextInt(motds.size());
                 Map<?, ?> motdData = motds.get(randomIndex);
 
                 String line1 = (String) motdData.get("line1");

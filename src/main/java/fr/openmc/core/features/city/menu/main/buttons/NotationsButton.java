@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 public class NotationsButton {
+    private NotationsButton() {}
+
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
         Player player = menu.getOwner();
         CityNotation notation = city.getNotationOfWeek(DateUtils.getWeekFormat());

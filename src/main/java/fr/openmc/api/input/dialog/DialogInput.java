@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DialogInput {
+    private DialogInput() {}
 
     public static void send(Player player, Component lore, int maxLength, Consumer<String> callback) {
         List<DialogBody> body = new ArrayList<>();

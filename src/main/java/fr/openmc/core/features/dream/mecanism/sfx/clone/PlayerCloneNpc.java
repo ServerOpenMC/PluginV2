@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlayerCloneNpc extends Feature {
-    private final String prefixNpc = "npcp-";
-    private final NpcManager NPC_MANAGER = FancyNpcsPlugin.get().getNpcManager();
+    private static final String prefixNpc = "npcp-";
+    private final NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
     private final HashMap<UUID, BukkitTask> particlesTasks = new HashMap<>();
 
     /**
@@ -56,7 +56,7 @@ public class PlayerCloneNpc extends Feature {
      * @return The clone NPC associated with the player, or null if no such NPC exists.
      */
     public Npc getCloneNpc(Player player) {
-        return NPC_MANAGER.getNpc(prefixNpc + player.getUniqueId());
+        return npcManager.getNpc(prefixNpc + player.getUniqueId());
     }
 
     /**
@@ -82,7 +82,7 @@ public class PlayerCloneNpc extends Feature {
         // * Player clone specific attributes
         try {
             data.setSkin(player.getName());
-        } catch (SkinLoadException e) {
+        } catch (SkinLoadException _) {
             OMCLogger.error("Erreur de chargement du skin pour le joueur {}", player.getName());
         }
         data.addAttribute(FancyNpcsPlugin.get().getAttributeManager().getAttributeByName(EntityType.PLAYER, "pose"), pose.name().toLowerCase());
@@ -102,7 +102,7 @@ public class PlayerCloneNpc extends Feature {
 
         // * Register and spawn npc
         Npc npc = FancyNpcsPlugin.get().getNpcAdapter().apply(data);
-        NPC_MANAGER.registerNpc(npc);
+        npcManager.registerNpc(npc);
         npc.create();
         npc.spawnForAll();
 
@@ -131,9 +131,9 @@ public class PlayerCloneNpc extends Feature {
     public void deleteCloneNpc(Npc npc) {
         if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return;
         if (npc == null) return;
-        if (NPC_MANAGER.getNpc(npc.getData().getName()) == null) return;
+        if (npcManager.getNpc(npc.getData().getName()) == null) return;
 
-        Npc toRemove = NPC_MANAGER.getNpc(npc.getData().getName());
+        Npc toRemove = npcManager.getNpc(npc.getData().getName());
         // * cancel particles task
         UUID owner = npc.getData().getCreator();
         if (particlesTasks.containsKey(owner)) {
@@ -142,7 +142,7 @@ public class PlayerCloneNpc extends Feature {
 
         // * remove npc
         toRemove.removeForAll();
-        NPC_MANAGER.removeNpc(toRemove);
+        npcManager.removeNpc(toRemove);
     }
 
     /**

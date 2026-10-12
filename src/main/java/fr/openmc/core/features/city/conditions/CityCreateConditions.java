@@ -15,6 +15,8 @@ import net.kyori.adventure.text.Component;
  * pour creer une ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityCreateConditions {
+    private CityCreateConditions() {}
+
     private static final EconomyManager ECONOMY_MANAGER = OMCRegistry.FEATURES.ECONOMY.get();
 
     public static final double MONEY_CREATE = 3500.0;

@@ -25,13 +25,12 @@ public class MetalDetectorListener implements Listener {
         Player player = event.getPlayer();
         Location loc = player.getLocation();
 
-        if (DreamBiome.isInDreamBiome(player, DreamBiome.MUD_BEACH)) {
-            if (!manager.hiddenChests.containsKey(player.getUniqueId())) {
-                Location chestLoc = manager.findRandomChestLocation(loc);
-                MetalDetectorTask task = new MetalDetectorTask(player, chestLoc);
-                task.runTaskTimer(OMCPlugin.getInstance(), 0L, 5L);
-                manager.hiddenChests.put(player.getUniqueId(), task);
-            }
+        if (DreamBiome.isInDreamBiome(player, DreamBiome.MUD_BEACH)
+                && !manager.hiddenChests.containsKey(player.getUniqueId())) {
+            Location chestLoc = manager.findRandomChestLocation(loc);
+            MetalDetectorTask task = new MetalDetectorTask(player, chestLoc);
+            task.runTaskTimer(OMCPlugin.getInstance(), 0L, 5L);
+            manager.hiddenChests.put(player.getUniqueId(), task);
         }
     }
 

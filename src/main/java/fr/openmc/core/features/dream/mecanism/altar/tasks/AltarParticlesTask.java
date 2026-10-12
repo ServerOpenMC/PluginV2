@@ -33,13 +33,13 @@ public class AltarParticlesTask extends BukkitRunnable {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!DreamUtils.isInDreamWorld(player)) continue;
             Location playerLoc = player.getLocation();
+            if (playerLoc == null) continue;
             World world = playerLoc.getWorld();
 
-        List<DreamBlock> altars = OMCRegistry.DREAM_FEATURES.DREAM_BLOCKS.getDreamBlocksByType("altar");
+            List<DreamBlock> altars = OMCRegistry.DREAM_FEATURES.DREAM_BLOCKS.getDreamBlocksByType("altar");
 
             for (DreamBlock altar : altars) {
                 if (altar.location().getWorld() != world) continue;
-
                 Location center = altar.location();
 
                 if (center.distanceSquared(playerLoc) > 30 * 30) continue;

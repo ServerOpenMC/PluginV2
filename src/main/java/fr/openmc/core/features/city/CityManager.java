@@ -165,7 +165,7 @@ public class CityManager extends Feature
         });
     }
 
-    public HashMap<UUID, Set<CityPermission>> getCityPermissions(City city) {
+    public Map<UUID, Set<CityPermission>> getCityPermissions(City city) {
         HashMap<UUID, Set<CityPermission>> permissions = new HashMap<>();
 
         try {
@@ -209,7 +209,7 @@ public class CityManager extends Feature
         }
     }
 
-    public HashMap<Integer, ItemStack[]> getCityChestContent(City city) {
+    public Map<Integer, ItemStack[]> getCityChestContent(City city) {
         HashMap<Integer, ItemStack[]> pages = new HashMap<>();
 
         try {
@@ -521,10 +521,9 @@ public class CityManager extends Feature
             Mascot mascot = city.getMascot();
             if (mascot == null) continue;
 
-            if (!dynamicCooldownManager.isReady(mascot.getMascotUUID(), "mascots:move")) {
-                if (Bukkit.getEntity(memberId) != null) {
-                    dynamicCooldownManager.clear(mascot.getMascotUUID(), "mascots:move", false);
-                }
+            if (!dynamicCooldownManager.isReady(mascot.getMascotUUID(), "mascots:move") ||
+                    Bukkit.getEntity(memberId) != null) {
+                dynamicCooldownManager.clear(mascot.getMascotUUID(), "mascots:move", false);
             }
         }
 

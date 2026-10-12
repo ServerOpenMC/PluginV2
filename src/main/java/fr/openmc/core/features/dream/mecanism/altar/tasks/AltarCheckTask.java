@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class AltarCheckTask extends BukkitRunnable {
 
-    private final double MAX_DISTANCE = 30.0;
+    private static final double MAX_DISTANCE = 30.0;
     private final AltarManager altarManager;
 
     public AltarCheckTask(AltarManager altarManager) {
@@ -35,13 +35,14 @@ public class AltarCheckTask extends BukkitRunnable {
                 continue;
             }
 
-            if (!player.getWorld().equals(altarLoc.getWorld())) {
+            Location loc = player.getLocation();
+            if (!player.getWorld().equals(altarLoc.getWorld()) || loc == null) {
                 altarManager.unbind(altarLoc);
                 iterator.remove();
                 continue;
             }
 
-            if (player.getLocation().distanceSquared(altarLoc) > MAX_DISTANCE * MAX_DISTANCE) {
+            if (loc.distanceSquared(altarLoc) > MAX_DISTANCE * MAX_DISTANCE) {
                 altarManager.unbind(altarLoc);
                 iterator.remove();
             }

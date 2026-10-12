@@ -104,9 +104,9 @@ public class TabList extends Feature {
                         "feature.displays.tablist.header.dream",
                         Component.text(logo)
                 );
-        Component footer = isInDream
-                ? TranslationManager.translation("feature.displays.tablist.footer.dream")
-                : TranslationManager.translation("feature.displays.tablist.footer.default");
+        Component footer = TranslationManager.translation(isInDream
+                ? "feature.displays.tablist.footer.dream"
+                : "feature.displays.tablist.footer.default");
 
         updateHeaderFooter(omcPlayer, header, footer);
     }

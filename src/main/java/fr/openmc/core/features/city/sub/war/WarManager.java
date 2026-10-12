@@ -61,7 +61,7 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                () -> new WarKillListener(OMCRegistry.FEATURES.CITY.get())
+                () -> new WarKillListener()
         );
     }
 
@@ -425,7 +425,8 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
 
         Set<ChunkPos> adjacentChunks = new HashSet<>();
         for (ChunkPos wChunk : winner.getChunks()) {
-            int wx = wChunk.x(), wz = wChunk.z();
+            int wx = wChunk.x();
+            int wz = wChunk.z();
 
             ChunkPos[] neighbors = {
                     new ChunkPos(wx + 1, wz),
@@ -447,7 +448,8 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
         BiConsumer<Queue<ChunkPos>, Set<ChunkPos>> bfsCapture = (queue, visited) -> {
             while (!queue.isEmpty() && transferred[0] < claimAmount) {
                 ChunkPos current = queue.poll();
-                int cx = current.x(), cz = current.z();
+                int cx = current.x();
+                int cz = current.z();
 
                 ChunkPos[] neighs = {
                         new ChunkPos(cx + 1, cz),
@@ -489,7 +491,8 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
             List<ChunkPos> borderChunks = new ArrayList<>();
             for (ChunkPos lChunk : loser.getChunks()) {
                 if (lChunk.equals(mascotVec)) continue;
-                int lx = lChunk.x(), lz = lChunk.z();
+                int lx = lChunk.x();
+                int lz = lChunk.z();
                 ChunkPos[] neighs = {
                         new ChunkPos(lx + 1, lz),
                         new ChunkPos(lx - 1, lz),

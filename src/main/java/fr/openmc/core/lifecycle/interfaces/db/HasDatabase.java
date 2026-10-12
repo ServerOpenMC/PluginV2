@@ -12,7 +12,7 @@ public interface HasDatabase {
     List<DBTable<?, ?>> getTables();
 
     // * Override si envie
-    default void onInitDB(ConnectionSource connectionSource) throws SQLException {};
+    default void onInitDB(ConnectionSource connectionSource) throws SQLException {}
 
     /**
      * Initialise les structures et acces DB de la feature.

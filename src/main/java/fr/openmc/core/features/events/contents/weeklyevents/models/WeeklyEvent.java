@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class WeeklyEvent extends Event {
-    private final static WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
+    private static final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
     public abstract String getId();
     public abstract List<WeeklyEventPhase> getPhases();
 

@@ -74,7 +74,7 @@ public class BossCloudSpawner implements Listener {
     @EventHandler
     public void onBossLoad(EntitiesLoadEvent event) {
         event.getEntities().stream()
-                .filter(entity -> entity instanceof Breeze)
+                .filter(Breeze.class::isInstance)
                 .filter(entity -> DreamUtils.isDreamWorld(entity.getLocation()))
                 .forEach(entity -> {
                     Breeze breeze = (Breeze) entity;

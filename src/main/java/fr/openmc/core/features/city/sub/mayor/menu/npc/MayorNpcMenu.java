@@ -6,7 +6,6 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.CityPermission;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
@@ -140,7 +139,6 @@ public class MayorNpcMenu extends Menu {
 
                                 Chunk chunk = locationClick.getChunk();
 
-                                CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
                                 City cityByChunk = City.of(chunk);
                                 if (cityByChunk == null) {
                                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.npc.move.error.outside_city"), Prefix.CITY, MessageType.ERROR, false);

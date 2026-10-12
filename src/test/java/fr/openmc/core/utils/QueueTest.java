@@ -54,7 +54,7 @@ class QueueTest {
         queue.add(2, "two");
         queue.add(3, "three");
 
-        Assertions.assertEquals(2, queue.getQueue().size());
+        Assertions.assertEquals(2, queue.getQueueMap().size());
     }
 
     @Test

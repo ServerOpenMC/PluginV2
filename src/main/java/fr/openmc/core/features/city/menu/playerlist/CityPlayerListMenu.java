@@ -71,7 +71,6 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
         boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS);
-        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
         for (UUID uuid : city.getMembers()) {
             OMCOfflinePlayer playerOffline = OMCOfflinePlayer.of(uuid);

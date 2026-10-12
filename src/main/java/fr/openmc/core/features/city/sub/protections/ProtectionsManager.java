@@ -27,7 +27,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
     public final Set<UUID> canBypassPlayer = new HashSet<>();
 
     private final Map<UUID, Long> lastErrorMessageTime = new HashMap<>();
-    private final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
+    private static final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
 
 	private final CityManager cityManager;
 	private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
@@ -43,7 +43,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
                 BowProtection::new,
                 DamageProtection::new,
                 EntityProtection::new,
-				() -> new ExplodeProtection(cityManager),
+                ExplodeProtection::new,
                 FireProtection::new,
                 FishProtection::new,
                 HangingProtection::new,
@@ -51,7 +51,7 @@ public class ProtectionsManager extends Feature implements HasListeners {
                 LeashProtection::new,
                 MountProtection::new,
 				PistonProtection::new,
-				() -> new PotionProtection(cityManager),
+				PotionProtection::new,
                 TeleportProtection::new,
                 TramplingProtection::new,
                 VehicleProtection::new

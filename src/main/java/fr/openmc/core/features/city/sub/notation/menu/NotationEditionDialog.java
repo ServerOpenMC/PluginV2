@@ -31,6 +31,7 @@ import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public class NotationEditionDialog {
+    private NotationEditionDialog() {}
 
     public static void send(Player player, String weekStr, List<City> cities, Integer cityEditIndex) {
         NotationManager notationManager = OMCRegistry.CITY_FEATURES.NOTATION;
@@ -56,9 +57,7 @@ public class NotationEditionDialog {
                                             Component.text(cityEdited.getName())
                                     )
                                             .clickEvent(ClickEvent.callback((audience1) -> {
-                                                if (!(audience instanceof Player playerClicked1)) {
-                                                    return;
-                                                }
+                                                if (!(audience1 instanceof Player playerClicked1)) return;
 
                                                 send(playerClicked1, weekStr, cities, finalCityEditIndex1);
                                             })),
@@ -139,7 +138,7 @@ public class NotationEditionDialog {
                 )
                 .type(DialogType.confirmation(
                         ActionButton.builder(ButtonType.SAVE.getLabelComponent())
-                                .action(DialogAction.customClick((response, audience) -> {
+                                .action(DialogAction.customClick((response, _) -> {
                                             float noteArchitectural = response.getFloat("input_note_architectural");
                                             float noteCoherence = response.getFloat("input_note_coherence");
                                             String description = response.getText("input_description");
@@ -176,9 +175,8 @@ public class NotationEditionDialog {
                                 ))
                                 .build(),
                         ActionButton.builder(ButtonType.CANCEL.getLabelComponent())
-                                .action(DialogAction.customClick((response, audience) -> {
-                                            player.closeInventory();
-                                        }, ClickCallback.Options.builder().build())
+                                .action(DialogAction.customClick((_, _) ->
+                                            player.closeInventory(), ClickCallback.Options.builder().build())
                                 )
                                 .build()
                 ))

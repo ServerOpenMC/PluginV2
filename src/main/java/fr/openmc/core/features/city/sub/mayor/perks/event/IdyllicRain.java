@@ -19,9 +19,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class IdyllicRain implements Listener {
 
+    private static final Random random = ThreadLocalRandom.current();
     private static final NamespacedKey cityAyweniteKey = new NamespacedKey(OMCPlugin.getInstance(), "city_aywenite");
 
     /**
@@ -38,7 +40,6 @@ public class IdyllicRain implements Listener {
         if (world == null) return;
 
         List<ChunkPos> chunkList = new ArrayList<>(chunks);
-        Random random = new Random();
 
         final int[] dropped = {0};
 

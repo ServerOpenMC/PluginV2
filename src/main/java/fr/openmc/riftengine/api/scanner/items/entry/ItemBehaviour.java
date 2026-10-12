@@ -16,7 +16,7 @@ public record ItemBehaviour(boolean isBlockBehaviour) {
         Object specificPropertiesObj = data.get("specific_properties");
 
         if (!(specificPropertiesObj instanceof Map<?, ?> specificProperties))
-        return new ItemBehaviour(false);
+            return new ItemBehaviour(false);
 
         Object blockObj2 = specificProperties.get("block");
 

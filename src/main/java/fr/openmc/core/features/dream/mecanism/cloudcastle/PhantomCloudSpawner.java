@@ -6,13 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.TrialSpawner;
-import org.bukkit.event.Listener;
 import org.bukkit.loot.LootTable;
 import org.bukkit.spawner.TrialSpawnerConfiguration;
 
 import java.util.Map;
 
-public class PhantomCloudSpawner implements Listener {
+public class PhantomCloudSpawner {
     @SuppressWarnings("UnstableApiUsage")
     public static void replaceBlockWithMobCloudSpawner(Block block) {
         block.setType(Material.TRIAL_SPAWNER);

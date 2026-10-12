@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class PlayerBiomeNMS {
+    private PlayerBiomeNMS() {}
+
     private static Field SECTION_BIOMES;
     static {
         try {

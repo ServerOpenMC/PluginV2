@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class PacketUtils {
+    private PacketUtils() {}
 
     private static final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 

@@ -13,7 +13,6 @@ public class DreamLootTableRegistry extends SubRegistry<String, CustomLootTable>
     public final CustomLootTable CLOUD_VAULT = register(new CloudVaultLootTable());
     public final CustomLootTable METAL_DETECTOR = register(new MetalDetectorLootTable());
 
-
     @Override
     public KeyedRegistry<String, ? super CustomLootTable> getParentRegistry() {
         return OMCRegistry.CUSTOM_LOOT_TABLES;

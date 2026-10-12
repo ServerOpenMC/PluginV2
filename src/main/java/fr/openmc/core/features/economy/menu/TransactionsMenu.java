@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.Transaction;
 import fr.openmc.core.features.economy.TransactionsManager;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -36,7 +36,7 @@ public class TransactionsMenu extends PaginatedMenu {
     public @NotNull Component getName() {
         return TranslationManager.translation(
                 "feature.economy.transactions.menu.title",
-                Component.text(CacheOfflinePlayer.getOfflinePlayer(target).getName())
+                CachePlayerName.name(target)
         );
     }
 

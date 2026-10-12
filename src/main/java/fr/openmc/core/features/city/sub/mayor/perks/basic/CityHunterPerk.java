@@ -1,7 +1,5 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
@@ -14,11 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class CityHunterPerk implements Listener {
-    private final CityManager cityManager;
-
-    public CityHunterPerk() {
-        this.cityManager = OMCRegistry.FEATURES.CITY.get();
-    }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {

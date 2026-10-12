@@ -133,10 +133,9 @@ public class CityBankManager extends Feature implements HasCommands {
 
         interest += InterestRewards.getTotalInterest(city.getLevel());
 
-        if (mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
-            if (PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
-                interest += .02; // interest is +2% when perk Business Man enabled
-            }
+        if (mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)
+                && PerkUtils.hasPerk(city.getMayor(), Perks.BUSINESS_MAN.getId())) {
+            interest += .02; // interest is +2% when perk Business Man enabled
         }
 
         return interest;

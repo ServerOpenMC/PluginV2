@@ -23,8 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class GitHubHook extends HttpsHook implements HasDatabase {
-    public final static String REPO_OWNER = "ServerOpenMC";
-    public final static String REPO_NAME = "PluginV2";
+    public static final String REPO_OWNER = "ServerOpenMC";
+    public static final String REPO_NAME = "PluginV2";
 
     private final DBTable<DBGithubMinecraft, String> linkGithubMinecraftTable = DBTable.of(DBGithubMinecraft.class);
 
@@ -50,6 +50,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         return "GitHubHook";
     }
 
+    @Override
     public boolean isEnable() {
         return Hooks.isEnabled(GitHubHook.class);
     }

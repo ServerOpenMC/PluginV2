@@ -15,6 +15,8 @@ import org.bukkit.spawner.TrialSpawnerConfiguration;
 import java.util.Map;
 
 public class StrayCloudSpawner {
+    private StrayCloudSpawner() {}
+
     @SuppressWarnings("UnstableApiUsage")
     public static void replaceBlockWithMobCloudSpawner(Block block) {
         block.setType(Material.TRIAL_SPAWNER);

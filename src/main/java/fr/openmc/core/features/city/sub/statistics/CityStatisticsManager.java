@@ -22,7 +22,7 @@ public class CityStatisticsManager extends Feature implements HasDatabase {
     /**
      * Map des statistiques par ville (clé : identifiant de la ville, valeur : ensemble de statistiques).
      */
-    public final HashMap<UUID, Set<CityStatistics>> cityStatistics = new HashMap<>();
+    public final Map<UUID, Set<CityStatistics>> cityStatistics = new HashMap<>();
 
     private final DBTable<CityStatistics, String> statisticsTable = DBTable.of(CityStatistics.class);
 

@@ -25,21 +25,21 @@ public abstract class CustomLootbox {
             22
     );
 
-    public CustomLootbox(ItemStack itemDisplayed, String namespace, Component name, CustomLootTable lootTable) {
+    protected CustomLootbox(ItemStack itemDisplayed, String namespace, Component name, CustomLootTable lootTable) {
         this.itemDisplayed = itemDisplayed;
         this.namespace = namespace;
         this.name = name;
         this.lootTable = lootTable;
     }
 
-    public CustomLootbox(String namespace, Component name, CustomLootTable lootTable) {
+    protected CustomLootbox(String namespace, Component name, CustomLootTable lootTable) {
         this.itemDisplayed = null;
         this.namespace = namespace;
         this.name = name;
         this.lootTable = lootTable;
     }
 
-    public CustomLootbox(CustomItem itemDisplayed, String namespace, Component name, CustomLootTable lootTable, LootboxOptions options) {
+    protected CustomLootbox(CustomItem itemDisplayed, String namespace, Component name, CustomLootTable lootTable, LootboxOptions options) {
         this.itemDisplayed = itemDisplayed.getBest();
         this.namespace = namespace;
         this.name = name;
@@ -47,7 +47,7 @@ public abstract class CustomLootbox {
         this.options = options;
     }
 
-    public CustomLootbox(ItemStack itemDisplayed, String namespace, Component name, CustomLootTable lootTable, LootboxOptions options) {
+    protected CustomLootbox(ItemStack itemDisplayed, String namespace, Component name, CustomLootTable lootTable, LootboxOptions options) {
         this.itemDisplayed = itemDisplayed;
         this.namespace = namespace;
         this.name = name;
@@ -55,7 +55,7 @@ public abstract class CustomLootbox {
         this.options = options;
     }
 
-    public CustomLootbox(String namespace, Component name, CustomLootTable lootTable, LootboxOptions options) {
+    protected CustomLootbox(String namespace, Component name, CustomLootTable lootTable, LootboxOptions options) {
         this.itemDisplayed = null;
         this.namespace = namespace;
         this.name = name;

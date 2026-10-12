@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class MascotsButton {
+    private MascotsButton() {}
+
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
         Player player = menu.getOwner();
         Mascot mascot = city.getMascot();

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class MessagesManager {
+    private MessagesManager() {}
 
     /*
     For use the beautiful message, create a prefix.

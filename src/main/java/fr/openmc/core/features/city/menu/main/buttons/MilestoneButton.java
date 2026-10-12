@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MilestoneButton {
+    private MilestoneButton() {}
+
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
         Player player = menu.getOwner();
 

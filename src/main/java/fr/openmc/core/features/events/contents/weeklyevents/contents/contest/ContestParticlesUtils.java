@@ -18,12 +18,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ContestParticlesUtils {
+    private ContestParticlesUtils() {}
+
+    private static final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
 
     public static Color color1;
     public static Color color2;
 
     public static void spawnParticlesInRegion(String regionId, World world, Particle particle, int amountPer2Tick, int minHeight, int maxHeight) {
-        WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if (regionManager == null) return;
 
@@ -61,8 +63,6 @@ public class ContestParticlesUtils {
     }
 
     public static void spawnContestParticlesInRegion(ContestManager contestManager, String regionId, World world, int amountPer2Tick, int minHeight, int maxHeight) {
-        WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
-
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if (regionManager == null) return;
 

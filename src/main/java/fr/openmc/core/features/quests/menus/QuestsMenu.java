@@ -36,7 +36,6 @@ public class QuestsMenu extends Menu {
     private final QuestsManager questsManager = OMCRegistry.FEATURES.QUESTS.get();
 
     private int currentPage;
-    private static String TITLE;
     private final int totalPages;
     private OMCPlayer target;
     private final Map<Integer, Integer> slotToQuestIndex = new HashMap<>();
@@ -218,10 +217,10 @@ public class QuestsMenu extends Menu {
         meta.displayName(displayName);
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
-        quest.getDescription(playerUUID).forEach(description -> {
+        quest.getDescription(playerUUID).forEach(description ->
             lore.add(description.color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-        });
+                    .decoration(TextDecoration.ITALIC, false))
+        );
         lore.add(bar);
 
         if (hasPendingRewards) {
@@ -292,7 +291,7 @@ public class QuestsMenu extends Menu {
         } else if (currentTier != null) {
             int progressPercent = (int) Math.min(100.0F, Math.floor((double) progress / target * 100.0F));
             int barLength = 26;
-            int filledLength = (int)((double)barLength * ((double)progress / (double)target));
+            int filledLength = (int)(barLength * ((double)progress / (double)target));
             Component progressBar = Component.text("[", NamedTextColor.DARK_GRAY)
                     .decoration(TextDecoration.ITALIC, false);
 
@@ -319,11 +318,11 @@ public class QuestsMenu extends Menu {
                     .append(TranslationManager.translation("feature.quests.menu.current_objective")
                             .color(NamedTextColor.YELLOW))
                     .decoration(TextDecoration.ITALIC, false));
-            quest.getDescription(playerUUID).forEach(description -> {
+            quest.getDescription(playerUUID).forEach(description ->
                 lore.add(Component.text("  ", NamedTextColor.WHITE)
                         .append(description.color(NamedTextColor.WHITE))
-                        .decoration(TextDecoration.ITALIC, false));
-            });
+                        .decoration(TextDecoration.ITALIC, false))
+            );
             lore.addAll(quest.getAdditionalLore());
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
                 lore.add(Component.empty());
@@ -353,11 +352,11 @@ public class QuestsMenu extends Menu {
                         .append(TranslationManager.translation("feature.quests.menu.next_tier.title")
                                 .color(NamedTextColor.DARK_GRAY))
                         .decoration(TextDecoration.ITALIC, false));
-                quest.getNextTierDescription(playerUUID).forEach(description -> {
+                quest.getNextTierDescription(playerUUID).forEach(description ->
                     lore.add(Component.text("  ", NamedTextColor.DARK_GRAY)
                             .append(description.color(NamedTextColor.DARK_GRAY))
-                            .decoration(TextDecoration.ITALIC, false));
-                });
+                            .decoration(TextDecoration.ITALIC, false))
+                );
 
                 if (nextTier.getSteps() != null && !nextTier.getSteps().isEmpty()) {
                     for (int i = 0; i < nextTier.getSteps().size(); i++) {

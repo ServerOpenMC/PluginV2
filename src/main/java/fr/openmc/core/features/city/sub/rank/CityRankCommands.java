@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.rank;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplete;
 import fr.openmc.core.features.city.commands.autocomplete.CityRanksAutoComplete;
 import fr.openmc.core.features.city.models.CityPermission;
@@ -23,12 +22,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"city ranks", "ville grades"})
 public class CityRankCommands {
-	private final CityManager cityManager;
-
-	public CityRankCommands(CityManager cityManager) {
-		this.cityManager = cityManager;
-	}
-
 	@CommandPlaceholder()
 	@CommandPermission("omc.commands.city.rank")
 	public void rank(Player player) {

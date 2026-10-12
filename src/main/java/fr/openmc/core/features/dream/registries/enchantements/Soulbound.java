@@ -20,14 +20,11 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("UnstableApiUsage")
 public class Soulbound extends DreamEnchantment implements Listener {
-    public static HashMap<UUID, List<ItemStack>> soulboundItemsOnRespawn = new HashMap<>();
+    protected static Map<UUID, List<ItemStack>> soulboundItemsOnRespawn = new HashMap<>();
 
     @Override
     public Key getKey() {

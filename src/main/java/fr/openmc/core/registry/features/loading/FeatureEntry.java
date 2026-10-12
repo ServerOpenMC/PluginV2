@@ -1,12 +1,12 @@
 package fr.openmc.core.registry.features.loading;
 
-import com.google.common.base.Supplier;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.registry.features.Feature;
 import lombok.Getter;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class FeatureEntry<F extends Feature> {
     private final Supplier<F> supplier;

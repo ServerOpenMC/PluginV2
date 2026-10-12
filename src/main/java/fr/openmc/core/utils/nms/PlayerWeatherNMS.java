@@ -6,6 +6,8 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class PlayerWeatherNMS {
+    private PlayerWeatherNMS() {}
+
     public static void setWeather(Player player, WeatherType type) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 

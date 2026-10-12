@@ -58,9 +58,9 @@ public class DreamManager extends Feature
     // ** CONSTANTS **
     public static final Long BASE_DREAM_TIME = 300L;
 
-    private final HashMap<UUID, DBPlayerSave> playerSaveData = new HashMap<>();
-    private final HashMap<UUID, DreamPlayer> dreamPlayerData = new HashMap<>();
-    public final HashMap<UUID, DBDreamPlayer> cacheDreamPlayer = new HashMap<>();
+    private final Map<UUID, DBPlayerSave> playerSaveData = new HashMap<>();
+    private final Map<UUID, DreamPlayer> dreamPlayerData = new HashMap<>();
+    public final Map<UUID, DBDreamPlayer> cacheDreamPlayer = new HashMap<>();
 
     private final DBTable<DBDreamPlayer, String> dreamPlayerTable = DBTable.of(DBDreamPlayer.class);
     private final DBTable<DBPlayerSave, String> savePlayerTable = DBTable.of(DBPlayerSave.class);
@@ -277,7 +277,7 @@ public class DreamManager extends Feature
         } else {
             addCacheDreamPlayer(player, new DBDreamPlayer(
                     player.getUniqueId(),
-                    this.BASE_DREAM_TIME,
+                    BASE_DREAM_TIME,
                     serializedDreamInventory,
                     dreamLocation.getX(),
                     dreamLocation.getY(),

@@ -26,9 +26,9 @@ import java.util.*;
 
 public class MultiBlockManager extends Feature implements HasListeners, HasCommands {
     @Getter
-    public static final List<MultiBlock> multiBlocks = new ArrayList<>();
-    private static FileConfiguration config = null;
-    private static File file = null;
+    public final List<MultiBlock> multiBlocks = new ArrayList<>();
+    private FileConfiguration config = null;
+    private File file = null;
 
     @Override
     public void onEnable() {

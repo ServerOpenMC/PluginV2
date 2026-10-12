@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component;
  * pour tout ce qui est autour de la banque (utile pour faire une modif sur menu et commandes).
  */
 public class CityBankConditions {
+    private CityBankConditions() {}
 
     /**
      * Retourne un booleen pour dire si le joueur peut ouvrir la banque

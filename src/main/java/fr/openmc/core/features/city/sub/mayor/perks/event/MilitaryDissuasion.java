@@ -17,9 +17,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class MilitaryDissuasion implements Listener {
+
+    private static final NamespacedKey GOLEM_KEY = new NamespacedKey(OMCPlugin.getInstance(), "military_dissuasion_golem");
+    private static final Random random = ThreadLocalRandom.current();
 
     /**
      * Spawns Iron Golems in the specified city.
@@ -35,7 +39,6 @@ public class MilitaryDissuasion implements Listener {
         if (world == null) return;
 
         List<ChunkPos> chunkList = new ArrayList<>(chunks);
-        Random random = new Random();
 
         int spawned = 0;
         int attempts = 0;
@@ -70,7 +73,7 @@ public class MilitaryDissuasion implements Listener {
                 golem.setHealth(35);
 
                 PersistentDataContainer pdc = golem.getPersistentDataContainer();
-                pdc.set(new NamespacedKey(OMCPlugin.getInstance(), "city_golem"), PersistentDataType.STRING, city.getUniqueId().toString());
+                pdc.set(GOLEM_KEY, PersistentDataType.STRING, city.getUniqueId().toString());
 
                 golem.setAI(false);
 
@@ -78,8 +81,8 @@ public class MilitaryDissuasion implements Listener {
                     if (!golem.isValid() || golem.isDead()) return;
 
                     List<Player> nearbyEnemies = golem.getNearbyEntities(15, 15, 15).stream()
-                            .filter(ent -> ent instanceof Player)
-                            .map(ent -> (Player) ent)
+                            .filter(Player.class::isInstance)
+                            .map(Player.class::cast)
                             .filter(nearbyPlayer -> {
                                 if (nearbyPlayer.getGameMode() != GameMode.SURVIVAL && nearbyPlayer.getGameMode() != GameMode.ADVENTURE) {
                                     return false;
@@ -113,14 +116,13 @@ public class MilitaryDissuasion implements Listener {
      * @param city The city whose golems will be cleared.
      */
     public static void clearCityGolems(City city) {
-        NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_golem");
         UUID cityUUID = city.getUniqueId();
 
         for (Entity entity : Bukkit.getWorld("world").getEntitiesByClass(IronGolem.class)) {
             PersistentDataContainer pdc = entity.getPersistentDataContainer();
-            if (!pdc.has(key, PersistentDataType.STRING)) continue;
+            if (!pdc.has(GOLEM_KEY, PersistentDataType.STRING)) continue;
 
-            String storedUUID = pdc.get(key, PersistentDataType.STRING);
+            String storedUUID = pdc.get(GOLEM_KEY, PersistentDataType.STRING);
             if (storedUUID != null && storedUUID.equals(cityUUID)) {
                 entity.remove();
             }

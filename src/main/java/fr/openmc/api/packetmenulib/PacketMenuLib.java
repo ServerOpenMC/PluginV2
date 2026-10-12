@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 
 public final class PacketMenuLib {
+    private PacketMenuLib() {}
 
     @Getter
     private static final Map<UUID, Menu> openMenus = new HashMap<>();

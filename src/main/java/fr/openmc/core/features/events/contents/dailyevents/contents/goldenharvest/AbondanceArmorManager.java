@@ -11,11 +11,12 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class AbondanceArmorManager {
+    private AbondanceArmorManager() {}
+
     public static final double DOUBLE_CROPS_MODIFIER = 0;
 
     public static final double DOUBLE_CROPS_ARMOR_MODIFIER = 0.05;
     public static final double LUCK_GOLDEN_CROPS_ARMOR_MODIFIER = 0.015;
-
 
     private static final Set<CustomItem> ABONDANCE_ARMOR = Set.of(
             OMCRegistry.CUSTOM_ITEMS.ABONDANCE_HELMET,

@@ -17,6 +17,8 @@ import org.bukkit.OfflinePlayer;
 import java.util.List;
 
 public class CityRankAction {
+	private CityRankAction() {}
+
 	private static final int MAX_LENGTH_RANK_NAME = 16;
 	
 	/**

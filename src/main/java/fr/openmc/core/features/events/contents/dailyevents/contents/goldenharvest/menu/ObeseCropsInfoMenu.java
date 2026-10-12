@@ -28,7 +28,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class ObeseCropsInfoMenu extends PaginatedMenu {
-    private final static DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private final GoldenHarvestManager goldenHarvestManager = OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.feature();
 
     private final List<ObeseCropInfo> obeseCropInfos;
 
@@ -132,7 +133,7 @@ public class ObeseCropsInfoMenu extends PaginatedMenu {
     private List<ObeseCropInfo> generateObeseCropInfos() {
         Map<CustomItem, ObeseCropInfoBuilder> obeseCrops = new LinkedHashMap<>();
 
-        GoldenHarvestManager.getObeseCropsMapping().forEach((source, results) -> {
+        goldenHarvestManager.getObeseCropsMapping().forEach((source, results) -> {
             List<Map.Entry<Double, CustomItem>> sortedResults = results.entrySet()
                     .stream()
                     .sorted(Map.Entry.comparingByKey())

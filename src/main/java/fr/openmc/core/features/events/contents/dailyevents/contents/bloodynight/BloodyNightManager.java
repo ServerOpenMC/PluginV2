@@ -46,7 +46,7 @@ public class BloodyNightManager extends Feature implements HasListeners {
         // * Programmation des raids
         raidTask = Bukkit.getScheduler().runTaskTimer(
                 OMCPlugin.getInstance(),
-                () -> BloodyNightRaidManager.startRaid(world),
+                () -> BloodyNightRaidUtils.startRaid(world),
                 20L * 10,
                 RAID_INTERVAL
         );
@@ -140,8 +140,8 @@ public class BloodyNightManager extends Feature implements HasListeners {
      */
     private static void deleteRaidMonsters(World world) {
         for (Entity entity : world.getEntities()) {
-            if (!(entity instanceof Monster monster)) continue;
-            if (!(entity.getPersistentDataContainer().has(RAID_MONSTER_KEY))) continue;
+            if (!(entity instanceof Monster monster)
+                || !(entity.getPersistentDataContainer().has(RAID_MONSTER_KEY))) continue;
 
             monster.remove();
         }

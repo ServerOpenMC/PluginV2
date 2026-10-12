@@ -67,9 +67,9 @@ public class TPAcceptCommand {
 			return;
 		}
 		
-		if (tpaManager.getTargetByRequester(player) != null) {
-			if (Objects.equals(tpaManager.getTargetByRequester(player), target)) teleport(player, target);
-		}
+		if (tpaManager.getTargetByRequester(player) != null
+				&& Objects.equals(tpaManager.getTargetByRequester(player), target))
+			teleport(player, target);
 	}
 	
 	private void teleport(OMCPlayer requester, OMCPlayer target) {

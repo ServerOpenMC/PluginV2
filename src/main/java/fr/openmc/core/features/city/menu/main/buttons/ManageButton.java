@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ManageButton {
+    private ManageButton() {}
+
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int slot) {
         Player player = menu.getOwner();
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);

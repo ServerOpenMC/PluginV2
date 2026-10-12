@@ -61,9 +61,9 @@ public class PlayersList extends PaginatedMenu {
             OMCPlayer omcPlayer = OMCPlayer.of(onlinePlayer);
             if (!MAILBOX_MANAGER.canSend(getOwner(), onlinePlayer)) continue;
             pageItems.add(new ItemMenuBuilder(this, ItemUtils.getPlayerHead(onlinePlayer.getUniqueId()))
-                    .setOnClick(event -> {
-                        new SendingLetter(getOwner(), omcPlayer).open();
-                    }));
+                    .setOnClick(_ ->
+                        new SendingLetter(getOwner(), omcPlayer).open()
+                    ));
         }
         return pageItems;
     }

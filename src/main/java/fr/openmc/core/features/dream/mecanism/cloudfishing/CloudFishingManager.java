@@ -24,7 +24,7 @@ public class CloudFishingManager extends Feature implements HasListeners {
     @Getter
     private final HashMap<UUID, FishBiteTask> hookedPlayers = new HashMap<>();
 
-    public static final double Y_CLOUD_FISHING = 120 - 5; // CloudChunk.MIN_HEIGHT_CLOUD - 5
+    public static final double Y_CLOUD_FISHING = 120 - 5d; // CloudChunk.MIN_HEIGHT_CLOUD - 5
 
     @Override
     public Set<ListenerFactory> getListeners() {
@@ -39,7 +39,8 @@ public class CloudFishingManager extends Feature implements HasListeners {
 
         Location hookLoc = hook.getLocation().clone();
 
-        Location start = hookLoc.clone().add(random.nextInt(6) - 3, -random.nextDouble(2), random.nextInt(6) - 3);
+        Location start = hookLoc.clone().add(random.nextInt(6) - 3d,
+                -random.nextDouble(2), random.nextInt(6) - 3d);
 
         int steps = 40;
         int[] counter = {0};
