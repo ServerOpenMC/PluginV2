@@ -1,10 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.managers;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -26,8 +22,9 @@ import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -46,9 +43,6 @@ import java.util.*;
 public class MayorManager extends Feature implements HasListeners, HasCommands, HasDatabase {
     private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
-    @Getter
-    private static ConnectionSource connectionSource;
-
     private final CityManager cityManager;
     public final MayorNPCManager mayorNPCManager;
     private final FancyNpcsHook fancyNpcsHook;
@@ -56,30 +50,21 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     public static final int MEMBER_REQUEST_ELECTION = 3;
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
-            NamedTextColor.RED,
-            NamedTextColor.GOLD,
-            NamedTextColor.YELLOW,
-            NamedTextColor.GREEN,
-            NamedTextColor.DARK_GREEN,
-            NamedTextColor.BLUE,
-            NamedTextColor.AQUA,
-            NamedTextColor.DARK_BLUE,
-            NamedTextColor.DARK_PURPLE,
-            NamedTextColor.LIGHT_PURPLE,
-            NamedTextColor.WHITE,
-            NamedTextColor.GRAY,
-            NamedTextColor.DARK_GRAY);
+            NamedTextColor.RED, NamedTextColor.GOLD, NamedTextColor.YELLOW, NamedTextColor.GREEN,
+            NamedTextColor.DARK_GREEN, NamedTextColor.BLUE, NamedTextColor.AQUA, NamedTextColor.DARK_BLUE,
+            NamedTextColor.DARK_PURPLE, NamedTextColor.LIGHT_PURPLE, NamedTextColor.WHITE,
+            NamedTextColor.GRAY, NamedTextColor.DARK_GRAY);
 
     @Getter
     private MayorPhase mayorPhase;
     @Getter
-    private Map<UUID, Mayor> cityMayor = new HashMap<>();
+    private final Map<UUID, Mayor> cityMayor = new HashMap<>();
     @Getter
     private final Map<UUID, CityLaw> cityLaws = new HashMap<>();
     @Getter
-    private Map<UUID, List<MayorCandidate>> cityElections = new HashMap<>();
+    private final Map<UUID, List<MayorCandidate>> cityElections = new HashMap<>();
     @Getter
-    private Map<UUID, List<MayorVote>> playerVote = new HashMap<>();
+    private final Map<UUID, List<MayorVote>> playerVote = new HashMap<>();
 
     private final Random RANDOM = new Random();
 
@@ -110,30 +95,15 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
         this.saveCityLaws();
     }
 
-    private Dao<Mayor, String> mayorsDao;
-    private Dao<MayorCandidate, UUID> candidatesDao;
-    private Dao<MayorVote, UUID> votesDao;
-    private Dao<CityLaw, String> lawsDao;
-    private Dao<MayorConstant, Integer> constantsDao;
+    private final DBTable<Mayor, String> mayorsTable = DBTable.of(Mayor.class);
+    private final DBTable<MayorCandidate, UUID> candidatesTable = DBTable.of(MayorCandidate.class);
+    private final DBTable<MayorVote, UUID> votesTable = DBTable.of(MayorVote.class);
+    private final DBTable<CityLaw, String> lawsTable = DBTable.of(CityLaw.class);
+    private final DBTable<MayorConstant, Integer> constantsTable = DBTable.of(MayorConstant.class);
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Mayor.class);
-        mayorsDao = DaoManager.createDao(connectionSource, Mayor.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, MayorCandidate.class);
-        candidatesDao = DaoManager.createDao(connectionSource, MayorCandidate.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, MayorVote.class);
-        votesDao = DaoManager.createDao(connectionSource, MayorVote.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, CityLaw.class);
-        lawsDao = DaoManager.createDao(connectionSource, CityLaw.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, MayorConstant.class);
-        constantsDao = DaoManager.createDao(connectionSource, MayorConstant.class);
-
-        MayorManager.connectionSource = connectionSource;
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(mayorsTable, candidatesTable, votesTable, lawsTable, constantsTable);
     }
 
     @Override
@@ -168,21 +138,21 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
 
     // Load and Save Data Methods
     public void loadMayorConstant() {
-        try {
-            MayorConstant constant = constantsDao.queryForFirst();
-            if (constant == null) {
-                constant = new MayorConstant(MayorPhase.OPEN_ELECTION);
-                constantsDao.create(constant);
-            }
+        MayorConstant constant = constantsTable.loadList().getFirst();
+        if (constant == null) {
+            constant = new MayorConstant(MayorPhase.OPEN_ELECTION);
 
-            if (!constant.getPhase().equals(MayorPhase.OPEN_ELECTION) && !constant.getPhase().equals(MayorPhase.MAYOR_ELECTED)) {
-                mayorPhase = MayorPhase.OPEN_ELECTION;
-            } else {
-                mayorPhase = constant.getPhase();
+            try {
+                constantsTable.create(constant);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
+        }
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (!constant.getPhase().equals(MayorPhase.OPEN_ELECTION) && !constant.getPhase().equals(MayorPhase.MAYOR_ELECTED)) {
+            mayorPhase = MayorPhase.OPEN_ELECTION;
+        } else {
+            mayorPhase = constant.getPhase();
         }
     }
 
@@ -192,113 +162,71 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
                 mayorPhase = MayorPhase.OPEN_ELECTION;
             }
 
-            constantsDao.createOrUpdate(new MayorConstant(mayorPhase));
+            constantsTable.createOrUpdate(new MayorConstant(mayorPhase));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void loadCityMayors() {
-        try {
-            List<Mayor> mayors = mayorsDao.queryForAll();
-
-            mayors.forEach(mayor -> cityMayor.put(mayor.getCityUUID(), mayor));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        cityMayor.clear();
+        cityMayor.putAll(mayorsTable.loadMap(Mayor::getCityUUID));
     }
 
     public void saveCityMayors() {
-        cityMayor.forEach((city, mayor) -> {
-            try {
-                mayorsDao.createOrUpdate(mayor);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        mayorsTable.saveMap(cityMayor);
+        cityMayor.clear();
     }
 
     public void loadMayorCandidates() {
-        try {
-            List<MayorCandidate> candidates = candidatesDao.queryForAll();
-
-            candidates.forEach(candidate -> {
-                cityElections.computeIfAbsent(candidate.getCityUUID(), k -> new ArrayList<>()).add(candidate);
-            });
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        cityElections.clear();
+        cityElections.putAll(candidatesTable.loadMapList(MayorCandidate::getCityUUID));
     }
 
     public void saveMayorCandidates() {
-        cityElections.forEach(
-                (city, candidates) -> candidates.forEach(candidate -> {
-                    try {
-                        candidatesDao.createOrUpdate(candidate);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }));
+        candidatesTable.saveMapList(cityElections);
+        cityElections.clear();
     }
 
     public void loadPlayersVote() {
-        try {
-            votesDao.queryForAll().forEach(
-                    vote -> playerVote.computeIfAbsent(vote.getCity().getUniqueId(), k -> new ArrayList<>()).add(vote));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        playerVote.clear();
+        playerVote.putAll(votesTable.loadMapList(MayorVote::getCityUUID));
     }
 
     public void savePlayersVote() {
-        playerVote.forEach((city, votes) -> votes.forEach(vote -> {
-            try {
-                votesDao.createOrUpdate(vote);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }));
+        votesTable.saveMapList(playerVote);
+        playerVote.clear();
     }
 
     public void loadCityLaws() {
-        try {
-            List<CityLaw> laws = lawsDao.queryForAll();
-
-            laws.forEach(law -> cityLaws.put(law.getCityUUID(), law));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        cityLaws.clear();
+        cityLaws.putAll(lawsTable.loadMap(CityLaw::getCityUUID));
     }
 
     public void saveCityLaws() {
-        cityLaws.forEach((city, law) -> {
-            try {
-                lawsDao.createOrUpdate(law);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        lawsTable.saveMap(cityLaws);
+        cityLaws.clear();
     }
 
     public void removeCity(City city) throws SQLException {
-        DeleteBuilder<Mayor, String> mayorsDelete = mayorsDao.deleteBuilder();
+        DeleteBuilder<Mayor, String> mayorsDelete = mayorsTable.deleteBuilder();
         mayorsDelete.where().eq("city_uuid", city.getUniqueId());
-        mayorsDao.delete(mayorsDelete.prepare());
+        mayorsTable.delete(mayorsDelete.prepare());
         cityMayor.remove(city.getUniqueId());
 
-        DeleteBuilder<MayorCandidate, UUID> candidatesDelete = candidatesDao.deleteBuilder();
+        DeleteBuilder<MayorCandidate, UUID> candidatesDelete = candidatesTable.deleteBuilder();
         candidatesDelete.where().eq("city_uuid", city.getUniqueId());
-        candidatesDao.delete(candidatesDelete.prepare());
+        candidatesTable.delete(candidatesDelete.prepare());
         cityElections.remove(city.getUniqueId());
 
-        DeleteBuilder<MayorVote, UUID> votesDelete = votesDao.deleteBuilder();
+        DeleteBuilder<MayorVote, UUID> votesDelete = votesTable.deleteBuilder();
         votesDelete.where().eq("city_uuid", city.getUniqueId());
-        votesDao.delete(votesDelete.prepare());
+        votesTable.delete(votesDelete.prepare());
         playerVote.remove(city.getUniqueId());
 
-        DeleteBuilder<CityLaw, String> lawsDelete = lawsDao.deleteBuilder();
+        DeleteBuilder<CityLaw, String> lawsDelete = lawsTable.deleteBuilder();
         lawsDelete.where().eq("city_uuid", city.getUniqueId());
-        lawsDao.delete(lawsDelete.prepare());
+        lawsTable.delete(lawsDelete.prepare());
         cityLaws.remove(city.getUniqueId());
     }
 
@@ -312,28 +240,15 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
 
         // On vide toutes les tables
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                TableUtils.dropTable(mayorsDao, false);
-                TableUtils.dropTable(candidatesDao, false);
-                TableUtils.dropTable(votesDao, false);
-
-                TableUtils.createTableIfNotExists(connectionSource, Mayor.class);
-                mayorsDao = DaoManager.createDao(connectionSource, Mayor.class);
-
-                TableUtils.createTableIfNotExists(connectionSource, MayorCandidate.class);
-                candidatesDao = DaoManager.createDao(connectionSource, MayorCandidate.class);
-
-                TableUtils.createTableIfNotExists(connectionSource, MayorVote.class);
-                votesDao = DaoManager.createDao(connectionSource, MayorVote.class);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            mayorsTable.clearTable();
+            candidatesTable.clearTable();
+            votesTable.clearTable();
         });
 
-        Map<UUID, Mayor> copyCityMayor = cityMayor;
-        cityMayor = new HashMap<>();
-        cityElections = new HashMap<>();
-        playerVote = new HashMap<>();
+        Map<UUID, Mayor> copyCityMayor = new HashMap<>(cityMayor);
+        cityMayor.clear();
+        cityElections.clear();
+        playerVote.clear();
         for (City city : cityManager.getCities()) {
             if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) continue;
 
@@ -512,13 +427,13 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                DeleteBuilder<MayorCandidate, UUID> candidatesDelete = candidatesDao.deleteBuilder();
+                DeleteBuilder<MayorCandidate, UUID> candidatesDelete = candidatesTable.deleteBuilder();
                 candidatesDelete.where().eq("city_uuid", city.getUniqueId());
-                candidatesDao.delete(candidatesDelete.prepare());
+                candidatesTable.delete(candidatesDelete.prepare());
 
-                DeleteBuilder<MayorVote, UUID> votesDelete = votesDao.deleteBuilder();
+                DeleteBuilder<MayorVote, UUID> votesDelete = votesTable.deleteBuilder();
                 votesDelete.where().eq("city_uuid", city.getUniqueId());
-                votesDao.delete(votesDelete.prepare());
+                votesTable.delete(votesDelete.prepare());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -581,7 +496,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
      * @param player The player to remove a vote
      */
     public void removeVotePlayer(Player player) {
-        playerVote.forEach((city, votes) -> votes.removeIf(vote -> vote.getVoter().equals(player.getUniqueId())));
+        playerVote.forEach((city, votes) -> votes.removeIf(vote -> vote.getVoterUUID().equals(player.getUniqueId())));
     }
 
     /**
@@ -611,7 +526,7 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
 
         return playerVote.get(playerCity.getUniqueId())
                 .stream()
-                .anyMatch(mayorVote -> mayorVote.getVoter().equals(player.getUniqueId()) && mayorVote.getCandidate() != null);
+                .anyMatch(mayorVote -> mayorVote.getVoterUUID().equals(player.getUniqueId()) && mayorVote.getCandidateUUID() != null);
     }
 
     /**
@@ -622,8 +537,8 @@ public class MayorManager extends Feature implements HasListeners, HasCommands, 
     public MayorCandidate getPlayerVote(Player player) {
         for (List<MayorVote> votes : playerVote.values()) {
             for (MayorVote vote : votes) {
-                if (vote.getVoter().equals(player.getUniqueId())) {
-                    return vote.getCandidate();
+                if (vote.getVoterUUID().equals(player.getUniqueId())) {
+                    return vote.getCandidateUUID();
                 }
             }
         }

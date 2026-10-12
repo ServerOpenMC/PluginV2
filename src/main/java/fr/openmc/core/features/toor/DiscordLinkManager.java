@@ -1,9 +1,5 @@
 package fr.openmc.core.features.toor;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.BitsManager;
@@ -15,7 +11,8 @@ import fr.openmc.core.features.toor.utils.RequestSigner;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.cache.TtlCache;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -32,6 +29,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -42,7 +40,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
     private final BitsManager bitsManager = OMCRegistry.FEATURES.BITS.get();
     private final GitHubHook gitHubHook = OMCRegistry.HOOKS.GITHUB;
 
-    private Dao<DBDiscordLink, UUID> discordLinksDao;
+    private final DBTable<DBDiscordLink, UUID> discordLinksTable = DBTable.of(DBDiscordLink.class);
     private final Map<UUID, DBDiscordLink> linkCache = new ConcurrentHashMap<>();
 
     // Map<code, (Player, expireAt, task)>
@@ -61,15 +59,13 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
 
     @Override
     protected void onEnable() {
-        linkCache.clear();
         loadConfig();
         loadAll();
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, DBDiscordLink.class);
-        discordLinksDao = DaoManager.createDao(connectionSource, DBDiscordLink.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(discordLinksTable);
     }
 
     @Override
@@ -101,13 +97,8 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
     }
 
     private void loadAll() {
-        try {
-            for (DBDiscordLink link : discordLinksDao.queryForAll()) {
-                linkCache.put(link.getPlayerUUID(), link);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        linkCache.clear();
+        linkCache.putAll(discordLinksTable.loadMap(DBDiscordLink::getPlayerUUID));
     }
 
     public boolean isLinked(UUID playerUUID) {
@@ -164,7 +155,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         DBDiscordLink link = new DBDiscordLink(playerUUID, discordUserId);
         linkCache.put(playerUUID, link);
         try {
-            discordLinksDao.createOrUpdate(link);
+            discordLinksTable.createOrUpdate(link);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -196,7 +187,7 @@ public class DiscordLinkManager extends Feature implements HasDatabase, HasComma
         linkCache.remove(playerUUID);
 
         try {
-            discordLinksDao.deleteById(playerUUID);
+            discordLinksTable.deleteById(playerUUID);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -1,18 +1,15 @@
 package fr.openmc.core.features.settings;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.features.settings.listeners.PlayerSettingsListener;
-import fr.openmc.core.features.settings.models.PlayerSettingEntity;
+import fr.openmc.core.features.settings.models.DBPlayerSetting;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
@@ -30,9 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 @Getter
 public class PlayerSettingsManager extends Feature implements HasDatabase, HasListeners, HasCommands {
-
     private final Map<UUID, PlayerSettings> playersSettings = new ConcurrentHashMap<>();
-    private Dao<PlayerSettingEntity, Long> playerSettingDao;
+    private final DBTable<DBPlayerSetting, Long> playerSettingTable = DBTable.of(DBPlayerSetting.class);
 
     @Override
     public void onEnable() {
@@ -56,23 +52,9 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
         this.saveAllSettings();
     }
 
-    /**
-     * Initializes the database connection and creates tables if needed.
-     *
-     * @param connectionSource the database connection source
-     * @throws SQLException if database initialization fails
-     */
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        playerSettingDao = DaoManager.createDao(connectionSource, PlayerSettingEntity.class);
-        try {
-            TableUtils.createTableIfNotExists(connectionSource, PlayerSettingEntity.class);
-        } catch (SQLException e) {
-            if (!e.getMessage().contains("Duplicate key")) {
-                OMCLogger.error("Failed to create PlayerSettingEntity table", e);
-            }
-            OMCLogger.error("Table for PlayerSettingEntity already exists, skipping creation.");
-        }
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(playerSettingTable);
     }
 
     /**
@@ -124,21 +106,17 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
      */
     public void loadAllPlayerSettings() {
         CompletableFuture.runAsync(() -> {
-            try {
-                List<PlayerSettingEntity> entities = playerSettingDao.queryForAll();
-                for (PlayerSettingEntity entity : entities) {
-                    UUID playerUUID = UUID.fromString(entity.getPlayerUUID());
-                    PlayerSettings settings = playersSettings.computeIfAbsent(playerUUID, PlayerSettings::new);
-                    try {
-                        SettingType settingType = entity.getSettingTypeAsEnum();
-                        Object value = settingType.parseValue(entity.getSettingValue());
-                        settings.setSetting(settingType, value);
-                    } catch (Exception e) {
-                        OMCLogger.warn("Failed to parse setting {} for player {}", entity.getSettingType(), playerUUID, e);
-                    }
+            List<DBPlayerSetting> entities = playerSettingTable.loadList();
+            for (DBPlayerSetting entity : entities) {
+                UUID playerUUID = UUID.fromString(entity.getPlayerUUID());
+                PlayerSettings settings = playersSettings.computeIfAbsent(playerUUID, PlayerSettings::new);
+                try {
+                    SettingType settingType = entity.getSettingTypeAsEnum();
+                    Object value = settingType.parseValue(entity.getSettingValue());
+                    settings.setSetting(settingType, value);
+                } catch (Exception e) {
+                    OMCLogger.warn("Failed to parse setting {} for player {}", entity.getSettingType(), playerUUID, e);
                 }
-            } catch (SQLException e) {
-                OMCLogger.error("Failed to load all player settings from database", e);
             }
         });
     }
@@ -150,18 +128,18 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
      * @param settings   the PlayerSettings instance to load data into
      */
     public void loadPlayerSettingsFromDatabase(UUID playerUUID, PlayerSettings settings) {
-        if (playerSettingDao == null) {
+        if (playerSettingTable == null) {
             OMCLogger.warn("Player settings DAO is not initialized", new Exception());
             return;
         }
 
         try {
-            QueryBuilder<PlayerSettingEntity, Long> queryBuilder = playerSettingDao.queryBuilder();
+            QueryBuilder<DBPlayerSetting, Long> queryBuilder = playerSettingTable.queryBuilder();
             queryBuilder.where().eq("playerUUID", playerUUID.toString());
-            PreparedQuery<PlayerSettingEntity> preparedQuery = queryBuilder.prepare();
-            List<PlayerSettingEntity> entities = playerSettingDao.query(preparedQuery);
+            PreparedQuery<DBPlayerSetting> preparedQuery = queryBuilder.prepare();
+            List<DBPlayerSetting> entities = playerSettingTable.query(preparedQuery);
 
-            for (PlayerSettingEntity entity : entities) {
+            for (DBPlayerSetting entity : entities) {
                 try {
                     SettingType settingType = entity.getSettingTypeAsEnum();
                     Object value = settingType.parseValue(entity.getSettingValue());
@@ -183,27 +161,27 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
      * @param value       the value to save
      */
     public void saveSetting(UUID playerUUID, SettingType settingType, Object value) {
-        if (playerSettingDao == null) {
+        if (playerSettingTable == null) {
             OMCLogger.warn("Player settings DAO is not initialized", new Exception());
             return;
         }
 
         CompletableFuture.runAsync(() -> {
             try {
-                QueryBuilder<PlayerSettingEntity, Long> queryBuilder = playerSettingDao.queryBuilder();
+                QueryBuilder<DBPlayerSetting, Long> queryBuilder = playerSettingTable.queryBuilder();
                 queryBuilder.where()
                         .eq("playerUUID", playerUUID.toString())
                         .and()
                         .eq("settingType", settingType.name());
-                PreparedQuery<PlayerSettingEntity> preparedQuery = queryBuilder.prepare();
-                PlayerSettingEntity existingEntity = playerSettingDao.queryForFirst(preparedQuery);
+                PreparedQuery<DBPlayerSetting> preparedQuery = queryBuilder.prepare();
+                DBPlayerSetting existingEntity = playerSettingTable.queryForFirst(preparedQuery);
 
                 if (existingEntity != null) {
                     existingEntity.updateValue(value);
-                    playerSettingDao.update(existingEntity);
+                    playerSettingTable.update(existingEntity);
                 } else {
-                    PlayerSettingEntity newEntity = new PlayerSettingEntity(playerUUID, settingType, value);
-                    playerSettingDao.create(newEntity);
+                    DBPlayerSetting newEntity = new DBPlayerSetting(playerUUID, settingType, value);
+                    playerSettingTable.create(newEntity);
                 }
             } catch (SQLException e) {
                 OMCLogger.error("Failed to save setting {} for player {}", settingType, playerUUID, e);

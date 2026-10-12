@@ -1,14 +1,11 @@
 package fr.openmc.api.cooldown;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.commands.debug.DebugCooldownCommand;
 import fr.openmc.core.commands.utils.CooldownCommand;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,6 +17,11 @@ import java.util.*;
  * Main class for managing cooldowns
  */
 public class DynamicCooldownManager extends Feature implements HasDatabase, HasCommands {
+    // Map structure: UUID -> (Group -> Cooldown)
+    private final Map<UUID, Map<String, Cooldown>> cooldowns = new HashMap<>();
+
+    private final DBTable<Cooldown, String> cooldownTable = DBTable.of(Cooldown.class);
+
     @Override
     public void onEnable() {
         loadCooldowns();
@@ -39,25 +41,18 @@ public class DynamicCooldownManager extends Feature implements HasDatabase, HasC
         this.saveCooldowns();
     }
 
-    // Map structure: UUID -> (Group -> Cooldown)
-    private final Map<UUID, Map<String, Cooldown>> cooldowns = new HashMap<>();
-
-    private Dao<Cooldown, String> cooldownDao;
-
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Cooldown.class);
-        cooldownDao = DaoManager.createDao(connectionSource, Cooldown.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(cooldownTable);
     }
 
     public void loadCooldowns() {
         try {
-            List<Cooldown> dbCooldowns = cooldownDao.queryForAll();
-
+            List<Cooldown> dbCooldowns = cooldownTable.queryForAll();
             for (Cooldown cooldown : dbCooldowns) {
                 if (cooldown.isReady()) {
                     Bukkit.getPluginManager().callEvent(new CooldownEndEvent(cooldown.getUniqueId(), cooldown.getGroup()));
-                    cooldownDao.delete(cooldown);
+                    cooldownTable.delete(cooldown);
                     continue;
                 }
 
@@ -76,13 +71,13 @@ public class DynamicCooldownManager extends Feature implements HasDatabase, HasC
             groupCooldowns.forEach((group, cooldown) -> {
                 if (!cooldown.isReady()) {
                     try {
-                        cooldownDao.createOrUpdate(cooldown);
+                        cooldownTable.createOrUpdate(cooldown);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
                     try {
-                        cooldownDao.delete(cooldown);
+                        cooldownTable.delete(cooldown);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }

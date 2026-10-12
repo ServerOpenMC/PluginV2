@@ -1,12 +1,8 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestFeaturesRegistry;
@@ -22,9 +18,10 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.mod
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
-import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
@@ -56,7 +53,7 @@ import java.util.stream.Collectors;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 
 @Credit(developers = {"iambibi_"}, graphist = {"Gexary", "Tfloa"})
-public class ContestManager extends Feature implements HasDatabase, HasRegistries {
+public class ContestManager extends Feature implements HasDatabase, HasRegistries, HasCommands {
     private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
     private TradeYMLManager tradeYMLManager;
     private ContestPlayerManager contestPlayerManager;
@@ -65,7 +62,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
     @Setter
     private ContestData data;
     @Getter
-    private Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
+    private final Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
 
     private final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
@@ -90,7 +87,6 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
     @Override
     public void onEnable() {
         this.tradeYMLManager = OMCRegistry.CONTEST_FEATURES.TRADE_YML;
-        System.out.println("trade yùm ùa" + tradeYMLManager);
         this.contestPlayerManager = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
 
         // ** LISTENERS **
@@ -99,11 +95,6 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
                     ContestIntractEvents::new
             );
         }
-
-        // ** COMMANDS **
-        CommandsManager.getHandler().register(
-                new ContestCommand()
-        );
 
         // ** LOAD DATAS **
         initContestData();
@@ -135,20 +126,12 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
         );
     }
 
-    private static Dao<ContestData, Integer> contestDao;
-    private static Dao<ContestPlayer, UUID> playerDao;
+    private final DBTable<ContestData, Integer> contestTable = DBTable.of(ContestData.class);
+    private final DBTable<ContestPlayer, UUID> playerTable = DBTable.of(ContestPlayer.class);
 
-    /**
-     * Initialise la base de données pour les contests et les joueurs
-     * (création des tables si elles n’existent pas encore)
-     */
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, ContestData.class);
-        contestDao = DaoManager.createDao(connectionSource, ContestData.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, ContestPlayer.class);
-        playerDao = DaoManager.createDao(connectionSource, ContestPlayer.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(contestTable, playerTable);
     }
 
     /**
@@ -157,7 +140,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
      */
     public void initContestData() {
         try {
-            data = contestDao.queryForFirst();
+            data = contestTable.loadList().getFirst();
             if (data == null) {
                 data = new ContestData(
                         "feature.events.contest.camp.mayonnaise",
@@ -166,7 +149,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
                         "RED",
                         0,
                         0);
-                contestDao.create(data);
+                contestTable.create(data);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -178,7 +161,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
      */
     public void saveContestData() {
         try {
-            contestDao.update(data);
+            contestTable.update(data);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -189,26 +172,16 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
      * et les insère dans la map dataPlayer.
      */
     public void loadContestPlayerData() {
-        try {
-            playerDao.queryForAll().forEach(player -> dataPlayer.put(player.getUUID(), player));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        dataPlayer.clear();
+        dataPlayer.putAll(playerTable.loadMap(ContestPlayer::getUUID));
     }
 
     /**
      * Sauvegarde les données des joueurs (points, camp, etc.) dans la DB.
      */
     public void saveContestPlayerData() {
-        OMCLogger.info("Saving contest player data...");
-        dataPlayer.forEach((player, data) -> {
-            try {
-                playerDao.createOrUpdate(data);
-            } catch (SQLException e) {
-                OMCLogger.warn("Failed to save contest player data for {}: {}", player, e.getMessage(), e);
-            }
-        });
-        OMCLogger.info("Contest player data saved successfully.");
+        playerTable.saveMap(dataPlayer);
+        dataPlayer.clear();
     }
 
     /**
@@ -555,7 +528,7 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
             }
 
             tradeYMLManager.selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
-            dataPlayer = new HashMap<>(); // on supprime les données précédentes des joueurs
+            dataPlayer.clear(); // on supprime les données précédentes des joueurs
             mailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
         });
     }
@@ -587,5 +560,12 @@ public class ContestManager extends Feature implements HasDatabase, HasRegistrie
 
     public void addContestPlayer(Player player, int camp, NamedTextColor color) {
         dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, camp, color));
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new ContestCommand()
+        );
     }
 }

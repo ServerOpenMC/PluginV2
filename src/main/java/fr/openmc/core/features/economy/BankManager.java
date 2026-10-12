@@ -1,11 +1,6 @@
 package fr.openmc.core.features.economy;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
@@ -18,7 +13,9 @@ import fr.openmc.core.features.economy.events.BankDepositEvent;
 import fr.openmc.core.features.economy.models.Bank;
 import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.DateUtils;
@@ -39,15 +36,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-public class BankManager extends Feature implements HasDatabase {
+public class BankManager extends Feature implements HasDatabase, HasCommands {
     @Getter
-    private Map<UUID, Bank> banks;
-    private Dao<Bank, String> banksDao;
+    private final Map<UUID, Bank> banks = new HashMap<>();
+    private final DBTable<Bank, String> banksTable = DBTable.of(Bank.class);
 
     private BukkitTask interestTask;
 
@@ -55,15 +49,20 @@ public class BankManager extends Feature implements HasDatabase {
 
     @Override
     public void onEnable() {
-        banks = loadAllBanks();
-        CommandsManager.getHandler().register(new BankCommands());
+        loadAllBanks();
         updateInterestTimer();
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Bank.class);
-        banksDao = DaoManager.createDao(connectionSource, Bank.class);
+    public Set<Object> getCommands() {
+        return Set.of(
+                new BankCommands()
+        );
+    }
+
+    @Override
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(banksTable);
     }
 
     public double getBankBalance(UUID playerUUID) {
@@ -103,7 +102,7 @@ public class BankManager extends Feature implements HasDatabase {
     private boolean saveBank(Bank bank) {
         try {
             banks.put(bank.getPlayerUUID(), bank);
-            banksDao.createOrUpdate(bank);
+            banksTable.createOrUpdate(bank);
             return true;
         } catch (SQLException e) {
             OMCLogger.error("Failed to save bank " + bank.getPlayerUUID(), e);
@@ -194,18 +193,9 @@ public class BankManager extends Feature implements HasDatabase {
                 Prefix.BANK, MessageType.SUCCESS, false);
     }
 
-    private Map<UUID, Bank> loadAllBanks() {
-        Map<UUID, Bank> newBanks = new HashMap<>();
-        try {
-            List<Bank> dbBanks = banksDao.queryForAll();
-            for (Bank bank : dbBanks) {
-                newBanks.put(bank.getPlayerUUID(), bank);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return newBanks;
+    private void loadAllBanks() {
+        banks.clear();
+        banks.putAll(banksTable.loadMap(Bank::getPlayerUUID));
     }
 
     // Interests calculated as proportion not percentage (eg: 0.01 = 1%)
@@ -249,7 +239,7 @@ public class BankManager extends Feature implements HasDatabase {
     // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT
     // PERFORMANCE IF THERE ARE MANY BANKS SAVED IN THE DB
     public void applyAllPlayerInterests() {
-        banks = loadAllBanks();
+        loadAllBanks();
         for (UUID player : banks.keySet()) {
             applyPlayerInterest(player);
         }

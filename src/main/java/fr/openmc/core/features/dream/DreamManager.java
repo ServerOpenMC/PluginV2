@@ -1,9 +1,5 @@
 package fr.openmc.core.features.dream;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.city.models.city.City;
@@ -26,9 +22,10 @@ import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.*;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
@@ -65,8 +62,8 @@ public class DreamManager extends Feature
     private final HashMap<UUID, DreamPlayer> dreamPlayerData = new HashMap<>();
     public final HashMap<UUID, DBDreamPlayer> cacheDreamPlayer = new HashMap<>();
 
-    private Dao<DBDreamPlayer, String> dreamPlayerDao;
-    private Dao<DBPlayerSave, String> savePlayerDao;
+    private final DBTable<DBDreamPlayer, String> dreamPlayerTable = DBTable.of(DBDreamPlayer.class);
+    private final DBTable<DBPlayerSave, String> savePlayerTable = DBTable.of(DBPlayerSave.class);
 
     @Override
     public void onEnable() {
@@ -126,12 +123,8 @@ public class DreamManager extends Feature
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, DBDreamPlayer.class);
-        dreamPlayerDao = DaoManager.createDao(connectionSource, DBDreamPlayer.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, DBPlayerSave.class);
-        savePlayerDao = DaoManager.createDao(connectionSource, DBPlayerSave.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(dreamPlayerTable, savePlayerTable);
     }
 
     @Override
@@ -141,51 +134,25 @@ public class DreamManager extends Feature
     }
 
     private void loadAllPlayerSaveData() {
-        try {
-            playerSaveData.clear();
-            savePlayerDao.queryForAll().forEach(playerData -> {
-                playerSaveData.put(playerData.getPlayerUUID(), playerData);
-                try {
-                    savePlayerDao.delete(playerData);
-                } catch (SQLException e) {
-                    OMCLogger.error("Cannot load player save data", e);
-                }
-            });
-        } catch (SQLException e) {
-            OMCLogger.error("Cannot load player save data", e);
-        }
+        playerSaveData.clear();
+        playerSaveData.putAll(new HashMap<>(savePlayerTable.loadMap(DBPlayerSave::getPlayerUUID)));
+        savePlayerTable.clearTable();
     }
 
     public void saveAllPlayerSaveData() {
-        playerSaveData.forEach((uuid, playerSave) -> {
-            try {
-                savePlayerDao.createOrUpdate(playerSave);
-            } catch (SQLException e) {
-                OMCLogger.error("Cannot save player save data for player {}", uuid, e);
-            }
-        });
+        savePlayerTable.saveMap(playerSaveData);
+        playerSaveData.clear();
     }
 
 
     private void loadAllDreamPlayerData() {
-        try {
-            dreamPlayerData.clear();
-            dreamPlayerDao.queryForAll().forEach(playerData ->
-                    cacheDreamPlayer.put(playerData.getPlayerUUID(), playerData)
-            );
-        } catch (SQLException e) {
-            OMCLogger.error("Cannot load dream player data", e);
-        }
+        cacheDreamPlayer.clear();
+        cacheDreamPlayer.putAll(dreamPlayerTable.loadMap(DBDreamPlayer::getPlayerUUID));
     }
 
     public void saveAllDreamPlayerData() {
-        cacheDreamPlayer.forEach((uuid, dbDreamPlayer) -> {
-            try {
-                dreamPlayerDao.createOrUpdate(dbDreamPlayer);
-            } catch (SQLException e) {
-                OMCLogger.error("Cannot save dream player data", e);
-            }
-        });
+        dreamPlayerTable.saveMap(cacheDreamPlayer);
+        cacheDreamPlayer.clear();
     }
 
     public void saveDreamPlayerData(DreamPlayer dreamPlayer) {
@@ -194,7 +161,7 @@ public class DreamManager extends Feature
 
     public void saveDreamPlayerData(DBDreamPlayer dbDreamPlayer) {
         try {
-            dreamPlayerDao.createOrUpdate(dbDreamPlayer);
+            dreamPlayerTable.createOrUpdate(dbDreamPlayer);
             if (cacheDreamPlayer.containsKey(dbDreamPlayer.getPlayerUUID())) {
                 cacheDreamPlayer.replace(dbDreamPlayer.getPlayerUUID(), dbDreamPlayer);
             } else {

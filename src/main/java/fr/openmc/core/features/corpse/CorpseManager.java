@@ -1,9 +1,5 @@
 package fr.openmc.core.features.corpse;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
@@ -14,12 +10,10 @@ import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.hooks.FancyNpcsHook;
-import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
-import fr.openmc.core.lifecycle.interfaces.LoadIfEnable;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
@@ -52,11 +46,11 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Credit(developers = {"Nocolm"})
-public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook>, HasDatabase, HasListeners, HasCommands {
+public class CorpseManager extends Feature implements HasDatabase, HasListeners, HasCommands {
 
     @Getter
-    private Map<UUID, DBCorpse> corpsesDB;
-    private Dao<DBCorpse, String> corpsesDao;
+    private final Map<UUID, DBCorpse> corpsesDB = new HashMap<>();
+    private final DBTable<DBCorpse, String> corpsesTable = DBTable.of(DBCorpse.class);
 
     public CorpseNPCManager corpseNPCManager;
     private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
@@ -68,21 +62,18 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
             "world", "world_nether", "world_the_end"
     );
 
-
-
     @Override
     public void onEnable() {
         corpseNPCManager = new CorpseNPCManager(this);
 
         corpseNPCManager.init();
-        corpsesDB = loadAllCorpses();
+        loadAllCorpses();
         startVoidDetection();
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, DBCorpse.class);
-        corpsesDao = DaoManager.createDao(connectionSource, DBCorpse.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(corpsesTable);
     }
 
     @Override
@@ -104,17 +95,14 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         );
     }
 
+    public void loadAllCorpses() {
+        corpsesDB.clear();
+        corpsesDB.putAll(corpsesTable.loadMap(DBCorpse::getPlayerUUID));
+    }
+
     private void saveAllCorpses() {
-        try {
-            corpsesDao.callBatchTasks(() -> {
-                for (DBCorpse player : corpsesDB.values()) {
-                    corpsesDao.createOrUpdate(player);
-                }
-                return null;
-            });
-        } catch (Exception e) {
-            OMCLogger.error("Impossible de sauvegarder les corpses pendant l'arret.", e);
-        }
+        corpsesTable.saveMap(corpsesDB);
+        corpsesDB.clear();
     }
 
     private void startVoidDetection() {
@@ -137,22 +125,6 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
             }
 
         }, 0L, 10L);
-    }
-
-    public Map<UUID, DBCorpse> loadAllCorpses() {
-        Map<UUID, DBCorpse> corpses = new HashMap<>();
-
-        try {
-            List<DBCorpse> dbCorpses = corpsesDao.queryForAll();
-
-            for (DBCorpse corpse : dbCorpses) {
-                corpses.put(corpse.getPlayerUUID(), corpse);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return corpses;
     }
 
     public boolean createCorpse(OMCPlayer player, boolean killByPlayer, EntityDamageEvent.DamageCause cause) {
@@ -216,7 +188,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         Location deathLoc = dbCorpse.getLocation().clone();
 
         try {
-            corpsesDao.delete(dbCorpse);
+            corpsesTable.delete(dbCorpse);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

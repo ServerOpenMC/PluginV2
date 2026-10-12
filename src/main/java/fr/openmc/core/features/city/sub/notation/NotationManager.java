@@ -1,9 +1,5 @@
 package fr.openmc.core.features.city.sub.notation;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.CityManager;
@@ -16,8 +12,9 @@ import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -64,8 +61,8 @@ public class NotationManager extends Feature implements HasCommands, HasListener
     // Ensemble des 10 meilleures villes.
     public final Set<UUID> top10Cities = new HashSet<>();
 
-    private Dao<ActivityTimePlayed, String> activityTimePlayedDao;
-    private Dao<CityNotation, String> notationDao;
+    private final DBTable<ActivityTimePlayed, String> activityTimePlayedTable = DBTable.of(ActivityTimePlayed.class);
+    private final DBTable<CityNotation, String> notationTable = DBTable.of(CityNotation.class);
 
     public NotationManager(CityManager cityManager) {
         this.cityManager = cityManager;
@@ -77,6 +74,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
      */
     @Override
     public void onEnable() {
+        activityNotation.putAll(activityTimePlayedTable.loadMap(ActivityTimePlayed::getPlayerUUID, ActivityTimePlayed::getTimeOnWeekStart));
         loadNotations();
 
         scheduleMidnightTask();
@@ -88,24 +86,9 @@ public class NotationManager extends Feature implements HasCommands, HasListener
         saveNotations();
     }
 
-    /**
-     * Initialise la base de données pour les notations.
-     *
-     * @param connectionSource la source de connexion de la base de données
-     * @throws SQLException en cas d'erreur SQL
-     */
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, CityNotation.class);
-        notationDao = DaoManager.createDao(connectionSource, CityNotation.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, ActivityTimePlayed.class);
-        activityTimePlayedDao = DaoManager.createDao(connectionSource, ActivityTimePlayed.class);
-        activityTimePlayedDao.queryForAll()
-                .forEach(activityTimePlayed -> activityNotation.put(
-                        UUID.fromString(activityTimePlayed.getPlayerUUID()),
-                        activityTimePlayed.getTimeOnWeekStart()
-                ));
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(activityTimePlayedTable, notationTable);
     }
 
     @Override
@@ -128,7 +111,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
      */
     public void loadNotations() {
         try {
-            List<CityNotation> notations = notationDao.queryForAll();
+            List<CityNotation> notations = notationTable.queryForAll();
             for (CityNotation notation : notations) {
                 UUID cityUUID = notation.getCityUUID();
                 City city = City.of(cityUUID);
@@ -147,21 +130,9 @@ public class NotationManager extends Feature implements HasCommands, HasListener
      * Sauvegarde toutes les notations dans la base de données.
      */
     public void saveNotations() {
-        try {
-            notationDao.delete(notationDao.queryForAll());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        notationPerWeek.forEach((weekStr, notations) ->
-                notations.forEach(notation -> {
-                    try {
-                        notationDao.createOrUpdate(notation);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-        );
+        notationTable.clearTable();
+        notationTable.saveAll(notationPerWeek.values().stream().flatMap(Collection::stream).toList());
+        notationPerWeek.clear();
     }
 
     /**
@@ -171,7 +142,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
      */
     public void createOrUpdateNotation(CityNotation notation) {
         try {
-            notationDao.createOrUpdate(notation);
+            notationTable.createOrUpdate(notation);
 
             String weekStr = notation.getWeekStr();
             notationPerWeek.compute(weekStr, (k, list) -> {
@@ -242,7 +213,7 @@ public class NotationManager extends Feature implements HasCommands, HasListener
                 totalScore += playerScore;
                 playerCount++;
             }
-            activityTimePlayedDao.createOrUpdate(new ActivityTimePlayed(playerUUID, currentPlaytime));
+            activityTimePlayedTable.createOrUpdate(new ActivityTimePlayed(playerUUID, currentPlaytime));
         }
         return playerCount == 0 ? 0 : totalScore / playerCount;
     }

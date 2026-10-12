@@ -1,16 +1,11 @@
 package fr.openmc.core.features.events.contents.halloween.managers;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.events.contents.halloween.commands.HalloweenCommands;
 import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCListener;
@@ -18,8 +13,9 @@ import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.cache.CachePlayerName;
@@ -31,7 +27,6 @@ import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.keys.tags.DamageTypeTagKeys;
 import io.papermc.paper.registry.tag.Tag;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -48,14 +43,14 @@ import java.util.*;
 
 @SuppressWarnings("UnstableApiUsage")
 public class HalloweenManager extends Feature implements HasDatabase, HasCommands, HasListeners {
-    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
 
-    private Object2ObjectMap<UUID, HalloweenData> halloweenData;
-    private Dao<HalloweenData, String> halloweenDataDao;
+    private final Object2ObjectMap<UUID, HalloweenData> halloweenData = new Object2ObjectOpenHashMap<>();
+    private final DBTable<HalloweenData, String> halloweenDataTable = DBTable.of(HalloweenData.class);
 
+    @Override
     public void onEnable() {
-       halloweenData = loadAllHalloweenDatas();
+       halloweenData.putAll(halloweenDataTable.loadMap(HalloweenData::getPlayerUUID));
     }
 
     @Override
@@ -92,31 +87,16 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, HalloweenData.class);
-        halloweenDataDao = DaoManager.createDao(connectionSource, HalloweenData.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(halloweenDataTable);
     }
 
     private void saveHalloweenData(HalloweenData data) {
         try {
-            halloweenDataDao.createOrUpdate(data);
+            halloweenDataTable.createOrUpdate(data);
         } catch (SQLException e) {
             OMCLogger.error("Failed to save halloween data {}", data.getPlayerUUID(), e);
         }
-    }
-
-    private Object2ObjectMap<UUID, HalloweenData> loadAllHalloweenDatas() {
-        Object2ObjectMap<UUID, HalloweenData> newHalloweenDatas = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
-        try {
-            List<HalloweenData> halloweenDataDBs = halloweenDataDao.queryForAll();
-            for (HalloweenData halloweenData : halloweenDataDBs) {
-                newHalloweenDatas.put(halloweenData.getPlayerUUID(), halloweenData);
-            }
-        } catch (SQLException e) {
-            OMCLogger.error("Failed to load halloween datas from database", e);
-        }
-
-        return newHalloweenDatas;
     }
 
     public void endEvent() {

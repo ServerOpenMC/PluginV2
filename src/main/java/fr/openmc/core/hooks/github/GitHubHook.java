@@ -1,15 +1,12 @@
 package fr.openmc.core.hooks.github;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.toor.InternalToorApiClient;
 import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.hooks.github.models.DBGithubMinecraft;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.hooks.Hooks;
 import fr.openmc.core.registry.hooks.HttpsHook;
 import fr.openmc.core.utils.cache.TtlCache;
@@ -21,10 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +26,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     public final static String REPO_OWNER = "ServerOpenMC";
     public final static String REPO_NAME = "PluginV2";
 
-    private Dao<DBGithubMinecraft, String> linkGithubMinecraft;
+    private final DBTable<DBGithubMinecraft, String> linkGithubMinecraftTable = DBTable.of(DBGithubMinecraft.class);
 
     public final Map<UUID, DBGithubMinecraft> lastKnownLinkMap = new ConcurrentHashMap<>();
     private final Map<String, ContributorStats> contributorStatsMap = new ConcurrentHashMap<>();
@@ -47,9 +41,8 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, DBGithubMinecraft.class);
-        linkGithubMinecraft = DaoManager.createDao(connectionSource, DBGithubMinecraft.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(linkGithubMinecraftTable);
     }
 
     @Override
@@ -62,14 +55,8 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     }
 
     private void loadAllPlayerLinkGithubData() {
-        try {
-            lastKnownLinkMap.clear();
-            for (DBGithubMinecraft link : linkGithubMinecraft.queryForAll()) {
-                lastKnownLinkMap.put(link.getPlayerUUID(), link);
-            }
-        } catch (SQLException e) {
-            OMCLogger.error("Cannot load player link github data", e);
-        }
+        lastKnownLinkMap.clear();
+        lastKnownLinkMap.putAll(linkGithubMinecraftTable.loadMap(DBGithubMinecraft::getPlayerUUID));
     }
 
     public Long getContributorId(UUID playerUUID) {
@@ -93,7 +80,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
         DBGithubMinecraft link = new DBGithubMinecraft(playerUUID, githubId);
         lastKnownLinkMap.put(playerUUID, link);
         try {
-            linkGithubMinecraft.createOrUpdate(link);
+            linkGithubMinecraftTable.createOrUpdate(link);
         } catch (SQLException e) {
             OMCLogger.error("Cannot persist github link fallback for {}", playerUUID, e);
         }
@@ -102,7 +89,7 @@ public class GitHubHook extends HttpsHook implements HasDatabase {
     private void removeFallback(UUID playerUUID) {
         if (lastKnownLinkMap.remove(playerUUID) != null) {
             try {
-                linkGithubMinecraft.deleteById(playerUUID.toString());
+                linkGithubMinecraftTable.deleteById(playerUUID.toString());
             } catch (SQLException e) {
                 OMCLogger.error("Cannot clear github link fallback for {}", playerUUID, e);
             }

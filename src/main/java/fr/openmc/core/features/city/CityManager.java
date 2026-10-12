@@ -1,11 +1,7 @@
 package fr.openmc.core.features.city;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
@@ -20,8 +16,9 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.view.CityClaimViewManager;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
@@ -81,67 +78,49 @@ public class CityManager extends Feature
         );
     }
 
-    private static Dao<DBCity, String> citiesDao;
-    private static Dao<DBCityMember, String> membersDao;
-    private static Dao<DBCityPermission, String> permissionsDao;
-    private static Dao<DBCityClaim, String> claimsDao;
-    private static Dao<DBCityChest, String> chestsDao;
+    private final DBTable<DBCity, String> citiesTable = DBTable.of(DBCity.class);
+    private final DBTable<DBCityMember, String> membersTable = DBTable.of(DBCityMember.class);
+    private final DBTable<DBCityPermission, String> permissionsTable = DBTable.of(DBCityPermission.class);
+    private final DBTable<DBCityClaim, String> claimsTable = DBTable.of(DBCityClaim.class) ;
+    private final DBTable<DBCityChest, String> chestsTable = DBTable.of(DBCityChest.class);
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, DBCity.class);
-        citiesDao = DaoManager.createDao(connectionSource, DBCity.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, DBCityMember.class);
-        membersDao = DaoManager.createDao(connectionSource, DBCityMember.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, DBCityPermission.class);
-        permissionsDao = DaoManager.createDao(connectionSource, DBCityPermission.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, DBCityClaim.class);
-        claimsDao = DaoManager.createDao(connectionSource, DBCityClaim.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, DBCityChest.class);
-        chestsDao = DaoManager.createDao(connectionSource, DBCityChest.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(citiesTable, membersTable, permissionsTable, claimsTable, chestsTable);
     }
 
     // ==================== Database Methods ====================
 
     private void loadCities() {
-        try {
-            cities.clear();
-            for (DBCity dbCity : citiesDao.queryForAll()) {
-                cities.put(dbCity.getUniqueId(), dbCity.deserialize());
-            }
+        cities.clear();
+        citiesByName.clear();
+        playerCities.clear();
+        claimedChunks.clear();
 
-            citiesByName.clear();
-            for (DBCity dbCity : citiesDao.queryForAll()) {
-                City city = getCity(dbCity.getUniqueId());
-                if (city != null) citiesByName.put(city.getName(), city);
-            }
 
-            playerCities.clear();
-            for (DBCityMember member : membersDao.queryForAll()) {
-                City city = getCity(member.getCityUUID());
-                if (city != null) playerCities.put(member.getPlayerUUID(), city);
-            }
+        for (DBCity dbCity : citiesTable.loadList()) {
+            cities.put(dbCity.getUniqueId(), dbCity.deserialize());
+        }
 
-            claimedChunks.clear();
-            for (DBCityClaim claim : claimsDao.queryForAll()) {
-                City city = getCity(claim.getCityUUID());
-                if (city != null) claimedChunks.put(claim.getChunkPos(), city);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur du chargement des villes ", e);
+
+        for (DBCity dbCity : citiesTable.loadList()) {
+            City city = getCity(dbCity.getUniqueId());
+            if (city != null) citiesByName.put(city.getName(), city);
+        }
+
+        for (DBCityMember member : membersTable.loadList()) {
+            City city = getCity(member.getCityUUID());
+            if (city != null) playerCities.put(member.getPlayerUUID(), city);
+        }
+
+        for (DBCityClaim claim : claimsTable.loadList()) {
+            City city = getCity(claim.getCityUUID());
+            if (city != null) claimedChunks.put(claim.getChunkPos(), city);
         }
     }
 
     public void saveCity(City city) {
-        try {
-            citiesDao.createOrUpdate(city.serialize());
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur de la sauvegarde des villes ", e);
-        }
+        citiesTable.save(city.serialize());
     }
 
     /**
@@ -158,7 +137,7 @@ public class CityManager extends Feature
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                membersDao.create(new DBCityMember(playerUUID, city.getUniqueId()));
+                membersTable.create(new DBCityMember(playerUUID, city.getUniqueId()));
             } catch (SQLException e) {
                 throw new RuntimeException("Erreur d'ajout de membre dans une ville '", e);
             }
@@ -179,7 +158,7 @@ public class CityManager extends Feature
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                membersDao.delete(new DBCityMember(playerUUID, city.getUniqueId()));
+                membersTable.delete(new DBCityMember(playerUUID, city.getUniqueId()));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -190,9 +169,9 @@ public class CityManager extends Feature
         HashMap<UUID, Set<CityPermission>> permissions = new HashMap<>();
 
         try {
-            QueryBuilder<DBCityPermission, String> query = permissionsDao.queryBuilder();
+            QueryBuilder<DBCityPermission, String> query = permissionsTable.queryBuilder();
             query.where().eq("city_uuid", city.getUniqueId());
-            List<DBCityPermission> dbPermissions = permissionsDao.query(query.prepare());
+            List<DBCityPermission> dbPermissions = permissionsTable.query(query.prepare());
 
             dbPermissions.forEach(dbPermission -> {
                 Set<CityPermission> playerPermissions = permissions.getOrDefault(dbPermission.getPlayer(),
@@ -209,7 +188,7 @@ public class CityManager extends Feature
 
     public void addPlayerPermission(City city, UUID playerUUID, CityPermission permission) {
         try {
-            permissionsDao.create(new DBCityPermission(city.getUniqueId(), playerUUID, permission.name()));
+            permissionsTable.create(new DBCityPermission(city.getUniqueId(), playerUUID, permission.name()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -217,14 +196,14 @@ public class CityManager extends Feature
 
     public void removePlayerPermission(City city, UUID playerUUID, CityPermission permission) {
         try {
-            DeleteBuilder<DBCityPermission, String> delete = permissionsDao.deleteBuilder();
+            DeleteBuilder<DBCityPermission, String> delete = permissionsTable.deleteBuilder();
             delete.where()
                     .eq("city_uuid", city.getUniqueId())
                     .and()
                     .eq("player", playerUUID)
                     .and()
                     .eq("permission", permission.name());
-            permissionsDao.delete(delete.prepare());
+            permissionsTable.delete(delete.prepare());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -234,9 +213,9 @@ public class CityManager extends Feature
         HashMap<Integer, ItemStack[]> pages = new HashMap<>();
 
         try {
-            QueryBuilder<DBCityChest, String> query = chestsDao.queryBuilder();
+            QueryBuilder<DBCityChest, String> query = chestsTable.queryBuilder();
             query.where().eq("city_uuid", city.getUniqueId());
-            List<DBCityChest> dbChestPages = chestsDao.query(query.prepare());
+            List<DBCityChest> dbChestPages = chestsTable.query(query.prepare());
 
             dbChestPages.forEach(page -> pages.put(page.getPage(), page.getContent()));
         } catch (SQLException e) {
@@ -248,11 +227,11 @@ public class CityManager extends Feature
 
     public void saveChestPage(City city, int page, ItemStack[] content) {
         try {
-            DeleteBuilder<DBCityChest, String> delete = chestsDao.deleteBuilder();
+            DeleteBuilder<DBCityChest, String> delete = chestsTable.deleteBuilder();
             delete.where().eq("city_uuid", city.getUniqueId()).and().eq("page", page);
-            chestsDao.delete(delete.prepare());
+            chestsTable.delete(delete.prepare());
 
-            chestsDao.create(new DBCityChest(city.getUniqueId(), page, content));
+            chestsTable.create(new DBCityChest(city.getUniqueId(), page, content));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -264,7 +243,7 @@ public class CityManager extends Feature
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                claimsDao.create(new DBCityClaim(chunkPos, city.getUniqueId()));
+                claimsTable.create(new DBCityClaim(chunkPos, city.getUniqueId()));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -277,12 +256,12 @@ public class CityManager extends Feature
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                DeleteBuilder<DBCityClaim, String> delete = claimsDao.deleteBuilder();
+                DeleteBuilder<DBCityClaim, String> delete = claimsTable.deleteBuilder();
                 delete.where().eq("city_uuid", city.getUniqueId())
                         .and().eq("x", chunkPos.x())
                         .and().eq("z", chunkPos.z());
 
-                claimsDao.delete(delete.prepare());
+                claimsTable.delete(delete.prepare());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -575,25 +554,25 @@ public class CityManager extends Feature
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                citiesDao.delete(city.serialize());
+                citiesTable.delete(city.serialize());
 
-                DeleteBuilder<DBCityMember, String> membersDelete = membersDao.deleteBuilder();
+                DeleteBuilder<DBCityMember, String> membersDelete = membersTable.deleteBuilder();
                 membersDelete.where().eq("city_uuid", city.getUniqueId());
-                membersDao.delete(membersDelete.prepare());
+                membersTable.delete(membersDelete.prepare());
 
-                DeleteBuilder<DBCityPermission, String> permissionsDelete = permissionsDao.deleteBuilder();
+                DeleteBuilder<DBCityPermission, String> permissionsDelete = permissionsTable.deleteBuilder();
                 permissionsDelete.where().eq("city_uuid", city.getUniqueId());
-                permissionsDao.delete(permissionsDelete.prepare());
+                permissionsTable.delete(permissionsDelete.prepare());
 
                 OMCRegistry.CITY_FEATURES.RANKS.removeRanks(city);
 
-                DeleteBuilder<DBCityClaim, String> claimsDelete = claimsDao.deleteBuilder();
+                DeleteBuilder<DBCityClaim, String> claimsDelete = claimsTable.deleteBuilder();
                 claimsDelete.where().eq("city_uuid", city.getUniqueId());
-                claimsDao.delete(claimsDelete.prepare());
+                claimsTable.delete(claimsDelete.prepare());
 
-                DeleteBuilder<DBCityChest, String> chestsDelete = chestsDao.deleteBuilder();
+                DeleteBuilder<DBCityChest, String> chestsDelete = chestsTable.deleteBuilder();
                 chestsDelete.where().eq("city_uuid", city.getUniqueId());
-                chestsDao.delete(chestsDelete.prepare());
+                chestsTable.delete(chestsDelete.prepare());
 
                 OMCRegistry.CITY_FEATURES.MAYOR.removeCity(city);
             } catch (SQLException e) {

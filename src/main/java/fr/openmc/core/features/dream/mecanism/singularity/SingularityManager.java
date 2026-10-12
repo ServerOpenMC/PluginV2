@@ -1,22 +1,18 @@
 package fr.openmc.core.features.dream.mecanism.singularity;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class SingularityManager extends Feature implements HasDatabase {
     public final HashMap<UUID, SingularityContents> singularityContents = new HashMap<>();
-
-    private Dao<SingularityContents, String> singularityContentsDao;
+    private final DBTable<SingularityContents, String> singularityContentsTable = DBTable.of(SingularityContents.class);
 
     @Override
     public void onEnable() {
@@ -24,35 +20,18 @@ public class SingularityManager extends Feature implements HasDatabase {
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, SingularityContents.class);
-        singularityContentsDao = DaoManager.createDao(connectionSource, SingularityContents.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(singularityContentsTable);
     }
 
     @Override
     public void onDisable() {
-        this.saveAllSingularityContentsData();
+        singularityContentsTable.saveMap(singularityContents);
     }
 
     private void loadAllSingularityContentsData() {
-        try {
-            singularityContents.clear();
-            singularityContentsDao.queryForAll().forEach(singularityContent ->
-                    singularityContents.put(singularityContent.getPlayerUUID(), singularityContent)
-            );
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void saveAllSingularityContentsData() {
-        try {
-            for (SingularityContents contents : singularityContents.values()) {
-                singularityContentsDao.createOrUpdate(contents);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        singularityContents.clear();
+        singularityContents.putAll(singularityContentsTable.loadMap(SingularityContents::getPlayerUUID));
     }
 
     public void addSingularityContents(Player player, ItemStack[] items) {

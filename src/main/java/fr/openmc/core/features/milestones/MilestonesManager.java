@@ -1,9 +1,5 @@
 package fr.openmc.core.features.milestones;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
@@ -16,8 +12,9 @@ import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
@@ -31,7 +28,7 @@ import java.util.*;
 public class MilestonesManager extends Feature implements HasDatabase, HasListeners, HasCommands {
     private final Set<Milestone<?>> milestones = new HashSet<>();
 
-    private Dao<MilestoneModel, String> millestoneDao;
+    private final DBTable<MilestoneModel, String> millestoneTable = DBTable.of(MilestoneModel.class);
 
     @Override
     public void onEnable() {
@@ -58,15 +55,9 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
         this.saveMilestonesData();
     }
 
-    /**
-     * Initialize the database for milestones.
-     *
-     * @param connectionSource the connection source to the database
-     */
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, MilestoneModel.class);
-        millestoneDao = DaoManager.createDao(connectionSource, MilestoneModel.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(millestoneTable);
     }
 
     /**
@@ -76,7 +67,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
     public void loadMilestonesData() {
         try {
             BossbarManager bossbarManager = OMCRegistry.FEATURES.BOSSBAR.get();
-            List<MilestoneModel> milestoneData = millestoneDao.queryForAll();
+            List<MilestoneModel> milestoneData = millestoneTable.queryForAll();
             for (MilestoneModel data : milestoneData) {
 	            MilestoneType type = MilestoneType.valueOf(data.getType());
                 Milestone<?> milestone = type.getMilestone();
@@ -98,7 +89,7 @@ public class MilestonesManager extends Feature implements HasDatabase, HasListen
             for (Milestone<?> milestone : milestones) {
                 for (Map.Entry<UUID, MilestoneModel> entry : milestone.getPlayerData().entrySet()) {
                     MilestoneModel model = entry.getValue();
-                    millestoneDao.createOrUpdate(model);
+                    millestoneTable.createOrUpdate(model);
                 }
             }
 	        OMCLogger.infoFormatted("Milestones saved successfully to the database!");

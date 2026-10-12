@@ -1,9 +1,5 @@
 package fr.openmc.core.features.city.sub.mascots;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
@@ -14,8 +10,9 @@ import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
@@ -50,7 +47,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
     private final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
     @Getter
     private NamespacedKey mascotsKey;
-    private Dao<Mascot, String> mascotsDao;
+    private final DBTable<Mascot, String> mascotsTable = DBTable.of(Mascot.class);
 
     @Override
     public void onEnable() {
@@ -100,35 +97,21 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
 
     @Override
     public void onDisable() {
-        this.saveMascots();
+        mascotsTable.saveAll(mascotsByCityUUID.values());
+        mascotsByEntityUUID.clear();
+        mascotsByCityUUID.clear();
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Mascot.class);
-        mascotsDao = DaoManager.createDao(connectionSource, Mascot.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(mascotsTable);
     }
 
     public void loadMascots() {
-        try {
-            assert mascotsDao != null;
-            mascotsDao.queryForAll().forEach(mascot -> {
-                mascotsByCityUUID.put(mascot.getCityUUID(), mascot);
-                mascotsByEntityUUID.put(mascot.getMascotUUID(), mascot);
-            });
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void saveMascots() {
-        mascotsByCityUUID.forEach((cityUUID, mascot) -> {
-            try {
-                mascotsDao.createOrUpdate(mascot);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        mascotsByCityUUID.clear();
+        mascotsByEntityUUID.clear();
+        mascotsByCityUUID.putAll(mascotsTable.loadMap(Mascot::getCityUUID));
+        mascotsByEntityUUID.putAll(mascotsTable.loadMap(Mascot::getMascotUUID));
     }
 
     public City getCityFromEntity(UUID entityUUID) {
@@ -162,7 +145,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                mascotsDao.create(new Mascot(cityUUID, mob.getUniqueId(), 1, true, true, chunk.getX(), chunk.getZ()));
+                mascotsTable.create(new Mascot(cityUUID, mob.getUniqueId(), 1, true, true, chunk.getX(), chunk.getZ()));
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -186,7 +169,7 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                mascotsDao.delete(mascot);
+                mascotsTable.delete(mascot);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

@@ -1,9 +1,5 @@
 package fr.openmc.core.features.city.sub.war;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.models.city.City;
@@ -15,8 +11,9 @@ import fr.openmc.core.features.city.sub.war.models.WarHistory;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -49,7 +46,7 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
 
     private final Map<UUID, WarPendingDefense> pendingDefenses = new HashMap<>();
 
-    private Dao<WarHistory, String> warHistoryDeo;
+    private final DBTable<WarHistory, String> warHistoryTable = DBTable.of(WarHistory.class);
 
     public final Map<UUID, WarHistory> warHistory = new HashMap<>();
 
@@ -83,38 +80,18 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, WarHistory.class);
-        warHistoryDeo = DaoManager.createDao(connectionSource, WarHistory.class);
-
-        for (WarHistory history : warHistoryDeo.queryForAll()) {
-            warHistory.put(history.getCityUUID(), history);
-        }
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(warHistoryTable);
     }
 
     public void loadWarHistories() {
-        try {
-            List<WarHistory> warHistories = warHistoryDeo.queryForAll();
-
-            warHistories.forEach(war -> {
-                UUID cityUUID = war.getCityUUID();
-
-                warHistory.computeIfAbsent(cityUUID, k -> war);
-            });
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        warHistory.clear();
+        warHistory.putAll(warHistoryTable.loadMap(WarHistory::getCityUUID));
     }
 
     public void saveWarHistories() {
-        warHistory.forEach((cityUUID, warHistory) -> {
-                    try {
-                        warHistoryDeo.createOrUpdate(warHistory);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        );
+        warHistoryTable.saveMap(warHistory);
+        warHistory.clear();
     }
 
     public WarHistory createOrGetWarHistory(City city) throws SQLException {
@@ -122,7 +99,7 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
 
         if (history == null) {
             history = new WarHistory(city.getUniqueId());
-            warHistoryDeo.createOrUpdate(history);
+            warHistoryTable.createOrUpdate(history);
 
             warHistory.put(history.getCityUUID(), history);
         }
@@ -241,13 +218,13 @@ public class WarManager extends Feature implements HasListeners, HasCommands, Ha
                 WarHistory winnerHistory = createOrGetWarHistory(winner);
                 winnerHistory.addParticipation();
                 winnerHistory.addWin();
-                warHistoryDeo.update(winnerHistory);
+                warHistoryTable.update(winnerHistory);
             }
 
             if (loser != null) {
                 WarHistory loserHistory = createOrGetWarHistory(loser);
                 loserHistory.addParticipation();
-                warHistoryDeo.update(loserHistory);
+                warHistoryTable.update(loserHistory);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

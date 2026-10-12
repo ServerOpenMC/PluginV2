@@ -131,43 +131,43 @@ public class City implements CityInterface, CityChunks, CityMembers, CityChest,
     }
 
     public static City of(String name) {
-        return OMCRegistry.FEATURES.CITY.get().getCityByName(name);
+        return cityManager.getCityByName(name);
     }
 
     public static City of(ChunkPos chunkPos) {
-        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(chunkPos);
+        return cityManager.getCityFromChunk(chunkPos);
     }
 
     public static City of(Block block) {
-        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(block.getChunk());
+        return cityManager.getCityFromChunk(block.getChunk());
     }
 
     public static City of(Location location) {
-        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(location.getChunk());
+        return cityManager.getCityFromChunk(location.getChunk());
     }
 
     public static City of(Chunk chunk) {
-        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(chunk);
+        return cityManager.getCityFromChunk(chunk);
     }
 
     public static City of(int x, int z) {
-        return OMCRegistry.FEATURES.CITY.get().getCityFromChunk(x, z);
+        return cityManager.getCityFromChunk(x, z);
     }
 
     public static City of(UUID cityUUID) {
-        return OMCRegistry.FEATURES.CITY.get().getCity(cityUUID);
+        return cityManager.getCity(cityUUID);
     }
 
     public static City ofPlayer(Player player) {
-        return OMCRegistry.FEATURES.CITY.get().getPlayerCity(player.getUniqueId());
+        return cityManager.getPlayerCity(player.getUniqueId());
     }
 
     public static City ofPlayer(UUID playerUUID) {
-        return OMCRegistry.FEATURES.CITY.get().getPlayerCity(playerUUID);
+        return cityManager.getPlayerCity(playerUUID);
     }
 
     public static City ofMascot(UUID entityUUID) {
-        return OMCRegistry.CITY_FEATURES.MASCOTS.getCityFromEntity(entityUUID);
+        return mascotsManager.getCityFromEntity(entityUUID);
     }
 
     @Override

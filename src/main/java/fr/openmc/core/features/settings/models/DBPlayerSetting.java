@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlayerSettingEntity {
+public class DBPlayerSetting {
 
     @DatabaseField(generatedId = true)
     private Long id;
@@ -27,7 +27,7 @@ public class PlayerSettingEntity {
     @DatabaseField(columnName = "settingValue", canBeNull = false)
     private String settingValue;
 
-    public PlayerSettingEntity(UUID playerUUID, SettingType settingType, Object value) {
+    public DBPlayerSetting(UUID playerUUID, SettingType settingType, Object value) {
         this.playerUUID = playerUUID.toString();
         this.settingType = settingType.name();
         this.settingValue = value.toString();

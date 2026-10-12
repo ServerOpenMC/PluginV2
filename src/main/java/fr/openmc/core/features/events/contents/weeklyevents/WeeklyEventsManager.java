@@ -1,17 +1,14 @@
 package fr.openmc.core.features.events.contents.weeklyevents;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventsData;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
@@ -28,7 +25,7 @@ import java.util.function.Supplier;
 @Credit(developers = {"iambibi_"})
 public class WeeklyEventsManager extends Feature implements HasDatabase, HasRegistries {
 
-    private Dao<WeeklyEventsData, Integer> dao;
+    private final DBTable<WeeklyEventsData, Integer> weeklyEventsDataTable = DBTable.of(WeeklyEventsData.class);
     private WeeklyEventsData data;
     private BukkitTask currentTask = null;
 
@@ -36,19 +33,15 @@ public class WeeklyEventsManager extends Feature implements HasDatabase, HasRegi
      * Initialise la gestion des WeeklyEvents.
      */
     @Override
-    public void onEnable() {
+    public void onEnable() throws SQLException {
         data = load();
 
         scheduleNextPhase();
     }
 
-    /**
-     * Initialise la BDD : crée la table si nécessaire, charge les données, gère le cas restart
-     */
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        dao = DaoManager.createDao(connectionSource, WeeklyEventsData.class);
-        TableUtils.createTableIfNotExists(connectionSource, WeeklyEventsData.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(weeklyEventsDataTable);
     }
 
     @Override
@@ -61,18 +54,15 @@ public class WeeklyEventsManager extends Feature implements HasDatabase, HasRegi
     /**
      * Charge les données depuis la BDD, ou crée une ligne par défaut si inexistante.
      */
-    public WeeklyEventsData load() {
-        try {
-            WeeklyEventsData data = dao.queryForId(1);
-            if (data == null) {
-                WeeklyEvent contest = OMCRegistry.WEEKLY_EVENTS.CONTEST;
-                data = new WeeklyEventsData(contest, null);
-                dao.create(data);
-            }
-            return data;
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors du chargement de WeeklyEventData", e);
+    public WeeklyEventsData load() throws SQLException {
+        WeeklyEventsData data = weeklyEventsDataTable.loadList().getFirst();
+
+        if (data == null) {
+            WeeklyEvent contest = OMCRegistry.WEEKLY_EVENTS.CONTEST;
+            data = new WeeklyEventsData(contest, null);
+            weeklyEventsDataTable.create(data);
         }
+        return data;
     }
 
     /**
@@ -80,7 +70,7 @@ public class WeeklyEventsManager extends Feature implements HasDatabase, HasRegi
      */
     public void save(WeeklyEventsData data) {
         try {
-            dao.createOrUpdate(data);
+            weeklyEventsDataTable.createOrUpdate(data);
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la sauvegarde de WeeklyEventData", e);
         }

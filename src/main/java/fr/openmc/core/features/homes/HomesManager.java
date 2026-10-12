@@ -1,17 +1,13 @@
 package fr.openmc.core.features.homes;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
-import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.lifecycle.registries.SubRegistry;
 import fr.openmc.core.registry.features.Feature;
@@ -19,7 +15,6 @@ import fr.openmc.core.registry.features.annotations.Credit;
 import lombok.Getter;
 import org.bukkit.Location;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -68,56 +63,38 @@ public class HomesManager extends Feature implements HasDatabase, HasCommands, H
 
     // DB methods
 
-    private Dao<Home, UUID> homesDao;
-    private Dao<HomeLimit, UUID> limitsDao;
+    private final DBTable<Home, UUID> homesTable = DBTable.of(Home.class);
+    private final DBTable<HomeLimit, UUID> limitsTable = DBTable.of(HomeLimit.class);
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Home.class);
-        homesDao = DaoManager.createDao(connectionSource, Home.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, HomeLimit.class);
-        limitsDao = DaoManager.createDao(connectionSource, HomeLimit.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(homesTable, limitsTable);
     }
 
     private void loadHomeLimit() {
-        try {
-            homeLimits.addAll(limitsDao.queryForAll());
+        homeLimits.clear();
+        homeLimits.addAll(limitsTable.loadList());
 
-            for (HomeLimit homeLimit : homeLimits) {
-                if (homeLimit.getLimit() == 0) homeLimit.setLimit(HomeLimits.LIMIT_0.getLimit());
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur de chargement des HomesLimit ", e);
+        for (HomeLimit homeLimit : homeLimits) {
+            if (homeLimit.getLimit() == 0) homeLimit.setLimit(HomeLimits.LIMIT_0.getLimit());
         }
     }
 
     private void saveHomeLimit() {
-        try {
-            TableUtils.clearTable(DatabaseManager.getConnectionSource(), HomeLimit.class);
-            limitsDao.create(homeLimits);
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur de sauvegarde des HomesLimit ", e);
-        }
+        limitsTable.clearTable();
+        limitsTable.saveAll(homeLimits);
+        homeLimits.clear();
     }
 
     private void loadHomes() {
-        try {
-            homes.addAll(homesDao.queryForAll());
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur de chargement des Homes ", e);
-        }
+        homes.clear();
+        homes.addAll(homesTable.loadList());
     }
 
     private void saveHomes() {
-        try {
-            TableUtils.clearTable(DatabaseManager.getConnectionSource(), Home.class);
-            for (Home home : homes) {
-                homesDao.createOrUpdate(home);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur de sauvegarde des Homes ", e);
-        }
+        homesTable.clearTable();
+        homesTable.saveAll(homes);
+        homes.clear();
     }
 
     public boolean addHome(Home home) {

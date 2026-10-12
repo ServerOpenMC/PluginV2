@@ -7,9 +7,9 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 
@@ -108,7 +108,7 @@ public abstract class Feature {
     /**
      * Initialise la feature.
      */
-    protected void onEnable() {
+    protected void onEnable() throws SQLException {
         // doit etre @Override dans les features qui ont une initialisation a faire
     }
 

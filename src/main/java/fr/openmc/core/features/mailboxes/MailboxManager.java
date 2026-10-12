@@ -1,9 +1,5 @@
 package fr.openmc.core.features.mailboxes;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
@@ -17,7 +13,8 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
@@ -40,7 +37,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -88,7 +84,6 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
     }
 
     private boolean sendLetter(OMCPlayer sender, OMCOfflinePlayer receiver, ItemStack[] items) {
-        String receiverName = receiver.getName();
         int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
         LocalDateTime sent = DateUtils.getLocalDateTime();
 
@@ -372,35 +367,27 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
 
     // DB Methods
 
-    private Dao<Letter, Integer> letterDao;
+    private final DBTable<Letter, Integer> letterTable = DBTable.of(Letter.class);
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Letter.class);
-        letterDao = DaoManager.createDao(connectionSource, Letter.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(letterTable);
     }
 
     public void loadLetters() {
-        try {
-            letters.addAll(letterDao.queryForAll());
+        letters.clear();
+        letters.addAll(letterTable.loadList());
 
-            nextLetterId = letters.stream()
-                    .mapToInt(Letter::getLetterId)
-                    .max()
-                    .orElse(0) + 1;
-        } catch (SQLException e) {
-            OMCLogger.error("Error loading letters from database: {}", e.getMessage(), e);
-        }
+        nextLetterId = letters.stream()
+                .mapToInt(Letter::getLetterId)
+                .max()
+                .orElse(0) + 1;
+
     }
 
     public void saveLetters() {
-        try {
-            TableUtils.clearTable(letterDao.getConnectionSource(), Letter.class);
-            for (Letter letter : letters) {
-                letterDao.create(letter);
-            }
-        } catch (SQLException e) {
-            OMCLogger.error("Error saving letters to database: {}", e.getMessage(), e);
-        }
+        letterTable.clearTable();
+        letterTable.saveAll(letters);
+        letters.clear();
     }
 }

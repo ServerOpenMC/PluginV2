@@ -1,9 +1,5 @@
 package fr.openmc.core.features.events.contents.dailyevents;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.commands.DailyEventCommand;
@@ -15,9 +11,10 @@ import fr.openmc.core.features.events.contents.dailyevents.tasks.NextEventTask;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventTask;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.HasListeners;
 import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
 import fr.openmc.core.registry.features.Feature;
@@ -57,7 +54,7 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
     @Setter
     private List<ScheduleDailyEvent> incomingEvents = new ArrayList<>();
 
-    private Dao<IncomingEventsDB, Integer> incomingEventsDao;
+    private final DBTable<IncomingEventsDB, Integer> incomingEventsTable = DBTable.of(IncomingEventsDB.class);
 
     @Override
     public void onEnable() {
@@ -75,9 +72,8 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        incomingEventsDao = DaoManager.createDao(connectionSource, IncomingEventsDB.class);
-        TableUtils.createTableIfNotExists(connectionSource, IncomingEventsDB.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(incomingEventsTable);
     }
 
     @Override
@@ -115,10 +111,10 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
      */
     public IncomingEventsDB loadIncomingEventsDB() {
         try {
-            IncomingEventsDB data = incomingEventsDao.queryForId(1);
+            IncomingEventsDB data = incomingEventsTable.queryForId(1);
             if (data == null) {
                 data = new IncomingEventsDB(List.of());
-                incomingEventsDao.create(data);
+                incomingEventsTable.create(data);
             }
             return data;
         } catch (SQLException e) {
@@ -133,7 +129,7 @@ public class DailyEventsManager extends Feature implements HasDatabase, HasListe
      */
     public void saveIncomingEventsDB(IncomingEventsDB data) {
         try {
-            incomingEventsDao.createOrUpdate(data);
+            incomingEventsTable.createOrUpdate(data);
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la sauvegarde de IncomingEventsDB", e);
         }

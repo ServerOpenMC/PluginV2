@@ -1,14 +1,11 @@
 package fr.openmc.core.features.analytics;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.analytics.models.Statistic;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 
@@ -17,12 +14,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class AnalyticsManager extends Feature implements HasDatabase {
-    private Dao<Statistic, String> statsDao;
+    private final DBTable<Statistic, String> statsDao = DBTable.of(Statistic.class);
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Statistic.class);
-        statsDao = DaoManager.createDao(connectionSource, Statistic.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(statsDao);
     }
 
     public boolean isEnabled() {

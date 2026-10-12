@@ -3,8 +3,8 @@ package fr.openmc.core.registry.hooks;
 import com.j256.ormlite.support.ConnectionSource;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
 import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import org.bukkit.plugin.PluginManager;
 
 import java.io.IOException;

@@ -1,9 +1,5 @@
 package fr.openmc.core.features.economy;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.commands.Baltop;
@@ -12,30 +8,29 @@ import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.core.features.economy.utils.EconomyUtils;
-import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
 public class EconomyManager extends Feature implements HasDatabase, HasCommands {
     @Getter
-    private Map<UUID, EconomyPlayer> balances;
+    private final Map<UUID, EconomyPlayer> balances = new HashMap<>();
 
-    private Dao<EconomyPlayer, String> playersDao;
+    private final DBTable<EconomyPlayer, String> playersBalanceTable = DBTable.of(EconomyPlayer.class);
 
     private final TransactionsManager transactionsManager = OMCRegistry.FEATURES.TRANSACTIONS.get();
 
     @Override
     public void onEnable() {
-        balances = loadAllBalances();
+        loadAllBalances();
     }
 
     @Override
@@ -49,9 +44,8 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, EconomyPlayer.class);
-        playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(playersBalanceTable);
     }
 
     @Override
@@ -168,32 +162,14 @@ public class EconomyManager extends Feature implements HasDatabase, HasCommands 
         return balances.computeIfAbsent(playerUUID, EconomyPlayer::new);
     }
 
-    private void saveAllBalances() {
-        try {
-            playersDao.callBatchTasks(() -> {
-                for (EconomyPlayer player : balances.values()) {
-                    playersDao.createOrUpdate(player);
-                }
-
-                return null;
-            });
-        } catch (Exception e) {
-            OMCLogger.error("Impossible de sauvegarder les soldes de l'economie pendant l'arret.", e);
-        }
+    public void loadAllBalances() {
+        balances.clear();
+        balances.putAll(playersBalanceTable.loadMap(EconomyPlayer::getPlayerUUID));
     }
 
-    public Map<UUID, EconomyPlayer> loadAllBalances() {
-        Map<UUID, EconomyPlayer> balances = new HashMap<>();
-        try {
-            List<EconomyPlayer> dbBalances = playersDao.queryForAll();
-            for (EconomyPlayer bank : dbBalances) {
-                balances.put(bank.getPlayerUUID(), bank);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return balances;
+    private void saveAllBalances() {
+        playersBalanceTable.saveMap(balances);
+        balances.clear();
     }
 
     public String getEconomyIcon() {

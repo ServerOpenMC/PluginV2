@@ -7,6 +7,7 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Con
 import fr.openmc.core.lifecycle.integration.DatabaseManager;
 import fr.openmc.core.lifecycle.integration.ErrorReporter;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
 import fr.openmc.core.lifecycle.listeners.ListenerFactory;
 import fr.openmc.core.listeners.ItemsAddersListener;
 import io.papermc.paper.datapack.Datapack;
@@ -110,6 +111,8 @@ public class OMCPlugin extends JavaPlugin {
         // ** SAVE **
         /* REGISTRIES */
         OMCRegistry.stopAll();
+
+        DBTable.clearCache();
 
         // - Close all inventories
         for (Player player : Bukkit.getOnlinePlayers()) {

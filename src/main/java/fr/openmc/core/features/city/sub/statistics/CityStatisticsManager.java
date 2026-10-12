@@ -1,13 +1,10 @@
 package fr.openmc.core.features.city.sub.statistics;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.sub.statistics.models.CityStatistics;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 
@@ -25,9 +22,9 @@ public class CityStatisticsManager extends Feature implements HasDatabase {
     /**
      * Map des statistiques par ville (clé : identifiant de la ville, valeur : ensemble de statistiques).
      */
-    public HashMap<UUID, Set<CityStatistics>> cityStatistics = new HashMap<>();
+    public final HashMap<UUID, Set<CityStatistics>> cityStatistics = new HashMap<>();
 
-    private Dao<CityStatistics, String> statisticsDao;
+    private final DBTable<CityStatistics, String> statisticsTable = DBTable.of(CityStatistics.class);
 
     /**
      * Initialise le gestionnaire des statistiques des villes en chargeant les statistiques depuis la base de données.
@@ -42,41 +39,25 @@ public class CityStatisticsManager extends Feature implements HasDatabase {
         saveCityStatistics();
     }
 
-    /**
-     * Initialise la base de données pour les statistiques des villes.
-     *
-     * @param connectionSource la source de connexion
-     * @throws SQLException en cas d'erreur SQL
-     */
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, CityStatistics.class);
-        statisticsDao = DaoManager.createDao(connectionSource, CityStatistics.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(statisticsTable);
     }
 
     /**
      * Charge toutes les statistiques depuis la base de données.
      */
     public void loadCityStatistics() {
-        try {
-            List<CityStatistics> statistics = statisticsDao.queryForAll();
-            statistics.forEach(statistic -> cityStatistics.computeIfAbsent(statistic.getCityUUID(), k -> new HashSet<>()).add(statistic));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        cityStatistics.clear();
+        cityStatistics.putAll(statisticsTable.loadMapSet(CityStatistics::getCityUUID));
     }
 
     /**
      * Sauvegarde toutes les statistiques dans la base de données.
      */
     public void saveCityStatistics() {
-        cityStatistics.forEach((city, statistics) -> statistics.forEach(stat -> {
-            try {
-                statisticsDao.createOrUpdate(stat);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }));
+        statisticsTable.saveMapSet(cityStatistics);
+        cityStatistics.clear();
     }
 
     /**
@@ -120,7 +101,7 @@ public class CityStatisticsManager extends Feature implements HasDatabase {
         stat.setValue(value);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                statisticsDao.createOrUpdate(stat);
+                statisticsTable.createOrUpdate(stat);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -137,9 +118,9 @@ public class CityStatisticsManager extends Feature implements HasDatabase {
         cityStatistics.remove(cityUUID);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                DeleteBuilder<CityStatistics, String> statisticsDelete = statisticsDao.deleteBuilder();
+                DeleteBuilder<CityStatistics, String> statisticsDelete = statisticsTable.deleteBuilder();
                 statisticsDelete.where().eq("city_uuid", cityUUID);
-                statisticsDao.delete(statisticsDelete.prepare());
+                statisticsTable.delete(statisticsDelete.prepare());
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -159,7 +140,7 @@ public class CityStatisticsManager extends Feature implements HasDatabase {
         stat.setValue(current + amount);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                statisticsDao.createOrUpdate(stat);
+                statisticsTable.createOrUpdate(stat);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

@@ -1,9 +1,5 @@
 package fr.openmc.core.features.bits;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -15,38 +11,34 @@ import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.interfaces.HasCommands;
-import fr.openmc.core.lifecycle.interfaces.HasDatabase;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
 import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.features.annotations.Credit;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"iambibi_"})
 public class BitsManager extends Feature implements HasDatabase, HasCommands {
-    private GitHubHook gitHubHook;
-    private ItemsAdderHook itemsAdderHook;
+    private final GitHubHook gitHubHook = OMCRegistry.HOOKS.GITHUB;
+    private final ItemsAdderHook itemsAdderHook = OMCRegistry.HOOKS.ITEMS_ADDER;
 
     @Getter
-    private static Map<UUID, BitsPlayer> bitsData;
+    private final Map<UUID, BitsPlayer> bitsData = new HashMap<>();
 
-    private static Dao<BitsPlayer, String> playersBitsDao;
+    private final DBTable<BitsPlayer, String> playersBitsTable = DBTable.of(BitsPlayer.class);
 
-    private static BukkitTask bitsUpdateTask;
+    private BukkitTask bitsUpdateTask;
 
     public static final double LINE_REQ = 500d;
     public static final double BITS_PER_LINE_REQ = 250d;
 
     @Override
     public void onEnable() {
-        this.gitHubHook = OMCRegistry.HOOKS.GITHUB;
-        this.itemsAdderHook = OMCRegistry.HOOKS.ITEMS_ADDER;
-
-        bitsData = loadAllBits();
-
+        loadAllBits();
         updateBitsUpdateTimer();
 
     }
@@ -59,42 +51,19 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, BitsPlayer.class);
-        playersBitsDao = DaoManager.createDao(connectionSource, BitsPlayer.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(playersBitsTable);
     }
 
     @Override
     protected void onDisable() {
-        saveAllBits();
+        playersBitsTable.saveAll(bitsData.values());
+        bitsData.clear();
     }
 
-    private Map<UUID, BitsPlayer> loadAllBits() {
-        Map<UUID, BitsPlayer> balances = new HashMap<>();
-        try {
-            List<BitsPlayer> dbBalances = playersBitsDao.queryForAll();
-            for (BitsPlayer bank : dbBalances) {
-                balances.put(bank.getPlayerUUID(), bank);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return balances;
-    }
-
-    private void saveAllBits() {
-        try {
-            playersBitsDao.callBatchTasks(() -> {
-                for (BitsPlayer player : bitsData.values()) {
-                    playersBitsDao.createOrUpdate(player);
-                }
-
-                return null;
-            });
-        } catch (Exception e) {
-            OMCLogger.error("Impossible de sauvegarder les soldes de l'economie développeur pendant l'arret.", e);
-        }
+    private void loadAllBits() {
+        bitsData.clear();
+        bitsData.putAll(playersBitsTable.loadMap(BitsPlayer::getPlayerUUID));
     }
 
     public double getBits(UUID playerUUID) {
