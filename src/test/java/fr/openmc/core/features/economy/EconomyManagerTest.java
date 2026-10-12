@@ -1,7 +1,7 @@
 package fr.openmc.core.features.economy;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.economy.models.EconomyPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.mock.MockBukkitHelper;
 import fr.openmc.mock.ServerMock;
 import org.junit.jupiter.api.AfterEach;
@@ -11,12 +11,13 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EconomyManagerTest {
+    private EconomyManager economyManager;
+    private TransactionsManager transactionsManager;
     private ServerMock server;
 
     private PlayerMock player1;
@@ -30,6 +31,9 @@ public class EconomyManagerTest {
         this.player2 = this.server.addPlayer("Player2");
 
         MockBukkit.load(OMCPlugin.class);
+
+        this.economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+        this.transactionsManager = OMCRegistry.FEATURES.TRANSACTIONS.get();
     }
 
     @AfterEach
@@ -39,67 +43,64 @@ public class EconomyManagerTest {
 
     @Test
     public void testAddBalance() {
-        EconomyManager.addBalance(player1.getUniqueId(), 100.0);
+        economyManager.addBalance(player1.getUniqueId(), 100.0);
         
-        assertEquals(EconomyManager.getBalance(player1.getUniqueId()), 100.0);
+        assertEquals(economyManager.getBalance(player1.getUniqueId()), 100.0);
     }
 
     @Test
     public void testSuccessWithdrawBalance() {
-        EconomyManager.setBalance(player1.getUniqueId(), 200.0);
+        economyManager.setBalance(player1.getUniqueId(), 200.0);
 
-        boolean success = EconomyManager.withdrawBalance(player1.getUniqueId(), 50.0);
+        boolean success = economyManager.withdrawBalance(player1.getUniqueId(), 50.0);
 
         assertTrue(success);
-        assertEquals(EconomyManager.getBalance(player1.getUniqueId()), 150.0);
+        assertEquals(economyManager.getBalance(player1.getUniqueId()), 150.0);
     }
 
     @Test
     public void testFailWithdrawBalance() {
-        EconomyManager.setBalance(player1.getUniqueId(), 30.0);
+        economyManager.setBalance(player1.getUniqueId(), 30.0);
 
-        boolean success = EconomyManager.withdrawBalance(player1.getUniqueId(), 50.0);
+        boolean success = economyManager.withdrawBalance(player1.getUniqueId(), 50.0);
 
         assertFalse(success);
-        assertEquals(EconomyManager.getBalance(player1.getUniqueId()), 30.0);
+        assertEquals(economyManager.getBalance(player1.getUniqueId()), 30.0);
     }
 
     @Test
     public void testSetBalance() {
-        EconomyManager.setBalance(player1.getUniqueId(), 500.0);
+        economyManager.setBalance(player1.getUniqueId(), 500.0);
 
-        assertEquals(EconomyManager.getBalance(player1.getUniqueId()), 500.0);
+        assertEquals(economyManager.getBalance(player1.getUniqueId()), 500.0);
     }
 
     @Test
     public void testGetBalanceDoesNotCreateCachedAccount() {
         UUID unknownPlayerUUID = UUID.randomUUID();
 
-        assertEquals(0.0, EconomyManager.getBalance(unknownPlayerUUID));
-        assertFalse(EconomyManager.getBalances().containsKey(unknownPlayerUUID));
+        assertEquals(0.0, economyManager.getBalance(unknownPlayerUUID));
+        assertFalse(economyManager.getBalances().containsKey(unknownPlayerUUID));
     }
 
     @Test
     public void testBalanceChangesAreSavedOnFeatureSave() {
         UUID playerUUID = player1.getUniqueId();
 
-        EconomyManager.setBalance(playerUUID, 500.0);
+        economyManager.setBalance(playerUUID, 500.0);
+        assertFalse(economyManager.getBalances().containsKey(playerUUID));
 
-        Map<UUID, EconomyPlayer> balancesBeforeSave = EconomyManager.loadAllBalances();
-        assertFalse(balancesBeforeSave.containsKey(playerUUID));
-
-        new EconomyManager().onDisable();
-
-        Map<UUID, EconomyPlayer> balancesAfterSave = EconomyManager.loadAllBalances();
-        assertEquals(500.0, balancesAfterSave.get(playerUUID).getBalance());
+        economyManager.onDisable();
+        economyManager.onEnable();
+        assertEquals(500.0, economyManager.getBalances().get(playerUUID).getBalance());
     }
 
     @Test
     public void testAddBalanceWithReasonRegistersTransaction() {
-        EconomyManager.addBalance(player1.getUniqueId(), 100.0, "Test Reason");
+        economyManager.addBalance(player1.getUniqueId(), 100.0, "Test Reason");
         server.getScheduler().waitAsyncTasksFinished();
 
-        List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
+        List<Transaction> transactions = transactionsManager.getTransactionsByPlayers(player1.getUniqueId());
         boolean found = transactions.stream().anyMatch(t -> 
             t.recipient.equals(player1.getUniqueId().toString()) &&
             t.amount == 100.0 &&
@@ -111,11 +112,11 @@ public class EconomyManagerTest {
 
     @Test
     public void testWithdrawBalanceWithReasonRegistersTransaction() {
-        EconomyManager.setBalance(player1.getUniqueId(), 200.0);
-        EconomyManager.withdrawBalance(player1.getUniqueId(), 50.0, "Withdrawal Reason");
+        economyManager.setBalance(player1.getUniqueId(), 200.0);
+        economyManager.withdrawBalance(player1.getUniqueId(), 50.0, "Withdrawal Reason");
         server.getScheduler().waitAsyncTasksFinished();
 
-        List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
+        List<Transaction> transactions = transactionsManager.getTransactionsByPlayers(player1.getUniqueId());
 
         boolean found = transactions.stream().anyMatch(t ->
             t.sender.equals(player1.getUniqueId().toString()) &&
@@ -128,11 +129,11 @@ public class EconomyManagerTest {
 
     @Test
     public void testWithdrawBalanceWithoutReasonDoesNotRegisterTransaction() {
-        EconomyManager.setBalance(player1.getUniqueId(), 200.0);
-        EconomyManager.withdrawBalance(player1.getUniqueId(), 50.0);
+        economyManager.setBalance(player1.getUniqueId(), 200.0);
+        economyManager.withdrawBalance(player1.getUniqueId(), 50.0);
         server.getScheduler().waitAsyncTasksFinished();
 
-        List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
+        List<Transaction> transactions = transactionsManager.getTransactionsByPlayers(player1.getUniqueId());
         boolean found = transactions.stream().anyMatch(t ->
             t.sender.equals(player1.getUniqueId().toString()) &&
             t.amount == 50.0
@@ -143,33 +144,33 @@ public class EconomyManagerTest {
 
     @Test
     public void testTransferBalance() {
-        EconomyManager.setBalance(player1.getUniqueId(), 300.0);
+        economyManager.setBalance(player1.getUniqueId(), 300.0);
 
-        boolean success = EconomyManager.transferBalance(player1.getUniqueId(), player2.getUniqueId(), 100.0);
+        boolean success = economyManager.transferBalance(player1.getUniqueId(), player2.getUniqueId(), 100.0);
 
         assertTrue(success);
-        assertEquals(EconomyManager.getBalance(player1.getUniqueId()), 200.0);
-        assertEquals(EconomyManager.getBalance(player2.getUniqueId()), 100.0);
+        assertEquals(economyManager.getBalance(player1.getUniqueId()), 200.0);
+        assertEquals(economyManager.getBalance(player2.getUniqueId()), 100.0);
     }
 
     @Test
     public void testFailedTransferBalanceDueToInsufficientFunds() {
-        EconomyManager.setBalance(player1.getUniqueId(), 50.0);
+        economyManager.setBalance(player1.getUniqueId(), 50.0);
 
-        boolean success = EconomyManager.transferBalance(player1.getUniqueId(), player2.getUniqueId(), 100.0);
+        boolean success = economyManager.transferBalance(player1.getUniqueId(), player2.getUniqueId(), 100.0);
         
         assertFalse(success);
-        assertEquals(EconomyManager.getBalance(player1.getUniqueId()), 50.0);
-        assertEquals(EconomyManager.getBalance(player2.getUniqueId()), 0.0);
+        assertEquals(economyManager.getBalance(player1.getUniqueId()), 50.0);
+        assertEquals(economyManager.getBalance(player2.getUniqueId()), 0.0);
     }
 
     @Test
     public void testTransferBalanceWithReasonRegistersTransaction() {
-        EconomyManager.setBalance(player1.getUniqueId(), 400.0);
-        EconomyManager.transferBalance(player1.getUniqueId(), player2.getUniqueId(), 150.0, "Gift");
+        economyManager.setBalance(player1.getUniqueId(), 400.0);
+        economyManager.transferBalance(player1.getUniqueId(), player2.getUniqueId(), 150.0, "Gift");
         server.getScheduler().waitAsyncTasksFinished();
 
-        List<Transaction> transactions = TransactionsManager.getTransactionsByPlayers(player1.getUniqueId());
+        List<Transaction> transactions = transactionsManager.getTransactionsByPlayers(player1.getUniqueId());
 
         boolean found = transactions.stream().anyMatch(t ->
             t.sender.equals(player1.getUniqueId().toString()) &&
