@@ -47,7 +47,7 @@ public class AyweniterPerk implements Listener {
 	    if (blockCity != null)
             if (blockCity != playerCity) return;
 
-        if (blockCity.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
+        if (playerCity.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) {
             if (!PerkUtils.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
 
             if (block.getType() == Material.STONE) {
