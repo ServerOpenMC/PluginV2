@@ -18,7 +18,7 @@ public class OMCPlayerCity extends OMCOfflinePlayerFeat {
 
     @Nullable
     public City getCity() {
-        return cityManager.getCity(getUniqueId());
+        return cityManager.getPlayerCity(getUniqueId());
     }
 
     public boolean hasCity() {
