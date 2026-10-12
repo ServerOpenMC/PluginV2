@@ -46,7 +46,7 @@ public class OMCPlugin extends JavaPlugin {
 
         /* CONFIG */
         saveDefaultConfig();
-        configs = this.getConfigs();
+        configs = this.getConfig();
         OMCLogger.setRuntimeLogger(this.getSLF4JLogger());
         DatabaseManager.init();
 
@@ -78,7 +78,7 @@ public class OMCPlugin extends JavaPlugin {
             PacketMenuLib.init(this);
 
         // * Si ItemsAdder n'est pas présent, alors on charge les dernières features maintenant
-        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
+        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable() || isUnitTestVersion()) {
             loadAfterItemsAdder();
         }
     }

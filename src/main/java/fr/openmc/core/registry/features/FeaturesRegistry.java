@@ -45,6 +45,7 @@ import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.lifecycle.registries.KeyedRegistry;
 import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.registry.features.loading.FeatureEntry;
@@ -202,8 +203,12 @@ public class FeaturesRegistry extends Registry<String, Feature>
 
     public void load(FeatureLoadingType loadingType) {
         for (FeatureEntry<?> entry : declarations) {
-            if (entry.getLoadingType() != loadingType) continue;
-            register(entry);
+            try {
+                if (entry.getLoadingType() != loadingType) continue;
+                register(entry);
+            } catch (Throwable throwable) {
+                OMCLogger.error("Une erreur est survenue lors du chargement des features : " + throwable.getMessage(), throwable);
+            }
         }
     }
 

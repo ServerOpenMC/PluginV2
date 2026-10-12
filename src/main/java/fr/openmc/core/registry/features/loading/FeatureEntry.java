@@ -29,6 +29,10 @@ public class FeatureEntry<F extends Feature> {
         return FeatureEntry.of(FeatureLoadingType.NONE, supplier, flags);
     }
 
+    public boolean isCreated() {
+        return instance != null;
+    }
+
     public F create() {
         if (instance == null)
             instance = supplier.get();

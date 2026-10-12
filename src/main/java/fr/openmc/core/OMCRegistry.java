@@ -32,7 +32,6 @@ import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
 import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,7 +131,7 @@ public final class OMCRegistry {
             LifecycleRegistry r = load(ctx);
             try {
                 r.bootstrap(context);
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 OMCLogger.errorFormatted("Erreur lors du chargement du registre '{}' lors du bootstrap", r.getClass().getSimpleName());
                 OMCLogger.error(e.getMessage());
             }
@@ -147,15 +146,20 @@ public final class OMCRegistry {
 
             LifecycleRegistry r = load(ctx);
 
-            if (r instanceof HasListeners hasListeners)
+            try {
+                if (r instanceof HasListeners hasListeners)
                 OMCPlugin.registerEvents(hasListeners.getListeners());
 
-            if (r instanceof HasCommands hasCommands)
-                for (Object command : hasCommands.getCommands()) {
-                    CommandsManager.getHandler().register(command);
-                }
+                if (r instanceof HasCommands hasCommands)
+                    for (Object command : hasCommands.getCommands()) {
+                        CommandsManager.getHandler().register(command);
+                    }
 
-            r.init();
+                r.init();
+            } catch (Throwable e) {
+                OMCLogger.errorFormatted("Erreur lors du chargement du registre '{}' lors du runtime", r.getClass().getSimpleName());
+                OMCLogger.error(e.getMessage());
+            }
             OMCLogger.successFormatted("Registre {} chargé pendant le runtime", r.getClass().getSimpleName());
         }
     }
@@ -167,15 +171,21 @@ public final class OMCRegistry {
 
             LifecycleRegistry r = load(ctx);
 
-            if (r instanceof HasListeners hasListeners)
-                OMCPlugin.registerEvents(hasListeners.getListeners());
+            try {
+                if (r instanceof HasListeners hasListeners)
+                    OMCPlugin.registerEvents(hasListeners.getListeners());
 
-            if (r instanceof HasCommands hasCommands)
-                for (Object command : hasCommands.getCommands()) {
-                    CommandsManager.getHandler().register(command);
-                }
+                if (r instanceof HasCommands hasCommands)
+                    for (Object command : hasCommands.getCommands()) {
+                        CommandsManager.getHandler().register(command);
+                    }
 
-            r.postInit();
+                r.postInit();
+            } catch (Throwable e) {
+                OMCLogger.errorFormatted("Erreur lors du chargement du registre '{}' lors du bootstrap", r.getClass().getSimpleName());
+                OMCLogger.error(e.getMessage());
+            }
+
             OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());
         }
     }

@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class TicketManager extends Feature implements HasListeners {
 
-    private final HologramLoader hologramLoader;
+    private HologramLoader hologramLoader = null;
 
     public int hoursPerTicket = 8;
     public final List<PlayerStats> timePlayed = new ArrayList<>();
@@ -42,7 +42,8 @@ public class TicketManager extends Feature implements HasListeners {
 
     public TicketManager(File statsDirectory) {
         this.setStatsDirectory(statsDirectory);
-        this.hologramLoader = OMCRegistry.FEATURES.HOLOGRAM_LOADER.get();
+        if (OMCRegistry.FEATURES.HOLOGRAM_LOADER.isCreated())
+            this.hologramLoader = OMCRegistry.FEATURES.HOLOGRAM_LOADER.get();
     }
 
     @Override
