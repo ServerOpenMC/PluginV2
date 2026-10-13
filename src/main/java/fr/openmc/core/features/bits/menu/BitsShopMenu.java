@@ -4,8 +4,6 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.bits.BitsManager;
-import fr.openmc.core.features.bits.models.BitsPlayer;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -25,11 +23,8 @@ import java.util.Map;
 
 public class BitsShopMenu extends Menu {
 
-    private final BitsManager manager;
-
     public BitsShopMenu(Player owner) {
         super(owner);
-        this.manager = OMCRegistry.FEATURES.BITS.get();
     }
 
     @Override
@@ -68,8 +63,7 @@ public class BitsShopMenu extends Menu {
 
     private ItemMenuBuilder createBuyButton(CustomItem item, double price) {
         Component itemName = item.getBest().getItemMeta().displayName();
-        BitsPlayer bitsPlayer = manager.getBitsPlayer(getOwner().getUniqueId());
-        double bits = bitsPlayer == null ? 0d : bitsPlayer.getBits();
+        double bits = getOwner().bits().getBits();
         return new ItemMenuBuilder(this, item, itemMeta -> {
             itemMeta.displayName(itemName);
             itemMeta.lore(TranslationManager.translationLore("feature.bits.menu.shop.buy.lore",
@@ -81,7 +75,7 @@ public class BitsShopMenu extends Menu {
                 return;
             }
 
-            manager.withdrawBits(getOwner().getUniqueId(), price);
+            getOwner().bits().withdrawBits(price);
             ItemUtils.giveItem(getOwner(), item.getBest(), 1);
         });
     }

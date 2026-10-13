@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -117,7 +118,7 @@ public class VampireBossLootManager {
 
     private void giveLootToContributor(UUID playerUUID, double chanceMultiplier) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
+        OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(playerUUID);
 
         Player player = offlinePlayer.getPlayer();
         List<ItemStack> rewards = new ArrayList<>();
@@ -149,7 +150,7 @@ public class VampireBossLootManager {
             }
         }
 
-        mailBoxManager.sendItemsToOfflinePlayer(offlinePlayer.getUniqueId(), rewards.toArray(ItemStack[]::new));
+        mailBoxManager.sendItems(offlinePlayer, rewards.toArray(ItemStack[]::new));
     }
 
     private double getChanceMultiplier(double participation) {

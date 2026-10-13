@@ -46,19 +46,19 @@ public class BitsCommands {
     public void setBits(CommandSender sender,
                         @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
                         @Range(min = 1E-10) double amount) {
-        bitsManager.setBits(target.getUniqueId(), amount);
+        target.bits().setBits(amount);
         MessagesManager.sendMessage(sender,
                 TranslationManager.translation(
                         "feature.economy.bits.set.success",
                         target.getNameWithHead().color(NamedTextColor.YELLOW),
-                        Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                        Component.text(target.bits().getFormattedBits()).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
         if (target.isOnline()) {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.bits.set.target",
-                            Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                            Component.text(target.bits().getFormattedBits()).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }
@@ -70,11 +70,11 @@ public class BitsCommands {
     public void addBits(CommandSender player,
                         @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
                         @Range(min = 1E-10) double amount) {
-        bitsManager.addBits(target.getUniqueId(), amount);
+        target.bits().addBits(amount);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.bits.add.success",
-                        Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW),
+                        Component.text(target.bits().getFormattedBits()).color(NamedTextColor.YELLOW),
                         target.getNameWithHead().color(NamedTextColor.YELLOW)
                 ),
                 Prefix.OPENMC, MessageType.SUCCESS, true);
@@ -82,7 +82,7 @@ public class BitsCommands {
             MessagesManager.sendMessage(target.getPlayer(),
                     TranslationManager.translation(
                             "feature.economy.bits.add.target",
-                            Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW)
+                            Component.text(target.bits().getFormattedBits()).color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.INFO, true);
         }
@@ -94,11 +94,11 @@ public class BitsCommands {
     public void removeBits(CommandSender player,
                            @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
                            @Range(min = 1E-10) double amount) {
-        if (bitsManager.withdrawBits(target.getUniqueId(), amount)) {
+        if (target.bits().withdrawBits(amount)) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation(
                             "feature.economy.bits.remove.success",
-                            Component.text(bitsManager.getFormattedBits(target.getUniqueId())).color(NamedTextColor.YELLOW),
+                            Component.text(target.bits().getFormattedBits()).color(NamedTextColor.YELLOW),
                             target.getNameWithHead().color(NamedTextColor.YELLOW)
                     ),
                     Prefix.OPENMC, MessageType.SUCCESS, true);
@@ -120,7 +120,7 @@ public class BitsCommands {
     @CommandPermission("omc.admin.commands.bits.reset")
     public void resetBits(CommandSender player,
                           @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target) {
-        bitsManager.setBits(target.getUniqueId(), 0);
+        target.bits().setBits(0);
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.economy.bits.reset.success",

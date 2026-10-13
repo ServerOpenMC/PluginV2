@@ -22,6 +22,7 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
     private final OMCPlayerCooldown cooldown;
     private final OMCPlayerSettings settings;
     private final OMCPlayerMailbox mailbox;
+    private final OMCPlayerBits bits;
 
     OMCOfflinePlayerImpl(OfflinePlayer player) {
         this.player = player;
@@ -32,6 +33,7 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
         this.cooldown = new OMCPlayerCooldown(player);
         this.settings = new OMCPlayerSettings(player);
         this.mailbox = new OMCPlayerMailbox(player);
+        this.bits = new OMCPlayerBits(player);
     }
 
     @Override
@@ -88,5 +90,10 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
     @Override
     public OMCPlayerMailbox mailbox() {
         return mailbox;
+    }
+
+    @Override
+    public OMCPlayerBits bits() {
+        return bits;
     }
 }

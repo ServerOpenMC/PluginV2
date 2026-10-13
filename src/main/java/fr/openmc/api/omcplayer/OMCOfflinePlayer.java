@@ -40,4 +40,5 @@ public interface OMCOfflinePlayer extends OfflinePlayer {
     OMCPlayerCity city();
     OMCPlayerCooldown cooldown();
     OMCPlayerMailbox mailbox();
+    OMCPlayerBits bits();
 }

@@ -117,7 +117,7 @@ public class MainScoreboard extends BaseScoreboard {
         location = (chunkCity != null) ? toSmall(player, chunkCity.getName()) : location;
 
         String balance = player.economy().getMiniBalance();
-        double bits = bitsManager.getBits(player.getUniqueId());
+        double bits = player.bits().getBits();
 
         List<Component> lines = new ArrayList<>();
 
