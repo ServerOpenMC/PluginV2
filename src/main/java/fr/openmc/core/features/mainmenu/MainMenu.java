@@ -18,10 +18,6 @@ import java.util.Set;
 
 @Credit(developers = {"miseur"}, graphist = {"Tfloa"})
 public class MainMenu extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, LoadIfEnable<ProtocolLibHook>, HasCommands {
-    public static void openMainMenu(OMCPlayer player) {
-        PacketMenuLib.openMenu(new Page1(player), player);
-    }
-
     @Override
     public void init() {
         new MainMenuListener(OMCPlugin.getInstance());
@@ -32,5 +28,9 @@ public class MainMenu extends Feature implements NotLoadInUnitTest, LoadAfterIte
         return Set.of(
                 new MainMenuCommand()
         );
+    }
+
+    public static void openMainMenu(OMCPlayer player) {
+        PacketMenuLib.openMenu(new Page1(player), player);
     }
 }

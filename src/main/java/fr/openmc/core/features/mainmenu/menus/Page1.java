@@ -12,9 +12,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.mainmenu.menus.buttons.*;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
-import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -65,23 +62,20 @@ public class Page1 implements Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
-        Player player = event.player();
-        OMCPlayer omcPlayer = OMCPlayer.of(player);
+        OMCPlayer player = OMCPlayer.of(event.player());
         if (event.clickType() == ClickType.CLICK_OUTSIDE) {
-            PacketMenuLib.closeMenu(omcPlayer);
+            PacketMenuLib.closeMenu(player);
             return;
         }
 
-        if (event.clickType() != ClickType.LEFT_CLICK) {
-            return;
-        }
+        if (event.clickType() != ClickType.LEFT_CLICK) return;
 
-        if (DreamUtils.isInDreamWorld(player)) {
-            PacketMenuLib.closeMenu(omcPlayer);
-            MessagesManager.sendMessage(player,
+        if (DreamUtils.isInDreamWorld(player.getPlayer())) {
+            PacketMenuLib.closeMenu(player);
+            player.message().sendError(
                     TranslationManager.translation("feature.mainmenu.message.dream_world")
-                            .color(NamedTextColor.RED),
-                    Prefix.OPENMC, MessageType.ERROR, true);
+                            .color(NamedTextColor.RED)
+            );
             return;
         }
 
@@ -89,12 +83,12 @@ public class Page1 implements Menu {
                 .filter(btn -> btn.slots().contains(event.slot()))
                 .findFirst()
                 .ifPresent(btn -> {
-                    if (btn.closesMenu()) PacketMenuLib.closeMenu(omcPlayer);
+                    if (btn.closesMenu()) PacketMenuLib.closeMenu(player);
 
                     if (btn.runNextTick()) {
-                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> btn.open(omcPlayer));
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> btn.open(player));
                     } else {
-                        btn.open(omcPlayer);
+                        btn.open(player);
                     }
                 });
     }
