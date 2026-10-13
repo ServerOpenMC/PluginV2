@@ -1,8 +1,7 @@
-package fr.openmc.core.features.events.contents.halloween.halloween.listeners;
+package fr.openmc.core.features.events.contents.halloween.festival.listeners;
 
 import dev.lone.itemsadder.api.CustomStack;
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.events.contents.halloween.halloween.CandyItem;
+import fr.openmc.core.features.events.contents.halloween.festival.CandyItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +14,7 @@ import java.util.UUID;
 
 public class CandyListener implements Listener {
 
-    private final Map<UUID, Integer> diabetes = new HashMap<>();
+    private final Map<UUID, Integer> sugarIndex = new HashMap<>();
 
     @EventHandler
     public void onCandyEat(PlayerItemConsumeEvent event) {
@@ -32,15 +31,15 @@ public class CandyListener implements Listener {
 
         UUID uuid = player.getUniqueId();
 
-        int diabete = diabetes.computeIfAbsent(uuid, key -> 0);
+        int sugarIdx = sugarIndex.computeIfAbsent(uuid, key -> 0);
 
-        diabete += candy.getDiabetesIndex();
+        sugarIdx += candy.getDiabetesIndex();
 
-        if (diabete >= 20) {
+        if (sugarIdx >= 20) {
             //TODO faire un truc
-            diabetes.put(uuid, 0);
+            sugarIndex.put(uuid, 0);
         } else
-            diabetes.put(uuid, diabete);
+            sugarIndex.put(uuid, sugarIdx);
     }
 
 }

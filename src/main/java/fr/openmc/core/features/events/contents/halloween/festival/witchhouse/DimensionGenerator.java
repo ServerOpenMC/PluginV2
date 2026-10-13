@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.contents.halloween.halloween.dimension;
+package fr.openmc.core.features.events.contents.halloween.festival.witchhouse;
 
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import org.bukkit.Bukkit;
@@ -6,7 +6,7 @@ import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.entity.SpawnCategory;
 
-public class DimensionManager {
+public class DimensionGenerator {
 
     public static final String DIMENSION_NAME = "world_omc_halloween_witch_house";
     public static World HALLOWEEN_WORLD;
@@ -15,12 +15,7 @@ public class DimensionManager {
         HALLOWEEN_WORLD = Bukkit.getWorld(DIMENSION_NAME);
 
         setupDimension();
-//        loadRegions();
     }
-
-    //TODO setup la dimension :
-    // - monde vide + ajout de la structure de Mcross
-    // - ambiant custom
 
     private static void setupDimension() {
         if (!HALLOWEEN_WORLD.getName().equals(DIMENSION_NAME)) return;
@@ -48,19 +43,9 @@ public class DimensionManager {
         // ** SET WORLD BORDER AND TIME **
         HALLOWEEN_WORLD.getWorldBorder().setSize(500);
         HALLOWEEN_WORLD.setTime(14000);
+        HALLOWEEN_WORLD.setThundering(true);
+        HALLOWEEN_WORLD.setStorm(true);
 
         OMCLogger.infoFormatted("Dimension de la Maison de la Sorcière setup (gamerules, worldborder, time)");
     }
-
-    //TODO modifier avec les region de bibi
-//    private static void loadRegions() {
-//        MultiRegion multiRegion = new MultiRegion(
-//                HALLOWEEN_WORLD,
-//                new SquareRegion(0.0, 60.0, 0.0, 6.0, 70.0, 3.0, HALLOWEEN_WORLD),
-//                new SquareRegion(0.0, 60.0, 6.0, 3.0, 70.0, 3.0, HALLOWEEN_WORLD)
-//        );
-//
-//        multiRegion.addDetection();
-//    }
-
 }

@@ -1,11 +1,10 @@
-package fr.openmc.core.features.events.contents.halloween.halloween.model;
+package fr.openmc.core.features.events.contents.halloween.festival.model;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;

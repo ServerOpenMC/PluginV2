@@ -1,28 +1,18 @@
-package fr.openmc.core.features.events.contents.halloween.halloween.shop.menu;
+package fr.openmc.core.features.events.contents.halloween.festival.shop.menu;
 
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.Restart;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.actions.CityChestAction;
-import fr.openmc.core.features.city.menu.CityChestMenu;
-import fr.openmc.core.features.city.sub.milestone.rewards.ChestPageLimitRewards;
-import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.contents.halloween.halloween.shop.WitchShopItem;
-import fr.openmc.core.features.events.contents.halloween.halloween.shop.WitchShopManager;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopItem;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.world.level.levelgen.Column;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,16 +20,11 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import static fr.openmc.core.features.city.conditions.CityChestConditions.*;
 
 public class WitchShopStoreMenu extends PaginatedMenu {
 

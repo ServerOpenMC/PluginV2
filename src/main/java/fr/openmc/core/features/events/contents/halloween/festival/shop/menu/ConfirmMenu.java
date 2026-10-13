@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.contents.halloween.halloween.shop.menu;
+package fr.openmc.core.features.events.contents.halloween.festival.shop.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
@@ -7,18 +7,14 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.adminshop.ShopItem;
-import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.contents.halloween.halloween.shop.WitchShopItem;
-import fr.openmc.core.features.events.contents.halloween.halloween.shop.WitchShopManager;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopItem;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;

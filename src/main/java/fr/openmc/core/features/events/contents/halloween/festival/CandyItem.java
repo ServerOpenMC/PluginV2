@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.contents.halloween.halloween;
+package fr.openmc.core.features.events.contents.halloween.festival;
 
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.CustomItemMeta;

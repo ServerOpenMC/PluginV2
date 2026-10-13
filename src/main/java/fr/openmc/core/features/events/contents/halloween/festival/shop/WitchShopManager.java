@@ -1,10 +1,10 @@
-package fr.openmc.core.features.events.contents.halloween.halloween.shop;
+package fr.openmc.core.features.events.contents.halloween.festival.shop;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
-import fr.openmc.core.features.events.contents.halloween.halloween.HalloweenManager;
-import fr.openmc.core.features.events.contents.halloween.halloween.dimension.advancement.Advancements;
+import fr.openmc.core.features.events.contents.halloween.festival.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.Floors;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -143,13 +143,13 @@ public class WitchShopManager {
         LinkedHashSet<WitchShopItem> items = new LinkedHashSet<>();
 
         items.add(new WitchShopItem(
-                Advancements.ROOM_1, OMCRegistry.CUSTOM_ITEMS.AYWENITE, 10));
+                Floors.FLOOR_1, OMCRegistry.CUSTOM_ITEMS.AYWENITE, 10));
 
         items.add(new WitchShopItem(
-                Advancements.ROOM_2, OMCRegistry.CUSTOM_ITEMS.KEBAB, 10));
+                Floors.FLOOR_2, OMCRegistry.CUSTOM_ITEMS.KEBAB, 10));
 
         items.add(new WitchShopItem(
-                Advancements.ROOM_2, OMCRegistry.CUSTOM_ITEMS.NETHERITE_HAMMER, 1000));
+                Floors.FLOOR_2, OMCRegistry.CUSTOM_ITEMS.NETHERITE_HAMMER, 1000));
 
         return items;
     }
