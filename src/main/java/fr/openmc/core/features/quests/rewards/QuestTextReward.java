@@ -1,5 +1,6 @@
 package fr.openmc.core.features.quests.rewards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -20,7 +21,7 @@ public record QuestTextReward(Component text, Prefix prefix, MessageType message
      * @param player The player to whom the reward will be given.
      */
     @Override
-    public void giveReward(Player player) {
+    public void giveReward(OMCPlayer player) {
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             MessagesManager.sendMessage(
                     player,

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tpa.commands.autocomplete;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.tpa.TPAManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +14,7 @@ public class TpaPendingAutoComplete implements SuggestionProvider<BukkitCommandA
 
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
-        return TPAManager.getRequesters(context.actor().requirePlayer()).stream()
+        return TPAManager.getRequesters(OMCPlayer.of(context.actor().requirePlayer())).stream()
                 .map(Player::getName)
                 .toList();
     }

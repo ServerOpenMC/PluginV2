@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tpa.commands;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -19,27 +20,27 @@ public class TPACancelCommand {
 	 */
 	@Command("tpacancel")
 	@CommandPermission("omc.commands.tpa")
-	public void tpaCancel(Player player) {
+	public void tpaCancel(OMCPlayer player) {
 		if (!TPAManager.requesterHasPendingRequest(player)) {
-			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.cancel.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
+			player.message().send(TranslationManager.translation("feature.tpa.cancel.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
-		Player target = TPAManager.getTargetByRequester(player);
+		OMCPlayer target = TPAManager.getTargetByRequester(player);
 
 		if (target == null) {
-			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.cancel.player_not_online"), Prefix.OPENMC, MessageType.ERROR, true);
+			player.message().send(TranslationManager.translation("feature.tpa.cancel.player_not_online"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
 		TPAManager.removeRequest(player, target);
-		MessagesManager.sendMessage(player, TranslationManager.translation(
+		player.message().send(TranslationManager.translation(
 				"feature.tpa.cancel.success",
-				Component.text(target.getName()).color(NamedTextColor.GOLD)
+				target.getNameWithHead().color(NamedTextColor.GOLD)
 		), Prefix.OPENMC, MessageType.SUCCESS, true);
-		MessagesManager.sendMessage(target, TranslationManager.translation(
+		target.message().send(TranslationManager.translation(
 				"feature.tpa.cancel.cancelled",
-				Component.text(player.getName()).color(NamedTextColor.DARK_RED)
+				player.getNameWithHead().color(NamedTextColor.DARK_RED)
 		), Prefix.OPENMC, MessageType.INFO, true);
 
 	}

@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
@@ -22,7 +23,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.network.protocol.game.ClientboundTabListPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.EnumSet;
@@ -75,21 +75,21 @@ public class TabList extends Feature implements NotLoadInUnitTest, LoadIfEnable<
         });
     }
 
-    public static void updateHeaderFooter(Player player, Component header, Component footer) {
-        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+    public static void updateHeaderFooter(OMCPlayer omcPlayer, Component header, Component footer) {
+        ServerPlayer nmsPlayer = omcPlayer.getServerPlayer();
         nmsPlayer.connection.send(new ClientboundTabListPacket(
                 PaperAdventure.asVanilla(header), PaperAdventure.asVanilla(footer)));
     }
 
-    public static void updateTabList(Player player) {
+    public static void updateTabList(OMCPlayer omcPlayer) {
         int visibleOnlinePlayers = 0;
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (player.canSee(p)) {
+            if (omcPlayer.canSee(p)) {
                 visibleOnlinePlayers++;
             }
         }
 
-        boolean isInDream = DreamUtils.isInDream(player);
+        boolean isInDream = DreamUtils.isInDream(omcPlayer);
         String logo;
         if (ItemsAdderHook.isEnable()) {
             logo = FontImageWrapper.replaceFontImages(isInDream ? ":dream_openmc:" : ":openmc:");
@@ -112,7 +112,7 @@ public class TabList extends Feature implements NotLoadInUnitTest, LoadIfEnable<
                 ? TranslationManager.translation("feature.displays.tablist.footer.dream")
                 : TranslationManager.translation("feature.displays.tablist.footer.default");
 
-        updateHeaderFooter(player, header, footer);
+        updateHeaderFooter(omcPlayer, header, footer);
     }
 
 }

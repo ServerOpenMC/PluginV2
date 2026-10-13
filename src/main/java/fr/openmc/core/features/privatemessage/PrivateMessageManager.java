@@ -1,6 +1,6 @@
 package fr.openmc.core.features.privatemessage;
 
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;

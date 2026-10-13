@@ -1,10 +1,11 @@
 package fr.openmc.core.features.quests.rewards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.function.Consumer;
 
-public record QuestMethodsReward(Consumer<Player> runnable) implements QuestReward {
+public record QuestMethodsReward(Consumer<OMCPlayer> runnable) implements QuestReward {
     /**
      * Gives the reward to the specified player.
      * <p>
@@ -15,7 +16,7 @@ public record QuestMethodsReward(Consumer<Player> runnable) implements QuestRewa
      * @param player the target player for the reward.
      */
     @Override
-    public void giveReward(Player player) {
+    public void giveReward(OMCPlayer player) {
         runnable.accept(player);
     }
 }

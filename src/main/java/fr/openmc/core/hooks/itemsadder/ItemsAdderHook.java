@@ -8,7 +8,9 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
 import fr.openmc.core.hooks.itemsadder.events.IAItemLoadEvent;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
+import fr.openmc.core.hooks.itemsadder.sprite.SpriteUtils;
 import fr.openmc.core.utils.FilesUtils;
+import fr.openmc.core.utils.ZipUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -17,6 +19,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +37,9 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
     private static final String CONTENTS_FOLDER_NAME = "contents";
     private static final String MERGE_RESOURCEPACK_PATH = "resource-pack.zip.merge_other_plugins_resourcepacks_folders";
 
+    @Getter
+    private static Path extractedGeneratedResourcePack;
+
     public static boolean isEnable() {
         return Hooks.isEnabled(ItemsAdderHook.class);
     }
@@ -43,7 +50,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
     }
 
     @Override
-    public void init() {
+    public void init() throws IOException {
         api = ApiHook.super.api();
 
         OMCPlugin.registerEvents(
@@ -51,6 +58,25 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
         );
 
         mergeResourcePack(Set.of("OpenMC/generated-rp-langs"));
+
+        // * Unzip (néccesite que les protections soient désactivé)
+        this.extractedGeneratedResourcePack = extractResourcePack();
+    }
+
+    private Path extractResourcePack() throws IOException {
+        Path packPath = getPackPath();
+        Path rpExtractedPath = OMCPlugin.getInstance().getDataPath().resolve("rp-extracted");
+        FilesUtils.deleteDirectory(rpExtractedPath.toFile());
+        Path unzipDir = Files.createDirectory(rpExtractedPath);
+        ZipUtils.unzip(packPath, unzipDir);
+        return unzipDir;
+    }
+
+    public static Path getItemsAdderPath(Path dataPath) {
+        File pluginsDir = dataPath.toFile().getParentFile(); // * root/plugins
+        File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/plugins/ItemsAdder
+
+        return itemsAdderDir.toPath();
     }
 
     /**
@@ -202,6 +228,15 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
                 OMCLogger.error("Erreur lors de la mise à jour du config.yml d'ItemsAdder", e);
             }
         }
+    }
+
+    public static Path getPackPath() {
+        File pluginsDir = OMCPlugin.getInstance().getDataFolder().getParentFile(); // * root/plugins/
+        File itemsAdderDir = new File(pluginsDir, "ItemsAdder"); // * root/plugins/ItemsAdder
+        File outputDir = new File(itemsAdderDir, "output"); // * root/plugins/ItemsAdder/output
+        File generatedDir = new File(outputDir, "generated.zip"); // * root/plugins/ItemsAdder/output/generated.zip
+
+        return generatedDir.toPath();
     }
 
     @Override

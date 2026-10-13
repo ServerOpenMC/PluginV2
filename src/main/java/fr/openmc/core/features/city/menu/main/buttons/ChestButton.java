@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu.main.buttons;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -53,7 +54,7 @@ public class ChestButton {
                 if (city.getChestWatcher() != null) {
                     lore = TranslationManager.translationLore(
                             "feature.city.menus.main.chest.lore.opened",
-                            Component.text(CachePlayerName.getName(city.getChestWatcher())).color(NamedTextColor.RED)
+                            OMCOfflinePlayer.of(city.getChestWatcher()).getNameWithHead().color(NamedTextColor.RED)
                     );
                 } else {
                     lore = TranslationManager.translationLore("feature.city.menus.main.chest.lore.click");

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes.command.autocomplete;
 
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.homes.models.Home;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
@@ -48,12 +49,13 @@ public class MoneyLeaderBoard extends LeaderBoard {
         for (int i = 0;i < balances.size(); i++){
             Map.Entry<UUID, Double> balance = balances.get(i);
             Component rank = Component.text("#" + (i+1)).color(ColorUtils.getRankColor(i+1));
+            OMCOfflinePlayer player = OMCOfflinePlayer.of(balance.getKey());
 
             text = text.append(Component.text("\n")
                     .append(TranslationManager.translation(
                             "feature.leaderboards.line.money",
                             rank,
-                            CachePlayerName.name(balance.getKey()).color(NamedTextColor.LIGHT_PURPLE),
+                            player.getNameWithHead().color(NamedTextColor.LIGHT_PURPLE),
                             Component.text(EconomyManager.getFormattedSimplifiedNumber(balance.getValue()) + " " + EconomyManager.getEconomyIcon())
                                     .color(NamedTextColor.WHITE)
                     )));

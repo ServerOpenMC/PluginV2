@@ -1,12 +1,10 @@
 package fr.openmc.core.features.mainmenu.listeners;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.*;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.minecraft.advancements.*;
 import net.minecraft.core.ClientAsset;
@@ -97,11 +95,20 @@ public class MainMenuListener implements Listener {
         return item;
     }
 
-    public void inject(Player player) {
-        ServerGamePacketListenerImpl connection = ((CraftPlayer) player).getHandle().connection;
+    public void inject(UUID playerUUID, ServerGamePacketListenerImpl connection) {
         Channel channel = connection.connection.channel;
-        UUID playerUUID = player.getUniqueId();
+        if (!channel.isOpen()) return;
 
+        // todo :
+
+        // ChannelPipeline pipeline = channel.pipeline();
+        //        if (pipeline.get("packet_listener") != null) return;
+        //
+        //        ChannelHandlerContext ctx = pipeline.context(net.minecraft.network.Connection.class);
+        //        if (ctx == null) return;
+        //
+        //        pipeline.addBefore(ctx.name(), "packet_listener", new ChannelDuplexHandler() {
+        //
         if (channel.pipeline().get(PIPELINE_NAME) != null) return;
 
         channel.pipeline().addBefore("packet_handler", PIPELINE_NAME, new ChannelDuplexHandler() {
@@ -115,7 +122,7 @@ public class MainMenuListener implements Listener {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                MainMenu.openMainMenu(player);
+                                MainMenu.openMainMenu(OMCPlayer.of(playerUUID));
                             }
                         }.runTask(OMCPlugin.getInstance());
                     } else if (packet.getAction() == ServerboundSeenAdvancementsPacket.Action.CLOSED_SCREEN
@@ -164,7 +171,11 @@ public class MainMenuListener implements Listener {
 
     @EventHandler
     void onPlayerJoin(PlayerJoinEvent event) {
-        inject(event.getPlayer());
+        Player bukkitPlayer = event.getPlayer();
+        ServerGamePacketListenerImpl connection =
+                ((CraftPlayer) bukkitPlayer).getHandle().connection;
+
+        inject(bukkitPlayer.getUniqueId(), connection);
     }
 
     @EventHandler

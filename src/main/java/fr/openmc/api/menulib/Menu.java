@@ -1,6 +1,6 @@
 package fr.openmc.api.menulib;
 
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
