@@ -12,6 +12,7 @@ public abstract class CustomRegion {
     public abstract boolean contains(BlockVector3 pos);
     public abstract BlockVector3 getMin();
     public abstract BlockVector3 getMax();
+    public abstract BlockVector3 getCenter();
 
     public final boolean contains(Location loc) {
         if (loc == null || loc.getWorld() == null) return false;
