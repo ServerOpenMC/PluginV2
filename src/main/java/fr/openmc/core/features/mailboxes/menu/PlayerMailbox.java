@@ -55,7 +55,7 @@ public class PlayerMailbox extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        MAILBOX_MANAGER.getReceivedLetters(getOwner()).forEach(letter ->
+        getOwner().mailbox().getReceivedLetters().forEach(letter ->
                 items.add(new ItemMenuBuilder(this, letter.toLetterHead())
                         .setOnClick(e -> new LetterMenu(getOwner(), letter).open()))
         );
@@ -97,6 +97,6 @@ public class PlayerMailbox extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return MAILBOX_MANAGER.getReceivedLetters(getOwner()).size();
+        return getOwner().mailbox().getReceivedLetters().size();
     }
 }

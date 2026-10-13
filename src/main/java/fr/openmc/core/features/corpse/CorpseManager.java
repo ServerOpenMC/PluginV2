@@ -1,7 +1,6 @@
 package fr.openmc.core.features.corpse;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
@@ -221,13 +220,6 @@ public class CorpseManager extends Feature implements HasDatabase, HasListeners,
                         Prefix.CORPSE, MessageType.SUCCESS, true);
             }
         }
-    }
-
-    public void sendMailItems(OMCPlayer player, OMCOfflinePlayer receiver, ItemStack[] items) {
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            if (!mailboxManager.sendItems(player, receiver, items))
-                mailboxManager.givePlayerItems(player, items);
-        });
     }
 
     public boolean hasCorpseDB(UUID playerUUID) {

@@ -54,6 +54,7 @@ public class PrivateMessageManager extends Feature implements HasCommands {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.privatemessage.msg.private_messages_disabled"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
+
         if (!sender.settings().canReceivePrivateMessage(receiver.getUniqueId())) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("feature.privatemessage.msg.player_private_messages_disabled",
                     Component.text(receiver.getName()).color(NamedTextColor.YELLOW)), Prefix.OPENMC, MessageType.ERROR, true);
@@ -66,6 +67,7 @@ public class PrivateMessageManager extends Feature implements HasCommands {
         receiver.sendMessage(TranslationManager.translation("feature.privatemessage.msg.format.receiver",
                 Component.text(sender.getName()).color(NamedTextColor.YELLOW),
                 Component.text(message).color(NamedTextColor.WHITE)));
+
         socialSpyManager.broadcastToSocialSpy(sender, receiver, message);
 
         lastMessageFrom.put(receiver.getUniqueId(), sender.getUniqueId());

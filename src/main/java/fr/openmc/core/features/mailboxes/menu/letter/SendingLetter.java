@@ -8,7 +8,6 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -18,7 +17,6 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -77,14 +75,7 @@ public class SendingLetter extends Menu {
         getInventory().clear();
         getOwner().closeInventory();
 
-        sendMailItems(getOwner(), receiver, items);
-    }
-
-    private void sendMailItems(OMCPlayer player, OMCOfflinePlayer receiver, ItemStack[] items) {
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            if (!MAILBOX_MANAGER.sendItems(player, receiver, items))
-                MAILBOX_MANAGER.givePlayerItems(player, items);
-        });
+        getOwner().mailbox().sendItemsForce(receiver, items);
     }
 
     @Override
@@ -131,8 +122,10 @@ public class SendingLetter extends Menu {
 
         items.put(49, new ItemMenuBuilder(this, getHead(receiver)));
         items.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
-        items.put(48, ItemMenuTemplate.BTN_MAILBOX_SEND.apply(this).setOnClick(e -> sendLetter(e.getInventory())));
-        items.put(50, ItemMenuTemplate.BTN_CLOSE.apply(this).setOnClick(_ -> getOwner().closeInventory()));
+        items.put(48, ItemMenuTemplate.BTN_MAILBOX_SEND.apply(this)
+                .setOnClick(e -> sendLetter(e.getInventory())));
+        items.put(50, ItemMenuTemplate.BTN_CLOSE.apply(this)
+                .setOnClick(_ -> getOwner().closeInventory()));
 
         return items;
     }

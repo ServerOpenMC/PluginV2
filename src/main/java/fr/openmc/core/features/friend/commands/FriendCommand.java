@@ -44,7 +44,7 @@ public class FriendCommand {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.self"), Prefix.FRIEND, true);
                 return;
             }
-            if (!target.settings().canReceiveFriendRequest(target.getUniqueId())) {
+            if (!target.settings().canReceiveFriendRequest(player.getUniqueId())) {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.disabled"), Prefix.FRIEND, true);
                 return;
             }

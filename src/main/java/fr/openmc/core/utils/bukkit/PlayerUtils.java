@@ -1,9 +1,8 @@
 package fr.openmc.core.utils.bukkit;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -22,8 +21,8 @@ import java.util.List;
 public class PlayerUtils {
 	private PlayerUtils() {}
 
-	public static void sendFadeTitleTeleport(Player player, Location location) {
-		if (OMCRegistry.FEATURES.PLAYER_SETTINGS.get().getPlayerSettings(player.getUniqueId()).getSetting(SettingType.TELEPORT_TITLE_FADE)) {
+	public static void sendFadeTitleTeleport(OMCPlayer player, Location location) {
+		if (player.settings().shouldShowTeleportFade()) {
             player.showTitle(Title.title(
                     Component.text(FontImageWrapper.replaceFontImages(":tp_effect:")),
 					TranslationManager.translation("core.utils.fade_title.teleporting"),

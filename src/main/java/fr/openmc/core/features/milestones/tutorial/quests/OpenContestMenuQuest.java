@@ -70,7 +70,7 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
 
 									ItemStack[] itemsArray = items.toArray(new ItemStack[0]);
 
-									MAILBOX_MANAGER.sendItems(player, player, itemsArray);
+									player.mailbox().sendItemsForce(itemsArray);
 								}
 						)
                 )

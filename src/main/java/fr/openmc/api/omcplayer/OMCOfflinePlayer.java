@@ -34,8 +34,10 @@ public interface OMCOfflinePlayer extends OfflinePlayer {
     Component getNameWithHead();
 
     OMCPlayerMessage message();
+    OMCPlayerSettings settings();
     OMCPlayerHome home();
     OMCPlayerEconomy economy();
     OMCPlayerCity city();
     OMCPlayerCooldown cooldown();
+    OMCPlayerMailbox mailbox();
 }

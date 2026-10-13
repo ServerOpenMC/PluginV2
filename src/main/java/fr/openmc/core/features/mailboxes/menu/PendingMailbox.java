@@ -54,7 +54,7 @@ public class PendingMailbox extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        MAILBOX_MANAGER.getSentLetters(getOwner()).forEach(letter ->
+        getOwner().mailbox().getSentLetters().forEach(letter ->
             items.add(letter.toSenderLetterItemBuilder(this).setOnClick(e ->
                 MAILBOX_MANAGER.sendConfirmMenuToCancelLetter(getOwner(), letter)
             ))
@@ -97,6 +97,6 @@ public class PendingMailbox extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return MAILBOX_MANAGER.getSentLetters(getOwner()).size();
+        return getOwner().mailbox().getSentLetters().size();
     }
 }

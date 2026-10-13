@@ -226,18 +226,6 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
     }
 
     /**
-     * Checks if a player can receive a friend request from another player.
-     *
-     * @param receiverUUID the UUID of the player receiving the request
-     * @param senderUUID   the UUID of the player sending the request
-     * @return true if the receiver can receive the request, false otherwise
-     */
-    public boolean canReceiveFriendRequest(UUID receiverUUID, UUID senderUUID) {
-        PlayerSettings settings = getPlayerSettings(receiverUUID);
-        return settings.canPerformAction(SettingType.FRIEND_REQUESTS_POLICY, senderUUID);
-    }
-
-    /**
      * Checks if a player can receive a notification sound.
      *
      * @param playerUUID the UUID of the player
@@ -246,17 +234,5 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
     public boolean shouldPlayNotificationSound(UUID playerUUID) {
         PlayerSettings settings = getPlayerSettings(playerUUID);
         return settings.getSetting(SettingType.NOTIFICATIONS_SOUND);
-    }
-
-    /**
-     * Checks if a player can receive a city invite from another player.
-     *
-     * @param senderUUID   the UUID of the player send the invite
-     * @param receiverUUID the UUID of the player receive the invite
-     * @return true if the receiver can receive the city invite, false otherwise
-     */
-    public boolean canReceiveCityInvite(UUID senderUUID, UUID receiverUUID) {
-        PlayerSettings settings = getPlayerSettings(receiverUUID);
-        return settings.canPerformAction(SettingType.CITY_JOIN_REQUESTS_POLICY, senderUUID);
     }
 }

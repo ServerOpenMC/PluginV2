@@ -155,7 +155,7 @@ public class CorpseListener implements Listener {
 
                 if (!remaining.isEmpty()) {
                     ItemStack[] rm = remaining.toArray(ItemStack[]::new);
-                    corpseManager.sendMailItems(player, player, rm);
+                    player.mailbox().sendItemsForce(player, rm);
                 }
             }
 

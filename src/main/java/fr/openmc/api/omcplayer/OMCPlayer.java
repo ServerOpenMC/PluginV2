@@ -3,7 +3,6 @@ package fr.openmc.api.omcplayer;
 import fr.openmc.api.omcplayer.sub.OMCPlayerChronometer;
 import fr.openmc.api.omcplayer.sub.OMCPlayerCorpse;
 import fr.openmc.api.omcplayer.sub.OMCPlayerInputs;
-import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -44,7 +43,6 @@ public interface OMCPlayer extends OMCOfflinePlayer, Player {
     ServerPlayer getServerPlayer();
 
     // todo: faire un corpse(), ecttttttt
-    OMCPlayerSettings settings();
     OMCPlayerChronometer chronometer();
     OMCPlayerInputs inputs();
     OMCPlayerCorpse corpse();

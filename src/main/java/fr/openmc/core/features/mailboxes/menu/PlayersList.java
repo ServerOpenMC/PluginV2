@@ -59,8 +59,8 @@ public class PlayersList extends PaginatedMenu {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer == getOwner()) continue;
             OMCPlayer omcPlayer = OMCPlayer.of(onlinePlayer);
-            if (!MAILBOX_MANAGER.canSend(getOwner(), onlinePlayer)) continue;
-            pageItems.add(new ItemMenuBuilder(this, ItemUtils.getPlayerHead(onlinePlayer.getUniqueId()))
+            if (!getOwner().mailbox().canSend(omcPlayer)) continue;
+            pageItems.add(new ItemMenuBuilder(this, ItemUtils.getPlayerHead(omcPlayer.getUniqueId()))
                     .setOnClick(_ ->
                         new SendingLetter(getOwner(), omcPlayer).open()
                     ));

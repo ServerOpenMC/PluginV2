@@ -14,11 +14,14 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
 
     @Delegate(types = OfflinePlayer.class)
     private final OfflinePlayer player;
+
     private final OMCPlayerHome home;
     private final OMCPlayerEconomy economy;
     private final OMCPlayerCity city;
     private final OMCPlayerMessage message;
     private final OMCPlayerCooldown cooldown;
+    private final OMCPlayerSettings settings;
+    private final OMCPlayerMailbox mailbox;
 
     OMCOfflinePlayerImpl(OfflinePlayer player) {
         this.player = player;
@@ -27,6 +30,8 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
         this.city = new OMCPlayerCity(player);
         this.message = new OMCPlayerMessage(player);
         this.cooldown = new OMCPlayerCooldown(player);
+        this.settings = new OMCPlayerSettings(player);
+        this.mailbox = new OMCPlayerMailbox(player);
     }
 
     @Override
@@ -48,6 +53,11 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
     @Override
     public OMCPlayerMessage message() {
         return message;
+    }
+
+    @Override
+    public OMCPlayerSettings settings() {
+        return settings;
     }
 
     @Override
@@ -73,5 +83,10 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
     @Override
     public OMCPlayerCooldown cooldown() {
         return cooldown;
+    }
+
+    @Override
+    public OMCPlayerMailbox mailbox() {
+        return mailbox;
     }
 }

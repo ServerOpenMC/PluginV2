@@ -53,7 +53,7 @@ public class MailboxCommand {
                     Prefix.MAILBOX, MessageType.ERROR, true);
             return;
         }
-        if (!mailboxManager.canSend(player, receiverPlayer)) {
+        if (!player.mailbox().canSend(receiverPlayer)) {
             player.message().send(
                     TranslationManager.translation(
                             "feature.mailboxes.message.cannot_send",
@@ -79,7 +79,8 @@ public class MailboxCommand {
     @Subcommand("open")
     @Description("Ouvrir une lettre")
     public void openMailbox(OMCPlayer player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        Letter letter = mailboxManager.getById(player, id);
+        Letter letter = player.mailbox().getById(id);
+
         if (letter == null) return;
         LetterMenu mailbox = new LetterMenu(player, letter);
         mailbox.open();
@@ -89,7 +90,8 @@ public class MailboxCommand {
     @SecretCommand
     @Description("Refuser une lettre")
     public void refuseMailbox(OMCPlayer player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        Letter letter = mailboxManager.getById(player, id);
+        Letter letter = player.mailbox().getById(id);
+
         if (letter != null && !letter.isRefused() && letter.refuse()) {
             player.message().send(
                     TranslationManager.translation(
@@ -120,7 +122,8 @@ public class MailboxCommand {
     @SecretCommand
     @Description("Annuler une lettre")
     public void cancelMailbox(OMCPlayer player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        Letter letter = mailboxManager.getById(player, id);
+        Letter letter = player.mailbox().getById(id);
+
         if (letter == null) {
             player.message().send(
                     TranslationManager.translation(

@@ -34,7 +34,9 @@ public class MessagesManager {
                         .append(message)
                 );
 
-        if(sender instanceof Player player && sound && OMCRegistry.FEATURES.PLAYER_SETTINGS.get().shouldPlayNotificationSound(player.getUniqueId())) {
+        if (sender instanceof Player player
+                && sound
+                && OMCRegistry.FEATURES.PLAYER_SETTINGS.get().shouldPlayNotificationSound(player.getUniqueId())) {
             player.playSound(player.getLocation(), type.getSound(), soundVolume, 1.0F);
         }
 

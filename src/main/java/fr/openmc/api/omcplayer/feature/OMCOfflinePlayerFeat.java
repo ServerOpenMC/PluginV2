@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer.feature;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import lombok.Getter;
 import org.bukkit.OfflinePlayer;
@@ -19,6 +20,10 @@ public class OMCOfflinePlayerFeat implements OMCFeat {
 
     public UUID getUniqueId() {
         return offlinePlayer.getUniqueId();
+    }
+
+    public OMCOfflinePlayer getOMCOfflinePlayer() {
+        return OMCOfflinePlayer.of(offlinePlayer);
     }
 
     @Nullable

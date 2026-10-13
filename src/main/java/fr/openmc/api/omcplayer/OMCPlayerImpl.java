@@ -3,7 +3,6 @@ package fr.openmc.api.omcplayer;
 import fr.openmc.api.omcplayer.sub.OMCPlayerChronometer;
 import fr.openmc.api.omcplayer.sub.OMCPlayerCorpse;
 import fr.openmc.api.omcplayer.sub.OMCPlayerInputs;
-import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
 import lombok.experimental.Delegate;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
@@ -21,7 +20,7 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
 
     @Delegate(types = Player.class)
     private final Player player;
-    private final OMCPlayerSettings settings;
+
     private final OMCPlayerChronometer chronometer;
     private final OMCPlayerInputs intpus;
     private final OMCPlayerCorpse corpse;
@@ -29,7 +28,6 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     private OMCPlayerImpl(Player player) {
         super(player);
         this.player = player;
-        this.settings = new OMCPlayerSettings(player);
         this.chronometer = new OMCPlayerChronometer(player);
         this.intpus = new OMCPlayerInputs(player);
         this.corpse = new OMCPlayerCorpse(player);
@@ -84,11 +82,6 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
 
     public static void removeCache(UUID uuid) {
         CACHE.remove(uuid);
-    }
-
-    @Override
-    public OMCPlayerSettings settings() {
-        return settings;
     }
 
     @Override

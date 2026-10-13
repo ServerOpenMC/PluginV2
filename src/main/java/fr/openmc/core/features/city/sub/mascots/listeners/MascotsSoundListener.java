@@ -6,12 +6,12 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
-import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.EnumUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,7 +21,6 @@ import org.bukkit.entity.EntityType;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 public class MascotsSoundListener {
 
@@ -56,9 +55,8 @@ public class MascotsSoundListener {
                 EntityType soundEntity = EnumUtils.match(entityName, EntityType.class);
                 if (soundEntity == null) return;
 
-                UUID playerUUID = event.getPlayer().getUniqueId();
-                if (playerSettingsManager.getPlayerSettings(playerUUID).getSetting(SettingType.MASCOT_PLAY_SOUND_POLICY))
-                    return;
+                OMCPlayer player = OMCPlayer.of(event.getPlayer());
+                if (player.settings().shouldPlayMascotSound()) return;
 
                 double x = packet.getIntegers().read(0) / 8.0;
                 double y = packet.getIntegers().read(1) / 8.0;

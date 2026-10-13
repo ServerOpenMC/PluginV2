@@ -210,7 +210,7 @@ public class TradeMenu extends Menu {
             }
         }
         if (!leftovers.isEmpty()) {
-            MAILBOX_MANAGER.sendItems(player, player, leftovers.toArray(new ItemStack[0]));
+            player.mailbox().sendItems(player, leftovers.toArray(new ItemStack[0]));
         }
     }
 
