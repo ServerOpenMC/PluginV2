@@ -12,7 +12,6 @@ import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import lombok.Getter;
 import net.minecraft.world.inventory.ContainerInput;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Objects;
@@ -30,10 +29,10 @@ public class PacketMenuListener extends PacketAdapter {
 
     @Override
     public void onPacketSending(PacketEvent event) {
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         if (event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW) {
             PacketContainer packet = event.getPacket();
             int windowId = packet.getIntegers().read(0);
-            OMCPlayer player = OMCPlayer.of(event.getPlayer());
             UUID uuid = player.getUniqueId();
 
             if (PacketMenuLib.getOpenMenus().containsKey(uuid) && PacketMenuLib.getWindowIds().get(uuid) != windowId) {
@@ -59,6 +58,8 @@ public class PacketMenuListener extends PacketAdapter {
 
     @Override
     public void onPacketReceiving(PacketEvent event) {
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
+        UUID uuid = player.getUniqueId();
         if (event.getPacketType() == PacketType.Play.Client.WINDOW_CLICK) {
             PacketContainer packet = event.getPacket();
             int windowId = packet.getIntegers().read(0);
@@ -67,39 +68,36 @@ public class PacketMenuListener extends PacketAdapter {
             byte button = packet.getBytes().read(0);
             int mode = ((ContainerInput) packet.getStructures().withType(ContainerInput.class).read(0)).ordinal();
 
-            if (PacketMenuLib.getWindowIds().containsKey(event.getPlayer().getUniqueId()) && windowId == PacketMenuLib.getWindowIds().get(event.getPlayer().getUniqueId())) {
-                OMCPlayer player = OMCPlayer.of(event.getPlayer());
-                event.setCancelled(true);
-                UUID uuid = player.getUniqueId();
+            if (PacketMenuLib.getWindowIds().containsKey(uuid) && windowId == PacketMenuLib.getWindowIds().get(uuid)) {
+                if (PacketMenuLib.getWindowIds().containsKey(uuid) && windowId == PacketMenuLib.getWindowIds().get(uuid)) {
+                    event.setCancelled(true);
 
-                if (PacketMenuLib.getOpenMenus().containsKey(uuid)) {
-                    Menu menu = PacketMenuLib.getOpenMenus().get(uuid);
+                    if (PacketMenuLib.getOpenMenus().containsKey(uuid)) {
+                        Menu menu = PacketMenuLib.getOpenMenus().get(uuid);
 
-                    if (slot == -999 && (mode == 0 || mode == 4)) {
-                        menu.onInventoryClick(new InventoryClickEvent(ClickType.CLICK_OUTSIDE, slot, player));
-                    } else {
-                        ClickType clickType = switch (mode) {
-                            case 0 -> button == 1 ? ClickType.RIGHT_CLICK : ClickType.LEFT_CLICK;
-                            case 1 -> button == 1 ? ClickType.SHIFT_RIGHT_CLICK : ClickType.SHIFT_LEFT_CLICK;
-                            case 6 -> ClickType.DOUBLE_CLICK;
-                            default -> ClickType.OTHER;
-                        };
+                        if (slot == -999 && (mode == 0 || mode == 4)) {
+                            menu.onInventoryClick(new InventoryClickEvent(ClickType.CLICK_OUTSIDE, slot, player));
+                        } else {
+                            ClickType clickType = switch (mode) {
+                                case 0 -> button == 1 ? ClickType.RIGHT_CLICK : ClickType.LEFT_CLICK;
+                                case 1 -> button == 1 ? ClickType.SHIFT_RIGHT_CLICK : ClickType.SHIFT_LEFT_CLICK;
+                                case 6 -> ClickType.DOUBLE_CLICK;
+                                default -> ClickType.OTHER;
+                            };
 
-                        PacketMenuLib.updateMenu(menu, player, stateId);
-                        menu.onInventoryClick(new InventoryClickEvent(clickType, slot, player));
+                            PacketMenuLib.updateMenu(menu, player, stateId);
+                            menu.onInventoryClick(new InventoryClickEvent(clickType, slot, player));
+                        }
                     }
                 }
+            } else if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
+                if (PacketMenuLib.getOpenMenus().containsKey(uuid)) {
+                    PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player.getPlayer()));
+                    PacketMenuLib.getOpenMenus().remove(uuid);
+                    PacketMenuLib.getWindowIds().remove(uuid);
+                    PacketMenuLib.updateInv(Objects.requireNonNull(player));
+                } // We don't verify if it is a good window id because if we do, the player can close the inventory without a packet and the event will never be called
             }
-        } else if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
-            OMCPlayer player = OMCPlayer.of(event.getPlayer());
-            UUID uuid = player.getUniqueId();
-
-            if (PacketMenuLib.getOpenMenus().containsKey(uuid)) {
-                PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player.getPlayer()));
-                PacketMenuLib.getOpenMenus().remove(uuid);
-                PacketMenuLib.getWindowIds().remove(uuid);
-                PacketMenuLib.updateInv(player);
-            } // We don't verify if it is a good window id because if we do, the player can close the inventory without a packet and the event will never be called
         }
     }
 }

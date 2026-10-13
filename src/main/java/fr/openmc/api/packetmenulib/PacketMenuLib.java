@@ -6,8 +6,6 @@ import fr.openmc.api.packetmenulib.utils.PacketUtils;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,7 +34,7 @@ public final class PacketMenuLib {
     public static void openMenu(Menu menu, OMCPlayer player) {
         int windowId = player.getServerPlayer().nextContainerCounter();
         windowIds.put(player.getUniqueId(), windowId);
-        PacketUtils.sendOpenInventoryPacket(player.getPlayer(), windowId, menu.getInventoryType().getMenuType(), menu.getTitle());
+        PacketUtils.sendOpenInventoryPacket(player.getPlayer(), windowId, menu.getInventoryType().getMenuType(), menu.getTitle(player));
         openMenus.put(player.getUniqueId(), menu);
         updateMenu(menu, player, 1);
     }

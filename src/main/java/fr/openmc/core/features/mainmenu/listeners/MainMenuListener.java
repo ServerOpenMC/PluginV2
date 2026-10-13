@@ -31,11 +31,11 @@ import java.util.*;
 
 public class MainMenuListener implements Listener {
 
-    private final ClientboundUpdateAdvancementsPacket advancementPacket;
     @Getter
     private static final Map<UUID, ClientboundUpdateAdvancementsPacket> advancementPackets = new HashMap<>();
     @Getter
     private static final List<UUID> enabledAdvancements = new ArrayList<>();
+    private final ClientboundUpdateAdvancementsPacket advancementPacket;
 
     public MainMenuListener(OMCPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);

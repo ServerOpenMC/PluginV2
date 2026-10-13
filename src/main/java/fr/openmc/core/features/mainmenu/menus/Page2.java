@@ -10,142 +10,42 @@ import fr.openmc.api.packetmenulib.menu.InventoryType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.economy.commands.BankCommands;
-import fr.openmc.core.features.mailboxes.commands.MailboxCommand;
-import fr.openmc.core.features.mainmenu.listeners.MainMenuListener;
-import fr.openmc.core.features.settings.command.SettingsCommand;
+import fr.openmc.core.features.mainmenu.menus.buttons.*;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
-import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Page2 implements Menu {
-    private static final Set<Integer> SHOPS_SLOTS = Set.of(0, 1, 2, 3, 4, 5, 6, 7, 8);
-    private static final Set<Integer> COMPANY_SLOTS = Set.of(9, 10, 11, 12, 13, 14, 15, 16, 17);
-    private static final Set<Integer> LEADERBOARD_SLOTS = Set.of(18, 19, 20, 21, 22, 23, 24, 25, 26);
-    private static final Set<Integer> BANK_SLOTS = Set.of(27, 28, 29, 30, 31, 32, 33, 34, 35);
-    private static final Set<Integer> COMING_SOON_1_SLOTS = Set.of(36, 37, 38, 39, 40, 41, 42, 43, 44);
-    private static final Set<Integer> COMING_SOON_2_SLOTS = Set.of(45, 46, 47, 48, 49, 50, 51, 52, 53);
-    private static final Set<Integer> COMING_SOON_3_SLOTS = Set.of(54, 55, 56, 57, 58, 59, 60, 61, 62);
-    private static final Set<Integer> COMING_SOON_4_SLOTS = Set.of(63, 64, 65, 66, 67, 68, 69, 70, 71);
-    private static final Set<Integer> COMING_SOON_5_SLOTS = Set.of(72, 73, 74, 75, 76, 77, 78, 79, 80);
-    private static final int LEFT_ARROW_SLOT = 81;
-    private static final int RIGHT_ARROW_SLOT = 89; // Not used in this menu, but in Page1
-    private static final Set<Integer> SETTINGS_SLOTS = Set.of(82, 83, 84);
-    private static final Set<Integer> MAILBOX_SLOTS = Set.of(85, 86, 87);
-    private static final int ADVANCEMENTS_SLOT = 88;
-    private final Component title;
-    private final Map<Integer, ItemStack> content;
 
-    public Page2() {
-        title = Component.text(FontImageWrapper.replaceFontImages(":offset_-26::omc_main_menu_page_2:"));
-        content = new HashMap<>();
+    private final List<ButtonMenu> buttons = List.of(
+            new ShopsDisabledButton(), new CompanyDisabledButton(), new LeaderboardButton(),
+            new BankButton(), new ComingSoonButton(), new PreviousPageButton(),
+            new SettingsButton(), new MailboxButton(), new AdvancementsButton()
+    );
 
-        ItemStack advancementsItem = new ItemStack(Material.PAPER);
-        advancementsItem.editMeta(meta -> {
-            meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(TranslationManager.translation("feature.mainmenu.item.advancements.name")
-                    .color(NamedTextColor.YELLOW));
-        });
-        content.put(ADVANCEMENTS_SLOT, advancementsItem);
+    private final Map<Integer, ItemStack> content = new HashMap<>();
 
-        ItemStack leftArrowItem = new ItemStack(Material.PAPER);
-        leftArrowItem.editMeta(meta -> {
-            meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(TranslationManager.translation("feature.mainmenu.item.previous_page")
-                    .color(NamedTextColor.YELLOW));
-        });
-        content.put(LEFT_ARROW_SLOT, leftArrowItem);
-
-        ItemStack settingsItem = new ItemStack(Material.PAPER);
-        settingsItem.editMeta(meta -> {
-            meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(TranslationManager.translation("feature.mainmenu.item.settings.name")
-                    .color(NamedTextColor.YELLOW));
-            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.settings.command")
-                    .color(NamedTextColor.DARK_GRAY)));
-        });
-        SETTINGS_SLOTS.forEach(slot -> content.put(slot, settingsItem));
-
-        ItemStack mailboxItem = new ItemStack(Material.PAPER);
-        mailboxItem.editMeta(meta -> {
-            meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(TranslationManager.translation("feature.mainmenu.item.mailbox.name")
-                    .color(NamedTextColor.YELLOW));
-            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.mailbox.command")
-                    .color(NamedTextColor.DARK_GRAY)));
-        });
-        MAILBOX_SLOTS.forEach(slot -> content.put(slot, mailboxItem));
-
-        ItemStack shopsItem = new ItemStack(Material.PAPER);
-        shopsItem.editMeta(meta -> {
-            meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(TranslationManager.translation("feature.mainmenu.item.shops_disabled")
-                    .color(NamedTextColor.YELLOW));
-        });
-        SHOPS_SLOTS.forEach(slot -> content.put(slot, shopsItem));
-
-        ItemStack companyItem = new ItemStack(Material.PAPER);
-        companyItem.editMeta(meta -> {
-            meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(TranslationManager.translation("feature.mainmenu.item.company_disabled")
-                    .color(NamedTextColor.YELLOW));
-        });
-        COMPANY_SLOTS.forEach(slot -> content.put(slot, companyItem));
-
-        ItemStack leaderboardItem = new ItemStack(Material.PAPER);
-        leaderboardItem.editMeta(meta -> {
-            meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(TranslationManager.translation("feature.mainmenu.item.leaderboard.name")
-                    .color(NamedTextColor.YELLOW));
-            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.leaderboard.command")
-                    .color(NamedTextColor.DARK_GRAY)));
-        });
-        LEADERBOARD_SLOTS.forEach(slot -> content.put(slot, leaderboardItem));
-
-        ItemStack bankItem = new ItemStack(Material.PAPER);
-        bankItem.editMeta(meta -> {
-            meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(TranslationManager.translation("feature.mainmenu.item.bank.name")
-                    .color(NamedTextColor.YELLOW));
-            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.bank.command")
-                    .color(NamedTextColor.DARK_GRAY)));
-        });
-        BANK_SLOTS.forEach(slot -> content.put(slot, bankItem));
-
-        ItemStack comingSoonItem = new ItemStack(Material.PAPER);
-        comingSoonItem.editMeta(meta -> {
-            meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(TranslationManager.translation("feature.mainmenu.item.coming_soon.name")
-                    .color(NamedTextColor.YELLOW));
-            meta.lore(List.of(TranslationManager.translation("feature.mainmenu.item.coming_soon.lore")
-                    .color(NamedTextColor.RED)));
-        });
-        COMING_SOON_1_SLOTS.forEach(slot -> content.put(slot, comingSoonItem));
-        COMING_SOON_2_SLOTS.forEach(slot -> content.put(slot, comingSoonItem));
-        COMING_SOON_3_SLOTS.forEach(slot -> content.put(slot, comingSoonItem));
-        COMING_SOON_4_SLOTS.forEach(slot -> content.put(slot, comingSoonItem));
-        COMING_SOON_5_SLOTS.forEach(slot -> content.put(slot, comingSoonItem));
+    public Page2(OMCPlayer player) {
+        for (ButtonMenu button : buttons) {
+            for (int slot : button.slots()) {
+                content.put(slot, button.itemAt(player, slot));
+            }
+        }
     }
 
     @Override
-    public Component getTitle() {
-        return title;
+    public Component getTitle(OMCPlayer player) {
+        return Component.text(FontImageWrapper.replaceFontImages(":offset_-26::omc_main_menu_page_2:"));
     }
 
     @Override
@@ -160,65 +60,36 @@ public class Page2 implements Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
-        OMCPlayer player = OMCPlayer.of(event.player());
+        Player player = event.player();
+        OMCPlayer omcPlayer = OMCPlayer.of(player);
+
         if (event.clickType() == ClickType.CLICK_OUTSIDE) {
-            PacketMenuLib.closeMenu(player);
+            PacketMenuLib.closeMenu(omcPlayer);
             return;
         }
-
         if (event.clickType() != ClickType.LEFT_CLICK) return;
 
         if (DreamUtils.isInDreamWorld(player)) {
-            PacketMenuLib.closeMenu(player);
-            player.message().send(
+            PacketMenuLib.closeMenu(omcPlayer);
+            MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.mainmenu.message.dream_world")
                             .color(NamedTextColor.RED),
                     Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 
-        int slot = event.slot();
-        if (LEFT_ARROW_SLOT == slot) {
-            PacketMenuLib.openMenu(new Page1(player), player);
-        } else if (SETTINGS_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> SettingsCommand.settings(player));
-        } else if (MAILBOX_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> MailboxCommand.homeMailbox(player));
-        } else if (ADVANCEMENTS_SLOT == slot) {
-            PacketMenuLib.closeMenu(player);
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                ServerPlayer nmsPlayer = player.getServerPlayer();
-                ClientboundUpdateAdvancementsPacket packet = MainMenuListener.getAdvancementPackets().get(nmsPlayer.getUUID());
-                if (packet == null)
-                    return;
+        buttons.stream()
+                .filter(btn -> btn.slots().contains(event.slot()))
+                .findFirst()
+                .ifPresent(btn -> {
+                    if (btn.closesMenu()) PacketMenuLib.closeMenu(omcPlayer);
 
-                nmsPlayer.connection.send(packet);
-                MainMenuListener.getEnabledAdvancements().add(nmsPlayer.getUUID());
-                Component message = TranslationManager.translation(
-                        "feature.mainmenu.message.advancements_hint",
-                        Component.keybind("key.advancements").color(NamedTextColor.YELLOW)
-                ).color(NamedTextColor.GREEN);
-                player.sendActionBar(message);
-            });
-        } else if (LEADERBOARD_SLOTS.contains(slot)) {
-            PacketMenuLib.closeMenu(player);
-            player.message().send(
-                    TranslationManager.translation(
-                            "feature.mainmenu.message.leaderboard_dev",
-                            Component.text(FontImageWrapper.replaceFontImages(":sad:"))
-                    ).color(NamedTextColor.RED),
-                    Prefix.OPENMC,
-                    MessageType.INFO,
-                    true);
-        } else if (BANK_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> BankCommands.openBankMenu(player));
-        } else if (COMING_SOON_1_SLOTS.contains(slot) || COMING_SOON_2_SLOTS.contains(slot)
-                || COMING_SOON_3_SLOTS.contains(slot) || COMING_SOON_4_SLOTS.contains(slot)
-                || COMING_SOON_5_SLOTS.contains(slot)) {
-            PacketMenuLib.closeMenu(player);
-            player.message().send(TranslationManager.translation("feature.mainmenu.message.coming_soon")
-                    .color(NamedTextColor.GOLD), Prefix.OPENMC, MessageType.INFO, true);
-        }
+                    if (btn.runNextTick()) {
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> btn.open(omcPlayer));
+                    } else {
+                        btn.open(omcPlayer);
+                    }
+                });
     }
 
     @Override

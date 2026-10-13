@@ -13,12 +13,15 @@ import fr.openmc.core.features.mainmenu.commands.MainMenuCommand;
 import fr.openmc.core.features.mainmenu.listeners.MainMenuListener;
 import fr.openmc.core.features.mainmenu.menus.Page1;
 import fr.openmc.core.hooks.ProtocolLibHook;
-import org.bukkit.entity.Player;
 
 import java.util.Set;
 
 @Credit(developers = {"miseur"}, graphist = {"Tfloa"})
 public class MainMenu extends Feature implements NotLoadInUnitTest, LoadAfterItemsAdder, LoadIfEnable<ProtocolLibHook>, HasCommands {
+    public static void openMainMenu(OMCPlayer player) {
+        PacketMenuLib.openMenu(new Page1(player), player);
+    }
+
     @Override
     public void init() {
         new MainMenuListener(OMCPlugin.getInstance());
@@ -29,9 +32,5 @@ public class MainMenu extends Feature implements NotLoadInUnitTest, LoadAfterIte
         return Set.of(
                 new MainMenuCommand()
         );
-    }
-
-    public static void openMainMenu(OMCPlayer player) {
-        PacketMenuLib.openMenu(new Page1(player), player);
     }
 }
