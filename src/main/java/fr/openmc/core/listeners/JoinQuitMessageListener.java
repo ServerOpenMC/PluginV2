@@ -5,10 +5,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.displays.TabList;
-import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
-import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -33,9 +31,7 @@ public class JoinQuitMessageListener implements Listener {
     private final double balanceOnJoin;
 
     private final SpawnManager spawnManager = OMCRegistry.FEATURES.SPAWN.get();
-    private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
     private final QuestsManager questsManager = OMCRegistry.FEATURES.QUESTS.get();
-    private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
     private final LuckPermsHook luckPermsHook;
 
     public JoinQuitMessageListener() {
@@ -52,7 +48,7 @@ public class JoinQuitMessageListener implements Listener {
 
         tabList.updateTabList(player);
 
-        friendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
+        player.friends().getFriendsAsync().thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = Bukkit.getPlayer(friendUUID);
                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
@@ -124,7 +120,7 @@ public class JoinQuitMessageListener implements Listener {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> questsManager.saveQuests(player.getUniqueId()));
 
-        friendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
+        player.friends().getFriendsAsync().thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = Bukkit.getPlayer(friendUUID);
                 if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
@@ -141,17 +137,17 @@ public class JoinQuitMessageListener implements Listener {
             return null;
         });
 
-        if (tpaManager.requesterHasPendingRequest(player)) {
-            OMCPlayer targetTPA = tpaManager.getTargetByRequester(player);
+        if (player.tpa().requesterHasPendingRequest()) {
+            OMCPlayer targetTPA = player.tpa().getTargetByRequester();
             if (targetTPA == null) return;
-            tpaManager.removeRequest(player, targetTPA);
+            player.tpa().removeRequest(targetTPA);
             MessagesManager.sendMessage(targetTPA, TranslationManager.translation(
                     "core.player.tpa.expired_target",
                     targetTPA.getNameWithHead().color(NamedTextColor.GOLD)
             ), Prefix.OPENMC, MessageType.INFO, true);
-        } else if (tpaManager.hasPendingRequest(player)) {
-            for (OMCPlayer requester : tpaManager.getRequesters(player)) {
-                tpaManager.removeRequest(requester, player);
+        } else if (player.tpa().hasPendingRequest()) {
+            for (OMCPlayer requester : player.tpa().getRequesters()) {
+                requester.tpa().removeRequest(player);
                 MessagesManager.sendMessage(requester, TranslationManager.translation(
                         "core.player.tpa.expired_requester",
                         requester.getNameWithHead().color(NamedTextColor.GOLD)

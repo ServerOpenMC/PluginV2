@@ -9,7 +9,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.features.toor.DiscordLinkManager;
@@ -37,7 +36,6 @@ import java.util.Map;
 public class ProfileMenu extends Menu {
     private final OMCOfflinePlayer target;
     private static final DiscordLinkManager DISCORD_LINK_MANAGER = OMCRegistry.FEATURES.DISCORD_LINK.get();
-    private static final FriendManager FRIEND_MANAGER = OMCRegistry.FEATURES.FRIENDS.get();
 
     public ProfileMenu(OMCPlayer owner) {
         this(owner, owner);
@@ -144,7 +142,7 @@ public class ProfileMenu extends Menu {
     private void addFriendsItem(Map<Integer, ItemMenuBuilder> inventory) {
         boolean selfProfile = isSelfProfile();
         boolean friends = !selfProfile
-                && FRIEND_MANAGER.areFriends(getOwner().getUniqueId(), target.getUniqueId());
+                && getOwner().friends().areFriends(target);
         String nameKey = friends
                 ? "feature.profile.item.friends.name.friend"
                 : "feature.profile.item.friends.name";

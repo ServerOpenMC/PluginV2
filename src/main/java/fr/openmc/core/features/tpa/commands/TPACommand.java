@@ -2,9 +2,7 @@ package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -19,7 +17,6 @@ import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPACommand {
-	private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
 
 	/**
 	 * Command to send a teleport request to a player.
@@ -32,7 +29,7 @@ public class TPACommand {
 			OMCPlayer player,
 			@Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer target
 	) {
-		if (tpaManager.requesterHasPendingRequest(player)) {
+		if (player.tpa().requesterHasPendingRequest()) {
 			player.message().send(
 					TranslationManager.translation("feature.tpa.already_pending")
 							.append(Component.text("\n"))
@@ -52,7 +49,7 @@ public class TPACommand {
 			return;
 		}
 		
-		if (tpaManager.hasPendingRequest(player)) {
+		if (player.tpa().hasPendingRequest()) {
 			player.message().send(TranslationManager.translation("feature.tpa.already_have_pending"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
@@ -61,7 +58,7 @@ public class TPACommand {
 	}
 	
 	private void sendTPARequest(OMCPlayer player, OMCPlayer target) {
-		tpaManager.addRequest(player, target);
+		player.tpa().addRequest(target);
 		
 		target.message().send(
 				TranslationManager.translation("feature.tpa.request.target_message", Component.text(player.getName()).color(NamedTextColor.GOLD))
@@ -85,7 +82,7 @@ public class TPACommand {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				tpaManager.expireRequest(player, target);
+				player.tpa().expireRequest(target);
 			}
 		}.runTaskLater(OMCPlugin.getInstance(), 800);
 	}

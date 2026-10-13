@@ -1,8 +1,6 @@
 package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.tpa.commands.autocomplete.TpaPendingAutoComplete;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -15,7 +13,6 @@ import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPADenyCommand {
-	private final TPAManager tpaManager = OMCRegistry.FEATURES.TPA.get();
 
 	/**
 	 * Command to deny a teleportation request
@@ -29,18 +26,18 @@ public class TPADenyCommand {
 			@Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player")
 			OMCPlayer player
 	) {
-		if (!tpaManager.hasPendingRequest(target)) {
+		if (!target.tpa().hasPendingRequest()) {
 			target.message().send(TranslationManager.translation("feature.tpa.deny.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
-		if (tpaManager.hasMultipleRequests(target)) {
+		if (target.tpa().hasMultipleRequests()) {
 			if (player == null) {
 				target.message().send(TranslationManager.translation("feature.tpa.deny.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 			
-			if (!tpaManager.getRequesters(target).contains(player)) {
+			if (!target.tpa().getRequesters().contains(player)) {
 				player.message().send(TranslationManager.translation(
 						"feature.tpa.deny.no_request_from",
 						player.getNameWithHead().color(NamedTextColor.GOLD)
@@ -48,7 +45,7 @@ public class TPADenyCommand {
 				return;
 			}
 		} else {
-			player = tpaManager.getRequesters(target).getFirst();
+			player = target.tpa().getRequesters().getFirst();
 		}
 		
 		target.message().send(TranslationManager.translation(
@@ -60,7 +57,7 @@ public class TPADenyCommand {
 				target.getNameWithHead().color(NamedTextColor.GOLD)
 		), Prefix.OPENMC, MessageType.ERROR, false);
 
-		tpaManager.removeRequest(player, target);
+		player.tpa().removeRequest(target);
 	}
 	
 }

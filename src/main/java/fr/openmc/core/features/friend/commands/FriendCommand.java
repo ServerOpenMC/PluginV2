@@ -2,10 +2,8 @@ package fr.openmc.core.features.friend.commands;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsAutoComplete;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsRequestAutoComplete;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -31,7 +29,6 @@ import java.util.UUID;
 
 @Command({"friends", "friend", "ami", "f"})
 public class FriendCommand {
-    private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
 
     @Subcommand("add")
     @Description("Envoyer une demande d'ami")
@@ -48,11 +45,11 @@ public class FriendCommand {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.disabled"), Prefix.FRIEND, true);
                 return;
             }
-            if (friendManager.isRequestPending(target.getUniqueId())) {
+            if (target.friends().isRequestPending()) {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.already_sent"), Prefix.FRIEND, true);
                 return;
             }
-            if (friendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
+            if (player.friends().areFriends(target)) {
                 player.message().sendError(
                         TranslationManager.translation("feature.friend.add.already_friend"),
                         Prefix.FRIEND,
@@ -60,7 +57,7 @@ public class FriendCommand {
                 );
                 return;
             }
-            friendManager.addRequest(player.getUniqueId(), target.getUniqueId());
+            player.friends().addRequest(target);
             player.message().sendInfo(
                     TranslationManager.translation(
                             "feature.friend.add.sent",
@@ -78,11 +75,11 @@ public class FriendCommand {
             Component ignoreButton = TranslationManager.translation("feature.friend.button.ignore")
                     .color(NamedTextColor.GRAY)
                     .clickEvent(ClickEvent.callback(audience -> {
-                        if (!friendManager.isRequestPending(player.getUniqueId())) {
+                        if (!player.friends().isRequestPending()) {
                             MessagesManager.sendMessage(target, TranslationManager.translation("feature.friend.request.expired"), Prefix.FRIEND, MessageType.INFO, true);
                             return;
                         }
-                        friendManager.removeRequest(friendManager.getRequest(player.getUniqueId()));
+                        player.friends().removeRequest(player.friends().getRequest());
                         MessagesManager.sendMessage(
                                 target,
                                 TranslationManager.translation(
@@ -133,11 +130,11 @@ public class FriendCommand {
                 player.message().send(TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
-            if (!friendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
+            if (!player.friends().areFriends(target)) {
                 player.message().send(TranslationManager.translation("feature.friend.remove.not_friend"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            if (!friendManager.removeFriend(player.getUniqueId(), target.getUniqueId())) {
+            if (!player.friends().removeFriend(target)) {
                 player.message().send(TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
@@ -178,7 +175,7 @@ public class FriendCommand {
         int currentPage = (page != null && page > 0) ? page : 1;
         final int ITEMS_PER_PAGE = 7;
 
-        friendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friends -> {
+        player.friends().getFriendsAsync().thenAccept(friends -> {
             if (friends.isEmpty()) {
                 player.message().send(TranslationManager.translation("feature.friend.list.none"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
@@ -216,7 +213,7 @@ public class FriendCommand {
                 OMCOfflinePlayer friend = OMCOfflinePlayer.of(friendUUID);
 
                 try {
-                    Timestamp timestamp = friendManager.getTimestamp(player.getUniqueId(), friend.getUniqueId());
+                    Timestamp timestamp = player.friends().getTimestamp(friend);
                     String formattedDate = getFormattedDate(timestamp);
 
                     boolean isOnline = friend.isOnline();
@@ -329,12 +326,12 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
-            if (!friendManager.isRequestPending(target.getUniqueId())) {
+            if (!target.friends().isRequestPending()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
 
-            friendManager.addFriend(player.getUniqueId(), target.getUniqueId());
+            player.friends().addFriend(target);
             player.message().send(
                     TranslationManager.translation(
                             "feature.friend.request.accepted",
@@ -374,12 +371,12 @@ public class FriendCommand {
                 return;
             }
 
-            if (!friendManager.isRequestPending(target.getUniqueId())) {
+            if (!target.friends().isRequestPending()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
 
-            friendManager.removeRequest(friendManager.getRequest(target.getUniqueId()));
+            target.friends().removeRequest(target.friends().getRequest());
             player.message().send(
                     TranslationManager.translation(
                             "feature.friend.request.denied",

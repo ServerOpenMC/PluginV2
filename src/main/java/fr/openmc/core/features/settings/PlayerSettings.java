@@ -1,8 +1,7 @@
 package fr.openmc.core.features.settings;
 
-import fr.openmc.core.OMCRegistry;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.city.models.city.City;
-import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.settings.policy.CityPolicy;
 import fr.openmc.core.features.settings.policy.FriendPolicy;
 import fr.openmc.core.features.settings.policy.GlobalPolicy;
@@ -17,7 +16,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlayerSettings {
-    private final FriendManager friendManager = OMCRegistry.FEATURES.FRIENDS.get();
 
     @Getter private final UUID playerUUID;
     private final Map<SettingType, Object> settings = new HashMap<>();
@@ -148,7 +146,7 @@ public class PlayerSettings {
         if (policy instanceof CityPolicy cityPolicy) {
             return switch (cityPolicy) {
                 case EVERYONE -> true;
-                case FRIENDS -> friendManager.areFriends(playerUUID, targetUUID);
+                case FRIENDS -> OMCOfflinePlayer.of(playerUUID).friends().areFriends(targetUUID);
                 case NOBODY -> false;
             };
         }
@@ -156,7 +154,7 @@ public class PlayerSettings {
         if (policy instanceof GlobalPolicy globalPolicy) {
             return switch (globalPolicy) {
                 case EVERYONE -> true;
-                case FRIENDS -> friendManager.areFriends(playerUUID, targetUUID);
+                case FRIENDS -> OMCOfflinePlayer.of(playerUUID).friends().areFriends(targetUUID);
                 case CITY_MEMBERS -> areSameCityMembers(playerUUID, targetUUID);
                 case NOBODY -> false;
             };
@@ -177,7 +175,7 @@ public class PlayerSettings {
 
         return switch (level) {
             case EVERYONE -> true;
-            case FRIENDS -> friendManager.areFriends(friendUUID, playerUUID);
+            case FRIENDS -> OMCOfflinePlayer.of(friendUUID).friends().areFriends(playerUUID);
             case CITY_MEMBERS -> areSameCityMembers(playerUUID, friendUUID);
             case NOBODY -> false;
         };
@@ -192,7 +190,7 @@ public class PlayerSettings {
      * @return true if the player is visible to the friend, false otherwise
      */
     public boolean isVisibleToFriend(SettingType visibilitySetting, UUID friendUUID) {
-        if (!friendManager.areFriends(playerUUID, friendUUID)) return false;
+        if (!OMCOfflinePlayer.of(playerUUID).friends().areFriends(friendUUID)) return false;
         return isVisibleTo(visibilitySetting, friendUUID);
     }
 
