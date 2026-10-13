@@ -5,6 +5,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
@@ -24,10 +25,10 @@ import java.util.UUID;
 public class Letter {
     @DatabaseField(columnName = "letter_id")
     private int letterId;
-    @DatabaseField(canBeNull = false)
-    private UUID sender;
-    @DatabaseField(canBeNull = false)
-    private UUID receiver;
+    @DatabaseField(canBeNull = false, columnName = "sender")
+    private UUID senderUUID;
+    @DatabaseField(canBeNull = false, columnName = "receiver")
+    private UUID receiverUUID;
     @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)
     private byte[] items;
     @DatabaseField(columnName = "num_items", canBeNull = false)
@@ -45,8 +46,8 @@ public class Letter {
 
     Letter(int id, UUID sender, UUID receiver, byte[] items, int numItems, Timestamp sent, boolean refused) {
         this.letterId = id;
-        this.sender = sender;
-        this.receiver = receiver;
+        this.senderUUID = sender;
+        this.receiverUUID = receiver;
         this.items = items;
         this.numItems = numItems;
         this.refused = refused;
@@ -59,12 +60,12 @@ public class Letter {
     }
 
     public LetterHead toLetterHead() {
-        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
+        OMCOfflinePlayer player = OMCOfflinePlayer.of(senderUUID);
         return new LetterHead(player, letterId, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), this.cachedItems);
     }
 
     public ItemMenuBuilder toSenderLetterItemBuilder(Menu menu) {
-        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
+        OMCOfflinePlayer player = OMCOfflinePlayer.of(senderUUID);
 
         SenderLetter senderLetter = new SenderLetter(player, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
                 refused);
@@ -75,10 +76,10 @@ public class Letter {
     public String toString() {
         return "Letter{" +
                 "letterId=" + letterId +
-                ", sender=" + sender +
+                ", senderUUID=" + senderUUID +
                 ", items" + Arrays.toString(items) +
                 ", cachedItems=" + Arrays.toString(cachedItems) +
-                ", receiver=" + receiver +
+                ", receiverUUID=" + receiverUUID +
                 ", itemsLength=" + items.length +
                 ", numItems=" + numItems +
                 ", sent=" + sent +

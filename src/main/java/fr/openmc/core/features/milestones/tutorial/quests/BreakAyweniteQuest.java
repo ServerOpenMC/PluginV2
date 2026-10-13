@@ -28,7 +28,10 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
     public BreakAyweniteQuest() {
         super(
                 TranslationManager.translation("feature.milestones.tutorial.quest.break_aywenite.name"),
-                TranslationManager.translationLore("feature.milestones.tutorial.quest.break_aywenite.description"),
+                TranslationManager.translationLore("feature.milestones.tutorial.quest.break_aywenite.description",
+                        OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite(),
+                        OMCRegistry.CUSTOM_ITEMS.AYWENITE_ORE.getSprite(),
+                        OMCRegistry.CUSTOM_ITEMS.DEEPSLATE_AYWENITE_ORE.getSprite()),
                 OMCRegistry.CUSTOM_ITEMS.AYWENITE,
                 MilestoneType.TUTORIAL,
                 TutorialSteps.BREAK_AYWENITE,
@@ -38,7 +41,8 @@ public class BreakAyweniteQuest extends MilestoneQuest implements Listener {
                         new QuestTextReward(
                                 TranslationManager.translation(
                                         "feature.milestones.tutorial.quest.break_aywenite.reward",
-                                        Component.text(TutorialSteps.BREAK_AYWENITE.ordinal() + 1).color(NamedTextColor.GOLD)
+                                        Component.text(TutorialSteps.BREAK_AYWENITE.ordinal() + 1).color(NamedTextColor.GOLD),
+                                        OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                                 ),
                                 Prefix.MILLESTONE,
                                 MessageType.SUCCESS

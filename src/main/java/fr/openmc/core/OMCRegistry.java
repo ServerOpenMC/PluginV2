@@ -15,6 +15,7 @@ import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.registry.regions.CustomRegionRegistry;
 import fr.openmc.core.registry.structures.CustomStructureRegistry;
+import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
@@ -39,6 +40,9 @@ public final class OMCRegistry {
     // * Registre des features
     public static WeeklyEventsRegistry WEEKLY_EVENTS;
     public static DailyEventsRegistry DAILY_EVENTS;
+
+    // * Registres internes
+    public static ScannerRegistry SCANNERS;
 
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
@@ -69,7 +73,10 @@ public final class OMCRegistry {
             new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_REGIONS = new CustomRegionRegistry(),
-                    RegistryLoadingType.AFTER_IA)
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
+                    () -> SCANNERS = new ScannerRegistry(),
+                    RegistryLoadingType.RUNTIME)
     );
 
     private OMCRegistry() {}

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.mainmenu;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
@@ -30,7 +31,7 @@ public class MainMenu extends Feature implements NotLoadInUnitTest, LoadAfterIte
         );
     }
 
-    public static void openMainMenu(Player player) {
+    public static void openMainMenu(OMCPlayer player) {
         PacketMenuLib.openMenu(new Page1(player), player);
     }
 }

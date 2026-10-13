@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tpa.commands;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.tpa.TPAManager;
@@ -28,11 +29,11 @@ public class TPACommand {
 	@Command({"tpa", "tpask"})
 	@CommandPermission("omc.commands.tpa")
 	public void tpaAsk(
-			Player player,
-			@Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target
+			OMCPlayer player,
+			@Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer target
 	) {
 		if (TPAManager.requesterHasPendingRequest(player)) {
-			MessagesManager.sendMessage(player,
+			player.message().send(
 					TranslationManager.translation("feature.tpa.already_pending")
 							.append(Component.text("\n"))
 							.append(TranslationManager.translation("feature.tpa.already_pending_usage")
@@ -42,27 +43,27 @@ public class TPACommand {
 			return;
 		}
 		if (target == null) {
-			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.player_not_found"), Prefix.OPENMC, MessageType.ERROR, false);
+			player.message().send(TranslationManager.translation("feature.tpa.player_not_found"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
 		if (player == target) {
-			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.cannot_tp_yourself"), Prefix.OPENMC, MessageType.ERROR, false);
+			player.message().send(TranslationManager.translation("feature.tpa.cannot_tp_yourself"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
 		if (TPAManager.hasPendingRequest(player)) {
-			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.already_have_pending"), Prefix.OPENMC, MessageType.ERROR, true);
+			player.message().send(TranslationManager.translation("feature.tpa.already_have_pending"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
 		sendTPARequest(player, target);
 	}
 	
-	private void sendTPARequest(Player player, Player target) {
+	private void sendTPARequest(OMCPlayer player, OMCPlayer target) {
 		TPAManager.addRequest(player, target);
 		
-		MessagesManager.sendMessage(target,
+		target.message().send(
 				TranslationManager.translation("feature.tpa.request.target_message", Component.text(player.getName()).color(NamedTextColor.GOLD))
 						.append(Component.text("\n"))
 						.append(TranslationManager.translation("feature.tpa.request.target_accept")
@@ -73,7 +74,7 @@ public class TPACommand {
 								.clickEvent(ClickEvent.runCommand("/tpadeny"))
 								.hoverEvent(HoverEvent.showText(TranslationManager.translation("feature.tpa.request.hover.deny"))))
 				, Prefix.OPENMC, MessageType.INFO, true);
-		MessagesManager.sendMessage(player,
+		player.message().send(
 				TranslationManager.translation("feature.tpa.request.sender_message", Component.text(target.getName()).color(NamedTextColor.GOLD))
 						.append(Component.text("\n"))
 						.append(TranslationManager.translation("feature.tpa.request.sender_cancel")

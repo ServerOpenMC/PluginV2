@@ -1,11 +1,15 @@
-package fr.openmc.api.entity.player;
+package fr.openmc.api.omcplayer;
 
-import fr.openmc.api.entity.player.sub.OMCPlayerCity;
-import fr.openmc.api.entity.player.sub.OMCPlayerEconomy;
-import fr.openmc.api.entity.player.sub.OMCPlayerMessage;
-import fr.openmc.api.entity.player.sub.OMCPlayerSettings;
+import fr.openmc.api.omcplayer.sub.OMCPlayerCity;
+import fr.openmc.api.omcplayer.sub.OMCPlayerEconomy;
+import fr.openmc.api.omcplayer.sub.OMCPlayerMessage;
+import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
+import net.minecraft.server.level.ServerPlayer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 /**
  * Wrapper autour d'un {@link Player} pour les methodes propres a OpenMC
@@ -31,7 +35,13 @@ public interface OMCPlayer extends OMCOfflinePlayer, Player {
         return OMCPlayerImpl.of(player);
     }
 
+    static OMCPlayer of(UUID playerUUID) {
+        return OMCPlayerImpl.of(playerUUID);
+    }
+
     @Nullable Player getPlayer();
+    @Nullable CraftPlayer getCraftPlayer();
+    ServerPlayer getServerPlayer();
 
     OMCPlayerMessage message();
 

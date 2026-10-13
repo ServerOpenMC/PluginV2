@@ -2,7 +2,7 @@ package fr.openmc.core.features.mainmenu.menus;
 
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.api.packetmenulib.events.InventoryClickEvent;
 import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
@@ -69,7 +69,7 @@ public class Page1 implements Menu {
     private static final Set<Integer> MAILBOX_SLOTS = Set.of(85, 86, 87);
     private static final int ADVANCEMENTS_SLOT = 88;
 
-    public Page1(Player player) {
+    public Page1(OMCPlayer player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         ItemStack cityItem = new ItemStack(Material.PAPER);
         cityItem.editMeta(meta -> {
@@ -245,20 +245,17 @@ public class Page1 implements Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
-        Player player = event.player();
-        OMCPlayer omcPlayer = OMCPlayer.of(player);
+        OMCPlayer player = OMCPlayer.of(event.player());
         if (event.clickType() == ClickType.CLICK_OUTSIDE) {
             PacketMenuLib.closeMenu(player);
             return;
         }
 
-        if (event.clickType() != ClickType.LEFT_CLICK) {
-            return;
-        }
+        if (event.clickType() != ClickType.LEFT_CLICK) return;
 
         if (DreamUtils.isInDreamWorld(player)) {
             PacketMenuLib.closeMenu(player);
-            MessagesManager.sendMessage(player,
+            player.message().send(
                     TranslationManager.translation("feature.mainmenu.message.dream_world")
                             .color(NamedTextColor.RED),
                     Prefix.OPENMC, MessageType.ERROR, true);
@@ -277,7 +274,7 @@ public class Page1 implements Menu {
         } else if (SHOP_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> AdminShopManager.openMainMenu(player));
         } else if (HOME_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(omcPlayer, null));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(player, null));
         } else if (PROFILE_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new ProfileMenu(player).open());
@@ -290,7 +287,7 @@ public class Page1 implements Menu {
         } else if (ADVANCEMENTS_SLOT == slot) {
             PacketMenuLib.closeMenu(player);
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+                ServerPlayer nmsPlayer = player.getServerPlayer();
                 ClientboundUpdateAdvancementsPacket packet = MainMenuListener.getAdvancementPackets().get(nmsPlayer.getUUID());
                 if (packet == null)
                     return;

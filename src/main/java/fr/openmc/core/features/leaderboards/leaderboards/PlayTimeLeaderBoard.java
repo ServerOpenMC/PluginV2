@@ -1,5 +1,6 @@
 package fr.openmc.core.features.leaderboards.leaderboards;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
 import fr.openmc.core.utils.cache.CachePlaytime;
 import fr.openmc.core.utils.text.ColorUtils;
@@ -47,15 +48,14 @@ public class PlayTimeLeaderBoard extends LeaderBoard {
             Map.Entry<OfflinePlayer, Long> stat = stats.get(i);
             Component rank = Component.text("#" + (i + 1)).color(ColorUtils.getRankColor(i + 1));
 
-            String playerName = stat.getKey().getName();
+            OMCOfflinePlayer player = OMCOfflinePlayer.of(stat.getKey());
             String time = DateUtils.convertTime(stat.getValue());
-            if (playerName == null) continue;
 
             text = text.append(Component.text("\n")
                     .append(TranslationManager.translation(
                             "feature.leaderboards.line.playtime",
                             rank,
-                            Component.text(playerName).color(NamedTextColor.LIGHT_PURPLE),
+                            player.getNameWithHead().color(NamedTextColor.LIGHT_PURPLE),
                             Component.text(time).color(NamedTextColor.WHITE)
                     )));
         }

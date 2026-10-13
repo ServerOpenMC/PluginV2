@@ -4,6 +4,8 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -66,7 +68,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
         MailboxManager.saveLetters();
     }
 
-    public static boolean sendItems(Player sender, OfflinePlayer receiver, ItemStack[] items) {
+    public static boolean sendItems(OMCPlayer sender, OMCOfflinePlayer receiver, ItemStack[] items) {
         if (!canSend(sender, receiver)) return false;
 
         List<ItemStack> allItems = Arrays.asList(items);
@@ -79,8 +81,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
         return true;
     }
 
-    private static boolean sendLetter(Player sender, OfflinePlayer receiver, ItemStack[] items) {
-        String receiverName = receiver.getName();
+    private static boolean sendLetter(OMCPlayer sender, OMCOfflinePlayer receiver, ItemStack[] items) {
         int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
         LocalDateTime sent = DateUtils.getLocalDateTime();
 
@@ -90,14 +91,14 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
             letters.add(letter);
 
             int id = letter.getLetterId();
-            Player receiverPlayer = receiver.getPlayer();
+            OMCPlayer receiverPlayer = OMCPlayer.of(receiver.getPlayer())  ;
             if (receiverPlayer != null) {
                 Inventory inv = receiverPlayer.getInventory();
                 if (inv instanceof PlayerMailbox receiverMailbox) receiverMailbox.open();
-                sendLetterReceivedNotification(receiverPlayer, numItems, id, sender.getName());
+                sendLetterReceivedNotification(sender, receiverPlayer, numItems, id);
             }
 
-            sendSuccessSendingMessage(sender, receiverName, numItems);
+            sendSuccessSendingMessage(sender, receiver, numItems);
             return true;
         } catch (Exception ex) {
             OMCLogger.warn("Error while sending items to offline player: {}", ex.getMessage(), ex);
@@ -105,7 +106,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
                     sender,
                     TranslationManager.translation(
                             "feature.mailboxes.message.send_error",
-                            Component.text(receiverName).color(NamedTextColor.RED)
+                            receiver.getNameWithHead().color(NamedTextColor.RED)
                     ).color(NamedTextColor.DARK_RED),
                     Prefix.MAILBOX,
                     MessageType.ERROR,
@@ -149,7 +150,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
 
     public static void sendMailNotification(Player player) {
         long count = letters.stream()
-                .filter(letter -> letter.getReceiver().equals(player.getUniqueId()) && !letter.isRefused())
+                .filter(letter -> letter.getReceiverUUID().equals(player.getUniqueId()) && !letter.isRefused())
                 .count();
 
         if (count == 0) return;
@@ -188,7 +189,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
     public static Letter getById(Player player, int id) {
         Letter letter = letters.stream()
                 .filter(l -> l.getLetterId() == id)
-                .filter(l -> l.getReceiver().equals(player.getUniqueId()))
+                .filter(l -> l.getReceiverUUID().equals(player.getUniqueId()))
                 .findFirst()
                 .orElse(null);
 
@@ -198,14 +199,14 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
 
     public static List<Letter> getSentLetters(Player player) {
         return letters.stream()
-                .filter(l -> l.getSender().equals(player.getUniqueId()))
+                .filter(l -> l.getSenderUUID().equals(player.getUniqueId()))
                 .sorted(Comparator.comparing(Letter::getSent).reversed())
                 .toList();
     }
 
     public static List<Letter> getReceivedLetters(Player player) {
         return letters.stream()
-                .filter(l -> l.getReceiver().equals(player.getUniqueId()) && !l.isRefused())
+                .filter(l -> l.getReceiverUUID().equals(player.getUniqueId()) && !l.isRefused())
                 .sorted(Comparator.comparing(Letter::getSent).reversed())
                 .toList();
     }
@@ -217,13 +218,13 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
         return settings.canPerformAction(SettingType.MAILBOX_RECEIVE_POLICY, sender.getUniqueId());
     }
 
-    private static void sendLetterReceivedNotification(Player receiver, int numItems, int id, String name) {
+    private static void sendLetterReceivedNotification(OMCPlayer sender, OMCPlayer receiver, int numItems, int id) {
         Component line1 = TranslationManager.translation(
                 "feature.mailboxes.message.letter_received.line1",
                 Component.text(numItems).color(NamedTextColor.GREEN),
                 pluralize(Component.space()
                                 .append(TranslationManager.translation("global.item")), numItems).color(NamedTextColor.DARK_GREEN),
-                Component.text(name).color(NamedTextColor.GREEN)
+                sender.getNameWithHead().color(NamedTextColor.GREEN)
         ).color(NamedTextColor.DARK_GREEN);
         Component clickComponent = TranslationManager.translation("feature.mailboxes.message.letter_received.click")
                 .color(NamedTextColor.YELLOW)
@@ -245,7 +246,7 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
                 MessageType.SUCCESS,
                 true
         );
-        Title titleComponent = getTitle(numItems, name);
+        Title titleComponent = getTitle(numItems, sender.getName());
         receiver.playSound(receiver.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 1.0f,
                 1.0f);
         receiver.showTitle(titleComponent);
@@ -264,13 +265,13 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
         return Title.title(title, subtitle);
     }
 
-    private static void sendSuccessSendingMessage(Player player, String receiverName, int numItems) {
+    private static void sendSuccessSendingMessage(Player player, OMCOfflinePlayer receiver, int numItems) {
         Component message = TranslationManager.translation(
                 "feature.mailboxes.message.send_success",
                 Component.text(numItems).color(NamedTextColor.GREEN),
                 pluralize(TranslationManager.translation("global.item"), numItems).color(NamedTextColor.DARK_GREEN),
                 pluralize(TranslationManager.translation("feature.mailboxes.message.sent_word"), numItems).color(NamedTextColor.DARK_GREEN),
-                Component.text(receiverName).color(NamedTextColor.GREEN)
+                receiver.getNameWithHead().color(NamedTextColor.GREEN)
         ).color(NamedTextColor.DARK_GREEN);
 
         MessagesManager.sendMessage(

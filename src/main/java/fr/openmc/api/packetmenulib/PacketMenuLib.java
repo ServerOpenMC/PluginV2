@@ -1,5 +1,6 @@
 package fr.openmc.api.packetmenulib;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.api.packetmenulib.utils.PacketUtils;
 import lombok.Getter;
@@ -32,10 +33,10 @@ public final class PacketMenuLib {
      * @param menu   the {@code Menu} instance to open for the player
      * @param player the {@code Player} who should see the menu
      */
-    public static void openMenu(Menu menu, Player player) {
-        int windowId = ((CraftPlayer) player).getHandle().nextContainerCounter();
+    public static void openMenu(Menu menu, OMCPlayer player) {
+        int windowId = player.getServerPlayer().nextContainerCounter();
         windowIds.put(player.getUniqueId(), windowId);
-        PacketUtils.sendOpenInventoryPacket(player, windowId, menu.getInventoryType().getMenuType(), menu.getTitle());
+        PacketUtils.sendOpenInventoryPacket(player.getPlayer(), windowId, menu.getInventoryType().getMenuType(), menu.getTitle());
         openMenus.put(player.getUniqueId(), menu);
         updateMenu(menu, player, 1);
     }
@@ -45,10 +46,10 @@ public final class PacketMenuLib {
      *
      * @param player the player for whom the menu should be closed
      */
-    public static void closeMenu(Player player) {
+    public static void closeMenu(OMCPlayer player) {
         Integer windowId = windowIds.get(player.getUniqueId());
         if (windowId != null) {
-            PacketUtils.sendCloseInventoryPacket(player, windowId);
+            PacketUtils.sendCloseInventoryPacket(player.getPlayer(), windowId);
         }
         windowIds.remove(player.getUniqueId());
         openMenus.remove(player.getUniqueId());
@@ -62,7 +63,7 @@ public final class PacketMenuLib {
      * @param player  the Player whose menu is being updated
      * @param stateId the state ID to be sent with the update
      */
-    public static void updateMenu(Menu menu, Player player, Integer stateId) {
+    public static void updateMenu(Menu menu, OMCPlayer player, Integer stateId) {
         UUID playerUUID = player.getUniqueId();
         Integer windowId = windowIds.get(playerUUID);
 
@@ -70,9 +71,11 @@ public final class PacketMenuLib {
             openMenus.remove(playerUUID);
             return;
         }
+
         ItemStack cursorItem = menu.isCursorItemEnabled() ? getCursorItem() : null;
         List<ItemStack> items = createItemList(menu);
-        PacketUtils.sendContainerContentPacket(player, windowId, stateId, items, cursorItem);
+        PacketUtils.sendContainerContentPacket(player.getPlayer(), windowId, stateId, items, cursorItem);
+
     }
 
     /**
@@ -81,9 +84,9 @@ public final class PacketMenuLib {
      *
      * @param player the player whose inventory needs to be updated
      */
-    public static void updateInv(Player player) {
+    public static void updateInv(OMCPlayer player) {
         List<ItemStack> items = getPlayerItems(player);
-        PacketUtils.sendContainerContentPacket(player, 0, 1, items, new ItemStack(Material.AIR));
+        PacketUtils.sendContainerContentPacket(player.getPlayer(), 0, 1, items, new ItemStack(Material.AIR));
     }
 
     /**
@@ -126,7 +129,7 @@ public final class PacketMenuLib {
      * @param player the player whose inventory items are to be retrieved
      * @return a list of {@code ItemStack} representing the player's inventory items
      */
-    private static List<ItemStack> getPlayerItems(Player player) {
+    private static List<ItemStack> getPlayerItems(OMCPlayer player) {
         List<ItemStack> items = new ArrayList<>(Collections.nCopies(45, new ItemStack(Material.AIR)));
         ItemStack[] contents = player.getInventory().getContents();
         // hotbar

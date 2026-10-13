@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tpa.commands;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.tpa.commands.autocomplete.TpaPendingAutoComplete;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
@@ -30,8 +31,8 @@ public class TPAcceptCommand {
 	@Command("tpaccept")
 	@CommandPermission("omc.commands.tpa")
 	public void tpAccept(
-			Player target,
-			@Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player") Player player
+			OMCPlayer target,
+			@Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player") OMCPlayer player
 	) {
 		if (!TPAManager.hasPendingRequest(target)) {
 			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
@@ -40,14 +41,14 @@ public class TPAcceptCommand {
 		
 		if (TPAManager.hasMultipleRequests(target)) {
 			if (player == null) {
-				MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
+				target.message().send(TranslationManager.translation("feature.tpa.accept.multiple_requests"), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 			
 			if (!TPAManager.getRequesters(target).contains(player)) {
-				MessagesManager.sendMessage(target, TranslationManager.translation(
+				target.message().send(TranslationManager.translation(
 						"feature.tpa.accept.no_request_from",
-						Component.text(player.getName()).color(NamedTextColor.GOLD)
+						player.getNameWithHead().color(NamedTextColor.GOLD)
 				), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
@@ -56,13 +57,13 @@ public class TPAcceptCommand {
 		}
 		
 		if (target.getFallDistance() > 0) {
-			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.falling"), Prefix.OPENMC, MessageType.ERROR, true);
-			MessagesManager.sendMessage(player, TranslationManager.translation("feature.tpa.accept.you_falling"), Prefix.OPENMC, MessageType.ERROR, true);
+			target.message().send(TranslationManager.translation("feature.tpa.accept.falling"), Prefix.OPENMC, MessageType.ERROR, true);
+			player.message().send(TranslationManager.translation("feature.tpa.accept.you_falling"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
 		if (!player.isOnline()) {
-			MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.player_not_online"), Prefix.OPENMC, MessageType.ERROR, true);
+			target.message().send(TranslationManager.translation("feature.tpa.accept.player_not_online"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
@@ -71,11 +72,11 @@ public class TPAcceptCommand {
 		}
 	}
 	
-	private void teleport(Player requester, Player target) {
+	private void teleport(OMCPlayer requester, OMCPlayer target) {
 		Location loc = target.getLocation();
 		PlayerUtils.sendFadeTitleTeleport(requester, loc);
-		MessagesManager.sendMessage(target, TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
-		MessagesManager.sendMessage(requester, TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
+		target.message().send(TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
+		requester.message().send(TranslationManager.translation("feature.tpa.accept.success"), Prefix.OPENMC, MessageType.SUCCESS, true);
 		TPAManager.removeRequest(requester, target);
 	}
 }

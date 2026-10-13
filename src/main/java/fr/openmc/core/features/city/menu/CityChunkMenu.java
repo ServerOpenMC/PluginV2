@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.ChunkDataCache;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -279,7 +280,8 @@ public class CityChunkMenu extends Menu {
                     position,
                     moneyValue,
                     moneyIcon,
-                    ayweniteValue
+                    ayweniteValue,
+                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
             );
         } else {
             lore = TranslationManager.translationLore(
@@ -323,7 +325,8 @@ public class CityChunkMenu extends Menu {
                     position,
                     moneyValue,
                     moneyIcon,
-                    ayweniteValue
+                    ayweniteValue,
+                    OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
             );
         }
 

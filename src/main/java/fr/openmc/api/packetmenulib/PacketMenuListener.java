@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.packetmenulib.events.InventoryClickEvent;
 import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
 import fr.openmc.api.packetmenulib.menu.ClickType;
@@ -32,20 +33,19 @@ public class PacketMenuListener extends PacketAdapter {
         if (event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW) {
             PacketContainer packet = event.getPacket();
             int windowId = packet.getIntegers().read(0);
-            Player player = event.getPlayer();
+            OMCPlayer player = OMCPlayer.of(event.getPlayer());
             UUID uuid = player.getUniqueId();
 
             if (PacketMenuLib.getOpenMenus().containsKey(uuid) && PacketMenuLib.getWindowIds().get(uuid) != windowId) {
                 PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player));
                 PacketMenuLib.getOpenMenus().remove(uuid);
                 PacketMenuLib.getWindowIds().remove(uuid);
-                PacketMenuLib.updateInv(Objects.requireNonNull(player));
+                PacketMenuLib.updateInv(player);
             }
         } else if (event.getPacketType() == PacketType.Play.Server.SET_SLOT && PacketMenuLib.getOpenMenus().containsKey(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
         } else if (event.getPacketType() == PacketType.Play.Server.WINDOW_ITEMS) {
-            Player player = event.getPlayer();
-            UUID uuid = player.getUniqueId();
+            UUID uuid = event.getPlayer().getUniqueId();
 
             if (!PacketMenuLib.getOpenMenus().containsKey(uuid)) return;
 
@@ -68,7 +68,7 @@ public class PacketMenuListener extends PacketAdapter {
             int mode = ((ContainerInput) packet.getStructures().withType(ContainerInput.class).read(0)).ordinal();
 
             if (PacketMenuLib.getWindowIds().containsKey(event.getPlayer().getUniqueId()) && windowId == PacketMenuLib.getWindowIds().get(event.getPlayer().getUniqueId())) {
-                Player player = event.getPlayer();
+                OMCPlayer player = OMCPlayer.of(event.getPlayer());
                 event.setCancelled(true);
                 UUID uuid = player.getUniqueId();
 
@@ -91,14 +91,14 @@ public class PacketMenuListener extends PacketAdapter {
                 }
             }
         } else if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
-            Player player = event.getPlayer();
+            OMCPlayer player = OMCPlayer.of(event.getPlayer());
             UUID uuid = player.getUniqueId();
 
             if (PacketMenuLib.getOpenMenus().containsKey(uuid)) {
-                PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player));
+                PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player.getPlayer()));
                 PacketMenuLib.getOpenMenus().remove(uuid);
                 PacketMenuLib.getWindowIds().remove(uuid);
-                PacketMenuLib.updateInv(Objects.requireNonNull(player));
+                PacketMenuLib.updateInv(player);
             } // We don't verify if it is a good window id because if we do, the player can close the inventory without a packet and the event will never be called
         }
     }

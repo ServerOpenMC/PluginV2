@@ -1,7 +1,7 @@
 package fr.openmc.core.features.mainmenu.menus;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.api.packetmenulib.events.InventoryClickEvent;
 import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
@@ -160,20 +160,17 @@ public class Page2 implements Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
-        Player player = event.player();
-        OMCPlayer omcPlayer = OMCPlayer.of(player);
+        OMCPlayer player = OMCPlayer.of(event.player());
         if (event.clickType() == ClickType.CLICK_OUTSIDE) {
             PacketMenuLib.closeMenu(player);
             return;
         }
 
-        if (event.clickType() != ClickType.LEFT_CLICK) {
-            return;
-        }
+        if (event.clickType() != ClickType.LEFT_CLICK) return;
 
         if (DreamUtils.isInDreamWorld(player)) {
             PacketMenuLib.closeMenu(player);
-            MessagesManager.sendMessage(player,
+            player.message().send(
                     TranslationManager.translation("feature.mainmenu.message.dream_world")
                             .color(NamedTextColor.RED),
                     Prefix.OPENMC, MessageType.ERROR, true);
@@ -190,7 +187,7 @@ public class Page2 implements Menu {
         } else if (ADVANCEMENTS_SLOT == slot) {
             PacketMenuLib.closeMenu(player);
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+                ServerPlayer nmsPlayer = player.getServerPlayer();
                 ClientboundUpdateAdvancementsPacket packet = MainMenuListener.getAdvancementPackets().get(nmsPlayer.getUUID());
                 if (packet == null)
                     return;
@@ -205,7 +202,7 @@ public class Page2 implements Menu {
             });
         } else if (LEADERBOARD_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
-            MessagesManager.sendMessage(player,
+            player.message().send(
                     TranslationManager.translation(
                             "feature.mainmenu.message.leaderboard_dev",
                             Component.text(FontImageWrapper.replaceFontImages(":sad:"))
@@ -214,12 +211,12 @@ public class Page2 implements Menu {
                     MessageType.INFO,
                     true);
         } else if (BANK_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> BankCommands.openBankMenu(omcPlayer));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> BankCommands.openBankMenu(player));
         } else if (COMING_SOON_1_SLOTS.contains(slot) || COMING_SOON_2_SLOTS.contains(slot)
                 || COMING_SOON_3_SLOTS.contains(slot) || COMING_SOON_4_SLOTS.contains(slot)
                 || COMING_SOON_5_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.mainmenu.message.coming_soon")
+            player.message().send(TranslationManager.translation("feature.mainmenu.message.coming_soon")
                     .color(NamedTextColor.GOLD), Prefix.OPENMC, MessageType.INFO, true);
         }
     }
