@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
  * Utility class for managing and manipulating items within containers.
  */
 public class ContainerUtils {
-	
+	private ContainerUtils() {}
 	
 	/**
 	 * Calculates the total number of items in a container that are similar to the given item.

@@ -69,6 +69,7 @@ public class CraftDiamondArmorQuest extends Quest implements Listener {
                 this.incrementStepProgress(playerUUID, 3);
                 this.incrementProgress(playerUUID);
             }
+            default -> {}
         }
     }
 }

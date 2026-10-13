@@ -2,8 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.perks.event;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.world.chunk.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,9 +19,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class IdyllicRain implements Listener {
 
+    private static final Random random = ThreadLocalRandom.current();
     private static final NamespacedKey cityAyweniteKey = new NamespacedKey(OMCPlugin.getInstance(), "city_aywenite");
 
     /**
@@ -39,7 +40,6 @@ public class IdyllicRain implements Listener {
         if (world == null) return;
 
         List<ChunkPos> chunkList = new ArrayList<>(chunks);
-        Random random = new Random();
 
         final int[] dropped = {0};
 
@@ -89,7 +89,7 @@ public class IdyllicRain implements Listener {
         if (!meta.getPersistentDataContainer().has(cityAyweniteKey, PersistentDataType.STRING)) return;
 
         UUID cityId = UUID.fromString(meta.getPersistentDataContainer().get(cityAyweniteKey, PersistentDataType.STRING));
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (playerCity == null || !playerCity.getUniqueId().equals(cityId)) {
             event.setCancelled(true);

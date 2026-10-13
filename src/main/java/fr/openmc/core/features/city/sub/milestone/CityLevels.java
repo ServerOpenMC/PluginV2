@@ -2,18 +2,13 @@ package fr.openmc.core.features.city.sub.milestone;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.requirements.CommandRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.EventTemplateRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.ItemDepositRequirement;
 import fr.openmc.core.features.city.sub.milestone.requirements.TemplateRequirement;
 import fr.openmc.core.features.city.sub.milestone.rewards.*;
-import fr.openmc.core.features.city.sub.notation.NotationManager;
-import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
-import fr.openmc.core.features.city.sub.war.WarManager;
-import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
@@ -87,7 +82,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_2,
                     MemberLimitRewards.LEVEL_2
             ),
-            60 * 10
+            60 * 10L
     ),
     LEVEL_3(
             "feature.city.levels.level_3.name",
@@ -127,7 +122,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("5k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -171,7 +166,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_3,
                     RankLimitRewards.LEVEL_3
             ),
-            60 * 30
+            60 * 30L
     ),
     LEVEL_4(
             "feature.city.levels.level_4.name",
@@ -214,7 +209,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("15k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -223,8 +218,7 @@ public enum CityLevels {
                     new ItemDepositRequirement(Material.GLASS, 128),
                     new ItemDepositRequirement(OMCRegistry.CUSTOM_ITEMS.COURGETTE, 8),
                     new EventTemplateRequirement(
-                            (city, scope) -> Objects.requireNonNull(CityStatisticsManager
-                                            .getOrCreateStat(city.getUniqueId(), scope))
+                            (city, scope) -> Objects.requireNonNull(city.getOrCreateStat(scope))
                                     .asInt() >= 1,
 
                             city -> OMCRegistry.CUSTOM_ITEMS.URNE.getBest(),
@@ -239,12 +233,12 @@ public enum CityLevels {
                                     return;
 
                                 Player player = (Player) eventCraft.getWhoClicked();
-                                City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                                City playerCity = City.ofPlayer(player);
 
-                                if (Objects.requireNonNull(CityStatisticsManager.getOrCreateStat(playerCity.getUniqueId(), scope)).asInt() >= 1)
+                                if (Objects.requireNonNull(playerCity.getOrCreateStat(scope)).asInt() >= 1)
                                     return;
 
-                                CityStatisticsManager.increment(playerCity.getUniqueId(), scope, 1);
+                                playerCity.incrementStats(scope, 1);
                             }
                     )
             ),
@@ -257,14 +251,14 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_4,
                     RankLimitRewards.LEVEL_4
             ),
-            60 * 90
+            60 * 90L
     ),
     LEVEL_5(
             "feature.city.levels.level_5.name",
             "feature.city.levels.level_5.description",
             List.of(
                     new TemplateRequirement(
-                            city -> NPCManager.hasNPCS(city.getUniqueId()),
+                            city -> OMCRegistry.CITY_FEATURES.MAYOR.mayorNPCManager.hasNPCS(city.getUniqueId()),
                             city -> OMCRegistry.CUSTOM_ITEMS.URNE.getBest(),
                             (city, level) -> TranslationManager.translation("feature.city.levels.requirements.place_urne")
                     ),
@@ -294,7 +288,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("20k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -331,14 +325,14 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_5,
                     RankLimitRewards.LEVEL_5
             ),
-            60 * 60 * 3
+            60 * 60 * 3L
     ),
     LEVEL_6(
             "feature.city.levels.level_6.name",
             "feature.city.levels.level_6.description",
             List.of(
                     new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWon() >= 1,
+                            city -> city.getWarHistory() != null && city.getWarHistory().getNumberWon() >= 1,
                             city -> ItemStack.of(Material.DIAMOND_SWORD),
                             (city, level) -> TranslationManager.translation("feature.city.levels.requirements.war.win")
                     ),
@@ -364,7 +358,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("30k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -409,14 +403,14 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_6,
                     RankLimitRewards.LEVEL_6
             ),
-            60 * 60 * 5
+            60 * 60 * 5L
     ),
     LEVEL_7(
             "feature.city.levels.level_7.name",
             "feature.city.levels.level_7.description",
             List.of(
                     new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 2,
+                            city -> city.getWarHistory() != null && city.getWarHistory().getNumberWar() >= 2,
                             city -> ItemStack.of(Material.IRON_SWORD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
@@ -429,7 +423,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.war.count.progress",
                                         Component.text(2),
-                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0)
+                                        Component.text(city.getWarHistory() != null ? city.getWarHistory().getNumberWar() : 0)
                                 );
                             }
                     ),
@@ -455,7 +449,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("40k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -500,7 +494,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_7,
                     RankLimitRewards.LEVEL_7
             ),
-            60 * 60 * 10
+            60 * 60 * 10L
     ),
     LEVEL_8(
             "feature.city.levels.level_8.name",
@@ -528,7 +522,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("60k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -574,14 +568,14 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_8,
                     RankLimitRewards.LEVEL_8
             ),
-            60 * 60 * 16
+            60 * 60 * 16L
     ),
     LEVEL_9(
             "feature.city.levels.level_9.name",
             "feature.city.levels.level_9.description",
             List.of(
                     new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWon() >= 3,
+                            city -> city.getWarHistory() != null && city.getWarHistory().getNumberWon() >= 3,
                             city -> ItemStack.of(Material.DIAMOND_SWORD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
@@ -594,7 +588,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.war.win.count.progress",
                                         Component.text(3),
-                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWon() : 0)
+                                        Component.text(city.getWarHistory() != null ? city.getWarHistory().getNumberWon() : 0)
                                 );
                             }
                     ),
@@ -620,7 +614,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("80k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -649,14 +643,14 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_9,
                     RankLimitRewards.LEVEL_9
             ),
-            60 * 60 * 24
+            60 * 60 * 24L
     ),
     LEVEL_10(
             "feature.city.levels.level_10.name",
             "feature.city.levels.level_10.description",
             List.of(
                     new TemplateRequirement(
-                            city -> NotationManager.top10Cities.contains(city.getUniqueId()),
+                            City::isTop10Notation,
                             city -> ItemStack.of(Material.HONEYCOMB),
                             (city, level) -> TranslationManager.translation("feature.city.levels.requirements.notation.top10")
                     ),
@@ -669,7 +663,7 @@ public enum CityLevels {
                             )
                     ),
                     new TemplateRequirement(
-                            city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 10,
+                            city -> city.getWarHistory() != null && city.getWarHistory().getNumberWar() >= 10,
                             city -> ItemStack.of(Material.NETHERITE_SWORD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
@@ -682,7 +676,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.war.count.progress",
                                         Component.text(10),
-                                        Component.text(WarManager.warHistory.get(city.getUniqueId()) != null ? WarManager.warHistory.get(city.getUniqueId()).getNumberWar() : 0)
+                                        Component.text(city.getWarHistory() != null ? city.getWarHistory().getNumberWar() : 0)
                                 );
                             }
                     ),
@@ -700,7 +694,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("200k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -727,7 +721,7 @@ public enum CityLevels {
                     ChestPageLimitRewards.LEVEL_10,
                     RankLimitRewards.LEVEL_10
             ),
-            60 * 60 * 24 * 2
+            60 * 60 * 24 * 2L
     ),
     ;
 
@@ -736,6 +730,8 @@ public enum CityLevels {
     private final List<CityRequirement> requirements;
     private final List<CityRewards> rewards;
     private final long upgradeTime;
+
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     /**
      * Constructeur de l'énumération des niveaux de ville.
@@ -781,6 +777,6 @@ public enum CityLevels {
      * @param city la ville concernée
      */
     public void runUpgradeTime(City city) {
-        DynamicCooldownManager.use(city.getUniqueId(), "city:upgrade-level", upgradeTime * 1000);
+        dynamicCooldownManager.use(city.getUniqueId(), "city:upgrade-level", upgradeTime * 1000);
     }
 }

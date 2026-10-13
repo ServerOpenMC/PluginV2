@@ -10,7 +10,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Quizz extends ChatAnimation {
 
@@ -22,7 +21,7 @@ public class Quizz extends ChatAnimation {
     public Quizz(Component question, String... answers) {
         this(question,
                 Arrays.asList(answers),
-                OMCRegistry.CUSTOM_LOOT_TABLES.QUIZZ,
+                OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.QUIZZ,
                 30L);
     }
 
@@ -30,7 +29,7 @@ public class Quizz extends ChatAnimation {
         this.question = question;
         this.answers = answers.stream()
                 .map(String::toLowerCase)
-                .collect(Collectors.toList());
+                .toList();
         this.reward = reward;
         this.time = time;
     }

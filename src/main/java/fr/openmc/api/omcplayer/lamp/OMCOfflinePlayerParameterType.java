@@ -1,7 +1,6 @@
 package fr.openmc.api.omcplayer.lamp;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
-import fr.openmc.api.omcplayer.OMCPlayer;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;

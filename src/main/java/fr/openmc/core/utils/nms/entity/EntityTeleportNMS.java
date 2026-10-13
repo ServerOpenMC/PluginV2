@@ -9,6 +9,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class EntityTeleportNMS {
+    private EntityTeleportNMS() {}
 
     public static void sendTeleportPacket(Player receiver, int entityId, Location loc) {
         ServerPlayer nmsReceiver = ((CraftPlayer) receiver).getHandle();

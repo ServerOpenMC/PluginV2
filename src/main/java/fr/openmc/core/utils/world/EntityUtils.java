@@ -8,6 +8,8 @@ import org.bukkit.entity.EntityType;
 import java.util.Objects;
 
 public class EntityUtils {
+    private EntityUtils() {}
+
     /**
      * Return a {@link TranslatableComponent} from an {@link EntityType}
      *

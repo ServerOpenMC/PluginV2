@@ -69,7 +69,7 @@ public final class SternalReflection {
         try {
             MethodHandle constructor = lookup.findConstructor(packetClass, VOID_METHOD_TYPE);
             return constructor::invoke;
-        } catch (NoSuchMethodException | IllegalAccessException ignored) {}
+        } catch (NoSuchMethodException | IllegalAccessException _) {}
 
         if (theUnsafe == null) {
             synchronized (SternalReflection.class) {

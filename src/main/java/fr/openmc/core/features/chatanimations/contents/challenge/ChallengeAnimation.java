@@ -11,11 +11,11 @@ public abstract class ChallengeAnimation extends ChatAnimation {
     private final Component description;
     private final long time;
 
-    public ChallengeAnimation(Component description, long time) {
-       this(description, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    protected ChallengeAnimation(Component description, long time) {
+       this(description, OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.CHALLENGE, time);
     }
 
-    public ChallengeAnimation(Component description, CustomLootTable reward, long time) {
+    protected ChallengeAnimation(Component description, CustomLootTable reward, long time) {
         this.description = description;
         this.reward = reward;
         this.time = time;

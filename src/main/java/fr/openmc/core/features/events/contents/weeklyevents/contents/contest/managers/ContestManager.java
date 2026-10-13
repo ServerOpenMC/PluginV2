@@ -1,20 +1,11 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.core.CommandsManager;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.DatabaseManager;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestFeaturesRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands.ContestCommand;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.events.ContestEndEvent;
@@ -26,18 +17,25 @@ import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.men
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestPlayer;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.hooks.WorldGuardHook;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.lifecycle.integration.DatabaseManager;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.lifecycle.registries.SubRegistry;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
@@ -48,30 +46,39 @@ import org.bukkit.inventory.meta.BookMeta;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 
 @Credit(developers = {"iambibi_"}, graphist = {"Gexary", "Tfloa"})
-public class ContestManager extends Feature implements HasDatabase, LoadAfterItemsAdder {
+public class ContestManager extends Feature implements HasDatabase, HasRegistries, HasCommands {
+    private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
+    private TradeYMLManager tradeYMLManager;
+    private ContestPlayerManager contestPlayerManager;
 
-    public static ContestData data;
-    public static Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
+    @Getter
+    @Setter
+    private ContestData data;
+    @Getter
+    private final Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
 
-    private static final List<String> colorContest = Arrays.asList(
+    private final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
             "DARK_GREEN","DARK_BLUE"
     );
-    private static final Set<Class<? extends Menu>> contestMenus = new HashSet<>();
 
-    static {
-        contestMenus.add(ContributionMenu.class);
-        contestMenus.add(MoreInfoMenu.class);
-        contestMenus.add(TradeMenu.class);
-        contestMenus.add(VoteMenu.class);
-    }
+    private final Set<Class<? extends Menu>> contestMenus = new HashSet<>(Set.of(
+            ContributionMenu.class,
+            MoreInfoMenu.class,
+            TradeMenu.class,
+            VoteMenu.class
+    ));
+
+    private final Random random = ThreadLocalRandom.current();
 
     /**
      * Constructeur du ContestManager :
@@ -82,61 +89,62 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
      * - Programme le lancement et la fin des différentes phases du contest
      */
     @Override
-    public void init() {
+    public void onEnable() {
+        this.tradeYMLManager = OMCRegistry.CONTEST_FEATURES.TRADE_YML;
+        this.contestPlayerManager = OMCRegistry.CONTEST_FEATURES.CONTEST_PLAYER;
+
         // ** LISTENERS **
-        if (ItemsAdderHook.isEnable()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) {
             OMCPlugin.registerEvents(
                     ContestIntractEvents::new
             );
         }
-
-        // ** COMMANDS **
-        CommandsManager.getHandler().register(
-                new ContestCommand()
-        );
-
-        // ** MANAGER EXTERNE **
-        TradeYMLManager.init();
 
         // ** LOAD DATAS **
         initContestData();
         loadContestPlayerData();
 
         // ** PARTICLE REGION **
-        if (WorldGuardHook.isEnable()) {
-            ContestParticlesUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+        if (OMCRegistry.HOOKS.WORLD_GUARD.isEnable()) {
+            ContestParticlesUtils.spawnContestParticlesInRegion(
+                    this,
+                    "spawn",
+                    Bukkit.getWorld("world"),
+                    10,
+                    70,
+                    135);
         }
     }
 
     @Override
-    public void save() {
-        ContestManager.saveContestData();
-        ContestManager.saveContestPlayerData();
+    public void onDisable() {
+        this.saveContestData();
+        this.saveContestPlayerData();
     }
 
-    private static Dao<ContestData, Integer> contestDao;
-    private static Dao<ContestPlayer, UUID> playerDao;
-
-    /**
-     * Initialise la base de données pour les contests et les joueurs
-     * (création des tables si elles n’existent pas encore)
-     */
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, ContestData.class);
-        contestDao = DaoManager.createDao(connectionSource, ContestData.class);
+    public List<Supplier<LifecycleRegistry>> getRegistries() {
+        return List.of(
+                () -> SubRegistry.boot(new ContestFeaturesRegistry(),
+                        r -> OMCRegistry.CONTEST_FEATURES = r)
+        );
+    }
 
-        TableUtils.createTableIfNotExists(connectionSource, ContestPlayer.class);
-        playerDao = DaoManager.createDao(connectionSource, ContestPlayer.class);
+    private final DBTable<ContestData, Integer> contestTable = DBTable.of(ContestData.class);
+    private final DBTable<ContestPlayer, UUID> playerTable = DBTable.of(ContestPlayer.class);
+
+    @Override
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(contestTable, playerTable);
     }
 
     /**
      * Initialise les données globales du contest depuis la DB.
      * Si aucune donnée n’est trouvée, un contest par défaut est créé.
      */
-    public static void initContestData() {
+    public void initContestData() {
         try {
-            data = contestDao.queryForFirst();
+            data = contestTable.loadList().getFirst();
             if (data == null) {
                 data = new ContestData(
                         "feature.events.contest.camp.mayonnaise",
@@ -145,7 +153,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
                         "RED",
                         0,
                         0);
-                contestDao.create(data);
+                contestTable.create(data);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -155,9 +163,9 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
     /**
      * Sauvegarde les données globales du contest dans la DB.
      */
-    public static void saveContestData() {
+    public void saveContestData() {
         try {
-            contestDao.update(data);
+            contestTable.update(data);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -167,33 +175,23 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
      * Charge les données des joueurs depuis la DB
      * et les insère dans la map dataPlayer.
      */
-    public static void loadContestPlayerData() {
-        try {
-            playerDao.queryForAll().forEach(player -> dataPlayer.put(player.getUUID(), player));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void loadContestPlayerData() {
+        dataPlayer.clear();
+        dataPlayer.putAll(playerTable.loadMap(ContestPlayer::getPlayerUUID));
     }
 
     /**
      * Sauvegarde les données des joueurs (points, camp, etc.) dans la DB.
      */
-    public static void saveContestPlayerData() {
-        OMCLogger.info("Saving contest player data...");
-        dataPlayer.forEach((player, data) -> {
-            try {
-                playerDao.createOrUpdate(data);
-            } catch (SQLException e) {
-                OMCLogger.warn("Failed to save contest player data for {}: {}", player, e.getMessage(), e);
-            }
-        });
-        OMCLogger.info("Contest player data saved successfully.");
+    public void saveContestPlayerData() {
+        playerTable.saveMap(dataPlayer);
+        dataPlayer.clear();
     }
 
     /**
      * Vide les tables relatives au contest (Contest et ContestPlayer) dans la DB.
      */
-    public static void clearDB() {
+    public void clearDB() {
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestData.class);
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
@@ -208,7 +206,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
      * - Réinitialise les particules
      * - Diffuse un message et joue un son aux joueurs connectés
      */
-    public static void initPhase1() {
+    public void initPhase1() {
         ContestParticlesUtils.color1 = null;
         ContestParticlesUtils.color2 = null;
 
@@ -225,15 +223,15 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
      * - Définit la phase sur 3
      * - Diffuse un message et joue un son aux joueurs connectés
      */
-    public static void initPhase2() {
-        List<Map<String, Object>> selectedTrades = TradeYMLManager.getTradeSelected(true);
+    public void initPhase2() {
+        List<Map<String, Object>> selectedTrades = tradeYMLManager.getTradeSelected(true);
         for (Map<String, Object> trade : selectedTrades) {
-            TradeYMLManager.updateColumnBooleanFromRandomTrades(false, (String) trade.get("ress"));
+            tradeYMLManager.updateColumnBooleanFromRandomTrades(false, (String) trade.get("ress"));
         }
 
-        List<Map<String, Object>> unselectedTrades = TradeYMLManager.getTradeSelected(false);
+        List<Map<String, Object>> unselectedTrades = tradeYMLManager.getTradeSelected(false);
         for (Map<String, Object> trade : unselectedTrades) {
-            TradeYMLManager.updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
+            tradeYMLManager.updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
         }
 
         Bukkit.broadcast(TranslationManager.translation("feature.events.contest.broadcast.phase2"));
@@ -251,7 +249,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
      * - Envoie les récompenses via la mailbox
      * - Réinitialise les données en DB pour le prochain contest
      */
-    public static void initPhase3() {
+    public void initPhase3() {
         ContestParticlesUtils.color1 = null;
         ContestParticlesUtils.color2 = null;
 
@@ -259,10 +257,9 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
             InventoryView openInv = player.getOpenInventory();
             InventoryHolder holder = openInv.getTopInventory().getHolder();
 
-            if (holder instanceof Menu menu) {
-                if (contestMenus.contains(menu.getClass())) {
-                    player.closeInventory();
-                }
+            if (holder instanceof Menu menu
+                    && contestMenus.contains(menu.getClass())) {
+                player.closeInventory();
             }
 
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0F, 2F);
@@ -399,14 +396,14 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
         List<UUID> losers = new ArrayList<>();
 
         // STATS PERSO + REWARDS
-        Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
+        Map<UUID, ItemStack[]> playerItemsMap = new HashMap<>();
         AtomicInteger rank = new AtomicInteger(1);
 
         orderedMap.forEach((uuid, dataPlayer1) -> {
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
-            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
+            OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(uuid);
             int points = dataPlayer1.getPoints();
 
             if (offlinePlayer.isOnline()) {
@@ -426,7 +423,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
 
             Component playerCampName = data.getCampComponent(dataPlayer1.getCamp());
             NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());
-            Component playerTitleContest = ContestPlayerManager.getTitleWithPoints(points) // ex. Novice en + Moutarde
+            Component playerTitleContest = contestPlayerManager.getTitleWithPoints(points) // ex. Novice en + Moutarde
                     .append(playerCampName);
 
             bookMetaPlayer.addPages(TranslationManager.translation(
@@ -443,26 +440,24 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
             int money;
             int aywenite;
 
-            double multiplicator = ContestPlayerManager.getMultiplicatorFromRank(
-                    ContestPlayerManager.getRankContestFromOfflineInt(offlinePlayer));
-            if (ContestPlayerManager.hasWinInCampFromOfflinePlayer(offlinePlayer)) {
+            double multiplicator = contestPlayerManager.getMultiplicatorFromRank(
+                    contestPlayerManager.getRankContestFromOfflineInt(offlinePlayer));
+            if (contestPlayerManager.hasWinInCampFromOfflinePlayer(offlinePlayer)) {
                 // Gagnant - ARGENT
                 int moneyMin = 10000;
                 int moneyMax = 12000;
                 moneyMin = (int) (moneyMin * multiplicator);
                 moneyMax = (int) (moneyMax * multiplicator);
 
-                Random randomMoney = new Random();
-                money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.addBalance(offlinePlayer.getUniqueId(), money, "Récompense contest - Gagnant");
+                money = random.nextInt(moneyMin, moneyMax);
+                offlinePlayer.economy().addBalance(money, "Récompense contest - Gagnant");
  
                 // Gagnant - Aywenite
                 int ayweniteMin = 40;
                 int ayweniteMax = 60;
                 ayweniteMin = (int) (ayweniteMin * multiplicator);
                 ayweniteMax = (int) (ayweniteMax * multiplicator);
-                Random randomAwyenite = new Random();
-                aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
+                aywenite = random.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Gagnant - EVENT
                 winners.add(offlinePlayer.getUniqueId());
@@ -473,17 +468,15 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
                 moneyMin = (int) (moneyMin * multiplicator);
                 moneyMax = (int) (moneyMax * multiplicator);
 
-                Random randomMoney = new Random();
-                money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.addBalance(offlinePlayer.getUniqueId(), money, "Récompense contest - Perdant");
+                money = random.nextInt(moneyMin, moneyMax);
+                offlinePlayer.economy().addBalance(money, "Récompense contest - Perdant");
 
                 // Perdant - Aywenite
                 int ayweniteMin = 20;
                 int ayweniteMax = 25;
                 ayweniteMin = (int) (ayweniteMin * multiplicator);
                 ayweniteMax = (int) (ayweniteMax * multiplicator);
-                Random randomAwyenite = new Random();
-                aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
+                aywenite = random.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Perdant - EVENT
                 losers.add(offlinePlayer.getUniqueId());
@@ -513,7 +506,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
             itemListRewards.add(ayweniteItemStack);
 
             ItemStack[] rewards = itemListRewards.toArray(new ItemStack[0]);
-            playerItemsMap.put(offlinePlayer, rewards);
+            playerItemsMap.put(offlinePlayer.getUniqueId(), rewards);
             rank.getAndIncrement();
         });
         
@@ -525,7 +518,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
         
         // Exécuter les requêtes SQL dans un autre thread
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            TradeYMLManager.addOneToLastContest(data.getKeyCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
+            tradeYMLManager.addOneToLastContest(data.getKeyCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
 
             try {
                 TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
@@ -533,9 +526,9 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
                 throw new RuntimeException(e);
             }
 
-            TradeYMLManager.selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
-            dataPlayer = new HashMap<>(); // on supprime les données précédentes des joueurs
-            MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
+            tradeYMLManager.selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
+            dataPlayer.clear(); // on supprime les données précédentes des joueurs
+            mailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
         });
     }
 
@@ -544,7 +537,7 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
      * @param camps 1 ou 2
      * @return nombre de votes
      */
-    public static Integer getVoteTaux(Integer camps) {
+    public Integer getVoteTaux(Integer camps) {
         return (int) dataPlayer.values().stream()
                 .filter(player -> player.getCamp() == camps)
                 .count();
@@ -553,14 +546,25 @@ public class ContestManager extends Feature implements HasDatabase, LoadAfterIte
     /**
      * Retourne la liste des couleurs disponibles pour créer un contest.
      */
-    public static List<String> getColorContestList() {
+    public List<String> getColorContestList() {
         return new ArrayList<>(colorContest);
     }
 
     /**
      * Insère un contest personnalisé dans la DB avec 2 camps et leurs couleurs.
      */
-    public static void insertCustomContest(String camp1, String color1, String camp2, String color2) {
+    public void insertCustomContest(String camp1, String color1, String camp2, String color2) {
         data = new ContestData(camp1, camp2, color1, color2, 0, 0);
+    }
+
+    public void addContestPlayer(Player player, int camp, NamedTextColor color) {
+        dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, camp, color));
+    }
+
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new ContestCommand()
+        );
     }
 }

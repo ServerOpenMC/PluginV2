@@ -1,6 +1,6 @@
 package fr.openmc.core.registry.worldtemplates;
 
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorldTemplateConfig {
+    private WorldTemplateConfig() {}
+
     private static File worldTemplateFile;
     private static FileConfiguration worldTemplateConfig;
 

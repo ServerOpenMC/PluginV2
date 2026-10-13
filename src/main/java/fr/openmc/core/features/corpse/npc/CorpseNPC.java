@@ -27,7 +27,9 @@ public class CorpseNPC {
     Pose pose;
     boolean killByPlayer;
 
-    public CorpseNPC(Npc npc, Location location, UUID ownerUUID, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, Pose pose, boolean killByPlayer) {
+    public CorpseNPC(Npc npc, Location location, UUID ownerUUID,
+                     ItemStack helmet, ItemStack chestplate, ItemStack leggings,
+                     ItemStack boots, Pose pose, boolean killByPlayer) {
         this.npc = npc;
         this.location = location;
         this.ownerUUID = ownerUUID;

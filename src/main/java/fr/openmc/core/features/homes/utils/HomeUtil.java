@@ -2,43 +2,11 @@ package fr.openmc.core.features.homes.utils;
 
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
-import fr.openmc.core.features.homes.icons.LegacyHomeIcon;
-import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 
 public class HomeUtil {
+    private HomeUtil() {}
 
     public static final int MAX_LENGTH_HOME_NAME = 32;
-    @Deprecated
-    public static HomeIcon getHomeIcon(String iconId) {
-        if (iconId == null || iconId.isEmpty())
-            return HomeIconRegistry.getDefaultIcon();
-
-        HomeIcon icon = HomeIconRegistry.getIcon(iconId);
-        if (icon != null) return icon;
-
-        try {
-            LegacyHomeIcon legacyIcon = LegacyHomeIcon.valueOf(iconId.toUpperCase());
-            return HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
-        } catch (IllegalArgumentException e) {
-            return mapLegacyCustomId(iconId);
-        }
-    }
-
-    @Deprecated
-    public static ItemStack getHomeIconItem(Home home) {
-        return home.getIcon().getItemStack();
-    }
-
-    @Deprecated
-    public static ItemStack getHomeIconItem(LegacyHomeIcon legacyIcon) {
-        HomeIcon icon = HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
-        return icon.getItemStack();
-    }
 
     /**
      * Maps legacy custom icon IDs to the new HomeIcon system.

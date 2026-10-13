@@ -24,6 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 public class ParticleUtils {
+    private ParticleUtils() {}
 
     /**
      * based on {@link org.bukkit.craftbukkit.CraftParticle}

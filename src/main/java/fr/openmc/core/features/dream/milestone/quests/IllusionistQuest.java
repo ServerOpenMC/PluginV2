@@ -3,7 +3,6 @@ package fr.openmc.core.features.dream.milestone.quests;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
@@ -34,7 +33,7 @@ public class IllusionistQuest extends MilestoneQuest implements Listener {
 		if (!DreamUtils.isInDreamWorld(player)) return;
 		
 		if (!e.getNpc().getData().getName().startsWith("glacite-")) return;
-		if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+		if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 		this.incrementProgressInDream(player.getUniqueId());
 	}
 }

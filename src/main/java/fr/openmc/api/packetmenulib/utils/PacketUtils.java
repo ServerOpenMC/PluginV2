@@ -4,7 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import io.papermc.paper.adventure.PaperAdventure;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.MenuType;
@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class PacketUtils {
+    private PacketUtils() {}
 
     private static final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 

@@ -3,6 +3,7 @@ package fr.openmc.core.features.milestones.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
@@ -22,8 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 public class MilestoneMenu extends Menu {
+    private final MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
 
-    private final Milestone milestone;
+    private final Milestone<?> milestone;
     private final List<MilestoneQuest> steps;
     private int offset = 0;
 
@@ -77,7 +79,7 @@ public class MilestoneMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
         Player player = getOwner();
-        int currentStep = MilestonesManager.getPlayerStep(milestone.getType(), player);
+        int currentStep = milestonesManager.getPlayerStep(milestone.getType(), player);
 
         int remaining = Math.max(0, steps.size() - offset);
         int visible = Math.min(MAX_VISIBLE_NODES, remaining);

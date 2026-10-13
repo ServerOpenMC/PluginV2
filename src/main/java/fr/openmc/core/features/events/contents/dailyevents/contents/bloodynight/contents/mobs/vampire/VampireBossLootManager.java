@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -28,10 +29,13 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent
 
 public class VampireBossLootManager {
 
-    public static final Map<UUID, Double> damageContributions = new HashMap<>();
-    private static final CustomLootTable VAMPIRE_BOSS_LOOT_TABLE = OMCRegistry.CUSTOM_LOOT_TABLES.VAMPIRE;
+    public final Map<UUID, Double> damageContributions = new HashMap<>();
+    private final CustomLootTable vampireBossLootTable = OMCRegistry.CUSTOM_LOOT_TABLES.VAMPIRE;
 
-    public static void giveContributions(CustomMob<?> mob) {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final MailboxManager mailBoxManager = OMCRegistry.FEATURES.MAILBOX.get();
+
+    public void giveContributions(CustomMob<?> mob) {
         double totalHealth = mob.getHealth();
 
         Map<UUID, Double> orderedMap = damageContributions.entrySet()
@@ -112,14 +116,14 @@ public class VampireBossLootManager {
         broadcastToWorld(world, messageMail);
     }
 
-    private static void giveLootToContributor(UUID playerUUID, double chanceMultiplier) {
+    private void giveLootToContributor(UUID playerUUID, double chanceMultiplier) {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
+        OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(playerUUID);
 
         Player player = offlinePlayer.getPlayer();
         List<ItemStack> rewards = new ArrayList<>();
 
-        for (CustomLoot loot : VAMPIRE_BOSS_LOOT_TABLE.getLoots()) {
+        for (CustomLoot loot : vampireBossLootTable.getLoots()) {
             if (!(loot instanceof ItemLoot) && !(loot instanceof MoneyLoot)) continue;
 
             double finalChance = loot.getChance() * chanceMultiplier;
@@ -138,7 +142,7 @@ public class VampireBossLootManager {
                 amount = itemReward.getAmount();
                 rewards.add(itemReward);
             } else if (loot instanceof MoneyLoot moneyLoot) {
-                EconomyManager.addBalance(playerUUID, moneyLoot.getMoney());
+                economyManager.addBalance(playerUUID, moneyLoot.getMoney());
             }
 
             if (player != null && offlinePlayer.isOnline()) {
@@ -146,10 +150,10 @@ public class VampireBossLootManager {
             }
         }
 
-        MailboxManager.sendItemsToOfflinePlayer(offlinePlayer, rewards.toArray(ItemStack[]::new));
+        mailBoxManager.sendItems(offlinePlayer, rewards.toArray(ItemStack[]::new));
     }
 
-    private static double getChanceMultiplier(double participation) {
+    private double getChanceMultiplier(double participation) {
         if (participation >= 0.75) {
             return 1.0;
         } else if (participation >= 0.50) {
@@ -163,7 +167,7 @@ public class VampireBossLootManager {
         }
     }
 
-    private static void broadcastToWorld(World world, Component component) {
+    private void broadcastToWorld(World world, Component component) {
         for (Player player : world.getPlayers()) {
             player.sendMessage(component);
         }

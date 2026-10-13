@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -25,12 +25,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class GPSTrackerPerk implements Listener {
-
     private final Map<UUID, City> lastCityMap = new HashMap<>();
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        if (MayorManager.phaseMayor != 2) return;
+        if (!OMCRegistry.CITY_FEATURES.MAYOR.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
@@ -38,10 +37,7 @@ public class GPSTrackerPerk implements Listener {
         Chunk newChunk = event.getTo().getChunk();
         if (event.getFrom().getChunk().equals(newChunk)) return;
 
-        City newCity = CityManager.getCityFromChunk(
-                newChunk.getX(),
-                newChunk.getZ()
-        );
+        City newCity = City.of(newChunk);
 
         City oldCity = lastCityMap.get(uuid);
 
@@ -72,7 +68,7 @@ public class GPSTrackerPerk implements Listener {
 
     private boolean hasGpsTrackerPerk(City city) {
         Mayor mayor = city.getMayor();
-        return PerkManager.hasPerk(mayor, Perks.GPS_TRACKER.getId());
+        return PerkUtils.hasPerk(mayor, Perks.GPS_TRACKER.getId());
     }
 
     private void applyGlowing(Player player) {

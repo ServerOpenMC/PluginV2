@@ -1,47 +1,44 @@
 package fr.openmc.core.features.bits;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.commands.BitsCommands;
 import fr.openmc.core.features.bits.models.BitsPlayer;
-import fr.openmc.core.features.city.sub.bank.CityBankManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.text.NumberFormat;
 import java.util.*;
 
 @Credit(developers = {"iambibi_"})
 public class BitsManager extends Feature implements HasDatabase, HasCommands {
+    private final GitHubHook gitHubHook = OMCRegistry.HOOKS.GITHUB;
+    private final ItemsAdderHook itemsAdderHook = OMCRegistry.HOOKS.ITEMS_ADDER;
+
     @Getter
-    private static Map<UUID, BitsPlayer> bitsData;
+    private final Map<UUID, BitsPlayer> bitsData = new HashMap<>();
 
-    private static Dao<BitsPlayer, String> playersBitsDao;
+    private final DBTable<BitsPlayer, String> playersBitsTable = DBTable.of(BitsPlayer.class);
 
-    private static BukkitTask bitsUpdateTask;
+    private BukkitTask bitsUpdateTask;
 
     public static final double LINE_REQ = 500d;
     public static final double BITS_PER_LINE_REQ = 250d;
 
     @Override
-    public void init() {
-        bitsData = loadAllBits();
-
+    public void onEnable() {
+        loadAllBits();
         updateBitsUpdateTimer();
 
     }
@@ -49,96 +46,69 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new BitsCommands()
+                new BitsCommands(this, gitHubHook)
         );
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, BitsPlayer.class);
-        playersBitsDao = DaoManager.createDao(connectionSource, BitsPlayer.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(playersBitsTable);
     }
 
     @Override
-    protected void save() {
-        saveAllBits();
+    protected void onDisable() {
+        playersBitsTable.saveAll(bitsData.values());
+        bitsData.clear();
     }
 
-    public static Map<UUID, BitsPlayer> loadAllBits() {
-        Map<UUID, BitsPlayer> balances = new HashMap<>();
-        try {
-            List<BitsPlayer> dbBalances = playersBitsDao.queryForAll();
-            for (BitsPlayer bank : dbBalances) {
-                balances.put(bank.getPlayerUUID(), bank);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return balances;
+    private void loadAllBits() {
+        bitsData.clear();
+        bitsData.putAll(playersBitsTable.loadMap(BitsPlayer::getPlayerUUID));
     }
 
-    private static void saveAllBits() {
-        try {
-            playersBitsDao.callBatchTasks(() -> {
-                for (BitsPlayer player : bitsData.values()) {
-                    playersBitsDao.createOrUpdate(player);
-                }
-
-                return null;
-            });
-        } catch (Exception e) {
-            OMCLogger.error("Impossible de sauvegarder les soldes de l'economie développeur pendant l'arret.", e);
-        }
-    }
-
-    public static double getBits(UUID playerUUID) {
+    public double getBits(UUID playerUUID) {
         BitsPlayer bitsPlayer = bitsData.get(playerUUID);
         return bitsPlayer == null ? 0 : bitsPlayer.getBits();
     }
 
-    public static void addBits(UUID playerUUID, double amount) {
+    public void addBits(UUID playerUUID, double amount) {
         BitsPlayer bitsPlayer = getBitsPlayer(playerUUID);
         bitsPlayer.deposit(amount);
     }
 
-    public static boolean withdrawBits(UUID playerUUID, double amount) {
+    public boolean withdrawBits(UUID playerUUID, double amount) {
         BitsPlayer bitsPlayer = getBitsPlayer(playerUUID);
         return bitsPlayer.withdraw(amount);
     }
 
-    public static void setBits(UUID playerUUID, double amount) {
+    public void setBits(UUID playerUUID, double amount) {
         BitsPlayer bitsPlayer = getBitsPlayer(playerUUID);
         bitsPlayer.setBits(amount);
     }
 
-    public static BitsPlayer getBitsPlayer(UUID playerUUID) {
+    public BitsPlayer getBitsPlayer(UUID playerUUID) {
         return bitsData.computeIfAbsent(playerUUID, BitsPlayer::new);
     }
 
-    public static String getFormattedBits(UUID playerUUID) {
-        String balance = String.valueOf(getBits(playerUUID));
-        Currency currency = Currency.getInstance(Locale.FRANCE);
-        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-        format.setCurrency(currency);
-        BigDecimal bd = new BigDecimal(balance);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(),
-                getBitsIcon());
+    public String getFormattedBits(UUID playerUUID) {
+        double balance = getBits(playerUUID);
+
+        return EconomyUtils.getFormattedNumber(balance, getBitsIcon());
     }
 
-    public static String getBitsIcon() {
-        if (ItemsAdderHook.isEnable()) {
+    public String getBitsIcon() {
+        if (itemsAdderHook.isEnable()) {
             return FontImageWrapper.replaceFontImages("§f:bits:");
         } else {
             return "✯";
         }
     }
 
-    public static void applyContributorBitsUpdate(Long githubID) {
-        UUID playerLinked = GitHubHook.getPlayerLinkTo(githubID);
+    public void applyContributorBitsUpdate(Long githubID) {
+        UUID playerLinked = gitHubHook.getPlayerLinkTo(githubID);
         if (playerLinked == null) return;
 
-        ContributorStats stats = GitHubHook.getStats(githubID);
+        ContributorStats stats = gitHubHook.getStats(githubID);
         if (stats == null) return;
 
         int lastSavedLines = getBitsPlayer(playerLinked).getLastSavedLines();
@@ -152,17 +122,17 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
         }
     }
 
-    public static void applyAllContributorBitsUpdate() {
-        Map<Long, String> contributors = GitHubHook.getContributors();
+    public void applyAllContributorBitsUpdate() {
+        Map<Long, String> contributors = gitHubHook.getContributors();
 
-        GitHubHook.fetchContributorStats();
+        gitHubHook.fetchContributorStats();
 
         for (Long githubID : contributors.keySet()) {
             applyContributorBitsUpdate(githubID);
         }
     }
 
-    public static void updateBitsUpdateTimer() {
+    public void updateBitsUpdateTimer() {
         if (OMCPlugin.isUnitTestVersion()) return;
 
         if (bitsUpdateTask != null) return;
@@ -174,14 +144,14 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
                 () -> {
                     OMCLogger.info("Applying all bits update for contributors");
                     applyAllContributorBitsUpdate();
-                    CityBankManager.applyAllCityInterests();
+                    OMCRegistry.CITY_FEATURES.CITY_BANK.applyAllCityInterests();
                     OMCLogger.info("All bits update for contributors applied successfully.");
 
                     bitsUpdateTask = null;
 
                     Bukkit.getScheduler().runTaskLater(
                             OMCPlugin.getInstance(),
-                            BitsManager::updateBitsUpdateTimer,
+                            this::updateBitsUpdateTimer,
                             20L * 10
                     );
                 },

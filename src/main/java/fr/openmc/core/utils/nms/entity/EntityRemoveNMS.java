@@ -6,6 +6,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class EntityRemoveNMS {
+    private EntityRemoveNMS() {}
 
     public static void sendRemovePacket(Player receiver, int entityId) {
         ServerPlayer nmsReceiver = ((CraftPlayer) receiver).getHandle();

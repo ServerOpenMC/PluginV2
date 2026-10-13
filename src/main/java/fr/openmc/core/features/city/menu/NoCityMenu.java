@@ -1,7 +1,5 @@
 package fr.openmc.core.features.city.menu;
 
-import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
@@ -9,13 +7,11 @@ import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityCreateAction;
-import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
+import fr.openmc.core.features.city.models.CityInvite;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.text.DateUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -35,6 +31,8 @@ import java.util.function.Supplier;
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
 public class NoCityMenu extends Menu {
+    private static final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private static final CityManager cityManager = OMCRegistry.FEATURES.CITY.get();
 
     public NoCityMenu(Player owner) {
         super(owner);
@@ -67,16 +65,17 @@ public class NoCityMenu extends Menu {
 
         Component nameNotif;
         List<Component> loreNotif = new ArrayList<>();
-        if (!CityInviteCommands.invitations.containsKey(player)) {
+        if (!cityManager.hasInvitation(player.getUniqueId())) {
                 nameNotif = TranslationManager.translation("feature.city.menus.no_city.invitations.none.title");
 	            loreNotif.addAll(TranslationManager.translationLore("feature.city.menus.no_city.invitations.none.lore"));
 
             inventory.put(15, new ItemMenuBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
-            }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, MessageType.ERROR, false)));
+            }).setOnClick(_ ->
+                    player.message().sendError(TranslationManager.translation("feature.city.invite.commands.accept.none_pending"), Prefix.CITY, false)));
         } else {
-            List<Player> invitations = CityInviteCommands.invitations.get(player);
+            List<CityInvite> invitations = cityManager.getInvitations(player.getUniqueId());
             nameNotif = TranslationManager.translation(
                     "feature.city.menus.no_city.invitations.count.title",
                     Component.text(invitations.size()),
@@ -88,23 +87,22 @@ public class NoCityMenu extends Menu {
             inventory.put(15, new ItemMenuBuilder(this, Material.BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
-            }).setOnClick(inventoryClickEvent -> {
-                new InvitationsMenu(player).open();
-            }));
+            }).setOnClick(_ ->
+                    new InvitationsMenu(player).open()));
         }
 
         Supplier<ItemMenuBuilder> createItemSupplier = () -> {
                 List<Component> loreCreate;
-                if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+                if (!player.cooldown().isReady("city:big")) {
                     loreCreate = TranslationManager.translationLore(
                             "feature.city.menus.no_city.create.lore.cooldown",
-                            Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big"))).color(NamedTextColor.RED)
+                            Component.text(player.cooldown().getRemainingFormatted("city:big")).color(NamedTextColor.RED)
                     );
                 } else {
                     loreCreate = TranslationManager.translationLore(
                             "feature.city.menus.no_city.create.lore.ready",
                             Component.text(CityCreateConditions.MONEY_CREATE).color(NamedTextColor.GOLD),
-                            Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
+                            Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD),
                             Component.text(CityCreateConditions.AYWENITE_CREATE).color(NamedTextColor.LIGHT_PURPLE),
                             OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                     );
@@ -113,10 +111,10 @@ public class NoCityMenu extends Menu {
                 return new ItemMenuBuilder(this, Material.SCAFFOLDING, itemMeta -> {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.no_city.create.title"));
                     itemMeta.lore(loreCreate);
-                }).setOnClick(inventoryClickEvent -> {
-                    if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) return;
+                }).setOnClick(_ -> {
+                    if (!player.cooldown().isReady("city:big")) return;
 
-                    DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
+                    player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                                 if (input == null) return;
                                 CityCreateAction.beginCreateCity(player, input);
                             }
@@ -124,7 +122,7 @@ public class NoCityMenu extends Menu {
                 });
             };
 
-            if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+            if (!player.cooldown().isReady("city:big")) {
                 MenuUtils.runDynamicItem(player, this, 11, createItemSupplier)
                         .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             } else {

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -14,6 +15,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class DreamUtils {
+    private DreamUtils() {}
+
     public static boolean isInDreamWorld(Player player) {
         return isDreamWorld(player.getLocation());
     }
@@ -29,11 +32,11 @@ public class DreamUtils {
     public static boolean isInDream(Player player) {
         if (!isInDreamWorld(player)) return false;
 
-        return DreamManager.getDreamPlayer(player) != null;
+        return OMCRegistry.FEATURES.DREAM.get().getDreamPlayer(player) != null;
     }
 
     public static void addDreamTime(Player player, Long timeToAdd, boolean sendMessage) {
-        DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+        DreamPlayer dreamPlayer = OMCRegistry.FEATURES.DREAM.get().getDreamPlayer(player);
         if (dreamPlayer == null) return;
         dreamPlayer.addTime(timeToAdd);
         if (sendMessage)
@@ -42,7 +45,7 @@ public class DreamUtils {
     }
 
     public static void removeDreamTime(Player player, Long timeToRemove, boolean sendMessage) {
-        DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+        DreamPlayer dreamPlayer = OMCRegistry.FEATURES.DREAM.get().getDreamPlayer(player);
         if (dreamPlayer == null) return;
 		if (player.getGameMode().equals(GameMode.CREATIVE)) return;
         dreamPlayer.removeTime(timeToRemove);

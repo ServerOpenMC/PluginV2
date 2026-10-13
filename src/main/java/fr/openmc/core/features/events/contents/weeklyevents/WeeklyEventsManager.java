@@ -1,19 +1,17 @@
 package fr.openmc.core.features.events.contents.weeklyevents;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventsData;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasRegistries;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
+import fr.openmc.core.lifecycle.registries.LifecycleRegistry;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.text.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
@@ -22,56 +20,57 @@ import java.sql.SQLException;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 @Credit(developers = {"iambibi_"})
-public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder, HasDatabase {
+public class WeeklyEventsManager extends Feature implements HasDatabase, HasRegistries {
 
-    private static Dao<WeeklyEventsData, Integer> dao;
-    private static WeeklyEventsData data;
-    private static BukkitTask currentTask = null;
+    private final DBTable<WeeklyEventsData, Integer> weeklyEventsDataTable = DBTable.of(WeeklyEventsData.class);
+    private WeeklyEventsData data;
+    private BukkitTask currentTask = null;
 
     /**
      * Initialise la gestion des WeeklyEvents.
      */
     @Override
-    public void init() {
+    public void onEnable() throws SQLException {
         data = load();
 
         scheduleNextPhase();
     }
 
-    /**
-     * Initialise la BDD : crée la table si nécessaire, charge les données, gère le cas restart
-     */
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        dao = DaoManager.createDao(connectionSource, WeeklyEventsData.class);
-        TableUtils.createTableIfNotExists(connectionSource, WeeklyEventsData.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(weeklyEventsDataTable);
+    }
+
+    @Override
+    public List<Supplier<LifecycleRegistry>> getRegistries() {
+        return List.of(
+                () -> OMCRegistry.WEEKLY_EVENTS = new WeeklyEventsRegistry()
+        );
     }
 
     /**
      * Charge les données depuis la BDD, ou crée une ligne par défaut si inexistante.
      */
-    public static WeeklyEventsData load() {
-        try {
-            WeeklyEventsData data = dao.queryForId(1);
-            if (data == null) {
-                WeeklyEvent contest = OMCRegistry.WEEKLY_EVENTS.CONTEST;
-                data = new WeeklyEventsData(contest, null);
-                dao.create(data);
-            }
-            return data;
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors du chargement de WeeklyEventData", e);
+    public WeeklyEventsData load() throws SQLException {
+        WeeklyEventsData data = weeklyEventsDataTable.loadList().getFirst();
+
+        if (data == null) {
+            WeeklyEvent contest = OMCRegistry.WEEKLY_EVENTS.CONTEST;
+            data = new WeeklyEventsData(contest, null);
+            weeklyEventsDataTable.create(data);
         }
+        return data;
     }
 
     /**
      * Sauvegarde les données en BDD.
      */
-    public static void save(WeeklyEventsData data) {
+    public void save(WeeklyEventsData data) {
         try {
-            dao.createOrUpdate(data);
+            weeklyEventsDataTable.createOrUpdate(data);
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la sauvegarde de WeeklyEventData", e);
         }
@@ -80,14 +79,14 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
     /**
      * Retourne l'event en cours.
      */
-    public static WeeklyEvent getCurrentEvent() {
+    public WeeklyEvent getCurrentEvent() {
         return OMCRegistry.WEEKLY_EVENTS.get(data.getCurrentEvent()).orElse(null);
     }
 
     /**
      * Retourne la phase en cours selon l'index en BDD, ou null si invalide.
      */
-    public static WeeklyEventPhase getCurrentPhase() {
+    public WeeklyEventPhase getCurrentPhase() {
         List<WeeklyEventPhase> phases = getCurrentEvent().getPhases();
         String phaseId = data.getCurrentPhase();
         return phases.stream()
@@ -100,7 +99,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
      * Retourne true si un event est actuellement actif (flag BDD).
      * Source de vérité : le flag active, pas le temps.
      */
-    public static boolean isEventActive() {
+    public boolean isEventActive() {
         return data.isActive();
     }
 
@@ -110,7 +109,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
      * Guard intégré : si findNextPhase() a changé entre le schedule et l'exécution
      * (suite à un force), on se recalibre sans exécuter la mauvaise action.
      */
-    public static void scheduleNextPhase() {
+    public void scheduleNextPhase() {
         if (currentTask != null) {
             currentTask.cancel();
             currentTask = null;
@@ -158,7 +157,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
      * Exécute l'action de la phase, marque l'event comme actif,
      * avance l'état, puis schedule la suivante.
      */
-    private static void runPhase(WeeklyEvent event, WeeklyEventPhase phase) {
+    private void runPhase(WeeklyEvent event, WeeklyEventPhase phase) {
         data.setCurrentEvent(event.getId());
         data.setCurrentPhase(phase.getId());
         data.setActive(true);
@@ -182,7 +181,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
      * Met à jour la BDD, exécute l'action, gère le cas dernière phase,
      * puis reschedule proprement.
      */
-    public static void forceEventAtPhase(WeeklyEvent event, WeeklyEventPhase phase) {
+    public void forceEventAtPhase(WeeklyEvent event, WeeklyEventPhase phase) {
         if (event == null || phase == null || !event.hasPhase(phase)) {
             OMCLogger.error("[WeeklyEvents] Event ou phase non trouvé");
             return;
@@ -202,7 +201,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
     /**
      * Passe à l'event suivant, réinitialise la phase à 0 et marque l'event comme inactif.
      */
-    private static void advanceToNextEvent() {
+    private void advanceToNextEvent() {
         WeeklyEvent current = getCurrentEvent();
         WeeklyEvent next = OMCRegistry.WEEKLY_EVENTS.getNextEvent(current)
                 .orElseThrow(() -> new IllegalStateException("Aucun event enregistré"));
@@ -220,7 +219,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
      * Cherche la prochaine phase à venir en parcourant tous les events cycliquement.
      * Commence à la phase courante de l'event courant, puis les events suivants depuis 0.
      */
-    private static WeeklyEventPhase findNextPhase() {
+    private WeeklyEventPhase findNextPhase() {
         WeeklyEvent event = getCurrentEvent();
         WeeklyEventPhase current = getCurrentPhase();
 

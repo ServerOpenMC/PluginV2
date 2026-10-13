@@ -30,6 +30,12 @@ import java.util.UUID;
 
 public class PlayerEnteredBiome implements Listener {
 
+    private final DreamManager dreamManager;
+
+    public PlayerEnteredBiome(DreamManager manager) {
+        this.dreamManager = manager;
+    }
+
     private static final List<Biome> BIOME_ORDER = List.of(
             DreamBiome.SCULK_PLAINS.getBiome(),
             DreamBiome.SOUL_FOREST.getBiome(),
@@ -60,7 +66,7 @@ public class PlayerEnteredBiome implements Listener {
         
         Bukkit.getServer().getPluginManager().callEvent(new PlayerEnterBiomeEvent(player, biome));
         
-        DBDreamPlayer cacheData = DreamManager.getCacheDreamPlayer(player);
+        DBDreamPlayer cacheData = dreamManager.getCacheDreamPlayer(player);
         int unlocked = cacheData == null ? 0 : cacheData.getProgressionOrb();
 
         if (index <= unlocked) {

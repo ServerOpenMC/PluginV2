@@ -5,18 +5,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.animations.commands.DebugAnimationCommand;
 import fr.openmc.core.features.animations.listeners.EmoteListener;
 import fr.openmc.core.features.animations.listeners.PlayerFinishJoiningListener;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -29,14 +26,13 @@ import java.util.Map;
 import java.util.Set;
 
 @Credit(developers = {"iambibi_", "gab400"}, graphist = {"Tfloa"})
-public class AnimationsManager extends Feature implements NotLoadInUnitTest, LoadIfEnable<ItemsAdderHook>, HasListeners, HasCommands {
+public class AnimationsManager extends Feature implements HasListeners, HasCommands {
 
     @Override
-    public void init() {
+    public void onEnable() {
         OMCPlugin plugin = OMCPlugin.getInstance();
 
         saveAllAnimation(plugin);
-
         loadAllAnimations(plugin);
     }
 
@@ -53,11 +49,11 @@ public class AnimationsManager extends Feature implements NotLoadInUnitTest, Loa
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         // nothing to save
     }
 
-    public static JsonObject loadAnimation(OMCPlugin plugin, String resourcePath) {
+    private JsonObject loadAnimation(OMCPlugin plugin, String resourcePath) {
         try (InputStream inputStream = plugin.getResource(resourcePath)) {
             if (inputStream == null) {
                 OMCLogger.error("Animation resource not found: {}", resourcePath);
@@ -74,7 +70,7 @@ public class AnimationsManager extends Feature implements NotLoadInUnitTest, Loa
         }
     }
 
-    public static void loadAllAnimations(OMCPlugin plugin) {
+    private void loadAllAnimations(OMCPlugin plugin) {
         for (Animation animation : Animation.values()) {
             String animationName = animation.getNameAnimation();
 
@@ -109,7 +105,7 @@ public class AnimationsManager extends Feature implements NotLoadInUnitTest, Loa
         }
     }
 
-    public static void saveAllAnimation(OMCPlugin plugin) {
+    private void saveAllAnimation(OMCPlugin plugin) {
         for (Animation animation : Animation.values()) {
             String animationJsonName = animation.getNameAnimation();
 
@@ -118,7 +114,7 @@ public class AnimationsManager extends Feature implements NotLoadInUnitTest, Loa
         }
     }
 
-    public static void saveDefaultAnimation(OMCPlugin plugin, String resourcePath) {
+    private void saveDefaultAnimation(OMCPlugin plugin, String resourcePath) {
         File folder = new File(plugin.getDataFolder(), "data/animations");
         if (!folder.exists()) {
             folder.mkdirs();

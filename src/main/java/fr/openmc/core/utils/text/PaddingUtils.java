@@ -1,6 +1,7 @@
 package fr.openmc.core.utils.text;
 
 public class PaddingUtils {
+    private PaddingUtils() {}
 
     public static String format(String str, int length) {
         int paddingTotal = length - str.length();

@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
@@ -27,6 +28,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class ObeseCropsInfoMenu extends PaginatedMenu {
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private final GoldenHarvestManager goldenHarvestManager = OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.feature();
 
     private final List<ObeseCropInfo> obeseCropInfos;
 
@@ -66,8 +69,8 @@ public class ObeseCropsInfoMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        boolean isActive = DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
+        boolean isActive = dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
 
         for (ObeseCropInfo obeseCropInfo : obeseCropInfos) {
             items.add(new ItemMenuBuilder(
@@ -130,7 +133,7 @@ public class ObeseCropsInfoMenu extends PaginatedMenu {
     private List<ObeseCropInfo> generateObeseCropInfos() {
         Map<CustomItem, ObeseCropInfoBuilder> obeseCrops = new LinkedHashMap<>();
 
-        GoldenHarvestManager.getObeseCropsMapping().forEach((source, results) -> {
+        goldenHarvestManager.getObeseCropsMapping().forEach((source, results) -> {
             List<Map.Entry<Double, CustomItem>> sortedResults = results.entrySet()
                     .stream()
                     .sorted(Map.Entry.comparingByKey())

@@ -31,16 +31,14 @@ public class EquipableItemListener implements Listener {
 
         ItemStack oldPiece = event.getOldArmorPiece();
 
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            recalc(player, oldPiece);
-        }, 1L);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+            recalc(player, oldPiece), 1L);
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            recalc(event.getPlayer(), null);
-        }, 20L);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+            recalc(event.getPlayer(), null), 20L);
     }
 
     @EventHandler
@@ -70,9 +68,8 @@ public class EquipableItemListener implements Listener {
 
         ItemStack oldPiece = null;
 
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            recalc(player, oldPiece);
-        }, 20L);
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                recalc(player, oldPiece), 20L);
     }
 
     private void recalc(Player player, ItemStack oldPiece) {

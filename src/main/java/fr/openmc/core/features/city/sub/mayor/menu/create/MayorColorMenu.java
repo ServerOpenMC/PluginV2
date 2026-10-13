@@ -5,8 +5,8 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
@@ -34,6 +34,23 @@ public class MayorColorMenu extends Menu {
     private final Perks perk2;
     private final Perks perk3;
     private final MenuType menuType;
+
+    private static final Map<NamedTextColor, Integer> COLOR_SLOT = new HashMap<>();
+    static {
+        COLOR_SLOT.put(NamedTextColor.RED, 12);
+        COLOR_SLOT.put(NamedTextColor.GOLD, 13);
+        COLOR_SLOT.put(NamedTextColor.YELLOW, 14);
+        COLOR_SLOT.put(NamedTextColor.GREEN, 21);
+        COLOR_SLOT.put(NamedTextColor.DARK_GREEN, 22);
+        COLOR_SLOT.put(NamedTextColor.BLUE, 23);
+        COLOR_SLOT.put(NamedTextColor.AQUA, 30);
+        COLOR_SLOT.put(NamedTextColor.DARK_BLUE, 31);
+        COLOR_SLOT.put(NamedTextColor.DARK_PURPLE, 32);
+        COLOR_SLOT.put(NamedTextColor.LIGHT_PURPLE, 39);
+        COLOR_SLOT.put(NamedTextColor.WHITE, 40);
+        COLOR_SLOT.put(NamedTextColor.GRAY, 41);
+        COLOR_SLOT.put(NamedTextColor.DARK_GRAY, 49);
+    }
 
     public MayorColorMenu(Player owner, Perks perk1, Perks perk2, Perks perk3, String type, MenuType menuType) {
         super(owner);
@@ -73,25 +90,11 @@ public class MayorColorMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
+        MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        Map<NamedTextColor, Integer> colorSlot = new HashMap<>();
-        {
-            colorSlot.put(NamedTextColor.RED, 12);
-            colorSlot.put(NamedTextColor.GOLD, 13);
-            colorSlot.put(NamedTextColor.YELLOW, 14);
-            colorSlot.put(NamedTextColor.GREEN, 21);
-            colorSlot.put(NamedTextColor.DARK_GREEN, 22);
-            colorSlot.put(NamedTextColor.BLUE, 23);
-            colorSlot.put(NamedTextColor.AQUA, 30);
-            colorSlot.put(NamedTextColor.DARK_BLUE, 31);
-            colorSlot.put(NamedTextColor.DARK_PURPLE, 32);
-            colorSlot.put(NamedTextColor.LIGHT_PURPLE, 39);
-            colorSlot.put(NamedTextColor.WHITE, 40);
-            colorSlot.put(NamedTextColor.GRAY, 41);
-            colorSlot.put(NamedTextColor.DARK_GRAY, 49);
-        }
-        colorSlot.forEach((color, slot) -> {
+        City city = City.ofPlayer(player);
+
+        COLOR_SLOT.forEach((color, slot) -> {
             List<Component> loreColor = TranslationManager.translationLore(
                     "feature.city.mayor.menu.color.option.lore",
                     ColorUtils.getNameFromColor(color).color(color)
@@ -132,7 +135,7 @@ public class MayorColorMenu extends Menu {
                                 try {
                                     if (menuType == MenuType.CANDIDATE) {
                                         MayorCandidate candidate = new MayorCandidate(city.getUniqueId(), player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
-                                        MayorManager.createCandidate(city, candidate);
+                                        mayorManager.createCandidate(city, candidate);
 
                                         for (UUID uuid : city.getMembers()) {
                                             OfflinePlayer playerMember = CacheOfflinePlayer.getOfflinePlayer(uuid);
@@ -146,7 +149,7 @@ public class MayorColorMenu extends Menu {
                                             }
                                         }
                                     } else { // donc si c MenuType.OWNER
-                                        MayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, city.getElectionType());
+                                        mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, city.getElectionType());
                                     }
                                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.color.candidate.success"), Prefix.MAYOR, MessageType.ERROR, false);
                                     player.closeInventory();
@@ -195,7 +198,7 @@ public class MayorColorMenu extends Menu {
                         );
                         menu.open();
                     } else {
-                        MayorCandidate mayorCandidate = MayorManager.getCandidate(player.getUniqueId());
+                        MayorCandidate mayorCandidate = mayorManager.getCandidate(player.getUniqueId());
                         NamedTextColor thisColor = mayorCandidate.getCandidateColor();
                         Component fromColor = TranslationManager.translation("feature.city.mayor.label.color")
                                 .decoration(TextDecoration.ITALIC, false).color(thisColor);

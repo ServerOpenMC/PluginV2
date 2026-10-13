@@ -1,7 +1,8 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
 import  fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.dimopener.DimensionOpenerManager;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.DreamUtils;
@@ -23,6 +24,16 @@ import java.io.IOException;
 
 public class PlayerChangeWorldListener implements Listener {
 
+    private final DreamManager dreamManager;
+    private final PlayerCloneNpc playerCloneNpc;
+    private final DimensionOpenerManager dimensionOpenerManager;
+
+    public PlayerChangeWorldListener(DreamManager manager) {
+        this.dreamManager = manager;
+        this.playerCloneNpc = OMCRegistry.DREAM_FEATURES.PLAYER_CLONE_NPC;
+        this.dimensionOpenerManager = OMCRegistry.FEATURES.DIMENSION_OPENER.get();
+    }
+
     @EventHandler
     public void onDreamEntrered(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
@@ -30,15 +41,15 @@ public class PlayerChangeWorldListener implements Listener {
         if (!DreamUtils.isDreamWorld(event.getTo())) return;
         if (DreamUtils.isDreamWorld(event.getFrom())) return;
 
-        if (!DimensionAccessListener.checkAccess(player, DreamDimensionManager.DIMENSION_NAME, event)) return;
+        if (!dimensionOpenerManager.checkAccess(player, DreamDimensionManager.DIMENSION_NAME, event)) return;
 
         try {
-            DreamManager.addDreamPlayer(player, event.getFrom());
+            dreamManager.addDreamPlayer(player, event.getFrom());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+        DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
         if (dreamPlayer == null) return;
 
         player.setFoodLevel(20);
@@ -51,8 +62,8 @@ public class PlayerChangeWorldListener implements Listener {
 
         // * SFX
         sendSFX(player);
-        if (PlayerCloneNpc.getCloneNpc(player) == null)
-            PlayerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SITTING);
+        if (playerCloneNpc.getCloneNpc(player) == null)
+            playerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SITTING);
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
                 sendSFX(player), 20);
     }
@@ -64,11 +75,11 @@ public class PlayerChangeWorldListener implements Listener {
         if (!DreamUtils.isDreamWorld(event.getFrom())) return;
         if (DreamUtils.isDreamWorld(event.getTo())) return;
 
-        DreamManager.removeDreamPlayer(player, event.getFrom());
+        dreamManager.removeDreamPlayer(player, event.getFrom());
 
         // * SFX
         sendSFX(player);
-        PlayerCloneNpc.deleteCloneNpc(player);
+        playerCloneNpc.deleteCloneNpc(player);
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
             sendSFX(player), 20);
     }

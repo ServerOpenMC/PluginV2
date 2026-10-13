@@ -35,11 +35,11 @@ public class RepulseEffectListener implements Listener {
 
     @EventHandler
     public void onFallDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-            if (noFallPlayers.contains(player.getUniqueId())) {
-                event.setCancelled(true);
-                noFallPlayers.remove(player.getUniqueId());
-            }
+        if (event.getEntity() instanceof Player player
+                && event.getCause() == EntityDamageEvent.DamageCause.FALL
+                && noFallPlayers.contains(player.getUniqueId())) {
+            event.setCancelled(true);
+            noFallPlayers.remove(player.getUniqueId());
         }
     }
 

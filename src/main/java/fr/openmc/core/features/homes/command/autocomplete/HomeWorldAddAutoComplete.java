@@ -1,5 +1,6 @@
 package fr.openmc.core.features.homes.command.autocomplete;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import org.bukkit.Bukkit;
 import org.bukkit.generator.WorldInfo;
@@ -12,12 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeWorldAddAutoComplete implements SuggestionProvider<BukkitCommandActor> {
+    private final DisabledWorldHome disabledWorldHome = OMCRegistry.HOME_FEATURES.DISABLED_WORLD_HOME;
 
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
         List<String> suggestions = new ArrayList<>(
                 Bukkit.getWorlds().stream().map(WorldInfo::getName).toList());
-        suggestions.removeAll(DisabledWorldHome.getDisabledWorlds());
+        suggestions.removeAll(disabledWorldHome.getDisabledWorlds());
         return suggestions;
     }
 }

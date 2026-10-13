@@ -1,10 +1,10 @@
 package fr.openmc.core.features.homes.command;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
-import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -21,6 +21,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class RelocateHomeCommand {
+    private final DisabledWorldHome disabledWorldHome = OMCRegistry.HOME_FEATURES.DISABLED_WORLD_HOME;
 
     @Command("relocatehome")
     @Description("Déplace votre home")
@@ -32,7 +33,7 @@ public class RelocateHomeCommand {
 
         Location location = player.getLocation();
 
-        if (DisabledWorldHome.isDisabledWorld(location.getWorld())) {
+        if (disabledWorldHome.isDisabledWorld(location.getWorld())) {
             player.message().sendError(TranslationManager.translation("feature.homes.command.disabled_world"), Prefix.HOME, true);
             return;
         }
@@ -73,7 +74,7 @@ public class RelocateHomeCommand {
 
         List<Home> homes = player.home().getHomes();
 
-        if (WorldGuardHook.isRegionConflict(location)) {
+        if (OMCRegistry.HOOKS.WORLD_GUARD.isRegionConflict(location)) {
             player.message().sendError(TranslationManager.translation("feature.homes.command.relocate.protected_region"), Prefix.HOME, true);
             return;
         }

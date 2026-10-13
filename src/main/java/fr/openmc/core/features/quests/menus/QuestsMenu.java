@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestStep;
@@ -22,7 +23,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -32,8 +32,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class QuestsMenu extends Menu {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final QuestsManager questsManager = OMCRegistry.FEATURES.QUESTS.get();
+
     private int currentPage;
-    private static String TITLE;
     private final int totalPages;
     private OMCPlayer target;
     private final Map<Integer, Integer> slotToQuestIndex = new HashMap<>();
@@ -41,14 +43,14 @@ public class QuestsMenu extends Menu {
     public QuestsMenu(OMCPlayer player, int currentPage) {
         super(player);
         this.currentPage = currentPage;
-        this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
+        this.totalPages = (int) Math.ceil(questsManager.getQuests().size() / 9.0F);
         this.target = player;
     }
 
     public QuestsMenu(OMCPlayer player, OMCPlayer target, int currentPage) {
         super(player);
         this.currentPage = currentPage;
-        this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
+        this.totalPages = (int) Math.ceil(questsManager.getQuests().size() / 9.0F);
         this.target = target;
     }
 
@@ -85,8 +87,8 @@ public class QuestsMenu extends Menu {
             this.refresh();
         } else if (slot >= 9 && slot <= 17) {
             Integer questIndex = this.slotToQuestIndex.get(slot);
-            if (questIndex != null && questIndex < QuestsManager.getAllQuests().size()) {
-                Quest quest = QuestsManager.getAllQuests().get(questIndex);
+            if (questIndex != null && questIndex < questsManager.getAllQuests().size()) {
+                Quest quest = questsManager.getAllQuests().get(questIndex);
                 UUID playerUUID = this.target.getUniqueId();
 
                 Set<Integer> pendingQuestIndexes = quest.getPendingRewardTiers(playerUUID);
@@ -107,11 +109,11 @@ public class QuestsMenu extends Menu {
         slotToQuestIndex.clear();
 
         int startIndex = this.currentPage * 9;
-        int endIndex = Math.min(startIndex + 9, QuestsManager.getAllQuests().size());
+        int endIndex = Math.min(startIndex + 9, questsManager.getAllQuests().size());
         int slotIndex = 9;
 
         for(int i = startIndex; i < endIndex; ++i) {
-            Quest quest = QuestsManager.getAllQuests().get(i);
+            Quest quest = questsManager.getAllQuests().get(i);
             ItemStack item = this.createQuestItem(quest);
             content.put(slotIndex, new ItemMenuBuilder(this, item));
             this.slotToQuestIndex.put(slotIndex, i);
@@ -215,10 +217,10 @@ public class QuestsMenu extends Menu {
         meta.displayName(displayName);
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
-        quest.getDescription(playerUUID).forEach(description -> {
+        quest.getDescription(playerUUID).forEach(description ->
             lore.add(description.color(NamedTextColor.GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-        });
+                    .decoration(TextDecoration.ITALIC, false))
+        );
         lore.add(bar);
 
         if (hasPendingRewards) {
@@ -245,11 +247,11 @@ public class QuestsMenu extends Menu {
                                     .append(Component.space())
                                     .append(Component.text("x" + itemReward.getAmount(), NamedTextColor.GRAY))
                                     .decoration(TextDecoration.ITALIC, false));
-                        } else if (reward instanceof QuestMoneyReward(double amount)) {
+                        } else if (reward instanceof QuestMoneyReward moneyReward) {
                             lore.add(Component.text("    - ", NamedTextColor.DARK_GRAY)
-                                    .append(Component.text(EconomyManager.getFormattedSimplifiedNumber(amount), NamedTextColor.GOLD))
+                                    .append(Component.text(EconomyUtils.getFormattedSimplifiedNumber(moneyReward.getAmount()), NamedTextColor.GOLD))
                                     .append(Component.space())
-                                    .append(Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.WHITE))
+                                    .append(Component.text(economyManager.getEconomyIcon(), NamedTextColor.WHITE))
                                     .decoration(TextDecoration.ITALIC, false));
                         }
                     }
@@ -271,11 +273,11 @@ public class QuestsMenu extends Menu {
                             .append(Component.space())
                             .append(Component.text("x" + itemReward.getAmount(), NamedTextColor.GRAY))
                             .decoration(TextDecoration.ITALIC, false));
-                } else if (reward instanceof QuestMoneyReward(double amount)) {
+                } else if (reward instanceof QuestMoneyReward moneyReward) {
                     lore.add(Component.text("  - ", NamedTextColor.DARK_GRAY)
-                            .append(Component.text(EconomyManager.getFormattedSimplifiedNumber(amount), NamedTextColor.GOLD))
+                            .append(Component.text(EconomyUtils.getFormattedSimplifiedNumber(moneyReward.getAmount()), NamedTextColor.GOLD))
                             .append(Component.space())
-                            .append(Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.WHITE))
+                            .append(Component.text(economyManager.getEconomyIcon(), NamedTextColor.WHITE))
                             .decoration(TextDecoration.ITALIC, false));
                 }
             }
@@ -289,7 +291,7 @@ public class QuestsMenu extends Menu {
         } else if (currentTier != null) {
             int progressPercent = (int) Math.min(100.0F, Math.floor((double) progress / target * 100.0F));
             int barLength = 26;
-            int filledLength = (int)((double)barLength * ((double)progress / (double)target));
+            int filledLength = (int)(barLength * ((double)progress / (double)target));
             Component progressBar = Component.text("[", NamedTextColor.DARK_GRAY)
                     .decoration(TextDecoration.ITALIC, false);
 
@@ -316,11 +318,11 @@ public class QuestsMenu extends Menu {
                     .append(TranslationManager.translation("feature.quests.menu.current_objective")
                             .color(NamedTextColor.YELLOW))
                     .decoration(TextDecoration.ITALIC, false));
-            quest.getDescription(playerUUID).forEach(description -> {
+            quest.getDescription(playerUUID).forEach(description ->
                 lore.add(Component.text("  ", NamedTextColor.WHITE)
                         .append(description.color(NamedTextColor.WHITE))
-                        .decoration(TextDecoration.ITALIC, false));
-            });
+                        .decoration(TextDecoration.ITALIC, false))
+            );
             lore.addAll(quest.getAdditionalLore());
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
                 lore.add(Component.empty());
@@ -350,11 +352,11 @@ public class QuestsMenu extends Menu {
                         .append(TranslationManager.translation("feature.quests.menu.next_tier.title")
                                 .color(NamedTextColor.DARK_GRAY))
                         .decoration(TextDecoration.ITALIC, false));
-                quest.getNextTierDescription(playerUUID).forEach(description -> {
+                quest.getNextTierDescription(playerUUID).forEach(description ->
                     lore.add(Component.text("  ", NamedTextColor.DARK_GRAY)
                             .append(description.color(NamedTextColor.DARK_GRAY))
-                            .decoration(TextDecoration.ITALIC, false));
-                });
+                            .decoration(TextDecoration.ITALIC, false))
+                );
 
                 if (nextTier.getSteps() != null && !nextTier.getSteps().isEmpty()) {
                     for (int i = 0; i < nextTier.getSteps().size(); i++) {

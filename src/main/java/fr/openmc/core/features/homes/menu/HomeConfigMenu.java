@@ -1,13 +1,12 @@
 package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
-import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
@@ -65,7 +64,7 @@ public class HomeConfigMenu extends Menu {
         content.put(22, new ItemMenuBuilder(this, Material.NAME_TAG, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.homes.config.rename.name"));
             itemMeta.lore(TranslationManager.translationLore("feature.homes.config.rename.lore"));
-        }).setOnClick(e -> DialogInput.send(getOwner(), TranslationManager.translation("feature.homes.config.rename.prompt"), MAX_LENGTH_HOME_NAME, input -> {
+        }).setOnClick(_ -> player.inputs().sendStringDialogInput(TranslationManager.translation("feature.homes.config.rename.prompt"), MAX_LENGTH_HOME_NAME, input -> {
             if (input == null) return;
 
             if (!HomeUtil.isValidHomeName(input)) return;

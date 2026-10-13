@@ -7,7 +7,6 @@ import fr.openmc.core.features.milestones.dialogs.MilestoneDialog;
 import fr.openmc.core.features.quests.rewards.QuestReward;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 

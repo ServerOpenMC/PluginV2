@@ -7,7 +7,6 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 /**
  * Class representing a money reward for a quest.
@@ -22,15 +21,13 @@ public record QuestTextReward(Component text, Prefix prefix, MessageType message
      */
     @Override
     public void giveReward(OMCPlayer player) {
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
             MessagesManager.sendMessage(
                     player,
                     text,
                     prefix,
                     messageType,
                     false
-            );
-        }, 1L);
-
+            ), 1L);
     }
 }

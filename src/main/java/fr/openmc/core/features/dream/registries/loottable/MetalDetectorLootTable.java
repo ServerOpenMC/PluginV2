@@ -1,7 +1,6 @@
 package fr.openmc.core.features.dream.registries.loottable;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
@@ -25,55 +24,55 @@ public class MetalDetectorLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
                 new ItemLoot(
-                        DreamItemRegistry.CHIPS_DIHYDROGENE,
+                        OMCRegistry.DREAM_ITEM.CHIPS_DIHYDROGENE,
                         0.4,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CHIPS_JIMMY,
+                        OMCRegistry.DREAM_ITEM.CHIPS_JIMMY,
                         0.2,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CHIPS_TERRE,
+                        OMCRegistry.DREAM_ITEM.CHIPS_TERRE,
                         0.4,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CHIPS_SANS_PLOMB,
+                        OMCRegistry.DREAM_ITEM.CHIPS_SANS_PLOMB,
                         0.4,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CHIPS_NATURE,
+                        OMCRegistry.DREAM_ITEM.CHIPS_NATURE,
                         0.4,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CHIPS_AYWEN,
+                        OMCRegistry.DREAM_ITEM.CHIPS_AYWEN,
                         0.1,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CHIPS_LAIT_2_MARGOUTA,
+                        OMCRegistry.DREAM_ITEM.CHIPS_LAIT_2_MARGOUTA,
                         0.005,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.SOMNIFERE,
+                        OMCRegistry.DREAM_ITEM.SOMNIFERE,
                         0.4,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.MUD_ORB,
+                        OMCRegistry.DREAM_ITEM.MUD_ORB,
                         0.05,
                         1,
                         1
@@ -85,7 +84,7 @@ public class MetalDetectorLootTable extends CustomLootTable {
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CRYSTALIZED_PICKAXE,
+                        OMCRegistry.DREAM_ITEM.CRYSTALIZED_PICKAXE,
                         0.1,
                         1,
                         1

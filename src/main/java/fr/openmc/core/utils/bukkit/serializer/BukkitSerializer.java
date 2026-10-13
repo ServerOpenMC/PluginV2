@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.List;
 
 public class BukkitSerializer {
+    private BukkitSerializer() {}
+
     public static byte[] serializeItemStacks(ItemStack[] inv) throws IOException {
         return inv != null ? ItemStack.serializeItemsAsBytes(inv) : new byte[0];
     }

@@ -2,6 +2,7 @@ package fr.openmc.core.features.dream.registries.enchantements;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.models.registry.DreamEnchantment;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import io.papermc.paper.registry.tag.TagKey;
@@ -16,7 +17,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.scheduler.BukkitRunnable;
-import fr.openmc.core.utils.text.messages.TranslationManager;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DreamSleeper extends DreamEnchantment implements Listener {

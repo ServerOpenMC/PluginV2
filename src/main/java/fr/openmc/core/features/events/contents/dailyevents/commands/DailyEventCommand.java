@@ -15,31 +15,32 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command({"events", "dailyevents"})
 @Description("Ouvre l'interface des événements")
 public class DailyEventCommand {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
     @Subcommand("forceStart")
     @CommandPermission("omc.admins.commands.dailyevent.forcestart")
-    public static void forceStartCommand(Player player,
+    public void forceStartCommand(Player player,
                                          @SuggestWith(DailyEventAutoComplete.class) String dailyEvent) {
-        if (DailyEventsManager.outgoingEvent != null) {
+        if (dailyEventsManager.getOutgoingEvent() != null) {
             // * On arrete l'evenement en cours
-            DailyEventsManager.endEventTask.cancel();
-            DailyEventsManager.endEventTask = null;
-            DailyEventsManager.outgoingEvent.getDailyEvent().end();
+            dailyEventsManager.getEndEventTask().cancel();
+            dailyEventsManager.setEndEventTask(null);
+            dailyEventsManager.getOutgoingEvent().getDailyEvent().end();
         }
 
         // * on lance le evenement rentré en param
-        DailyEventsManager.outgoingEvent = new ScheduleDailyEvent(
-                OMCRegistry.DAILY_EVENTS.getOrThrow(dailyEvent), DateUtils.getLocalDateTime());
-        DailyEventsManager.outgoingEvent.getDailyEvent().start();
+        dailyEventsManager.setOutgoingEvent(new ScheduleDailyEvent(
+                OMCRegistry.DAILY_EVENTS.getOrThrow(dailyEvent), DateUtils.getLocalDateTime()));
+        dailyEventsManager.getOutgoingEvent().getDailyEvent().start();
     }
 
     @Subcommand("forceEnd")
     @CommandPermission("omc.admins.commands.dailyevent.forceend")
-    public static void forceEndCommand(Player player) {
-        if (DailyEventsManager.outgoingEvent != null) {
+    public void forceEndCommand(Player player) {
+        if (dailyEventsManager.getOutgoingEvent() != null) {
             // * On arrete l'evenement en cours
-            DailyEventsManager.endEventTask.cancel();
-            DailyEventsManager.endEventTask = null;
-            DailyEventsManager.outgoingEvent.getDailyEvent().end();
+            dailyEventsManager.getEndEventTask().cancel();
+            dailyEventsManager.setEndEventTask(null);
+            dailyEventsManager.getOutgoingEvent().getDailyEvent().end();
         }
     }
 }

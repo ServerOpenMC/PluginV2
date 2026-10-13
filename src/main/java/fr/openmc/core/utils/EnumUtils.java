@@ -3,6 +3,8 @@ package fr.openmc.core.utils;
 import java.util.Locale;
 
 public class EnumUtils {
+    private EnumUtils() {}
+
     /**
      * Matches a string key to an enum constant.
      *
@@ -28,7 +30,7 @@ public class EnumUtils {
     public static <T extends Enum<T>> T match(String key, Class<T> enumClass, T defaultValue) {
         try {
             return Enum.valueOf(enumClass, key.toUpperCase(Locale.ROOT));
-        } catch (NullPointerException | IllegalArgumentException e) {
+        } catch (NullPointerException | IllegalArgumentException _) {
             return defaultValue;
         }
     }

@@ -1,10 +1,10 @@
 package fr.openmc.core.registry.items.options;
 
-import org.bukkit.entity.Player;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public interface UsableItem {
-    default void onRightClick(Player player, PlayerInteractEvent event) {}
-    default void onLeftClick(Player player, PlayerInteractEvent event) {}
-    default void onSneakClick(Player player, PlayerInteractEvent event) {}
+    default void onRightClick(OMCPlayer player, PlayerInteractEvent event) {}
+    default void onLeftClick(OMCPlayer player, PlayerInteractEvent event) {}
+    default void onSneakClick(OMCPlayer player, PlayerInteractEvent event) {}
 }

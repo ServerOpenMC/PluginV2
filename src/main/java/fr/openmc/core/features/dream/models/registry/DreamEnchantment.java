@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 public abstract class DreamEnchantment extends CustomEnchantment {
+    @Override
     public DreamItem getEnchantedBookItem(int level) {
         return new DreamItem(new DreamItemMeta(getKey().asMinimalString() + level,
                 Component.text(getKey().asString() + " " + level),

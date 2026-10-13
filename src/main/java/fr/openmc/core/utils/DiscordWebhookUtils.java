@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class DiscordWebhookUtils {
+    private DiscordWebhookUtils() {}
 
     /**
      * Envoie un message vers un webhook Discord via POST JSON.

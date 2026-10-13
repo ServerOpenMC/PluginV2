@@ -6,7 +6,6 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -38,8 +37,7 @@ public class MineAyweniteQuest extends Quest implements Listener {
         if (tool.containsEnchantment(Enchantment.SILK_TOUCH))
             return; // Ne pas compter si le joueur utilise Silk Touch
 
-        if (!ItemsAdderHook.isEnable())
-            return;
+        if (!OMCRegistry.HOOKS.ITEMS_ADDER.isEnable()) return;
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());
         if (customBlock != null && customBlock.getNamespacedID() != null &&

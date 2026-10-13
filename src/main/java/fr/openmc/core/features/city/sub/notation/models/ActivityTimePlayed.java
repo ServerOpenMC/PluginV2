@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 public class ActivityTimePlayed {
     @DatabaseField(id = true, columnName = "player_uuid")
-    private String playerUUID;
+    private UUID playerUUID;
     @DatabaseField
     private long timeOnWeekStart;
 
@@ -20,8 +20,8 @@ public class ActivityTimePlayed {
         // required for ORMLite
     }
 
-    public ActivityTimePlayed(UUID uuid, long timeOnWeekStart) {
-        this.playerUUID = uuid.toString();
+    public ActivityTimePlayed(UUID playerUUID, long timeOnWeekStart) {
+        this.playerUUID = playerUUID;
         this.timeOnWeekStart = timeOnWeekStart;
     }
 }

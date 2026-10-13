@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest;
 
-import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
@@ -44,7 +44,7 @@ public enum ContestPhase {
 
         @Override
         public Runnable runAction() {
-            return ContestManager::initPhase1;
+            return OMCRegistry.WEEKLY_EVENTS.CONTEST.feature()::initPhase1;
         }
     }),
     TRADE_PHASE(new WeeklyEventPhase() {
@@ -80,7 +80,7 @@ public enum ContestPhase {
 
         @Override
         public Runnable runAction() {
-            return ContestManager::initPhase2;
+            return OMCRegistry.WEEKLY_EVENTS.CONTEST.feature()::initPhase2;
         }
     }),
     END_PHASE(new WeeklyEventPhase() {
@@ -116,12 +116,13 @@ public enum ContestPhase {
 
         @Override
         public Runnable runAction() {
-            return ContestManager::initPhase3;
+            return OMCRegistry.WEEKLY_EVENTS.CONTEST.feature()::initPhase3;
         }
     })
     ;
 
     private final WeeklyEventPhase phase;
+
     ContestPhase(WeeklyEventPhase phase) {
         this.phase = phase;
     }

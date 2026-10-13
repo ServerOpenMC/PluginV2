@@ -1,6 +1,7 @@
 package fr.openmc.core.features.dream.displays;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.dream.DreamManager;
@@ -17,7 +18,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,18 +33,23 @@ import static net.kyori.adventure.text.Component.text;
  * <p>Cette classe met à jour le Scoreboard d'un joueur en fonction du biome associé à la Dimension des Rêves.</p>
  */
 public class DreamScoreboard extends BaseScoreboard {
+    private final DreamManager dreamManager;
+
+    public DreamScoreboard(DreamManager manager) {
+        this.dreamManager = manager;
+    }
 
     @Override
-    protected void updateTitle(Player player, SternalBoard board) {
-        board.updateTitle(canShowLogo
+    protected void updateTitle(OMCPlayer player, SternalBoard board) {
+        board.updateTitle(canShowLogo()
                 ? Component.text(FontImageWrapper.replaceFontImages(":dream_openmc:"))
                 : Component.text("OPENMC", NamedTextColor.DARK_BLUE));
     }
 
     @Override
-    public void update(Player player, SternalBoard board) {
+    public void update(OMCPlayer player, SternalBoard board) {
         DreamBiome dreamBiome = DreamBiome.getDreamBiome(player);
-        DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+        DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
 
         List<Component> lines = new ArrayList<>();
 
@@ -98,7 +103,7 @@ public class DreamScoreboard extends BaseScoreboard {
     }
 
     @Override
-    public boolean shouldDisplay(Player player) {
+    public boolean shouldDisplay(OMCPlayer player) {
         return DreamUtils.isInDreamWorld(player);
     }
 

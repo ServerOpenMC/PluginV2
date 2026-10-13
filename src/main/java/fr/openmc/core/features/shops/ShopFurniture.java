@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class ShopFurniture {
+	private ShopFurniture() {}
 	
 	/**
 	 * Places a specific type of shop furniture at the given block location using ItemsAdder API, oriented

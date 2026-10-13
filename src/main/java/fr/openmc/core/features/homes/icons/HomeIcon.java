@@ -51,7 +51,7 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
             case CUSTOM:
                 try {
                     return OMCRegistry.CUSTOM_ITEMS.getOrThrow(materialOrCustomId).getBest();
-                } catch (Exception e) {
+                } catch (Exception _) {
                     return new ItemStack(Material.GRASS_BLOCK);
                 }
             case VANILLA:

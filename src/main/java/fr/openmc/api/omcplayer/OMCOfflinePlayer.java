@@ -1,6 +1,6 @@
 package fr.openmc.api.omcplayer;
 
-import fr.openmc.api.omcplayer.sub.OMCPlayerHome;
+import fr.openmc.api.omcplayer.sub.*;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
@@ -33,5 +33,13 @@ public interface OMCOfflinePlayer extends OfflinePlayer {
 
     Component getNameWithHead();
 
+    OMCPlayerMessage message();
+    OMCPlayerSettings settings();
     OMCPlayerHome home();
+    OMCPlayerEconomy economy();
+    OMCPlayerCity city();
+    OMCPlayerCooldown cooldown();
+    OMCPlayerMailbox mailbox();
+    OMCPlayerBits bits();
+    OMCPlayerFriends friends();
 }

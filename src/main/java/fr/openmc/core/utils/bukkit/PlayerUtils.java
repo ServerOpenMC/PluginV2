@@ -1,9 +1,8 @@
 package fr.openmc.core.utils.bukkit;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.settings.PlayerSettingsManager;
-import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -20,12 +19,14 @@ import java.time.Duration;
 import java.util.List;
 
 public class PlayerUtils {
-	public static void sendFadeTitleTeleport(Player player, Location location) {
-		if (PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.TELEPORT_TITLE_FADE)) {
+	private PlayerUtils() {}
+
+	public static void sendFadeTitleTeleport(OMCPlayer player, Location location) {
+		if (player.settings().shouldShowTeleportFade()) {
             player.showTitle(Title.title(
                     Component.text(FontImageWrapper.replaceFontImages(":tp_effect:")),
 					TranslationManager.translation("core.utils.fade_title.teleporting"),
-                    Title.Times.times(Duration.ofMillis(20 * 50), Duration.ofMillis(10 * 50), Duration.ofMillis(10 * 50))
+                    Title.Times.times(Duration.ofMillis(20 * 50L), Duration.ofMillis(10 * 50L), Duration.ofMillis(10 * 50L))
             ));
 			new BukkitRunnable() {
 				@Override
@@ -45,10 +46,10 @@ public class PlayerUtils {
 	 * @param freezeTicks nombre de ticks de gel (de 0 à 140)
 	 */
 	public static void showFreezeEffect(Player player, int freezeTicks) {
-		EntityDataAccessor<Integer> FREEZE_TICKS = new EntityDataAccessor<>(7, EntityDataSerializers.INT);
+		EntityDataAccessor<Integer> freezeTicksAccessor = new EntityDataAccessor<>(7, EntityDataSerializers.INT);
 
 		SynchedEntityData.DataValue<Integer> dataValue =
-				new SynchedEntityData.DataValue<>(7, FREEZE_TICKS.serializer(), freezeTicks);
+				new SynchedEntityData.DataValue<>(7, freezeTicksAccessor.serializer(), freezeTicks);
 
 		List<SynchedEntityData.DataValue<?>> dataList = List.of(dataValue);
 

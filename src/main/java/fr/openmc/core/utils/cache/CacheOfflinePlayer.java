@@ -8,6 +8,8 @@ import org.bukkit.OfflinePlayer;
 import java.util.UUID;
 
 public class CacheOfflinePlayer {
+    private CacheOfflinePlayer() {}
+
     private static final Object2ObjectMap<UUID, OfflinePlayer> offlinePlayerByUUIDCache = new Object2ObjectOpenHashMap<>();
     private static final Object2ObjectMap<String, OfflinePlayer> offlinePlayerByNameCache = new Object2ObjectOpenHashMap<>();
 

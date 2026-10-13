@@ -1,17 +1,16 @@
 package fr.openmc.core.features.city.sub.mayor.perks.event;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -69,64 +68,66 @@ public class ImpotCollection implements Listener {
         }
     }
 
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final BankManager bankManager = OMCRegistry.FEATURES.BANK.get();
     private final HashMap<UUID, Double> playerWithdrawnAmount = new HashMap<>();
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Zombie zombie)) return;
-        if (!(event.getEntity() instanceof Player victim)) return;
+        if (!(event.getEntity() instanceof Player vP)) return;
 
         if (!zombie.hasMetadata("mayor:zombie")) return;
 
-        String ownerUuid = zombie.getMetadata("mayor:zombie").getFirst().asString();
-        UUID uuid = UUID.fromString(ownerUuid);
-        Player mayorPlayer = Bukkit.getPlayer(uuid);
+        String ownerUUID = zombie.getMetadata("mayor:zombie").getFirst().asString();
+        OMCPlayer mayorPlayer = OMCPlayer.of(UUID.fromString(ownerUUID));
+        OMCPlayer victimPlayer = OMCPlayer.of(vP.getUniqueId());
+
         if (mayorPlayer == null) return;
 
         double amount = 1000;
 
-        if (EconomyManager.getBalance(victim.getUniqueId()) < amount) {
-            if (BankManager.getBankBalance(victim.getUniqueId()) < amount) {
-                MessagesManager.sendMessage(victim, TranslationManager.translation("feature.city.mayor.perk.event.impot.victim.lucky"), Prefix.MAYOR, MessageType.INFO, false);
+        if (victimPlayer.economy().getBalance() < amount) {
+            if (bankManager.getBankBalance(victimPlayer.getUniqueId()) < amount) {
+                victimPlayer.message().send(TranslationManager.translation("feature.city.mayor.perk.event.impot.victim.lucky"), Prefix.MAYOR, MessageType.INFO, false);
                 return;
             }
 
-            BankManager.withdraw(victim.getUniqueId(), amount);
+            bankManager.withdraw(victimPlayer.getUniqueId(), amount);
         } else {
-            EconomyManager.withdrawBalance(victim.getUniqueId(), amount, "Impôt prélevé par le maire " + mayorPlayer.getName());
+            victimPlayer.economy().withdrawBalance(amount, "Impôt prélevé par le maire " + mayorPlayer.getName());
         }
 
-        EconomyManager.addBalance(mayorPlayer.getUniqueId(), amount, "Impôt prélevé par le maire " + mayorPlayer.getName());
+        mayorPlayer.economy().addBalance(amount, "Impôt prélevé par le maire " + mayorPlayer.getName());
 
-        double newTotal = playerWithdrawnAmount.getOrDefault(victim.getUniqueId(), 0.0) + amount;
-        playerWithdrawnAmount.put(victim.getUniqueId(), newTotal);
+        double newTotal = playerWithdrawnAmount.getOrDefault(victimPlayer.getUniqueId(), 0.0) + amount;
+        playerWithdrawnAmount.put(victimPlayer.getUniqueId(), newTotal);
 	    
-	    Component amountComponent = Component.text(amount + EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
-        MessagesManager.sendMessage(victim, TranslationManager.translation(
+	    Component amountComponent = Component.text(amount + economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+        victimPlayer.message().send(TranslationManager.translation(
                 "feature.city.mayor.perk.event.impot.victim.lost",
                 amountComponent,
                 Component.text(mayorPlayer.getName()).color(NamedTextColor.WHITE)
         ), Prefix.MAYOR, MessageType.WARNING, false);
-        MessagesManager.sendMessage(mayorPlayer, TranslationManager.translation(
+        mayorPlayer.message().send(TranslationManager.translation(
                 "feature.city.mayor.perk.event.impot.mayor.collected",
                 amountComponent,
-                Component.text(victim.getName()).color(NamedTextColor.WHITE)
+                Component.text(victimPlayer.getName()).color(NamedTextColor.WHITE)
         ), Prefix.MAYOR, MessageType.INFO, false);
 
         if (newTotal >= 5000) {
-            for (Entity entity : victim.getWorld().getEntities()) {
-                if (entity instanceof Zombie z) {
-
-                    if (!z.hasMetadata("mayor:zombie")) continue;
-                    String zOwnerUuid = z.getMetadata("mayor:zombie").getFirst().asString();
-                    if (!zOwnerUuid.equals(ownerUuid)) continue;
-                    if (z.getTarget() != null && z.getTarget().getUniqueId().equals(victim.getUniqueId())) {
-                        z.remove();
+            for (Entity entity : victimPlayer.getWorld().getEntities()) {
+                if (entity instanceof Zombie zombie1) {
+                    if (!zombie1.hasMetadata("mayor:zombie")) continue;
+                    String zOwnerUuid = zombie1.getMetadata("mayor:zombie").getFirst().asString();
+                    if (!zOwnerUuid.equals(ownerUUID)) continue;
+                    if (zombie1.getTarget() != null && zombie1.getTarget().getUniqueId().equals(victimPlayer.getUniqueId())) {
+                        zombie1.remove();
                     }
                 }
             }
 
-            MessagesManager.sendMessage(victim, TranslationManager.translation("feature.city.mayor.perk.event.impot.zombies.done"), Prefix.MAYOR, MessageType.INFO, false);
+            victimPlayer.message().send(TranslationManager.translation("feature.city.mayor.perk.event.impot.zombies.done"), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 }

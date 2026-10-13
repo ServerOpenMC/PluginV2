@@ -39,7 +39,7 @@ public enum MascotType {
     private final int price;
 
     private final Function<Boolean, ItemStack> itemFunction;
-    private final Map<Boolean, ItemStack> itemCache = new HashMap<>(2);
+    private final Map<Boolean, ItemStack> itemCache = HashMap.newHashMap(2);
 
     MascotType(int slot, int price) {
         this.slot = slot;

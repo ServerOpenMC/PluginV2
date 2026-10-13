@@ -3,14 +3,16 @@ package fr.openmc.core.features.city.sub.war.menu.main;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,6 +33,7 @@ import java.util.Map;
 
 public class WarCityDetailsMenu extends Menu {
 
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
     private final City city;
 
     public WarCityDetailsMenu(Player owner, City city) {
@@ -67,14 +70,14 @@ public class WarCityDetailsMenu extends Menu {
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
-        if (MayorManager.phaseMayor == 2 && mayor != null) {
-            Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
-            Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-            Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+        if (city.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED) && mayor != null) {
+            Perks perk1 = PerkUtils.getPerkById(mayor.getIdPerk1());
+            Perks perk2 = PerkUtils.getPerkById(mayor.getIdPerk2());
+            Perks perk3 = PerkUtils.getPerkById(mayor.getIdPerk3());
 
             ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            Component namePerk1 = (perk1 != null) ? TranslationManager.translation(perk1.getNameKey()) :
-                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+            Component namePerk1 = TranslationManager.translation((perk1 != null) ? perk1.getNameKey() :
+                    "feature.city.mayor.perk.none.name");
             List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(TranslationManager.translationLore(perk1.getLoreKey())) : null;
             map.put(11, new ItemMenuBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.customName(namePerk1);
@@ -82,8 +85,8 @@ public class WarCityDetailsMenu extends Menu {
             }).hide((perk1 != null) ? perk1.getToHide() : null));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            Component namePerk2 = (perk2 != null) ? TranslationManager.translation(perk2.getNameKey()) :
-                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+            Component namePerk2 = TranslationManager.translation((perk2 != null) ? perk2.getNameKey() :
+                    "feature.city.mayor.perk.none.name");
             List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(TranslationManager.translationLore(perk2.getLoreKey())) : null;
             map.put(13, new ItemMenuBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(namePerk2);
@@ -91,8 +94,8 @@ public class WarCityDetailsMenu extends Menu {
             }).hide((perk2 != null) ? perk2.getToHide() : null));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            Component namePerk3 = (perk3 != null) ? TranslationManager.translation(perk3.getNameKey()) :
-                    TranslationManager.translation("feature.city.mayor.perk.none.name");
+            Component namePerk3 = TranslationManager.translation((perk3 != null) ? perk3.getNameKey() :
+                    "feature.city.mayor.perk.none.name");
             List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(TranslationManager.translationLore(perk3.getLoreKey())) : null;
             map.put(15, new ItemMenuBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(namePerk3);
@@ -124,7 +127,7 @@ public class WarCityDetailsMenu extends Menu {
         map.put(22, new ItemMenuBuilder(this, new ItemStack(Material.DIAMOND),
                 itemMeta -> itemMeta.displayName(TranslationManager.translation(
                         "feature.city.war.menu.details.wealth",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon())
+                        Component.text(EconomyUtils.getFormattedSimplifiedNumber(city.getBalance()) + " " + economyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
                 ).color(NamedTextColor.GRAY))));
 

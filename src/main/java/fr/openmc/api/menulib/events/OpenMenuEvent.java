@@ -21,6 +21,7 @@ public class OpenMenuEvent extends PlayerEvent {
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
+
     @Override
     public @NotNull HandlerList getHandlers() {
         return HANDLERS;

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.war;
 
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import lombok.Getter;
 import lombok.Setter;
 

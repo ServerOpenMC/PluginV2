@@ -3,7 +3,6 @@ package fr.openmc.core.features.dream.milestone.quests;
 import fr.openmc.core.features.dream.events.PlayerEnterStructureEvent;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.registries.DreamStructure;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
@@ -32,7 +31,7 @@ public class GrottoCampQuest extends MilestoneQuest implements Listener {
 		if (!e.getStructure().equals(DreamStructure.BASE_CAMP)) return;
 		Player player = e.getPlayer();
 		
-		if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+		if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 		this.incrementProgressInDream(player.getUniqueId());
 	}
 }

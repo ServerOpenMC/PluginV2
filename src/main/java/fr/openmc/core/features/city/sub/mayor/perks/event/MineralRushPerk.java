@@ -1,13 +1,13 @@
 package fr.openmc.core.features.city.sub.mayor.perks.event;
 
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
-import fr.openmc.api.chronometer.Chronometer;
+import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.MaterialUtils;
 import fr.openmc.core.utils.text.DateUtils;
@@ -30,38 +30,46 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class MineralRushPerk implements Listener {
+
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
+    private final MayorManager mayorManager;
+
+    public MineralRushPerk(MayorManager mayorManager) {
+        this.mayorManager = mayorManager;
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (MayorManager.phaseMayor !=2) return;
+        if (!mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
         Player player = event.getPlayer();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) {
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.city.mayor.perk.event.mineral.start",
-                    Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:mineral_rush"))).color(NamedTextColor.RED)
+                    Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(city.getUniqueId(), "city:mineral_rush"))).color(NamedTextColor.RED)
             ), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 
     @EventHandler
-    void onTimeEnd(Chronometer.ChronometerEndEvent e) {
-        if (MayorManager.phaseMayor !=2) return;
+    void onTimeEnd(CooldownEndEvent e) {
+        if (!mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
-        String chronometerGroup = e.getGroup();
-        if (!chronometerGroup.equals("city:mineral_rush")) return;
+        String cooldownGroup = e.getGroup();
+        if (!cooldownGroup.equals("city:mineral_rush")) return;
 
-        City city = CityManager.getCity(e.getEntity().getUniqueId());
+        City city = City.ofPlayer(e.getCooldownUUID());
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
         for (UUID memberUUID : city.getMembers()) {
             Player player = Bukkit.getPlayer(memberUUID);
@@ -74,18 +82,18 @@ public class MineralRushPerk implements Listener {
 
     @EventHandler
     public void onMineralBreak(BlockBreakEvent event) {
-        if (MayorManager.phaseMayor !=2) return;
+        if (!mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
         Player player = event.getPlayer();
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) return;
 
         if (city.getMayor() == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
-        if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
+        if (dynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
 
         Block block = event.getBlock();
 
@@ -105,14 +113,14 @@ public class MineralRushPerk implements Listener {
 
     @EventHandler
     public void onAyweniteBreak(CustomBlockBreakEvent event) {
-        if (MayorManager.phaseMayor != 2) return;
+        if (!mayorManager.getMayorPhase().equals(MayorPhase.MAYOR_ELECTED)) return;
 
         Player player = event.getPlayer();
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         if (city == null) return;
-        if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
-        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
+        if (!PerkUtils.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
+        if (!dynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
 
         String namespace = event.getNamespacedID();
         if (!namespace.equals("omc_blocks:aywenite_ore") && !namespace.equals("omc_blocks:deepslate_aywenite_ore")) return;

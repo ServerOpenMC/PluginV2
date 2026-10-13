@@ -24,9 +24,11 @@ import java.util.Map;
 
 public class AdminShopCategoryMenu extends Menu {
     private final String categoryId;
+    private final AdminShopManager manager;
 
-    public AdminShopCategoryMenu(Player owner, String categoryId) {
+    public AdminShopCategoryMenu(Player owner, AdminShopManager manager, String categoryId) {
         super(owner);
+        this.manager = manager;
         this.categoryId = categoryId;
     }
 
@@ -49,41 +51,39 @@ public class AdminShopCategoryMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent event) {}
 
     @Override
-    public void onClose(InventoryCloseEvent event) {
-
-    }
+    public void onClose(InventoryCloseEvent event) {}
 
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
-        Map<String, ShopItem> categoryItems = AdminShopManager.getCategoryItems(categoryId);
+        Map<String, ShopItem> categoryItems = manager.getCategoryItems(categoryId);
 
-        if (categoryItems != null) {
-            for (ShopItem item : categoryItems.values()) {
-                Material material = item.getMaterial();
+        if (categoryItems == null) return content;
 
-                boolean category = material.name().endsWith("_LEAVES") || material.name().endsWith("_LOG") || item.isHasColorVariant();
+        for (ShopItem item : categoryItems.values()) {
+            Material material = item.getMaterial();
 
-                content.put(item.getSlot(), new ItemMenuBuilder(this, material, meta -> {
-                    meta.displayName(item.getName()
-                            .color(NamedTextColor.GRAY)
-                            .decoration(TextDecoration.ITALIC, false));
-                    meta.lore(category ? List.of(TranslationManager.translation("feature.adminshop.right_click_choice"))
-                            : AdminShopUtils.extractLoreForItem(item));
-                }).setOnClick(event -> {
-                    if (material.name().endsWith("_LEAVES"))
-                        AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item);
-                    else if (material.name().endsWith("_LOG"))
-                        AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item);
-                    else if (item.isHasColorVariant())
-                        AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item);
-                    else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
-                        AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId());
-                    else if (event.isRightClick() && item.getInitialSellPrice() > 0)
-                        AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId());
-                }).setItemId(item.getId()));
-            }
+            boolean category = material.name().endsWith("_LEAVES") || material.name().endsWith("_LOG") || item.isHasColorVariant();
+
+            content.put(item.getSlot(), new ItemMenuBuilder(this, material, meta -> {
+                meta.displayName(item.getName()
+                        .color(NamedTextColor.GRAY)
+                        .decoration(TextDecoration.ITALIC, false));
+                meta.lore(category ? List.of(TranslationManager.translation("feature.adminshop.right_click_choice"))
+                        : AdminShopUtils.extractLoreForItem(item));
+            }).setOnClick(event -> {
+                if (material.name().endsWith("_LEAVES"))
+                    manager.openLeavesVariantsMenu(getOwner(), categoryId, item);
+                else if (material.name().endsWith("_LOG"))
+                    manager.openLogVariantsMenu(getOwner(), categoryId, item);
+                else if (item.isHasColorVariant())
+                    manager.openColorVariantsMenu(getOwner(), categoryId, item);
+                else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
+                    manager.openBuyConfirmMenu(getOwner(), categoryId, item.getId());
+                else if (event.isRightClick() && item.getInitialSellPrice() > 0)
+                    manager.openSellConfirmMenu(getOwner(), categoryId, item.getId());
+            }).setItemId(item.getId()));
         }
 
         content.put(40, new ItemMenuBuilder(this,

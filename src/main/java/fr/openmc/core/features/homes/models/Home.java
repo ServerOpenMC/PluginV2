@@ -69,9 +69,9 @@ public class Home {
 
     public void setLocation(Location location) {
         world = location.getWorld().getName();
-        x = (double) Math.round(location.getX() * 10d) / 10d;
-        y = (double) Math.round(location.getY() * 10d) / 10d;
-        z = (double) Math.round(location.getZ() * 10d) / 10d;
+        x = Math.round(location.getX() * 10d) / 10d;
+        y = Math.round(location.getY() * 10d) / 10d;
+        z = Math.round(location.getZ() * 10d) / 10d;
         yaw = location.getYaw();
         pitch = location.getPitch();
     }
@@ -79,9 +79,9 @@ public class Home {
     public String serializeLocation() {
         Location location = getLocation();
         return location.getWorld().getName() + "," +
-                (double) Math.round(location.getX() * 10d) / 10d + "," +
-                (double) Math.round(location.getY() * 10d) / 10d + "," +
-                (double) Math.round(location.getZ() * 10d) / 10d + "," +
+                Math.round(location.getX() * 10d) / 10d + "," +
+                Math.round(location.getY() * 10d) / 10d + "," +
+                Math.round(location.getZ() * 10d) / 10d + "," +
                 location.getYaw() + "," +
                 location.getPitch();
     }
@@ -116,16 +116,6 @@ public class Home {
         return item;
     }
 
-    @Deprecated
-    public LegacyHomeIcon getLegacyIcon() {
-        return HomeIconRegistry.toLegacyHomeIcon(getIcon());
-    }
-
-    @Deprecated
-    public void setLegacyIcon(LegacyHomeIcon legacyIcon) {
-        this.iconId = HomeIconRegistry.fromLegacyHomeIcon(legacyIcon).getSaveId();
-    }
-
     public String getIconSaveId() {
         return iconId;
     }
@@ -152,7 +142,7 @@ public class Home {
         try {
             LegacyHomeIcon legacyIcon = LegacyHomeIcon.valueOf(iconId.toUpperCase());
             return HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException _) {
             return HomeUtil.mapLegacyCustomId(iconId);
         }
     }

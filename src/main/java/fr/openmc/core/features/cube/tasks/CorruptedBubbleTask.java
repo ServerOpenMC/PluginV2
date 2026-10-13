@@ -54,15 +54,13 @@ public class CorruptedBubbleTask extends BukkitRunnable {
                     case DIRT, GRASS_BLOCK, SAND, GRAVEL -> block.setType(Material.WARPED_NYLIUM);
                     case OAK_LOG, BIRCH_LOG, SPRUCE_LOG, JUNGLE_LOG, DARK_OAK_LOG,
                          ACACIA_LOG, MANGROVE_LOG -> block.setType(Material.WARPED_STEM);
-                    case AIR, LAPIS_BLOCK -> {
-                    }
+                    case AIR, LAPIS_BLOCK -> {}
                     default -> block.setType(Material.SCULK);
                 }
             } else {
                 switch (type) {
                     case MUD -> block.setType(Material.SAND);
-                    case AIR, LAPIS_BLOCK -> {
-                    }
+                    case AIR, LAPIS_BLOCK -> {}
                     default -> block.setType(Material.GRASS_BLOCK);
                 }
             }

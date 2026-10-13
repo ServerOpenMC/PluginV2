@@ -6,14 +6,15 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorCreateMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorModifyMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
+import fr.openmc.core.features.city.sub.mayor.models.MayorPhase;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.text.DateUtils;
@@ -36,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_2_DAY;
 
 public class MayorElectionMenu extends Menu {
 
@@ -74,25 +73,26 @@ public class MayorElectionMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
         Player player = getOwner();
+        MayorManager mayorManager = OMCRegistry.CITY_FEATURES.MAYOR;
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
 
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
         Supplier<ItemMenuBuilder> electionItemSupplier = () -> {
             List<Component> loreElection;
-            if (MayorManager.hasVoted(player)) {
+            if (mayorManager.hasVoted(player)) {
                 loreElection = TranslationManager.translationLore(
                         "feature.city.mayor.menu.election.item.lore.voted",
-                        Component.text(MayorManager.getPlayerVote(player).getName())
+                        Component.text(mayorManager.getPlayerVote(player).getName())
                                 .decoration(TextDecoration.ITALIC, false)
-                                .color(MayorManager.getPlayerVote(player).getCandidateColor()),
-                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
+                                .color(mayorManager.getPlayerVote(player).getCandidateColor()),
+                        Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.MAYOR_ELECTED.getStartDay())).color(NamedTextColor.RED)
                 );
             } else {
                 loreElection = TranslationManager.translationLore(
                         "feature.city.mayor.menu.election.item.lore.not_voted",
-                        Component.text(DateUtils.getTimeUntilNextDay(PHASE_2_DAY)).color(NamedTextColor.RED)
+                        Component.text(DateUtils.getTimeUntilNextDay(MayorPhase.MAYOR_ELECTED.getStartDay())).color(NamedTextColor.RED)
                 );
             }
 
@@ -100,7 +100,7 @@ public class MayorElectionMenu extends Menu {
                 itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.election.item.name"));
                 itemMeta.lore(loreElection);
             }).setOnClick(inventoryClickEvent -> {
-                if (MayorManager.cityElections.get(city.getUniqueId()) == null) {
+                if (mayorManager.getCityElections().get(city.getUniqueId()) == null) {
                     MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.menu.election.error.no_candidate"), Prefix.MAYOR, MessageType.ERROR, true);
                     return;
                 }
@@ -112,7 +112,7 @@ public class MayorElectionMenu extends Menu {
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
         List<Component> loreCandidature;
-        if (MayorManager.hasCandidated(player)) {
+        if (mayorManager.hasCandidated(player)) {
             loreCandidature = TranslationManager.translationLore("feature.city.mayor.menu.election.candidature.lore.already");
         } else {
             loreCandidature = TranslationManager.translationLore("feature.city.mayor.menu.election.candidature.lore.new");
@@ -120,8 +120,8 @@ public class MayorElectionMenu extends Menu {
 
         if (hasPermissionOwner) {
             List<Component> lorePerkOwner;
-            if (MayorManager.hasChoicePerkOwner(player)) {
-                Perks perk1 = PerkManager.getPerkById(city.getMayor().getIdPerk1());
+            if (mayorManager.hasChoicePerkOwner(player)) {
+                Perks perk1 = PerkUtils.getPerkById(city.getMayor().getIdPerk1());
                 if (perk1 == null) return Map.of();
                 lorePerkOwner = new ArrayList<>(List.of(
                         TranslationManager.translation("feature.city.mayor.menu.election.owner_reform.lore.chosen")
@@ -137,7 +137,7 @@ public class MayorElectionMenu extends Menu {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.election.owner_reform.name"));
                 itemMeta.lore(lorePerkOwner);
             }).setOnClick(inventoryClickEvent -> {
-                if (!MayorManager.hasChoicePerkOwner(player)) {
+                if (!mayorManager.hasChoicePerkOwner(player)) {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new MayorCreateMenu(player, null, null, null, MenuType.OWNER_1).open());
                 }
             }));
@@ -147,7 +147,7 @@ public class MayorElectionMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.city.mayor.menu.election.candidature.name"));
             itemMeta.lore(loreCandidature);
         }).setOnClick(inventoryClickEvent -> {
-            if (MayorManager.hasCandidated(player)) {
+            if (mayorManager.hasCandidated(player)) {
                 new MayorModifyMenu(player).open();
             } else {
                 new MayorCreateMenu(player, null, null, null, MenuType.CANDIDATE).open();

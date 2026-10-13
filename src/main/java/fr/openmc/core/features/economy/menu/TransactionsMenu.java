@@ -5,9 +5,10 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.Transaction;
 import fr.openmc.core.features.economy.TransactionsManager;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -23,6 +24,7 @@ import java.util.*;
 public class TransactionsMenu extends PaginatedMenu {
     final Player owner;
     final UUID target;
+    private final TransactionsManager transactionsManager = OMCRegistry.FEATURES.TRANSACTIONS.get();
 
     public TransactionsMenu(Player owner, UUID target) {
         super(owner);
@@ -34,7 +36,7 @@ public class TransactionsMenu extends PaginatedMenu {
     public @NotNull Component getName() {
         return TranslationManager.translation(
                 "feature.economy.transactions.menu.title",
-                Component.text(CacheOfflinePlayer.getOfflinePlayer(target).getName())
+                CachePlayerName.name(target)
         );
     }
 
@@ -70,7 +72,7 @@ public class TransactionsMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        for (Transaction transaction : TransactionsManager.getTransactionsByPlayers(target)) {
+        for (Transaction transaction : transactionsManager.getTransactionsByPlayers(target)) {
             items.add(new ItemMenuBuilder(this, transaction.toItemStack(target)));
         }
 

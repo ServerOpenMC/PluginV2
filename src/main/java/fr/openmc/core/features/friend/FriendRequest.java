@@ -1,5 +1,6 @@
 package fr.openmc.core.features.friend;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -42,7 +43,7 @@ public class FriendRequest extends BukkitRunnable {
     public void removeRequest() {
         sendExpiryMessage(uuids.get(0));
         sendExpiryMessage(uuids.get(1));
-        FriendManager.removeRequest(this);
+        OMCOfflinePlayer.of(uuids.getFirst()).friends().removeRequest(this);
         uuids.clear();
     }
 

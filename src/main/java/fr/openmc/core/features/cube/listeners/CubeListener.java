@@ -1,5 +1,6 @@
 package fr.openmc.core.features.cube.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.events.CubeDisableBubbleEvent;
 import fr.openmc.core.features.cube.events.CubeEnableBubbleEvent;
@@ -27,11 +28,12 @@ import java.util.Set;
 import java.util.UUID;
 
 public class CubeListener implements Listener {
+    private final MultiBlockManager multiBlockManager = OMCRegistry.FEATURES.MULTIBLOCKS.get();
     private final Set<UUID> playersInBubble = new HashSet<>();
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+        for (MultiBlock mb : multiBlockManager.getMultiBlocks()) {
             if (!(mb instanceof Cube cube)) continue;
 
             Location clickedBlock = event.getClickedBlock() != null ? event.getClickedBlock().getLocation() : null;
@@ -49,11 +51,11 @@ public class CubeListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+        for (MultiBlock mb : multiBlockManager.getMultiBlocks()) {
             if (!(mb instanceof Cube cube)) continue;
 
             Location center = cube.getCenter();
-            double radius = cube.RADIUS_BUBBLE;
+            double radius = cube.radiusBubble;
 
             if (!player.getWorld().equals(center.getWorld())) continue;
 
@@ -65,7 +67,7 @@ public class CubeListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+        for (MultiBlock mb : multiBlockManager.getMultiBlocks()) {
             if (!(mb instanceof Cube cube)) continue;
 
             Location belowPlayer = player.getLocation().clone().subtract(0, 1, 0);
@@ -85,7 +87,7 @@ public class CubeListener implements Listener {
         Cube cube = event.getCube();
 
         Location center = cube.getCenter();
-        double radius = cube.RADIUS_BUBBLE;
+        double radius = cube.radiusBubble;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!player.getWorld().equals(center.getWorld())) continue;
@@ -101,7 +103,7 @@ public class CubeListener implements Listener {
         Cube cube = event.getCube();
 
         Location center = cube.getCenter();
-        double radius = cube.RADIUS_BUBBLE;
+        double radius = cube.radiusBubble;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!player.getWorld().equals(center.getWorld())) continue;
@@ -121,7 +123,7 @@ public class CubeListener implements Listener {
         boolean insideAny = false;
         Cube bestCube = null;
 
-        for (MultiBlock mb : MultiBlockManager.getMultiBlocks()) {
+        for (MultiBlock mb : multiBlockManager.getMultiBlocks()) {
             if (!(mb instanceof Cube cube)) continue;
 
             if (cube.corruptedBubbleTask == null) continue;
@@ -130,7 +132,7 @@ public class CubeListener implements Listener {
 
             double dist = player.getLocation().distance(cube.getCenter());
 
-            if (dist <= cube.RADIUS_BUBBLE) {
+            if (dist <= cube.radiusBubble) {
                 insideAny = true;
                 bestCube = cube;
                 break;

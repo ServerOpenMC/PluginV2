@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.bossbar;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.displays.bossbar.BaseBossbar;
 import fr.openmc.core.features.milestones.MilestoneStep;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 
 public class MilestoneBossBar extends BaseBossbar {
 
+    private final MilestonesManager milestonesManager = OMCRegistry.FEATURES.MILESTONES.get();
     private final Milestone<?> milestone;
 
     public MilestoneBossBar(Milestone<?> milestone) {
@@ -27,7 +29,7 @@ public class MilestoneBossBar extends BaseBossbar {
 
     @Override
     protected void update(Player player, BossBar bar) {
-        int currentStep = MilestonesManager.getPlayerStep(milestone.getType(), player);
+        int currentStep = milestonesManager.getPlayerStep(milestone.getType(), player);
 
         MilestoneStep[] steps = milestone.getStepEnum();
 
@@ -62,7 +64,7 @@ public class MilestoneBossBar extends BaseBossbar {
 
     @Override
     protected Float progress(Player player) {
-        int currentStep = MilestonesManager.getPlayerStep(milestone.getType(), player);
+        int currentStep = milestonesManager.getPlayerStep(milestone.getType(), player);
 
         MilestoneStep[] steps = milestone.getStepEnum();
 

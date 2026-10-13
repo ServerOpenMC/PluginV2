@@ -9,9 +9,7 @@ import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import lombok.Getter;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Timestamp;
@@ -56,7 +54,8 @@ public class Letter {
     }
 
     public boolean refuse() {
-        return refused = true;
+        refused = true;
+        return true;
     }
 
     public LetterHead toLetterHead() {

@@ -7,7 +7,6 @@ import fr.openmc.api.omcplayer.lamp.OMCOfflinePlayerParameterType;
 import fr.openmc.api.omcplayer.lamp.OMCPlayerParameterType;
 import fr.openmc.api.omcplayer.lamp.OMCPlayerSenderResolver;
 import fr.openmc.core.commands.debug.ChronometerCommand;
-import fr.openmc.core.commands.debug.CustomItemCommand;
 import fr.openmc.core.commands.debug.ToastCommand;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
@@ -28,8 +27,9 @@ import revxrsal.commands.bukkit.actor.BukkitCommandActor;
  * Initialise Lamp et ajoute l'ensemble des commandes exposees.
  */
 public class CommandsManager {
+    private CommandsManager() {}
     @Getter
-    static Lamp handler;
+    static Lamp<BukkitCommandActor> handler;
 
     /**
      * Initialise le handler de commandes et enregistre les commandes.
@@ -60,7 +60,6 @@ public class CommandsManager {
                 new ChronometerCommand(),
                 new Restart(),
                 new CreditsCommand(),
-                new CustomItemCommand(),
                 new CustomAmbientCommands(),
                 new CustomMobsCommands(),
                 new ToastCommand(),

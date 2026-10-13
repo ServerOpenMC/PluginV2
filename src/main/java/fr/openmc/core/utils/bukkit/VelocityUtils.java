@@ -6,6 +6,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 public class VelocityUtils {
+    private VelocityUtils() {}
+
     public static void jump(LivingEntity entity, double distance) {
         Location to = LocationUtils.randomLocation(entity.getLocation(), distance);
         jumpTo(entity, to);

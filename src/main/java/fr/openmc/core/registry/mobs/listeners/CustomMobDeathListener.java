@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.mobs.listeners;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
@@ -27,6 +28,9 @@ public class CustomMobDeathListener implements Listener {
 
         if (!(source.getCausingEntity() instanceof Player player)) return;
 
+        OMCPlayer omcPlayer = OMCPlayer.of(player);
+        if (omcPlayer == null) return;
+
         CustomMob<?> customMob = OMCRegistry.CUSTOM_MOBS.getMob(entity);
         if (customMob == null) return;
 
@@ -38,7 +42,7 @@ public class CustomMobDeathListener implements Listener {
             if (loot instanceof ItemLoot itemLoot) {
                 event.getDrops().add(itemLoot.getItemLootWithAmount());
             } else {
-                loot.run(player);
+                loot.run(omcPlayer);
             }
         }
     }

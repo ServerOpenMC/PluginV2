@@ -22,8 +22,10 @@ public class ArmorEquipEvent extends PlayerEvent implements Cancellable {
     private final ArmorType type;
     @Getter
     @Setter
-    private ItemStack oldArmorPiece,
-            newArmorPiece;
+    private ItemStack oldArmorPiece;
+    @Getter
+    @Setter
+    private ItemStack newArmorPiece;
 
     /**
      * Constructor for the ArmorEquipEvent.

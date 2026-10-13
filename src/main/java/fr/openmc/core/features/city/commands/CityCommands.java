@@ -1,9 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.api.chronometer.Chronometer;
-import fr.openmc.api.input.dialog.DialogInput;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.*;
 import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplete;
@@ -15,14 +13,11 @@ import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.features.city.menu.main.CityMenu;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.InputUtils;
-import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -30,30 +25,38 @@ import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
 @Command({"ville", "city"})
 public class CityCommands {
+    private final CityManager cityManager;
+
+    public CityCommands(CityManager cityManager) {
+        this.cityManager = cityManager;
+    }
+
     @CommandPlaceholder()
-    public static void mainCommand(Player player) {
-        if (!Chronometer.containsChronometer(player.getUniqueId(), "mascot:stick")) {
-            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-                if (playerCity == null) {
-                    NoCityMenu menu = new NoCityMenu(player);
-                    menu.open();
-                } else {
-                    CityMenu menu = new CityMenu(player);
-                    menu.open();
-                }
+    public static void mainCommand(OMCPlayer player) {
+        if (player.chronometer().containsChronometer("mascot:stick")) {
+            player.message().sendError(TranslationManager.translation("feature.city.commands.menu.must_place_mascot"), Prefix.CITY, false);
+            return;
+        }
+
+        City playerCity = City.ofPlayer(player);
+
+        if (playerCity == null) {
+            NoCityMenu menu = new NoCityMenu(player);
+            menu.open();
         } else {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.menu.must_place_mascot"), Prefix.CITY, MessageType.ERROR, false);
+            CityMenu menu = new CityMenu(player);
+            menu.open();
         }
     }
 
     @Subcommand("info")
     @CommandPermission("omc.commands.city.info")
     @Description("Avoir des informations sur votre ville")
-    void info(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+    void info(OMCPlayer player) {
+        City city = City.ofPlayer(player);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, false);
             return;
         }
 
@@ -68,16 +71,14 @@ public class CityCommands {
             OMCPlayer player,
             @Named("nom de ville") @Optional String name
     ) {
-        if (!CityCreateConditions.canCityCreate(player, null)) {
-            return;
-        }
+        if (!CityCreateConditions.canCityCreate(player, null)) return;
 
         if (name != null) {
             CityCreateAction.beginCreateCity(player, name);
             return;
         }
 
-        DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
+        player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                     if (input == null) return;
                     CityCreateAction.beginCreateCity(player, input);
                 }
@@ -87,7 +88,7 @@ public class CityCommands {
     @Subcommand("delete")
     @CommandPermission("omc.commands.city.delete")
     @Description("Supprimer votre ville")
-    void delete(Player sender) {
+    void delete(OMCPlayer sender) {
         CityDeleteAction.startDeleteCity(sender);
     }
 
@@ -95,36 +96,36 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.rename")
     @Description("Renommer une ville")
     void rename(
-            Player player,
+            OMCPlayer player,
             @Named("nouveau nom") String name
     ) {
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = player.city().getCity();
 
         if (!CityManageConditions.canCityRename(playerCity, player)) return;
 
         if (!InputUtils.isInputCityName(name)) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation(
+	        player.message().sendError(TranslationManager.translation(
                     "feature.city.commands.rename.invalid_name",
                     Component.text(MAX_LENGTH_CITY)
-            ), Prefix.CITY, MessageType.ERROR, false);
+            ), Prefix.CITY, false);
             return;
         }
 
         playerCity.rename(name);
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.rename.success", Component.text(name)), Prefix.CITY, MessageType.SUCCESS, false);
+        player.message().sendSuccess(TranslationManager.translation("feature.city.commands.rename.success",
+                Component.text(name)), Prefix.CITY, false);
     }
 
     @Subcommand("transfer")
     @CommandPermission("omc.commands.city.transfer")
     @Description("Transfert la propriété de votre ville")
     void transfer(
-            Player sender,
-            @Named("nouveau propriétaire") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer player
+            OMCPlayer sender,
+            @Named("nouveau propriétaire") @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player
     ) {
-        City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
+        City playerCity = sender.city().getCity();
 
         if (!CityManageConditions.canCityTransfer(playerCity, sender, player.getUniqueId())) return;
-
         if (playerCity == null) return;
 
         CityTransferAction.transfer(sender, playerCity, player);
@@ -134,8 +135,8 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.kick")
     @Description("Exclure un habitant de votre ville")
     void kick(
-            Player sender,
-            @SuggestWith(CityMembersAutoComplete.class) @Named("membre à exclure") OfflinePlayer player
+            OMCPlayer sender,
+            @SuggestWith(CityMembersAutoComplete.class) @Named("membre à exclure") OMCOfflinePlayer player
     ) {
         CityKickAction.startKick(sender, player);
     }
@@ -143,8 +144,8 @@ public class CityCommands {
     @Subcommand("leave")
     @CommandPermission("omc.commands.city.leave")
     @Description("Quitter votre ville")
-    void leave(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+    void leave(OMCPlayer player) {
+        City city = player.city().getCity();
         if (!CityLeaveCondition.canCityLeave(city, player)) return;
 
         CityLeaveAction.startLeave(player);
@@ -152,9 +153,9 @@ public class CityCommands {
 
     @Subcommand("list")
     @CommandPermission("omc.commands.city.list")
-    public void list(Player player) {
-        if (CityManager.getCities().isEmpty()) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.list.empty"), Prefix.CITY, MessageType.ERROR, false);
+    public void list(OMCPlayer player) {
+        if (cityManager.getCities().isEmpty()) {
+            player.message().sendError(TranslationManager.translation("feature.city.commands.list.empty"), Prefix.CITY, false);
             return;
         }
         
@@ -164,7 +165,7 @@ public class CityCommands {
 
     @Subcommand("type")
     @CommandPermission("omc.commands.city.type")
-    public void change(Player sender) {
-        new CityTypeMenu(sender).open();
+    public void change(OMCPlayer player) {
+        new CityTypeMenu(player).open();
     }
 }

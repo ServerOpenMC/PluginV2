@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class EntityEquipmentNMS {
+    private EntityEquipmentNMS() {}
 
     public static void sendHelmetPacket(Player receiver, int entityId, ItemStack itemStackNMS) {
         ServerPlayer nmsReceiver = ((CraftPlayer) receiver).getHandle();

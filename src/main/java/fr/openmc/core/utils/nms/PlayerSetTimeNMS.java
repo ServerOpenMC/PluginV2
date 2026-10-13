@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerSetTimeNMS {
+    private PlayerSetTimeNMS() {}
 
     /**
      * Envoie un packet au joueur pour définir l'heure du monde

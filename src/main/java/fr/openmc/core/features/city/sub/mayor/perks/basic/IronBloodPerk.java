@@ -1,9 +1,7 @@
 package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -24,6 +22,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class IronBloodPerk implements Listener {
+    private IronBloodPerk() {}
+
     private static final Map<City, Long> perkIronBloodCooldown = new HashMap<>();
     private static final long COOLDOWN_TIME = 3 * 60 * 1000L; // 3 minutes
 
@@ -50,7 +50,7 @@ public class IronBloodPerk implements Listener {
                     .filter(Player.class::isInstance)
                     .map(Player.class::cast)
                     .filter(nearbyPlayer -> {
-                        City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
+                        City enemyCity = City.ofPlayer(nearbyPlayer.getUniqueId());
                         return enemyCity != null && !enemyCity.getUniqueId().equals(city.getUniqueId());
                     })
                     .toList();
@@ -82,8 +82,8 @@ public class IronBloodPerk implements Listener {
                     .filter(Player.class::isInstance)
                     .map(Player.class::cast)
                     .filter(nearbyPlayer -> {
-                        City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
-                        return enemyCity != null && !enemyCity.getUniqueId().equals(MascotUtils.getCityFromEntity(mascotUUID).getUniqueId());
+                        City enemyCity = City.ofPlayer(nearbyPlayer.getUniqueId());
+                        return enemyCity != null && !enemyCity.getUniqueId().equals(City.ofMascot(mascotUUID).getUniqueId());
                     })
                     .toList();
 

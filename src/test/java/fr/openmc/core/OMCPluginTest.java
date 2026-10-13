@@ -1,12 +1,11 @@
 package fr.openmc.core;
 
+import fr.openmc.mock.MockBukkitHelper;
+import fr.openmc.mock.ServerMock;
 import org.junit.jupiter.api.*;
 import org.mockbukkit.mockbukkit.MockBukkit;
 
-import fr.openmc.mock.MockBukkitHelper;
-import fr.openmc.mock.ServerMock;
-
-public class OMCPluginTest {
+class OMCPluginTest {
 
     public OMCPlugin plugin;
     public ServerMock server;

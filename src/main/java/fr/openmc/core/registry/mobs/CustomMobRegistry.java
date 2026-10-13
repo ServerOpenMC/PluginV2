@@ -1,10 +1,6 @@
 package fr.openmc.core.registry.mobs;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.ExplosiveVampireBat;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.LevitationVampireBat;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.PoisonVampireBat;
@@ -16,12 +12,17 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.core.registry.mobs.listeners.CustomMobBossbarListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobLoadListener;
 import fr.openmc.core.registry.mobs.task.MobBossbarUpdater;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -122,7 +123,7 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry>
             VampireSlave::new
     ));
 
-    public final static Set<UUID> HAS_BOSSBAR = new HashSet<>();
+    public static final Set<UUID> HAS_BOSSBAR = new HashSet<>();
 
     @Override
     public Set<ListenerFactory> getListeners() {
@@ -156,7 +157,7 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry>
         return register(mob.id(), mob);
     }
 
-    public CustomMob<?> getMob(Entity entity) {
+    public CustomMob<? extends LivingEntity> getMob(Entity entity) {
         PersistentDataContainer pdc = entity.getPersistentDataContainer();
         if (!pdc.has(CUSTOM_MOB_KEY, PersistentDataType.STRING)) return null;
 

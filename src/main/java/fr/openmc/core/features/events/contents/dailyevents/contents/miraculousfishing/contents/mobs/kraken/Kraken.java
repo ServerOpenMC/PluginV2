@@ -96,7 +96,7 @@ public class Kraken extends CustomMob<Squid> implements Listener {
         }, 20L, 60L);
     }
 
-    private final Set<EntityDamageEvent.DamageCause> IMMUNE_DAMAGE = Set.of(
+    private static final Set<EntityDamageEvent.DamageCause> IMMUNE_DAMAGE = Set.of(
             EntityDamageEvent.DamageCause.DRYOUT,
             EntityDamageEvent.DamageCause.POISON,
             EntityDamageEvent.DamageCause.FALL

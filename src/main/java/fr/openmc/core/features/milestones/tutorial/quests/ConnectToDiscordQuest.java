@@ -1,6 +1,5 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
@@ -48,7 +47,7 @@ public class ConnectToDiscordQuest extends MilestoneQuest implements Listener {
     public void onDiscordConnect(ConnectToDiscordEvent event) {
         Player player = Bukkit.getPlayer(event.getPlayerUUID());
         if (player == null) return;
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         this.incrementProgress(event.getPlayerUUID());
     }

@@ -2,6 +2,8 @@ package fr.openmc.core.features.shops.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.shops.ShopFurniture;
 import fr.openmc.core.features.shops.managers.ShopManager;
@@ -9,7 +11,6 @@ import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
@@ -30,6 +31,8 @@ import java.util.UUID;
 @Getter
 @DatabaseTable(tableName = "shops")
 public class Shop {
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
+    private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
     
     @DatabaseField(id = true, columnName = "shop_uuid", canBeNull = false)
     private UUID shopUUID;
@@ -96,7 +99,7 @@ public class Shop {
      * @param uuid the UUID to check
      */
     public boolean isOwner(UUID uuid) {
-        return ownerUUID.equals(uuid) || ShopManager.shopBypass.contains(uuid);
+        return ownerUUID.equals(uuid) || shopManager.shopBypass.contains(uuid);
     }
     
     /**
@@ -141,13 +144,14 @@ public class Shop {
      * to the owner's balance.
      */
     public void withdrawTurnover() {
-        Player player = CacheOfflinePlayer.getOfflinePlayer(getOwnerUUID()).getPlayer();
+        OMCPlayer player = OMCPlayer.of(getOwnerUUID());
         if (player == null) return;
         if (!isOwner(player)) return;
         if (getTurnover() <= 0) return;
         double tempTurnover = getTurnover();
-        EconomyManager.addBalance(player.getUniqueId(), tempTurnover * 0.8, "turnover");
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.get_turnover", Component.text(tempTurnover * 0.8 + " " + EconomyManager.getEconomyIcon())), Prefix.SHOP, MessageType.SUCCESS, false);
+        player.economy().addBalance(tempTurnover * 0.8, "turnover");
+        player.message().send(TranslationManager.translation("feature.shop.get_turnover",
+                Component.text(tempTurnover * 0.8 + " " + economyManager.getEconomyIcon())), Prefix.SHOP, MessageType.SUCCESS, false);
         setTurnover(0);
     }
     
@@ -158,22 +162,22 @@ public class Shop {
      * @param player the player attempting to make the purchase
      * @param amount the quantity of items the player wants to buy
      */
-    public void buy(Player player, int amount) {
+    public void buy(OMCPlayer player, int amount) {
         if (isOwner(player)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.is_owner"), Prefix.SHOP, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.shop.is_owner"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         if (this.item.getAmount() < amount) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_items"), Prefix.SHOP, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.shop.not_enough_items"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         if (!ItemUtils.hasEnoughSpace(player, item.getItemStack(), amount)) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_space"), Prefix.SHOP, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("feature.shop.not_enough_space"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         double totalPrice = this.item.getPrice(amount);
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), totalPrice, getName() + " buying")) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.not_enough_money"), Prefix.SHOP, MessageType.ERROR, false);
+        if (!player.economy().withdrawBalance(totalPrice, getName() + " buying")) {
+            player.message().send(TranslationManager.translation("feature.shop.not_enough_money"), Prefix.SHOP, MessageType.ERROR, false);
             return;
         }
         player.give(ItemUtils.splitAmountIntoStack(item.clone().getItemStack(), amount));

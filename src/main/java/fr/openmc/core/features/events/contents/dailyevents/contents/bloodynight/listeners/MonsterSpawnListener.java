@@ -3,12 +3,12 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.BloodyNightManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireBoss;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.registry.mobs.CustomMob;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -19,10 +19,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
 
 public class MonsterSpawnListener implements Listener {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+
     @EventHandler
     public void onNormalMonsterSpawn(EntitySpawnEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent bloodyEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent bloodyEvent)) return;
         if (!event.getLocation().getWorld().getName().equals(bloodyEvent.getWorldEvent())) return;
 
         if (!(event.getEntity() instanceof Monster monster)) return;
@@ -35,8 +37,8 @@ public class MonsterSpawnListener implements Listener {
 
     @EventHandler
     public void onMonsterLoaded(EntityAddToWorldEvent event) {
-        if (DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent) return;
+        if (dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent) return;
 
         if (!(event.getEntity() instanceof Monster monster)) return;
 
@@ -56,8 +58,8 @@ public class MonsterSpawnListener implements Listener {
 
     @EventHandler
     public void onVampireLoaded(EntityAddToWorldEvent event) {
-        if (DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent) return;
+        if (dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof BloodyNightEvent) return;
 
         Entity entity = event.getEntity();
 

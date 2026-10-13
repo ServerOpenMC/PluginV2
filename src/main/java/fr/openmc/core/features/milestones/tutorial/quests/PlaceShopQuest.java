@@ -1,7 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
@@ -44,7 +43,7 @@ public class PlaceShopQuest extends MilestoneQuest implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerPlaceShop(PlaceShopEvent event) {
-        if (MilestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
+        if (milestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
 
         Player player = event.getPlayer();
         this.incrementProgress(player.getUniqueId());

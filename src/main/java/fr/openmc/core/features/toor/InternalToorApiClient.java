@@ -1,7 +1,7 @@
 package fr.openmc.core.features.toor;
 
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.toor.utils.RequestSigner;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -12,6 +12,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class InternalToorApiClient {
+    private final DiscordLinkManager discordLinkManager;
+
+    public InternalToorApiClient(DiscordLinkManager discordLinkManager) {
+        this.discordLinkManager = discordLinkManager;
+    }
 
     public record LinkStatus(boolean linked, String discordUserId, String discordUsername) {
         public static final LinkStatus NOT_LINKED = new LinkStatus(false, null, null);
@@ -21,7 +26,7 @@ public class InternalToorApiClient {
         public static final GithubStatus NOT_LINKED = new GithubStatus(false, null);
     }
 
-    public static LinkStatus checkLinkStatus(String code) {
+    public LinkStatus checkLinkStatus(String code) {
         try {
             HttpURLConnection con = open("/internal/link/status/" + code, "GET", null);
             con.setConnectTimeout(3000);
@@ -43,7 +48,7 @@ public class InternalToorApiClient {
         }
     }
 
-    public static void consumeCode(String code) {
+    public void consumeCode(String code) {
         try {
             HttpURLConnection con = open("/internal/link/status/" + code, "DELETE", null);
             con.setConnectTimeout(3000);
@@ -55,11 +60,11 @@ public class InternalToorApiClient {
         }
     }
 
-    private static HttpURLConnection open(String path, String method, String body) throws Exception {
+    private HttpURLConnection open(String path, String method, String body) throws Exception {
         long timestamp = System.currentTimeMillis();
         String signature = RequestSigner.sign(method, path, timestamp, body);
 
-        HttpURLConnection con = (HttpURLConnection) new URI(DiscordLinkManager.getBotUrl() + path).toURL().openConnection();
+        HttpURLConnection con = (HttpURLConnection) new URI(discordLinkManager.getBotUrl() + path).toURL().openConnection();
         con.setRequestMethod(method);
         con.setRequestProperty("x-timestamp", String.valueOf(timestamp));
         con.setRequestProperty("x-signature", signature);
@@ -71,7 +76,7 @@ public class InternalToorApiClient {
         public static final LinkRequestResult FAILED = new LinkRequestResult(false, null);
     }
 
-    public static LinkRequestResult requestLinkCode(UUID uuid, String username) {
+    public LinkRequestResult requestLinkCode(UUID uuid, String username) {
         try {
             JSONObject bodyJson = new JSONObject();
             bodyJson.put("uuid", uuid.toString());
@@ -103,7 +108,7 @@ public class InternalToorApiClient {
         }
     }
 
-    public static boolean notifyUnlink(UUID uuid) {
+    public boolean notifyUnlink(UUID uuid) {
         try {
             JSONObject bodyJson = new JSONObject();
             bodyJson.put("uuid", uuid.toString());
@@ -129,7 +134,7 @@ public class InternalToorApiClient {
     }
 
 
-    public static GithubStatus checkGithubStatus(UUID uuid) {
+    public GithubStatus checkGithubStatus(UUID uuid) {
         try {
             HttpURLConnection con = open("/internal/github/status/" + uuid, "GET", null);
             con.setConnectTimeout(3000);
@@ -153,7 +158,7 @@ public class InternalToorApiClient {
         }
     }
 
-    public static String getDiscordUsername(String discordUserId) {
+    public String getDiscordUsername(String discordUserId) {
         try {
             HttpURLConnection con = open("/internal/discord/username/" + discordUserId, "GET", null);
             con.setConnectTimeout(3000);
@@ -175,7 +180,7 @@ public class InternalToorApiClient {
         }
     }
 
-    public static String getGithubUsername(long githubId) {
+    public String getGithubUsername(long githubId) {
         try {
             HttpURLConnection con = open("/internal/github/username/" + githubId, "GET", null);
             con.setConnectTimeout(3000);

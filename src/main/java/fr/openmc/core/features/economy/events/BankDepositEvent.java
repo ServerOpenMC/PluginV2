@@ -9,12 +9,11 @@ import java.util.UUID;
 
 @Getter
 public class BankDepositEvent extends Event {
-
-    private final UUID UUID;
+    private final UUID playerUUID;
     private static final HandlerList HANDLERS = new HandlerList();
 
     public BankDepositEvent(UUID uuid) {
-        this.UUID = uuid;
+        this.playerUUID = uuid;
     }
 
     public static HandlerList getHandlerList() {

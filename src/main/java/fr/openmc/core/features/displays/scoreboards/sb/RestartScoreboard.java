@@ -1,5 +1,6 @@
 package fr.openmc.core.features.displays.scoreboards.sb;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
@@ -7,7 +8,6 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +17,12 @@ import static net.kyori.adventure.text.Component.text;
 
 public class RestartScoreboard extends BaseScoreboard {
     @Override
-    protected void updateTitle(Player player, SternalBoard board) {
+    protected void updateTitle(OMCPlayer player, SternalBoard board) {
         board.updateTitle(getTitle());
     }
 
     @Override
-    public void update(Player player, SternalBoard board) {
+    public void update(OMCPlayer player, SternalBoard board) {
         List<Component> lines = new ArrayList<>();
 
         lines.add(empty());
@@ -37,7 +37,7 @@ public class RestartScoreboard extends BaseScoreboard {
     }
 
     @Override
-    public boolean shouldDisplay(Player player) {
+    public boolean shouldDisplay(OMCPlayer player) {
         return Restart.isRestarting;
     }
 

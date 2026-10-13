@@ -1,5 +1,6 @@
 package fr.openmc.core.commands.utils;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -13,6 +14,7 @@ import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class SetSpawn {
+    private final SpawnManager spawnManager = OMCRegistry.FEATURES.SPAWN.get();
     
     @Command("setspawn")
     @Description("Permet de changer le spawn")
@@ -21,7 +23,7 @@ public class SetSpawn {
 
         Location loc = player.getLocation();
 
-        SpawnManager.setSpawn(loc);
+        spawnManager.setSpawn(loc);
 
         MessagesManager.sendMessage(player, TranslationManager.translation("command.utils.setspawn.success",
                 Component.text(loc.getBlockX()).color(NamedTextColor.YELLOW),

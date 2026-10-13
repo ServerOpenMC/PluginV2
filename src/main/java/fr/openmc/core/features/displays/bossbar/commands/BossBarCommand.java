@@ -11,6 +11,12 @@ import revxrsal.commands.annotation.CommandPlaceholder;
 @Command({"omcbossbar", "bb", "bossbaromc"})
 public class BossBarCommand {
 
+    private final BossbarManager manager;
+
+    public BossBarCommand(BossbarManager manager) {
+        this.manager = manager;
+    }
+
     /**
      * Bascule l'affichage de la boss bar d'aide pour le joueur.
      *
@@ -18,6 +24,6 @@ public class BossBarCommand {
      */
     @CommandPlaceholder()
     public void mainCommand(Player player) {
-        BossbarManager.toggleBossBar(player, "omc:help");
+        manager.toggleBossBar(player, "omc:help");
     }
 }

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PeeledObeseCropsListener implements Listener {
-    private final Map<KeyBlock, CustomItem> PEELED_OBESE_CROPS_MAPPING = new HashMap<>(Map.of(
+    private final Map<KeyBlock, CustomItem> peeledObeseCropMapping = new HashMap<>(Map.of(
             KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.OBESE_CARROT), OMCRegistry.CUSTOM_ITEMS.PEELED_OBESE_CARROT,
             KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.OBESE_POTATO), OMCRegistry.CUSTOM_ITEMS.PEELED_OBESE_POTATO,
             KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.OBESE_BEETROOT), OMCRegistry.CUSTOM_ITEMS.PEELED_OBESE_BEETROOT,
@@ -42,7 +42,7 @@ public class PeeledObeseCropsListener implements Listener {
         if (clickedCustomItem == null) return;
 
         KeyBlock keyBlock = KeyBlock.custom(clickedCustomItem);
-        CustomItem peeledVariant = PEELED_OBESE_CROPS_MAPPING.get(keyBlock);
+        CustomItem peeledVariant = peeledObeseCropMapping.get(keyBlock);
         if (peeledVariant == null) return;
         CustomBlock peeledVarientBlock = peeledVariant.getCustomBlock();
         if (peeledVarientBlock == null) return;

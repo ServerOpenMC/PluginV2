@@ -29,20 +29,21 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 
 public class ShopListener implements Listener {
+    private final ShopManager shopManager = OMCRegistry.FEATURES.SHOP.get();
 
     @EventHandler
     public void onShopBreak(BlockBreakEvent e) {
-        if (ShopManager.getShopAt(e.getBlock().getLocation()) != null) e.setCancelled(true);
+        if (shopManager.getShopAt(e.getBlock().getLocation()) != null) e.setCancelled(true);
     }
 
     @EventHandler
     public void onShopExplode(BlockExplodeEvent e) {
-        e.blockList().removeIf(block -> ShopManager.getShopAt(block.getLocation()) != null);
+        e.blockList().removeIf(block -> shopManager.getShopAt(block.getLocation()) != null);
     }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent e) {
-        e.blockList().removeIf(block -> ShopManager.getShopAt(block.getLocation()) != null);
+        e.blockList().removeIf(block -> shopManager.getShopAt(block.getLocation()) != null);
     }
 
     @EventHandler
@@ -58,7 +59,7 @@ public class ShopListener implements Listener {
         
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         
-        Shop shop = ShopManager.getShopAt(block.getLocation());
+        Shop shop = shopManager.getShopAt(block.getLocation());
         if (shop == null) return;
         
         e.setCancelled(true);
@@ -85,7 +86,7 @@ public class ShopListener implements Listener {
         Block block = e.getClickedBlock();
         if (block == null || block.getType() != Material.BARREL) return;
         
-        Shop shop = ShopManager.getShopAt(block.getLocation());
+        Shop shop = shopManager.getShopAt(block.getLocation());
         if (shop == null) return;
         
         Player player = e.getPlayer();
@@ -103,7 +104,7 @@ public class ShopListener implements Listener {
         
         Entity furnitureEntity = furniture.getEntity();
         if (furnitureEntity == null) return;
-        if (ShopManager.getShopAt(furnitureEntity.getLocation().toBlockLocation()) == null) return;
+        if (shopManager.getShopAt(furnitureEntity.getLocation().toBlockLocation()) == null) return;
         e.setCancelled(true);
     }
     
@@ -120,7 +121,7 @@ public class ShopListener implements Listener {
 		    return;
 	    }
 	    
-	    Shop shop = ShopManager.getShopAt(furnitureEntity.getLocation().toBlockLocation());
+	    Shop shop = shopManager.getShopAt(furnitureEntity.getLocation().toBlockLocation());
 	    if (shop == null) {
 		    MessagesManager.sendMessage(player, TranslationManager.translation("feature.shop.error.shop_is_null"), Prefix.SHOP, MessageType.ERROR, true);
 			return;
@@ -146,12 +147,12 @@ public class ShopListener implements Listener {
     public void onHopperPickUpItem(InventoryMoveItemEvent e) {
         Inventory source = e.getSource();
         if (source.getLocation() == null) return;
-	    if (ShopManager.getShopAt(source.getLocation().toBlockLocation()) == null) return;
+	    if (shopManager.getShopAt(source.getLocation().toBlockLocation()) == null) return;
         e.setCancelled(true);
     }
     
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-	    ShopManager.shopBypass.remove(e.getPlayer().getUniqueId());
+	    shopManager.shopBypass.remove(e.getPlayer().getUniqueId());
     }
 }

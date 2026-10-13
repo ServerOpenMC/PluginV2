@@ -4,8 +4,8 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.rank.CityRankCondition;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
@@ -87,11 +87,13 @@ public class CityRankMemberMenu extends PaginatedMenu {
 					return;
 				}
 				
-				if (city.getRankOfMember(player.getUniqueId()) != null) {
-					if (!CityRankCondition.canModifyRankPermissions(city, getOwner(), city.getRankOfMember(player.getUniqueId()).getPriority())) {
-						return;
-					}
-				}
+				if (city.getRankOfMember(player.getUniqueId()) != null
+						&& !CityRankCondition.canModifyRankPermissions(
+								city,
+								getOwner(),
+								city.getRankOfMember(player.getUniqueId()).getPriority())
+				) return;
+
 
 				new CityRankAssignMenu(getOwner(), uuid, city).open();
 			}));

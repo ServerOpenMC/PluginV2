@@ -1,13 +1,14 @@
 package fr.openmc.api.omcplayer.sub;
 
+import fr.openmc.api.omcplayer.feature.OMCOfflinePlayerFeat;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
-public class OMCPlayerMessage extends OMCPlayerFeat {
-    public OMCPlayerMessage(Player player) {
+public class OMCPlayerMessage extends OMCOfflinePlayerFeat {
+    public OMCPlayerMessage(OfflinePlayer player) {
         super(player);
     }
 

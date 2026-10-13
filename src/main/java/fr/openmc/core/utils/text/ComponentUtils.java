@@ -5,6 +5,8 @@ import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.TextDecoration;
 
 public class ComponentUtils {
+    private ComponentUtils() {}
+
     /**
      * Transforme les ComponentLike, en commponent
      * par défaut blanc et pas en italic si le component n'a pas de décoration par défaut

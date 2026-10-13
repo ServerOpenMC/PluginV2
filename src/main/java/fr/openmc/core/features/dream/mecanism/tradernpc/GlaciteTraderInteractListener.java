@@ -2,7 +2,7 @@ package fr.openmc.core.features.dream.mecanism.tradernpc;
 
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
-import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.OMCRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 public class GlaciteTraderInteractListener implements Listener {
     @EventHandler
     public void onInteract(NpcInteractEvent event) {
-        if (!FancyNpcsHook.isEnable()) return;
+        if (!OMCRegistry.HOOKS.FANCY_NPCS.isEnable()) return;
 
         Player player = event.getPlayer();
 

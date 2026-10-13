@@ -1,6 +1,6 @@
 package fr.openmc.core.registry.enchantments;
 
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.RandomUtils;
 import io.papermc.paper.registry.RegistryAccess;

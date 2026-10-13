@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.listeners;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.FishingAttributeManager;
@@ -13,7 +14,6 @@ import fr.openmc.core.registry.loottable.loots.TableLoot;
 import fr.openmc.core.utils.RngUtils;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.event.entity.FishHookStateChangeEvent;
@@ -34,13 +34,14 @@ import java.util.Collection;
 import java.util.List;
 
 public class PlayerFishListener implements Listener {
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
 
     @EventHandler
     public void onStartFishing(PlayerFishEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
 
-        Player player = event.getPlayer();
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         FishHook hook = event.getHook();
 
         FishingAttributeManager.applyFishingSpeedModifier(player, hook);
@@ -63,13 +64,13 @@ public class PlayerFishListener implements Listener {
                     hook.getLocation(),
                     35, 0.1D, null);
 
-            MessagesManager.sendMessage(player, TranslationManager.translation(
+            player.message().send(TranslationManager.translation(
                     "feature.dailyevents.miraculousfishing.loot_table.get",
                     Component.text(finalLoots.size()).color(NamedTextColor.YELLOW)
             ), Prefix.MIRACULOUS_FISHING, MessageType.INFO, false);
 
             if (loots.size() * 2 == finalLoots.size()) {
-                player.sendMessage(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
+                player.message().send(TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.get.double_hook"));
             }
 
             sendLoot(player, hook, finalLoots);
@@ -78,8 +79,8 @@ public class PlayerFishListener implements Listener {
 
     @EventHandler
     public void onHookOnWater(FishHookStateChangeEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof MiraculousFishingEvent)) return;
 
         Entity hook = event.getEntity();
         World world = hook.getWorld();
@@ -107,7 +108,7 @@ public class PlayerFishListener implements Listener {
      * @param hook le hook lancé par le joueur
      * @param loots les loots obtenus par le joueur
      */
-    private void sendLoot(Player player, FishHook hook, Collection<CustomLoot> loots) {
+    private void sendLoot(OMCPlayer player, FishHook hook, Collection<CustomLoot> loots) {
         for (CustomLoot loot : loots) {
             RngUtils.sendSoundRng(player, loot.getChance());
 

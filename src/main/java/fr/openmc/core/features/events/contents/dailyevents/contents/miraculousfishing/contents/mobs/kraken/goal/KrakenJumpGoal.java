@@ -24,7 +24,7 @@ public class KrakenJumpGoal implements Goal<Squid> {
     private long lastJumpTick = 0;
     private boolean inJump = false;
 
-    private static final long COOLDOWN = 20 * 10; // 10 secondes, en tick
+    private static final long COOLDOWN = 20 * 10L; // 10 secondes, en tick
     private static final double LAND_RADIUS = 20;
     private static final double LAND_DAMAGE = 15.0;
 

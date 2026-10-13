@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.mecanism.sfx.clone.PlayerCloneNpc;
@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.event.world.ClockTimeSkipEvent;
 import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -22,9 +23,16 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerSleepListener implements Listener {
+    private final DreamManager dreamManager;
+    private final PlayerCloneNpc playerCloneNpc;
+
+    public PlayerSleepListener(DreamManager manager) {
+        this.dreamManager = manager;
+        this.playerCloneNpc = OMCRegistry.DREAM_FEATURES.PLAYER_CLONE_NPC;
+    }
 
     private final Set<Player> isPlayerSleeping = new HashSet<>();
-    private final int DREAM_TELEPORT_DELAY = 20 * 3;
+    private static final int DREAM_TELEPORT_DELAY = 20 * 3;
 
     @EventHandler
     public void onPlayerEnterBed(PlayerBedEnterEvent event) {
@@ -42,12 +50,12 @@ public class PlayerSleepListener implements Listener {
 
     @EventHandler
     public void onNightSkip(TimeSkipEvent event) {
-        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP) {
+        if (event.getSkipReason() == ClockTimeSkipEvent.SkipReason.NIGHT_SKIP) {
             if (isPlayerSleeping.isEmpty()) return;
 
             for (Player player : isPlayerSleeping) {
-                if (!DimensionAccessListener.checkAccess(player, DreamDimensionManager.DIMENSION_NAME, null)) continue;
-                if (ThreadLocalRandom.current().nextDouble() < DreamManager.calculateDreamProbability(player)) {
+                if (!OMCRegistry.FEATURES.DIMENSION_OPENER.get().checkAccess(player, DreamDimensionManager.DIMENSION_NAME, null)) continue;
+                if (ThreadLocalRandom.current().nextDouble() < dreamManager.calculateDreamProbability(player)) {
                     player.addPotionEffect(new PotionEffect(
                             PotionEffectType.NAUSEA,
                             DREAM_TELEPORT_DELAY,
@@ -60,12 +68,12 @@ public class PlayerSleepListener implements Listener {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            PlayerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SLEEPING);
-                            DBDreamPlayer dbDreamPlayer = DreamManager.getCacheDreamPlayer(player);
+                            playerCloneNpc.createCloneNpc(player, player.getLocation(), Pose.SLEEPING);
+                            DBDreamPlayer dbDreamPlayer = dreamManager.getCacheDreamPlayer(player);
                             if (dbDreamPlayer == null || (dbDreamPlayer.getDreamX() == null || dbDreamPlayer.getDreamY() == null || dbDreamPlayer.getDreamZ() == null)) {
-                                DreamManager.tpPlayerDream(player);
+                                dreamManager.tpPlayerDream(player);
                             } else {
-                                DreamManager.tpPlayerToLastDreamLocation(player);
+                                dreamManager.tpPlayerToLastDreamLocation(player);
                             }
                         }
                     }.runTaskLater(OMCPlugin.getInstance(), DREAM_TELEPORT_DELAY);

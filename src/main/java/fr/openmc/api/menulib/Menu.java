@@ -1,10 +1,10 @@
 package fr.openmc.api.menulib;
 
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -274,7 +274,7 @@ public abstract class Menu implements InventoryHolder {
     public final Inventory getInventory() {
         Component title = getName();
 
-        if (ItemsAdderHook.isEnable() && (getTexture() != null && !getTexture().isEmpty()) && getTexture() != null && !getTexture().isEmpty()) {
+        if (OMCRegistry.HOOKS.ITEMS_ADDER.isEnable() && (getTexture() != null && !getTexture().isEmpty()) && getTexture() != null && !getTexture().isEmpty()) {
             title = Component.text(getTexture());
         }
 

@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.registries.mobs;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.utils.RandomUtils;
@@ -93,7 +93,7 @@ public class Soul extends DreamMob<Vex> {
     }
 
     private final List<ItemLoot> loots = List.of(new ItemLoot(
-            DreamItemRegistry.SOUL,
+            OMCRegistry.DREAM_ITEM.SOUL,
             0.70,
             1,
             2

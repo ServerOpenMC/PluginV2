@@ -34,16 +34,18 @@ import static fr.openmc.core.features.events.contents.dailyevents.contents.golde
  * Listener qui prends en charge les loots donnée par les crops et par les obese crops
  */
 public class GoldenCropsListener implements Listener {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private final GoldenHarvestManager goldenHarvestManager = OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.feature();
 
     @EventHandler(ignoreCancelled = true)
     public void onCropBreak(BlockBreakEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
         if (ThreadLocalRandom.current().nextDouble() > AbondanceArmorManager.getLuckGoldenCropsModifier(event.getPlayer())) return;
 
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
-        ItemLoot itemLoot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
+        ItemLoot itemLoot = goldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (itemLoot == null) return;
 
         List<CustomLoot> loots = itemLoot.run(event.getPlayer(), event.getBlock().getLocation()).loots();
@@ -54,15 +56,15 @@ public class GoldenCropsListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onObeseCropBreak(CustomBlockBreakEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
         if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_OBESE_CHANCE) return;
         if (!ObeseCropsRegistry.isObeseCrop(event.getBlock().getLocation())) return;
 
         CustomBlock customBlock = CustomBlock.byItemStack(event.getCustomBlockItem());
         KeyBlock keyBlock = KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.getOrThrow(customBlock.getItemStack()));
 
-        ItemLoot itemLoot = GoldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
+        ItemLoot itemLoot = goldenHarvestManager.getGoldenCropsOnBreakMapping().get(keyBlock);
         if (itemLoot == null) return;
 
         giveRewards(itemLoot, event.getPlayer(), event.getBlock());
@@ -70,11 +72,11 @@ public class GoldenCropsListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onCropFullyGrowed(BlockGrowEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
         BlockType blockType = event.getNewState().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
-        KeyBlock keyBlockGolden = GoldenHarvestManager.getGoldenCropsOnGrowMapping().get(keyBlock);
+        KeyBlock keyBlockGolden = goldenHarvestManager.getGoldenCropsOnGrowMapping().get(keyBlock);
         if (keyBlockGolden == null) return;
 
         if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.GOLDEN_CROP_ON_CROP_CHANCE) return;

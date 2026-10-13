@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.function.Function;
 
 public class ItemMenuTemplate {
+    private ItemMenuTemplate() {}
+
     public static final Function<Menu, ItemMenuBuilder> BTN_PREVIOUS_PAGE_WHITE = (menu) ->
             new ItemMenuBuilder(menu, OMCRegistry.CUSTOM_ITEMS.MAILBOX_ARROW_LEFT, meta ->
                     meta.displayName(TranslationManager.translation("feature.mailboxes.menu.button.previous_page_arrow")

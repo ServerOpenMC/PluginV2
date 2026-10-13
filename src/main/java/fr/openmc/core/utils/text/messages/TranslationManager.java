@@ -3,9 +3,9 @@ package fr.openmc.core.utils.text.messages;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.integration.ResourcePacksGenerator;
 import fr.openmc.core.hooks.BedrockHook;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.ResourcePacksGenerator;
 import fr.openmc.core.utils.text.ComponentUtils;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import fr.openmc.core.utils.types.MultiResourceBundle;
@@ -31,7 +31,9 @@ import java.util.*;
  */
 @SuppressWarnings("UnstableApiUsage")
 public class TranslationManager {
-    public static Map<String, String> fallbackTranslations = new HashMap<>();
+    private TranslationManager() {}
+
+    protected static Map<String, String> fallbackTranslations = new HashMap<>();
 
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()

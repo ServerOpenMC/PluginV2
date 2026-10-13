@@ -1,5 +1,6 @@
 package fr.openmc.core.features.friend.commands.autocomplete;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import org.bukkit.entity.Player;
@@ -11,15 +12,14 @@ import revxrsal.commands.node.ExecutionContext;
 import java.util.List;
 import java.util.UUID;
 
-import static fr.openmc.core.features.friend.FriendManager.friendsRequests;
-
 public class FriendsRequestAutoComplete implements SuggestionProvider<BukkitCommandActor> {
 
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
         Player sender = context.actor().requirePlayer();
+        OMCPlayer player = OMCPlayer.of(sender);
 
-        List<UUID> requestUUIDs = friendsRequests.stream()
+        List<UUID> requestUUIDs = player.friends().getFriendsRequests().stream()
                 .filter(request -> request.containsUUID(sender.getUniqueId()))
                 .map(request -> request.getSenderUUID().equals(sender.getUniqueId()) ? request.getReceiverUUID() : request.getSenderUUID())
                 .toList();

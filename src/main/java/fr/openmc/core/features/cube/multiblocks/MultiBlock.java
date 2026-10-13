@@ -18,7 +18,7 @@ public abstract class MultiBlock {
     @Setter
     protected boolean vulnerable = false;
 
-    public MultiBlock(Location origin, int radius, Material material) {
+    protected MultiBlock(Location origin, int radius, Material material) {
         this.origin = origin;
         this.radius = radius;
         this.material = material;

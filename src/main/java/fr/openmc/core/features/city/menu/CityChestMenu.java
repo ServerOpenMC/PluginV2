@@ -9,10 +9,9 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.utils.Restart;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityChestAction;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.ChestPageLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -41,6 +40,8 @@ public class CityChestMenu extends PaginatedMenu {
     private final City city;
     @Getter
     private final int page;
+
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public CityChestMenu(Player owner, City city, int page) {
         super(owner);
@@ -100,18 +101,17 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
-        if (Restart.isRestarting) return null;
+        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
+        if (Restart.isRestarting) return map;
 
         Player player = getOwner();
-
-        Map<Integer, ItemMenuBuilder> map = new HashMap<>();
 
         map.put(45, new ItemMenuBuilder(this, Material.ARROW, true)
                 .setOnClick(_ -> exit(city, getInventory())));
 
-        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
-        }).setOnClick(_ -> {
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta ->
+                itemMeta.displayName(TranslationManager.translation("messages.menus.close")))
+        .setOnClick(_ -> {
             exit(city, getInventory());
             player.closeInventory();
         }));
@@ -147,7 +147,7 @@ public class CityChestMenu extends PaginatedMenu {
 
         List<Component> loreUpgrade;
         Component moneyValue = Component.text(city.getChestPages() * UPGRADE_PER_MONEY).color(NamedTextColor.GOLD);
-        Component moneyIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
+        Component moneyIcon = Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
         Component ayweniteValue = Component.text(city.getChestPages() * UPGRADE_PER_AYWENITE).color(NamedTextColor.LIGHT_PURPLE);
         if (city.getChestPages() >= ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
             loreUpgrade = TranslationManager.translationLore(
@@ -193,8 +193,7 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
-    }
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
     public @NotNull InventorySize getInventorySize() {
@@ -212,7 +211,7 @@ public class CityChestMenu extends PaginatedMenu {
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) return;
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         if (city == null) return;
 
         Inventory inv = event.getInventory();

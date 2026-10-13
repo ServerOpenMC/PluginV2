@@ -3,11 +3,11 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.actions.CityChangeAction;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
+import fr.openmc.core.features.city.models.CityType;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -51,9 +51,11 @@ public class CityTypeMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = player.city().getCity();
+        assert city != null;
+
         boolean enchantPeace = city.getType() == CityType.PEACE;
         List<Component> peaceInfo = TranslationManager.translationLore("feature.city.menus.type.peace.lore");
 
@@ -61,7 +63,7 @@ public class CityTypeMenu extends Menu {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.type.peace.title"));
             itemMeta.lore(peaceInfo);
             itemMeta.setEnchantmentGlintOverride(enchantPeace);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             if (!CityTypeConditions.canCityChangeType(city, player, CityType.PEACE)) return;
 
             CityChangeAction.beginChangeCity(player, CityType.PEACE);
@@ -82,7 +84,7 @@ public class CityTypeMenu extends Menu {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.type.war.title"));
             itemMeta.lore(warInfo);
             itemMeta.setEnchantmentGlintOverride(enchantWar);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             if (!CityTypeConditions.canCityChangeType(city, player, CityType.WAR)) return;
 
             CityChangeAction.beginChangeCity(player, CityType.WAR);

@@ -5,6 +5,8 @@ import net.kyori.adventure.sound.Sound;
 import org.bukkit.entity.Player;
 
 public class RngUtils {
+    private RngUtils() {}
+
     /**
      * Renvoie un son aléatoire en fonction de la chance donnée.
      * @param player le joueur ciblé (et le monde ciblé si il y a une basse probabilité

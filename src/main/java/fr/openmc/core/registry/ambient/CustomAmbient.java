@@ -3,7 +3,7 @@ package fr.openmc.core.registry.ambient;
 import com.google.gson.JsonObject;
 import fr.openmc.api.datapacks.builders.BiomeBuilder;
 import fr.openmc.api.datapacks.injectors.BiomesInjector;
-import fr.openmc.core.features.leaderboards.LeaderBoardManager;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.ambient.builder.AmbientBuilder;
 import fr.openmc.core.utils.MathUtils;
 import fr.openmc.core.utils.nms.PlayerBiomeNMS;
@@ -32,7 +32,7 @@ public abstract class CustomAmbient {
     // ** UUID playerUUID -> String idAmbient
     public static final Map<UUID, String> ACTIVE_AMBIENTS = new HashMap<>();
 
-    public Holder<DimensionType> CACHED_DIMENSION_TYPE = null;
+    public Holder<DimensionType> cachedDimensionType = null;
 
     public abstract String getId();
     public abstract AmbientBuilder getAmbientBuilder();
@@ -125,7 +125,7 @@ public abstract class CustomAmbient {
     private void refreshLeaderBoards(Player player) {
         Bukkit.getScheduler().runTaskLater(
                 fr.openmc.core.OMCPlugin.getInstance(),
-                () -> LeaderBoardManager.refreshViewer(player),
+                () -> OMCRegistry.FEATURES.LEADERBOARD.get().refreshViewer(player),
                 1L
         );
     }
@@ -226,8 +226,8 @@ public abstract class CustomAmbient {
     }
 
     private Holder<DimensionType> getDimensionType() {
-        if (CACHED_DIMENSION_TYPE != null)
-            return CACHED_DIMENSION_TYPE;
+        if (cachedDimensionType != null)
+            return cachedDimensionType;
 
         ResourceKey<DimensionType> key = ResourceKey.create(
                 Registries.DIMENSION_TYPE,
@@ -237,9 +237,9 @@ public abstract class CustomAmbient {
         Registry<DimensionType> dimRegistry =
                 MinecraftServer.getServer().registryAccess().lookupOrThrow(Registries.DIMENSION_TYPE);
 
-        CACHED_DIMENSION_TYPE = dimRegistry.get(key).orElseThrow(() ->
+        cachedDimensionType = dimRegistry.get(key).orElseThrow(() ->
                 new IllegalStateException("DimensionType " + CustomAmbientRegistry.NAMESPACE + ":"+ this.getId() +" introuvable")
         );
-        return CACHED_DIMENSION_TYPE;
+        return cachedDimensionType;
     }
 }

@@ -17,13 +17,15 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Chronometer {
+    private Chronometer() {}
 
     // Map structure: UUID -> (Group -> Time)
-    public static final HashMap<UUID, HashMap<String, Integer>> chronometer = new HashMap<>();
+    public static final Map<UUID, HashMap<String, Integer>> chronometerMap = new HashMap<>();
     // Map structure: UUID -> Group -> Task
     private static final HashMap<UUID, HashMap<String, BukkitRunnable>> activeTasks = new HashMap<>();
     // new @EventHandler > ChronometerEndEvent
@@ -75,7 +77,7 @@ public class Chronometer {
             Component finishMessage
     ) {
         UUID entityUUID = entity.getUniqueId();
-        chronometer.computeIfAbsent(entityUUID, k -> new HashMap<>()).put(group, time);
+        chronometerMap.computeIfAbsent(entityUUID, k -> new HashMap<>()).put(group, time);
 
         if (activeTasks.containsKey(entityUUID) && activeTasks.get(entityUUID).containsKey(group)) {
             activeTasks.get(entityUUID).get(group).cancel();
@@ -84,12 +86,12 @@ public class Chronometer {
         BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!chronometer.containsKey(entityUUID)) {
+                if (!chronometerMap.containsKey(entityUUID)) {
                     cancel();
                     return;
                 }
 
-                int remainingTime = chronometer.get(entityUUID).get(group);
+                int remainingTime = chronometerMap.get(entityUUID).get(group);
 
                 if (key != null && entity instanceof Player player) {
                     Component timerMessage = TranslationManager.translation(key, Component.text(remainingTime + "s"));
@@ -99,23 +101,22 @@ public class Chronometer {
 
                 if (timerEnd(entityUUID, group)) {
 
-                    if (entity instanceof Player player && finishMessage != null) {
+                    if (entity instanceof Player player && finishMessage != null)
                         sendMessage(player, finishMessageType, finishMessage);
-                    }
 
                     Bukkit.getPluginManager().callEvent(new ChronometerEndEvent(entity, group));
 
-                    if (chronometer.containsKey(entityUUID)) {
-                        chronometer.get(entityUUID).remove(group);
-                        if (chronometer.get(entityUUID).isEmpty()) {
-                            chronometer.remove(entityUUID);
+                    if (chronometerMap.containsKey(entityUUID)) {
+                        chronometerMap.get(entityUUID).remove(group);
+                        if (chronometerMap.get(entityUUID).isEmpty()) {
+                            chronometerMap.remove(entityUUID);
                         }
                     }
                     cancel();
                     return;
                 }
 
-                chronometer.get(entityUUID).put(group, remainingTime - 1);
+                chronometerMap.get(entityUUID).put(group, remainingTime - 1);
             }
         };
         task.runTaskTimer(OMCPlugin.getInstance(), 0, 20);
@@ -130,12 +131,11 @@ public class Chronometer {
     public static void stopAllChronometer(Entity entity, ChronometerType messageType, Component message) {
         UUID entityUUID = entity.getUniqueId();
 
-        if (chronometer.containsKey(entityUUID)) {
-            chronometer.remove(entityUUID);
+        if (chronometerMap.containsKey(entityUUID)) {
+            chronometerMap.remove(entityUUID);
 
-            if (entity instanceof Player player && message != null) {
+            if (entity instanceof Player player && message != null)
                 sendMessage(player, messageType, message);
-            }
         }
 
         if (activeTasks.containsKey(entityUUID)) {
@@ -155,21 +155,19 @@ public class Chronometer {
     public static void stopChronometer(Entity entity, String group, ChronometerType messageType, Component message) {
         UUID entityUUID = entity.getUniqueId();
 
-        if (chronometer.containsKey(entityUUID) && chronometer.get(entityUUID).containsKey(group)) {
-            chronometer.get(entityUUID).remove(group);
+        if (chronometerMap.containsKey(entityUUID) && chronometerMap.get(entityUUID).containsKey(group)) {
+            chronometerMap.get(entityUUID).remove(group);
 
             if (activeTasks.containsKey(entityUUID) && activeTasks.get(entityUUID).containsKey(group)) {
                 activeTasks.get(entityUUID).get(group).cancel();
                 activeTasks.get(entityUUID).remove(group);
             }
 
-            if (entity instanceof Player player && message != null) {
+            if (entity instanceof Player player && message != null)
                 sendMessage(player, messageType, message);
-            }
 
-            if (chronometer.get(entityUUID).isEmpty()) {
-                chronometer.remove(entityUUID);
-            }
+            if (chronometerMap.get(entityUUID).isEmpty())
+                chronometerMap.remove(entityUUID);
         } else {
             if (entity instanceof Player player) {
                 MessagesManager.sendMessage(player,
@@ -179,36 +177,23 @@ public class Chronometer {
         }
     }
 
-    public static void listChronometers(Entity entity, Player owner) {
-        UUID entitytUUID = entity.getUniqueId();
-
-        if (chronometer.containsKey(entitytUUID)) {
-            owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on"));
-            chronometer.get(entitytUUID).forEach((group, time) ->
-                    owner.sendMessage(TranslationManager.translation("api.chronometer.chronometer_on_list",
-                            Component.text(group), Component.text(time).color(NamedTextColor.GOLD)).color(NamedTextColor.YELLOW)));
-        } else {
-            owner.sendMessage(TranslationManager.translation("api.chronometer.none_chronometer_player"));
-        }
-    }
-
     /**
      * @return the remaining time
      */
     public static int getRemainingTime(UUID entityUUID, String group) {
-        return chronometer.get(entityUUID).get(group);
+        return chronometerMap.get(entityUUID).get(group);
     }
 
     /**
      * @return true if the chronometer has expired
      */
     public static boolean timerEnd(UUID entityUUID, String group) {
-        return chronometer.get(entityUUID).get(group) <= 0;
+        return chronometerMap.get(entityUUID).get(group) <= 0;
     }
 
     public static boolean containsChronometer(UUID entityUUID, String group) {
-        if (chronometer.containsKey(entityUUID)){
-            return chronometer.get(entityUUID).containsKey(group);
+        if (chronometerMap.containsKey(entityUUID)){
+            return chronometerMap.get(entityUUID).containsKey(group);
         }
         return false;
     }

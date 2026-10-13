@@ -3,18 +3,17 @@ package fr.openmc.core.features.city.menu.main.buttons;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.menu.CityChunkMenu;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.features.city.menu.chunk.CityChunkMenu;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,7 @@ public class MapButton {
     private static boolean hasPermissionChunkSee;
 
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, City city, int[] slots) {
-        Player player = menu.getOwner();
+        OMCPlayer player = menu.getOwner();
         hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CityPermission.SEE_CHUNKS);
 
         MenuUtils.createButtonItem(
@@ -33,9 +32,9 @@ public class MapButton {
                     itemMeta.itemName(TranslationManager.translation("feature.city.menus.main.map.title"));
                     itemMeta.lore(getDynamicLore(city));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-                }).setOnClick(inventoryClickEvent -> {
+                }).setOnClick(_ -> {
                     if (!hasPermissionChunkSee) {
-                        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.menus.main.map.no_permission"), Prefix.CITY, MessageType.ERROR, false);
+                        player.message().send(TranslationManager.translation("feature.city.menus.main.map.no_permission"), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
 

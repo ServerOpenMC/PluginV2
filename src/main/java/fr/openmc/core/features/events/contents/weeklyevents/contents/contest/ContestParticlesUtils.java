@@ -6,6 +6,7 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
 import fr.openmc.core.utils.RandomUtils;
@@ -17,7 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ContestParticlesUtils {
+    private ContestParticlesUtils() {}
 
+    private static final WeeklyEventsManager weeklyEventsManager = OMCRegistry.FEATURES.WEEKLY_EVENTS.get();
 
     public static Color color1;
     public static Color color2;
@@ -38,7 +41,7 @@ public class ContestParticlesUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (WeeklyEventsManager.getCurrentEvent() != null) return;
+                if (weeklyEventsManager.getCurrentEvent() != null) return;
 
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
@@ -59,7 +62,7 @@ public class ContestParticlesUtils {
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 2L);
     }
 
-    public static void spawnContestParticlesInRegion(String regionId, World world, int amountPer2Tick, int minHeight, int maxHeight) {
+    public static void spawnContestParticlesInRegion(ContestManager contestManager, String regionId, World world, int amountPer2Tick, int minHeight, int maxHeight) {
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if (regionManager == null) return;
 
@@ -75,12 +78,12 @@ public class ContestParticlesUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!(WeeklyEventsManager.getCurrentEvent() instanceof Contest)) return;
-                if (WeeklyEventsManager.getCurrentPhase() == ContestPhase.END_PHASE.getPhase()) return;
+                if (!(weeklyEventsManager.getCurrentEvent() instanceof Contest)) return;
+                if (weeklyEventsManager.getCurrentPhase() == ContestPhase.END_PHASE.getPhase()) return;
 
                 if (color1 == null || color2 == null) {
-                    String camp1Color = ContestManager.data.getColor1();
-                    String camp2Color = ContestManager.data.getColor2();
+                    String camp1Color = contestManager.getData().getColor1();
+                    String camp2Color = contestManager.getData().getColor2();
 
                     if (camp1Color == null || camp1Color.isEmpty()) {
                         camp1Color = "WHITE";

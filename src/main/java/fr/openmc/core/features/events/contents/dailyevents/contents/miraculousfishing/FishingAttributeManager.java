@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class FishingAttributeManager {
+    private FishingAttributeManager() {}
+
     public static final double FISHING_SPEED_MODIFIER = 0.4;
     public static final double DOUBLE_HOOK_MODIFIER = 0;
 

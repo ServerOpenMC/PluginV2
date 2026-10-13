@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class WorldUtils {
+    private WorldUtils() {}
 
     /**
      * Renvoie la translation key de l'affichage du nom d'un monde
@@ -55,8 +56,8 @@ public class WorldUtils {
 	 * @param y the Y location
 	 */
 	public static Location getChunkCenter(Chunk chunk, double y) {
-		double x = 16 * chunk.getX() + 8;
-		double z = 16 * chunk.getZ() + 8;
+		double x = 16 * chunk.getX() + 8d;
+		double z = 16 * chunk.getZ() + 8d;
 		return new Location(chunk.getWorld(), x, y, z);
 	}
 }

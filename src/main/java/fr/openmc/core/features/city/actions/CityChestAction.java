@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -13,6 +13,7 @@ import static fr.openmc.core.features.city.conditions.CityChestConditions.UPGRAD
 import static fr.openmc.core.features.city.conditions.CityChestConditions.UPGRADE_PER_MONEY;
 
 public class CityChestAction {
+    private CityChestAction() {}
 
     public static void upgradeChest(Player player, City city) {
         if (!CityChestConditions.canCityChestUpgrade(city, player)) return;

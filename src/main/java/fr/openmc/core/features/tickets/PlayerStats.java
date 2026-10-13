@@ -3,7 +3,8 @@ package fr.openmc.core.features.tickets;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 
 @Getter
 public class PlayerStats {

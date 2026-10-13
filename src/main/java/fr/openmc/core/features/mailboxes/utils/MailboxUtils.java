@@ -14,6 +14,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
 public class MailboxUtils {
+    private MailboxUtils() {}
+
     public static Component getPlayerName(OMCOfflinePlayer player) {
         Component displayName = player.getNameWithHead() == null
                 ? TranslationManager.translation("feature.mailboxes.player.unknown")
@@ -30,11 +32,6 @@ public class MailboxUtils {
         meta.displayName(nonItalic(name));
         head.setItemMeta(meta);
         return head;
-    }
-
-    public static Component colorText(String text, NamedTextColor color, boolean nonItalic) {
-        Component component = Component.text(text, color);
-        return nonItalic ? nonItalic(component) : component;
     }
 
     public static Component nonItalic(Component name) {

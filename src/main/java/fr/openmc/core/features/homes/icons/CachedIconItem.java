@@ -1,9 +1,10 @@
 package fr.openmc.core.features.homes.icons;
 
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -22,10 +23,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 public class CachedIconItem {
+    private final HomeIconCacheManager homeIconCacheManager = OMCRegistry.FEATURES.HOME_ICON_CACHE.get();
 
-    @Getter private final HomeIcon homeIcon;
-    private final ItemStack normalItemWithBuilder, selectedItemWithBuilder;
-    private final Component displayName, normalLore, selectedLore;
+    @Getter
+    private final HomeIcon homeIcon;
+    private final ItemStack normalItemWithBuilder;
+    private final ItemStack selectedItemWithBuilder;
+    private final Component displayName;
+    private final Component normalLore;
+    private final Component selectedLore;
 
     /**
      * Constructs a CachedIconItem with the specified HomeIcon and base ItemStack.
@@ -69,7 +75,6 @@ public class CachedIconItem {
      * @param baseItem The base ItemStack to clone and modify.
      * @return A new ItemStack with the display name, lore, and enchantments applied.
      */
-    @SuppressWarnings("UnstableApiUsage")
     private ItemStack createSelectedItemWithBuilder(ItemStack baseItem) {
         ItemStack item = baseItem.clone();
         ItemMeta meta = item.getItemMeta();
@@ -96,7 +101,7 @@ public class CachedIconItem {
                 selectedItemWithBuilder : normalItemWithBuilder;
 
         return new ItemMenuBuilder(menu, baseItem.clone())
-                .setOnClick(event -> {
+                .setOnClick(_ -> {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                         home.setIcon(homeIcon);
                         OMCPlayer.of(player).message().sendSuccess(
@@ -107,7 +112,7 @@ public class CachedIconItem {
                                 ),
                                 Prefix.HOME, true);
 
-                        HomeIconCacheManager.clearRenderedCache();
+                        homeIconCacheManager.clearRenderedCache();
                     });
                     player.closeInventory();
                 }).hide(ItemUtils.getDataComponentType());

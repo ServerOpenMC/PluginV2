@@ -1,16 +1,13 @@
 package fr.openmc.core.features.economy;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.analytics.Stats;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
@@ -20,43 +17,41 @@ import java.util.UUID;
 
 @Credit(developers = {"Axeno", "Piquel Chips", "PuppyTransGirl", "Gyro"})
 public class TransactionsManager extends Feature implements HasDatabase {
-    private static Dao<Transaction, String> transactionsDao;
+    private final DBTable<Transaction, String> transactionsTable = DBTable.of(Transaction.class);
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Transaction.class);
-        transactionsDao = DaoManager.createDao(connectionSource, Transaction.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(transactionsTable);
     }
 
-    public static List<Transaction> getTransactionsByPlayers(UUID playerUUID) {
+    public List<Transaction> getTransactionsByPlayers(UUID playerUUID) {
         if (!OMCPlugin.getConfigs().getBoolean("features.transactions", false)) {
             return List.of(new Transaction("CONSOLE", "CONSOLE", 0, "Désactivé"));
         }
 
         try {
-            QueryBuilder<Transaction, String> query = transactionsDao.queryBuilder();
+            QueryBuilder<Transaction, String> query = transactionsTable.queryBuilder();
             query.where().eq("recipient", playerUUID.toString()).or().eq("sender", playerUUID.toString());
-            return transactionsDao.query(query.prepare());
+            return transactionsTable.query(query.prepare());
         } catch (SQLException err) {
             OMCLogger.error("Failed to get transactions {}", playerUUID, err);
             return List.of(new Transaction("CONSOLE", "CONSOLE", 0, "ERREUR"));
         }
     }
 
-    public static void registerTransaction(Transaction transaction) {
-        if (!OMCPlugin.getConfigs().getBoolean("features.transactions", false)) {
-            return;
-        }
-        if (!Objects.equals(transaction.sender, "CONSOLE")) {
+    public void registerTransaction(Transaction transaction) {
+        if (!OMCPlugin.getConfigs().getBoolean("features.transactions", false)) return;
+
+        if (!Objects.equals(transaction.sender, "CONSOLE"))
             Stats.TOTAL_TRANSACTIONS.increment(UUID.fromString(transaction.sender));
-        }
-        if (!Objects.equals(transaction.recipient, "CONSOLE")) {
+
+        if (!Objects.equals(transaction.recipient, "CONSOLE"))
             Stats.TOTAL_TRANSACTIONS.increment(UUID.fromString(transaction.recipient));
-        }
+
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                transactionsDao.create(transaction);
+                transactionsTable.create(transaction);
             } catch (SQLException e) {
                 OMCLogger.error("Failed to register transactions", e);
             }

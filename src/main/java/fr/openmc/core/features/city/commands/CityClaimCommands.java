@@ -1,15 +1,15 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.city.conditions.CityClaimCondition;
 import fr.openmc.core.features.city.conditions.CityUnclaimCondition;
-import fr.openmc.core.features.city.menu.CityChunkMenu;
-import fr.openmc.core.features.city.view.CityViewManager;
+import fr.openmc.core.features.city.menu.chunk.CityChunkMenu;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.view.CityClaimViewManager;
 import org.bukkit.Chunk;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.CommandPlaceholder;
 import revxrsal.commands.annotation.Description;
@@ -17,12 +17,14 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 
 public class CityClaimCommands {
+    private final CityClaimViewManager cityClaimViewManager = OMCRegistry.CITY_FEATURES.CLAIM_VIEW;
+
     @Command("city claim")
     @CommandPermission("omc.commands.city.claim")
     @Description("Claim un chunk pour votre ville")
     @CommandPlaceholder()
-    void claim(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+    void claim(OMCPlayer sender) {
+        City city = City.ofPlayer(sender);
 
         if (!CityClaimCondition.canCityClaim(city, sender)) return;
 
@@ -34,8 +36,8 @@ public class CityClaimCommands {
     @Command("city unclaim")
     @CommandPermission("omc.commands.city.unclaim")
     @Description("Unclaim un chunk pour votre ville")
-    void unclaim(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+    void unclaim(OMCPlayer sender) {
+        City city = City.ofPlayer(sender);
 
         if (!CityUnclaimCondition.canCityUnclaim(city, sender)) return;
 
@@ -47,14 +49,14 @@ public class CityClaimCommands {
     @Command("city claim view")
     @Description("Voir les villes aux alentours")
     @CommandPermission("omc.commands.city.view")
-    void view(Player player) {
-        CityViewManager.startView(player);
+    void view(OMCPlayer player) {
+        cityClaimViewManager.startView(player);
     }
 
     @Command("city map")
     @CommandPermission("omc.commands.city.map")
     @Description("Affiche la map des claims.")
-    void map(Player sender) {
+    void map(OMCPlayer sender) {
         new CityChunkMenu(sender).open();
     }
 }

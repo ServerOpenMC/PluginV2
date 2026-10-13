@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class GoldenCropsInfoMenu extends PaginatedMenu {
+    private static final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private final GoldenHarvestManager goldenHarvestManager = OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.feature();
 
     public GoldenCropsInfoMenu(Player owner) {
         super(owner);
@@ -64,8 +66,8 @@ public class GoldenCropsInfoMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
-        boolean isActive = DailyEventsManager.isActiveDailyEvent()
-                && DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
+        boolean isActive = dailyEventsManager.isActiveDailyEvent()
+                && dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent;
 
         for (GoldenCropInfo goldenCropInfo : generateGoldenCropInfos()) {
             items.add(new ItemMenuBuilder(
@@ -139,7 +141,7 @@ public class GoldenCropsInfoMenu extends PaginatedMenu {
     private List<GoldenCropInfo> generateGoldenCropInfos() {
         Map<CustomItem, GoldenCropInfoBuilder> goldenCrops = new LinkedHashMap<>();
 
-        GoldenHarvestManager.getGoldenCropsOnBreakMapping().forEach((source, loot) -> {
+        goldenHarvestManager.getGoldenCropsOnBreakMapping().forEach((source, loot) -> {
             CustomItem goldenItem = OMCRegistry.CUSTOM_ITEMS.get(loot.getRepresentativeItem()).orElse(null);
 
             if (goldenItem == null) return;
@@ -150,7 +152,7 @@ public class GoldenCropsInfoMenu extends PaginatedMenu {
             ).addBreakSource(source);
         });
 
-        GoldenHarvestManager.getGoldenCropsOnGrowMapping().forEach((source, result) -> {
+        goldenHarvestManager.getGoldenCropsOnGrowMapping().forEach((source, result) -> {
             CustomItem goldenItem = result.getCustomItem();
 
             if (goldenItem == null) return;

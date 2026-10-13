@@ -1,18 +1,7 @@
 package fr.openmc.core.features.milestones;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
 import fr.openmc.core.features.milestones.commands.MilestoneCommand;
@@ -21,6 +10,14 @@ import fr.openmc.core.features.milestones.models.Milestone;
 import fr.openmc.core.features.milestones.models.MilestoneModel;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.quests.objects.Quest;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -28,13 +25,13 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Credit(developers = {"iambibi_", "gab400"})
-public class MilestonesManager extends Feature implements HasDatabase, LoadAfterItemsAdder, HasListeners, HasCommands {
-    private static final Set<Milestone<?>> milestones = new HashSet<>();
+public class MilestonesManager extends Feature implements HasDatabase, HasListeners, HasCommands {
+    private final Set<Milestone<?>> milestones = new HashSet<>();
 
-    private static Dao<MilestoneModel, String> millestoneDao;
+    private final DBTable<MilestoneModel, String> millestoneTable = DBTable.of(MilestoneModel.class);
 
     @Override
-    public void init() {
+    public void onEnable() {
 		Arrays.stream(MilestoneType.values()).toList().forEach(milestoneType -> registerMilestone(milestoneType.getMilestone()));
 
 	    loadMilestonesData();
@@ -54,33 +51,28 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
     }
 
     @Override
-    public void save() {
-        MilestonesManager.saveMilestonesData();
+    public void onDisable() {
+        this.saveMilestonesData();
     }
 
-    /**
-     * Initialize the database for milestones.
-     *
-     * @param connectionSource the connection source to the database
-     */
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, MilestoneModel.class);
-        millestoneDao = DaoManager.createDao(connectionSource, MilestoneModel.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(millestoneTable);
     }
 
     /**
      * Load all milestone data from the database.
      * This method retrieves all MilestoneModel entries and populates the player data for each milestone type.
      */
-    public static void loadMilestonesData() {
+    public void loadMilestonesData() {
         try {
-            List<MilestoneModel> milestoneData = millestoneDao.queryForAll();
+            BossbarManager bossbarManager = OMCRegistry.FEATURES.BOSSBAR.get();
+            List<MilestoneModel> milestoneData = millestoneTable.queryForAll();
             for (MilestoneModel data : milestoneData) {
 	            MilestoneType type = MilestoneType.valueOf(data.getType());
                 Milestone<?> milestone = type.getMilestone();
-                BossbarManager.registerBossbars(new MilestoneBossBar(milestone));
-	            milestone.getPlayerData().put(data.getUUID(), data);
+                bossbarManager.registerBossbars(new MilestoneBossBar(milestone));
+	            milestone.getPlayerData().put(data.getPlayerUUID(), data);
             }
 			OMCLogger.infoFormatted("Milestones loaded successfully from the database!");
         } catch (SQLException e) {
@@ -92,12 +84,12 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * Save all milestone data to the database.
      * This method iterates through each milestone and saves the player data for each milestone type.
      */
-    public static void saveMilestonesData() {
+    public void saveMilestonesData() {
         try {
             for (Milestone<?> milestone : milestones) {
                 for (Map.Entry<UUID, MilestoneModel> entry : milestone.getPlayerData().entrySet()) {
                     MilestoneModel model = entry.getValue();
-                    millestoneDao.createOrUpdate(model);
+                    millestoneTable.createOrUpdate(model);
                 }
             }
 	        OMCLogger.infoFormatted("Milestones saved successfully to the database!");
@@ -109,7 +101,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
 	/**
 	 * Load the quest progress for each player of each milestone
 	 */
-	public static void loadMilestonesProgress() {
+	public void loadMilestonesProgress() {
 		for (Milestone<?> milestone : milestones) {
 			if (milestone.getPlayerData().isEmpty()) continue;
 			// Pour tous les joueurs du milestone, la progression est chargée à l'étape actuelle
@@ -130,7 +122,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * @param milestone the milestone to get data for
      * @return a map of player UUIDs to their MilestoneModel
      */
-    public static Map<UUID, MilestoneModel> getMilestoneData(Milestone<?> milestone) {
+    public Map<UUID, MilestoneModel> getMilestoneData(Milestone<?> milestone) {
         return milestone.getPlayerData();
     }
 
@@ -139,7 +131,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * @param type the type of milestone to get data for
      * @return a map of player UUIDs to their MilestoneModel
      */
-    public static Map<UUID, MilestoneModel> getMilestoneData(MilestoneType type) {
+    public Map<UUID, MilestoneModel> getMilestoneData(MilestoneType type) {
         return type.getMilestone().getPlayerData();
     }
 
@@ -149,7 +141,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * @param playerUUID the UUID of the player
      * @return the step of the milestone for the player
      */
-    public static int getPlayerStep(MilestoneType type, UUID playerUUID) {
+    public int getPlayerStep(MilestoneType type, UUID playerUUID) {
         var data = getMilestoneData(type);
         if (data == null) return 0;
         return data.get(playerUUID).getStep();
@@ -162,7 +154,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * @param player the player to get the step for
      * @return the step of the milestone for the player
      */
-    public static int getPlayerStep(MilestoneType type, Player player) {
+    public int getPlayerStep(MilestoneType type, Player player) {
         return getPlayerStep(type, player.getUniqueId());
     }
 
@@ -172,7 +164,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * @param playerUUID the UUID of the player
      * @param step the step to set for the player
      */
-    public static void setPlayerStep(MilestoneType type, UUID playerUUID, int step) {
+    public void setPlayerStep(MilestoneType type, UUID playerUUID, int step) {
         getMilestoneData(type).get(playerUUID).setStep(step);
     }
 
@@ -182,7 +174,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * @param player the player to set the step for
      * @param step the step to set for the player
      */
-    public static void setPlayerStep(MilestoneType type, Player player, int step) {
+    public void setPlayerStep(MilestoneType type, Player player, int step) {
         setPlayerStep(type, player.getUniqueId(), step);
     }
 
@@ -190,7 +182,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * Get all registered milestones.
      * @return a set of all registered milestones
      */
-    public static Set<Milestone<?>> getRegisteredMilestones() {
+    public Set<Milestone<?>> getRegisteredMilestones() {
         return milestones;
     }
 
@@ -199,7 +191,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * This method adds the provided milestone to the internal set and registers it quests.
      * @param milestone the milestone to register
      */
-    public static void registerMilestone(Milestone<?> milestone) {
+    public void registerMilestone(Milestone<?> milestone) {
 		if (milestone == null) return;
 		milestones.add(milestone);
 		
@@ -211,7 +203,7 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
      * This method iterates through the steps of the milestone and registers any Listener instances.
      * @param milestone the milestone whose quests are to be registered
      */
-    public static void registerQuestMilestone(Milestone<?> milestone) {
+    public void registerQuestMilestone(Milestone<?> milestone) {
         for (Quest quest : milestone.getSteps()) {
             if (quest instanceof Listener listener) {
                 OMCPlugin.getInstance().getServer().getPluginManager().registerEvents(listener, OMCPlugin.getInstance());

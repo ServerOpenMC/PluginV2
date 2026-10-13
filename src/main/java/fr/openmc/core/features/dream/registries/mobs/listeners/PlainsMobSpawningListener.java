@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.registries.DreamBiome;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,13 +18,13 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
  */
 public class PlainsMobSpawningListener implements Listener {
 
-    private final double DREAM_SPIDER_PROBABILITY = 0.05;
+    private final double dreamSpiderProbability = 0.05;
 
     /**
      * Gère l'événement de spawn de créature.
      * <p>
      * L'événement est annulé si la créature se trouve dans le biome SCULK_PLAINS
-     * de la dimension Dream et qu'un mob est généré selon une probabilité définie dans le {@link DreamMobsRegistry}.
+     * de la dimension Dream et qu'un mob est généré selon une probabilité définie dans le {@link fr.openmc.core.features.dream.registries.DreamMobsRegistry}.
      * </p>
      *
      * @param e l'événement de spawn de créature
@@ -43,13 +43,13 @@ public class PlainsMobSpawningListener implements Listener {
 
         if (e.getEntity().getType().equals(EntityType.CREAKING)) {
             e.setCancelled(false);
-            DreamMobsRegistry.DREAM_CREAKING.apply(e.getEntity());
+            OMCRegistry.DREAM_MOB.DREAM_CREAKING.apply(e.getEntity());
             return;
         }
 
         double choice = Math.random();
-        if (choice < DREAM_SPIDER_PROBABILITY) {
-            DreamMobsRegistry.DREAM_SPIDER.spawn(spawningLoc);
+        if (choice < dreamSpiderProbability) {
+            OMCRegistry.DREAM_MOB.DREAM_SPIDER.spawn(spawningLoc);
             e.setCancelled(true);
         }
     }

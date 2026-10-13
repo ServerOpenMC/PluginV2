@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.metaldetector;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.DirectionUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
@@ -39,9 +39,9 @@ public class MetalDetectorTask extends BukkitRunnable {
             return;
         }
 
-        DreamItem item = DreamItemRegistry.getByItemStack(player.getInventory().getItemInMainHand());
+        DreamItem item = OMCRegistry.DREAM_ITEM.getByItemStack(player.getInventory().getItemInMainHand());
         if (item == null) return;
-        if (!item.getId().equals("omc_dream:metal_detector")) return;
+        if (!item.getId().equals(OMCRegistry.DREAM_ITEM.METAL_DETECTOR.getId())) return;
 
         double distance = player.getLocation().distance(chestLocation);
         String direction = DirectionUtils.getDirectionArrow(player, chestLocation);

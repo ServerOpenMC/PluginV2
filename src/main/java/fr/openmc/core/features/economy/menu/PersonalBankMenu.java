@@ -5,11 +5,12 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.rewards.PlayerBankLimitRewards;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -30,6 +31,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PersonalBankMenu extends Menu {
+    private final BankManager bankManager = OMCRegistry.FEATURES.BANK.get();
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public PersonalBankMenu(Player owner) {
         super(owner);
@@ -65,11 +68,11 @@ public class PersonalBankMenu extends Menu {
         inventory.put(11, new ItemMenuBuilder(this, Material.HOPPER, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.menu.deposit.name"));
             itemMeta.lore(loreBankDeposit);
-        }).setOnClick(inventoryClickEvent -> {
-            new PersonalBankDepositMenu(player).open();
-        }));
+        }).setOnClick(_ ->
+            new PersonalBankDepositMenu(player).open()
+        ));
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (playerCity == null) {
             MessagesManager.sendMessage(player,
@@ -78,20 +81,18 @@ public class PersonalBankMenu extends Menu {
             return Map.of();
         }
 
-        Supplier<ItemMenuBuilder> interestItemSupplier = () -> {
-            return new ItemMenuBuilder(this, Material.DIAMOND_BLOCK, itemMeta -> {
-            itemMeta.itemName(TranslationManager.translation("feature.economy.bank.menu.balance.name"));
-            itemMeta.lore(TranslationManager.translationLore(
-                    "feature.economy.bank.menu.balance.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(BankManager.getBankBalance(player.getUniqueId()))).color(NamedTextColor.LIGHT_PURPLE),
-                    Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(PlayerBankLimitRewards.getBankBalanceLimit(playerCity.getLevel()))).color(NamedTextColor.LIGHT_PURPLE),
-                    Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
-                    Component.text(BankManager.calculatePlayerInterest(player.getUniqueId()) * 100 + "%").color(NamedTextColor.AQUA),
-                    Component.text(DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest())).color(NamedTextColor.AQUA)
-            ));
-            });
-        };
+        Supplier<ItemMenuBuilder> interestItemSupplier = () -> new ItemMenuBuilder(this, Material.DIAMOND_BLOCK, itemMeta -> {
+        itemMeta.itemName(TranslationManager.translation("feature.economy.bank.menu.balance.name"));
+        itemMeta.lore(TranslationManager.translationLore(
+                "feature.economy.bank.menu.balance.lore",
+                Component.text(EconomyUtils.getFormattedSimplifiedNumber(bankManager.getBankBalance(player.getUniqueId()))).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(economyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
+                Component.text(EconomyUtils.getFormattedSimplifiedNumber(PlayerBankLimitRewards.getBankBalanceLimit(playerCity.getLevel()))).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(economyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
+                Component.text(bankManager.calculatePlayerInterest(player.getUniqueId()) * 100 + "%").color(NamedTextColor.AQUA),
+                Component.text(DateUtils.convertSecondToTime(bankManager.getSecondsUntilInterest())).color(NamedTextColor.AQUA)
+        ));
+        });
 
         MenuUtils.runDynamicItem(player, this, 13, interestItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
@@ -101,9 +102,9 @@ public class PersonalBankMenu extends Menu {
         inventory.put(15, new ItemMenuBuilder(this, Material.DISPENSER, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.menu.withdraw.name"));
             itemMeta.lore(loreBankTake);
-        }).setOnClick(inventoryClickEvent -> {
-            new PersonalBankWithdrawMenu(player).open();
-        }));
+        }).setOnClick(_ ->
+            new PersonalBankWithdrawMenu(player).open()
+        ));
 
         return inventory;
     }

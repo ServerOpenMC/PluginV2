@@ -1,7 +1,7 @@
 package fr.openmc.riftengine.api.registry.scanner;
 
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 import fr.openmc.riftengine.api.scanner.general.YamlNamespaceIAScanner;
 import fr.openmc.riftengine.api.scanner.general.YamlScanner;
 import fr.openmc.riftengine.api.scanner.icons.IconScanner;

@@ -1,13 +1,12 @@
 package fr.openmc.core.features.shops.managers;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.shops.models.Shop;
 import fr.openmc.core.features.shops.models.ShopItem;
 import fr.openmc.core.features.shops.models.ShopSale;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
+import fr.openmc.core.registry.features.Feature;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jspecify.annotations.NonNull;
@@ -18,45 +17,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ShopDatabaseManager {
+public class ShopDatabaseManager extends Feature implements HasDatabase {
 
-	private static Dao<Shop, UUID> shopDao;
-	private static Dao<ShopItem, UUID> shopItemDao;
-	private static Dao<ShopSale, UUID> shopSaleDao;
-	
-	/**
-	 * Init the Database of the shops
-	 *
-	 * @param connectionSource the connection to the DB
-	 * @throws SQLException if init failed
-	 */
-	public static void initDB(ConnectionSource connectionSource) throws SQLException {
-		TableUtils.createTableIfNotExists(connectionSource, Shop.class);
-		shopDao = DaoManager.createDao(connectionSource, Shop.class);
-		
-		TableUtils.createTableIfNotExists(connectionSource, ShopItem.class);
-		shopItemDao = DaoManager.createDao(connectionSource, ShopItem.class);
-		
-		TableUtils.createTableIfNotExists(connectionSource, ShopSale.class);
-		shopSaleDao = DaoManager.createDao(connectionSource, ShopSale.class);
+	private final DBTable<Shop, UUID> shopTable = DBTable.of(Shop.class);
+	private final DBTable<ShopItem, UUID> shopItemTable = DBTable.of(ShopItem.class);
+	private final DBTable<ShopSale, UUID> shopSaleTable = DBTable.of(ShopSale.class);
+
+	@Override
+	public List<DBTable<?, ?>> getTables() {
+		return List.of(shopTable, shopItemTable, shopSaleTable);
 	}
-	
+
 	/**
 	 * Loads all shops from the database and organizes them by their location.
 	 *
 	 * @return A map where each location is associated with its corresponding shop.
 	 * @throws SQLException if there is an error during the database query.
 	 */
-	public static @NonNull Map<Location, Shop> loadDBShops() throws SQLException {
+	public @NonNull Map<Location, Shop> loadDBShops() throws SQLException {
 		Map<Location, Shop> shopsByLocation = new HashMap<>();
 		
-		List<Shop> shops = shopDao.queryForAll();
+		List<Shop> shops = shopTable.queryForAll();
 		for (Shop shop : shops) {
 			Location loc = new Location(Bukkit.getWorld("world"), shop.getX(), shop.getY(), shop.getZ());
-			if (shop.getMultiblock() == null) {
-				if (!shop.setMultiblock(new Shop.Multiblock(loc, loc.clone().add(0, 1, 0)))) {
-					OMCLogger.error("Cannot set multiblock for {} {}, but shop is registered", shop.getName(), shop.getShopUUID());
-				}
+			if (shop.getMultiblock() == null
+					&& !shop.setMultiblock(new Shop.Multiblock(loc, loc.clone().add(0, 1, 0)))) {
+				OMCLogger.error("Cannot set multiblock for {} {}, but shop is registered", shop.getName(), shop.getShopUUID());
 			}
 			shopsByLocation.put(loc, shop);
 		}
@@ -68,8 +54,8 @@ public class ShopDatabaseManager {
 	 *
 	 * @throws SQLException if a database access error occurs during querying or processing.
 	 */
-	public static void loadDBShopItems() throws SQLException {
-		List<ShopItem> shopItems = shopItemDao.queryForAll();
+	public void loadDBShopItems() throws SQLException {
+		List<ShopItem> shopItems = shopItemTable.queryForAll();
 		for (ShopItem item : shopItems) {
 			Shop shop = item.getShop();
 			if (shop == null) {
@@ -85,8 +71,8 @@ public class ShopDatabaseManager {
 	 *
 	 * @throws SQLException if a database access error occurs while querying sales.
 	 */
-	public static void loadDBShopSales() throws SQLException {
-		List<ShopSale> shopSales = shopSaleDao.queryForAll();
+	public void loadDBShopSales() throws SQLException {
+		List<ShopSale> shopSales = shopSaleTable.queryForAll();
 		for (ShopSale sale : shopSales) {
 			Shop shop = sale.getShop();
 			if (shop == null) {
@@ -104,9 +90,9 @@ public class ShopDatabaseManager {
 	 * @param shop shop to save
 	 * @return true if the shop was saved, false if a database exception occurred
 	 */
-	public static boolean saveDBShop(Shop shop) {
+	public boolean saveDBShop(Shop shop) {
 		try {
-			shopDao.createOrUpdate(shop);
+			shopTable.createOrUpdate(shop);
 			return true;
 		} catch (SQLException e) {
 			OMCLogger.error("Failed to save shop for owner UUID: {}\nCause: {}", shop.getOwnerUUID(), e.getMessage());
@@ -122,9 +108,9 @@ public class ShopDatabaseManager {
 	 * @return true if the shop item was successfully saved, false if a database
 	 *         exception occurred
 	 */
-	public static boolean saveDBShopItem(ShopItem item) {
+	public boolean saveDBShopItem(ShopItem item) {
 		try {
-			shopItemDao.createOrUpdate(item.serialize());
+			shopItemTable.createOrUpdate(item.serialize());
 			return true;
 		} catch (SQLException e) {
 			OMCLogger.error("Failed to save shop item for owner UUID: {}\nCause: {}", item.getShop().getOwnerUUID(), e.getMessage());
@@ -138,9 +124,9 @@ public class ShopDatabaseManager {
 	 * @param sale the sale to save
 	 * @return true if the sale was saved, false if a database exception occurred
 	 */
-	public static boolean saveDBShopSale(ShopSale sale) {
+	public boolean saveDBShopSale(ShopSale sale) {
 		try {
-			shopSaleDao.createOrUpdate(sale);
+			shopSaleTable.createOrUpdate(sale);
 			return true;
 		} catch (SQLException e) {
 			OMCLogger.error("Failed to save shop sale for owner UUID: {}\nCause: {}", sale.getShop().getOwnerUUID(), e.getMessage());
@@ -154,11 +140,11 @@ public class ShopDatabaseManager {
 	 * @param shop the shop instance to be deleted, including its related items and sales
 	 * @return true if the shop and its associated data were successfully deleted, false if a database exception occurred
 	 */
-	public static boolean deleteDBShop(Shop shop) {
+	public boolean deleteDBShop(Shop shop) {
 		try {
-			shopDao.delete(shop);
-			shopItemDao.delete(shop.getItem());
-			shopSaleDao.delete(shop.getSales());
+			shopTable.delete(shop);
+			shopItemTable.delete(shop.getItem());
+			shopSaleTable.delete(shop.getSales());
 			return true;
 		} catch (SQLException e) {
 			OMCLogger.error("Failed to delete shop for owner UUID: {}\nCause: {}", shop.getOwnerUUID(), e.getMessage());

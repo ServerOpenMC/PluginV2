@@ -2,13 +2,13 @@ package fr.openmc.core.registry.enchantments;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.registries.KeyedRegistry;
-import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.dream.registries.enchantements.DreamSleeper;
 import fr.openmc.core.features.dream.registries.enchantements.Experientastic;
 import fr.openmc.core.features.dream.registries.enchantements.Soulbound;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.enchantments.Vampirism;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.contents.enchantments.Plantation;
+import fr.openmc.core.lifecycle.registries.KeyedRegistry;
+import fr.openmc.core.lifecycle.registries.Registry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
 import io.papermc.paper.registry.event.RegistryComposeEvent;

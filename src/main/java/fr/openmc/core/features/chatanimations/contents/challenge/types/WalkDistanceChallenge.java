@@ -17,7 +17,7 @@ public class WalkDistanceChallenge extends ChallengeAnimation {
     private final Map<UUID, Double> progress = new HashMap<>();
 
     public WalkDistanceChallenge(int target, long time) {
-        this(target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+        this(target, OMCRegistry.CHAT_ANIMATION_LOOT_TABLE.CHALLENGE, time);
     }
 
     public WalkDistanceChallenge(int target, CustomLootTable reward, long time) {

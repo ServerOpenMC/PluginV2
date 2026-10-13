@@ -1,5 +1,6 @@
 package fr.openmc.core.features.cube.tasks;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.cube.Cube;
 import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import org.bukkit.Location;
@@ -10,6 +11,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class ReproductionTask extends BukkitRunnable {
+    private final MultiBlockManager manager;
+
     private final Cube parent;
     private final Cube babyCube;
     private final Location parentCenter;
@@ -23,6 +26,7 @@ public class ReproductionTask extends BukkitRunnable {
     public ReproductionTask(Cube parent, Cube babyCube, Location parentCenter,
                             Location babyOrigin, int babySize, World world,
                             int totalTicks, int interval) {
+        this.manager = OMCRegistry.FEATURES.MULTIBLOCKS.get();
         this.parent = parent;
         this.babyCube = babyCube;
         this.parentCenter = parentCenter;
@@ -45,7 +49,7 @@ public class ReproductionTask extends BukkitRunnable {
                 world.strikeLightningEffect(babyCube.getCenter());
             }
 
-            MultiBlockManager.register(babyCube);
+            manager.register(babyCube);
             cancel();
             parent.reproductionTask = null;
             return;

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.commands.autocomplete;
 
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.CityPermission;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
@@ -8,7 +8,6 @@ import revxrsal.commands.node.ExecutionContext;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CityPermissionsAutoComplete implements SuggestionProvider<BukkitCommandActor> {
 
@@ -17,6 +16,6 @@ public class CityPermissionsAutoComplete implements SuggestionProvider<BukkitCom
         return Arrays.stream(CityPermission.values())
                 .filter(c->!c.equals(CityPermission.OWNER))
                 .map(CityPermission::name)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

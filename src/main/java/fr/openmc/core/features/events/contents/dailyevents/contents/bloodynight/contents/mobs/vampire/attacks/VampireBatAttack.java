@@ -22,7 +22,7 @@ public class VampireBatAttack implements MobAttack {
 
     private final VampireBoss boss;
 
-    private final List<CustomMobEntry> BATS = new ArrayList<>();
+    private final List<CustomMobEntry> bats = new ArrayList<>();
 
     public VampireBatAttack(VampireBoss boss) {
         this.boss = boss;
@@ -30,8 +30,8 @@ public class VampireBatAttack implements MobAttack {
 
     @Override
     public void execute() {
-        if (BATS.isEmpty()) {
-            BATS.addAll(List.of(
+        if (bats.isEmpty()) {
+            bats.addAll(List.of(
                     OMCRegistry.CUSTOM_MOBS.EXPLOSIVE_VAMPIRE_BAT,
                     OMCRegistry.CUSTOM_MOBS.POISON_VAMPIRE_BAT,
                     OMCRegistry.CUSTOM_MOBS.LEVITATION_VAMPIRE_BAT
@@ -67,7 +67,7 @@ public class VampireBatAttack implements MobAttack {
             Player target = targets.get(ThreadLocalRandom.current().nextInt(targets.size()));
 
             Location spawnLocation = getRandomSpawnLocation(mannequin);
-            CustomMobEntry batType = BATS.get(ThreadLocalRandom.current().nextInt(BATS.size()));
+            CustomMobEntry batType = bats.get(ThreadLocalRandom.current().nextInt(bats.size()));
 
             if (!(batType.getMob() instanceof AbstractVampireBat batVampire)) return;
             batVampire.spawn(spawnLocation, target);

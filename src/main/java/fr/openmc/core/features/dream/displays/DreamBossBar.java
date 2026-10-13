@@ -13,6 +13,12 @@ import org.bukkit.entity.Player;
  * <p>Cette classe permet d'ajouter, mettre à jour et cacher la BossBar associée à un joueur.</p>
  */
 public class DreamBossBar extends BaseBossbar {
+    private final DreamManager dreamManager;
+
+    public DreamBossBar(DreamManager manager) {
+        this.dreamManager = manager;
+    }
+
     @Override
     protected String id() {
         return "omc:dream";
@@ -23,7 +29,7 @@ public class DreamBossBar extends BaseBossbar {
 
     @Override
     protected Float progress(Player player) {
-        DreamPlayer dreamPlayer = DreamManager.getDreamPlayer(player);
+        DreamPlayer dreamPlayer = dreamManager.getDreamPlayer(player);
 
         if (dreamPlayer == null) return null;
 

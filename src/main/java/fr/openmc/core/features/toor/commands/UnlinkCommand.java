@@ -1,5 +1,6 @@
 package fr.openmc.core.features.toor.commands;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -15,10 +16,11 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Description("Délie son compte Discord de son compte Minecraft")
 @CommandPermission("omc.commands.discord.unlink")
 public class UnlinkCommand {
+    private final DiscordLinkManager discordLinkManager = OMCRegistry.FEATURES.DISCORD_LINK.get();
 
     @CommandPlaceholder
     public void unlink(Player player) {
-        boolean success = DiscordLinkManager.unlink(player.getUniqueId());
+        boolean success = discordLinkManager.unlink(player.getUniqueId());
 
         if (!success) {
             MessagesManager.sendMessage(player,

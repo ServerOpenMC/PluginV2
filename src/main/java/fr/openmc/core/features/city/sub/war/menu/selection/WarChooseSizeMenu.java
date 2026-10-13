@@ -5,7 +5,7 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -73,9 +73,9 @@ public class WarChooseSizeMenu extends PaginatedMenu {
                         "feature.city.war.menu.size.lore",
                         Component.text(count).color(NamedTextColor.GRAY)
                 ));
-            }).setOnClick(event -> {
-                WarActions.preFinishLaunchWar(getOwner(), cityLaunch, cityAttack, count);
-            }));
+            }).setOnClick(_ ->
+                WarActions.preFinishLaunchWar(getOwner(), cityLaunch, cityAttack, count)
+            ));
         }
 
         return items;

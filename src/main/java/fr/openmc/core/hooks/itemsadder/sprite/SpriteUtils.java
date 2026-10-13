@@ -1,7 +1,5 @@
 package fr.openmc.core.hooks.itemsadder.sprite;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.riftengine.api.scanner.items.ItemEntry;
 import fr.openmc.riftengine.api.utils.IdentifierUtils;
@@ -14,6 +12,8 @@ import net.kyori.adventure.text.object.ObjectContents;
 import java.util.Set;
 
 public class SpriteUtils {
+    private SpriteUtils() {}
+
     public static ObjectComponent getSprite(CustomItem item) {
         ItemEntry itemEntry = item.getItemEntry();
 

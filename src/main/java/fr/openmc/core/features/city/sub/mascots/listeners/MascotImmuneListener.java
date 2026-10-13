@@ -2,8 +2,8 @@ package fr.openmc.core.features.city.sub.mascots.listeners;
 
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.api.cooldown.CooldownStartEvent;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import org.bukkit.attribute.Attribute;
@@ -14,12 +14,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class MascotImmuneListener implements Listener {
+    private final MascotsManager mascotsManager = OMCRegistry.CITY_FEATURES.MASCOTS;
 
     @EventHandler
     void onStartMascotImmune(CooldownStartEvent event) {
         if (!event.getGroup().equals("city:immunity")) return;
 
-        City cityImmune = CityManager.getCity(event.getCooldownUUID());
+        City cityImmune = City.of(event.getCooldownUUID());
 
         if (cityImmune == null) return;
 
@@ -36,7 +37,7 @@ public class MascotImmuneListener implements Listener {
     void onEndMascotImmune(CooldownEndEvent event) {
         if (!event.getGroup().equals("city:immunity")) return;
 
-        City cityImmune = CityManager.getCity(event.getCooldownUUID());
+        City cityImmune = City.of(event.getCooldownUUID());
 
         if (cityImmune == null) return;
 
@@ -54,7 +55,7 @@ public class MascotImmuneListener implements Listener {
         AttributeInstance maxHealthInst = mascotMob.getAttribute(Attribute.MAX_HEALTH);
         if (maxHealthInst == null) return;
 
-        entityMascot.customName(MascotsManager.getAliveMascotName(
+        entityMascot.customName(mascotsManager.getAliveMascotName(
                 cityImmune.getName(),
                 mascotMob.getHealth(),
                 maxHealthInst.getValue()

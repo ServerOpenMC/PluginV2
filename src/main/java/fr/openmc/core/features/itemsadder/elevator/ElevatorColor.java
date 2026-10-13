@@ -1,6 +1,5 @@
 package fr.openmc.core.features.itemsadder.elevator;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;

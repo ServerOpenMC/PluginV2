@@ -1,13 +1,12 @@
 package fr.openmc.core.features.dream.models.db;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.sub.mayor.perks.PerkUtils;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.dream.DreamManager;
 import fr.openmc.core.features.dream.events.DreamEndEvent;
-import fr.openmc.core.features.dream.mecanism.cold.ColdManager;
 import fr.openmc.core.features.dream.mecanism.cold.ColdTask;
 import fr.openmc.core.features.milestones.dialogs.MilestoneDialog;
 import fr.openmc.core.utils.bukkit.serializer.BukkitSerializer;
@@ -27,6 +26,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 @Getter
 public class DreamPlayer {
+    private final DreamManager dreamManager;
+
     private final Player player;
     @Setter
     private ItemStack[] oldInventory;
@@ -43,17 +44,18 @@ public class DreamPlayer {
     private BukkitTask timeTask;
 
     public DreamPlayer(Player player, ItemStack[] oldInv, Location oldLocation, PlayerInventory dreamInv) {
+        this.dreamManager = OMCRegistry.FEATURES.DREAM.get();
         this.player = player;
         this.oldInventory = oldInv;
         this.oldLocation = oldLocation;
         this.dreamInventory = dreamInv;
 
-        DBDreamPlayer cacheData = DreamManager.getCacheDreamPlayer(player);
+        DBDreamPlayer cacheData = dreamManager.getCacheDreamPlayer(player);
 
         this.dreamTime = cacheData == null ? DreamManager.BASE_DREAM_TIME : cacheData.getMaxDreamTime();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city != null && PerkManager.hasPerk(city.getMayor(), Perks.GREAT_DREAM.getId())) {
+        City city = City.ofPlayer(player.getUniqueId());
+        if (city != null && PerkUtils.hasPerk(city.getMayor(), Perks.GREAT_DREAM.getId())) {
             this.dreamTime = (long) (this.dreamTime * 1.6);
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.dream.message.great_dream_bonus"), Prefix.MAYOR, MessageType.INFO, false
@@ -77,7 +79,7 @@ public class DreamPlayer {
     }
 
     public long getMaxDreamTime() {
-        DBDreamPlayer cacheData = DreamManager.getCacheDreamPlayer(player);
+        DBDreamPlayer cacheData = dreamManager.getCacheDreamPlayer(player);
 
         if (cacheData == null) return DreamManager.BASE_DREAM_TIME;
 
@@ -108,7 +110,7 @@ public class DreamPlayer {
         if (coldTask != null) {
             coldTask.cancel();
             cold = 0;
-            ColdManager.applyColdEffects(player, cold);
+            OMCRegistry.DREAM_FEATURES.COLD.applyColdEffects(player, cold);
             coldTask = null;
         }
     }

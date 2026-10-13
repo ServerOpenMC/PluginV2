@@ -7,6 +7,8 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;
 
 public class EntityUtils {
+    private EntityUtils() {}
+
     /**
      * Ajoute un attribut si l'AttributeInstance n'est pas nulle
      * @param entity l'entité

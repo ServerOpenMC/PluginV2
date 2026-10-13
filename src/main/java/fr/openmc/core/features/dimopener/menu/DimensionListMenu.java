@@ -3,6 +3,7 @@ package fr.openmc.core.features.dimopener.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dimopener.DimensionOpenerManager;
 import fr.openmc.core.features.dimopener.DimensionProgress;
 import fr.openmc.core.features.dimopener.data.DimensionData;
@@ -20,8 +21,11 @@ import java.util.Map;
 
 public class DimensionListMenu extends Menu {
 
+    private final DimensionOpenerManager manager;
+
     public DimensionListMenu(Player owner) {
         super(owner);
+        this.manager = OMCRegistry.FEATURES.DIMENSION_OPENER.get();
     }
 
     @Override
@@ -43,16 +47,16 @@ public class DimensionListMenu extends Menu {
     public Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = fill(Material.GRAY_STAINED_GLASS_PANE);
 
-        List<DimensionData> dims = new ArrayList<>(DimensionOpenerManager.getEnabledDimensions());
+        List<DimensionData> dims = new ArrayList<>(manager.getEnabledDimensions());
         int slot = 10;
 
         for (DimensionData dim : dims) {
             if (slot % 9 == 8) slot += 2;
 
-            DimensionProgress progress = DimensionOpenerManager.getProgress(dim.getId());
-            boolean unlocked = DimensionOpenerManager.isPrerequisiteMet(dim);
+            DimensionProgress progress = manager.getProgress(dim.getId());
+            boolean unlocked = manager.isPrerequisiteMet(dim);
 
-            ItemMenuBuilder item = new ItemMenuBuilder(this, DimensionOpenerManager.resolveIcon(dim), meta -> {
+            ItemMenuBuilder item = new ItemMenuBuilder(this, manager.resolveIcon(dim), meta -> {
                 meta.itemName(TranslationManager.translation("feature.dimopener.menu.list.name", Component.text(dim.getName(), NamedTextColor.GOLD)));
                 List<Component> lore = new ArrayList<>();
                 lore.add(TranslationManager.translation("feature.dimopener.menu.list.description", Component.text(dim.getDescription(), NamedTextColor.GRAY)));
@@ -63,7 +67,7 @@ public class DimensionListMenu extends Menu {
                     lore.add(Component.empty());
                     lore.add(TranslationManager.translation("feature.dimopener.menu.list.click"));
                 } else {
-                    DimensionData required = DimensionOpenerManager.getDimension(dim.getRequireDimension());
+                    DimensionData required = manager.getDimension(dim.getRequireDimension());
                     String requiredName = required != null ? required.getName() : dim.getName();
                     lore.add(TranslationManager.translation("feature.dimopener.menu.locked.title"));
                     lore.add(TranslationManager.translation("feature.dimopener.menu.list.requires", Component.text(requiredName, NamedTextColor.WHITE)));

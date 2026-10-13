@@ -1,14 +1,15 @@
 package fr.openmc.core.features.city.sub.bank.menu;
 
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,6 +27,8 @@ import java.util.Map;
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH;
 
 public class CityBankWithdrawMenu extends Menu {
+
+    private final EconomyManager economyManager = OMCRegistry.FEATURES.ECONOMY.get();
 
     public CityBankWithdrawMenu(Player owner) {
         super(owner);
@@ -54,10 +57,10 @@ public class CityBankWithdrawMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        assert city != null;
+        City city = player.city().getCity();
+        if (city == null) return new HashMap<>();
 
         boolean hasPermissionMoneyTake = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_WITHDRAW);
 
@@ -69,8 +72,8 @@ public class CityBankWithdrawMenu extends Menu {
         if (hasPermissionMoneyTake) {
             loreBankWithdrawAll = TranslationManager.translationLore(
                     "feature.city.bank.menu.withdraw.all.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
-                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(moneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
             loreBankWithdrawAll = TranslationManager.translationLore("messages.global.cannot_do_this");
@@ -79,7 +82,7 @@ public class CityBankWithdrawMenu extends Menu {
         inventory.put(11, new ItemMenuBuilder(this, new ItemStack(Material.DISPENSER, 64), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.all.title"));
             itemMeta.lore(loreBankWithdrawAll);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             city.withdrawCityBank(player, String.valueOf(moneyBankCity));
             player.closeInventory();
         }));
@@ -89,8 +92,8 @@ public class CityBankWithdrawMenu extends Menu {
         if (hasPermissionMoneyTake) {
             loreBankWithdrawHalf = TranslationManager.translationLore(
                     "feature.city.bank.menu.withdraw.half.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
-                    Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
+                    Component.text(EconomyUtils.getFormattedSimplifiedNumber(halfMoneyBankCity)).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(economyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
             loreBankWithdrawHalf = TranslationManager.translationLore("messages.global.cannot_do_this");
@@ -99,7 +102,7 @@ public class CityBankWithdrawMenu extends Menu {
         inventory.put(13, new ItemMenuBuilder(this, new ItemStack(Material.DISPENSER, 32), itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.half.title"));
             itemMeta.lore(loreBankWithdrawHalf);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             city.withdrawCityBank(player, String.valueOf(halfMoneyBankCity));
             player.closeInventory();
         }));
@@ -116,10 +119,10 @@ public class CityBankWithdrawMenu extends Menu {
         inventory.put(15, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.bank.menu.withdraw.input.title"));
             itemMeta.lore(loreBankWithdrawInput);
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
-            DialogInput.send(player, TranslationManager.translation("feature.city.bank.menu.withdraw.input.prompt"), MAX_LENGTH, input -> {
+            player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.bank.menu.withdraw.input.prompt"), MAX_LENGTH, input -> {
                         if (input == null) return;
                         city.withdrawCityBank(player, input);
                     }

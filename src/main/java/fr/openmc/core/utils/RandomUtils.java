@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomUtils {
+    private RandomUtils() {}
+
+    private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     /**
      * Retourne un double aléatoire entre min et max.
      */
     public static double randomBetween(double min, double max) {
         if (min >= max) return min;
-        return ThreadLocalRandom.current().nextDouble(min, max);
+        return RANDOM.nextDouble(min, max);
     }
 
 
@@ -21,21 +24,21 @@ public class RandomUtils {
      */
     public static float randomBetween(float min, float max) {
         if (min >= max) return min;
-        return ThreadLocalRandom.current().nextFloat(min, max);
+        return RANDOM.nextFloat(min, max);
     }
 
     /**
      * Retourne un long aléatoire entre min et max.
      */
     public static long randomBetween(long min, long max) {
-        return ThreadLocalRandom.current().nextLong(min, max + 1);
+        return RANDOM.nextLong(min, max + 1);
     }
 
     /**
      * Retourne un int aléatoire entre min et max.
      */
     public static int randomBetween(int min, int max) {
-        return ThreadLocalRandom.current().nextInt(min, max + 1);
+        return RANDOM.nextInt(min, max + 1);
     }
 
     /**

@@ -3,13 +3,9 @@ package fr.openmc.core.features.friend.commands;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.friend.FriendManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsAutoComplete;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsRequestAutoComplete;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -20,8 +16,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 
@@ -47,15 +41,15 @@ public class FriendCommand {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.self"), Prefix.FRIEND, true);
                 return;
             }
-            if (!target.settings().canReceiveFriendRequest(target.getUniqueId())) {
+            if (!target.settings().canReceiveFriendRequest(player.getUniqueId())) {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.disabled"), Prefix.FRIEND, true);
                 return;
             }
-            if (FriendManager.isRequestPending(target.getUniqueId())) {
+            if (target.friends().isRequestPending()) {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.already_sent"), Prefix.FRIEND, true);
                 return;
             }
-            if (FriendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
+            if (player.friends().areFriends(target)) {
                 player.message().sendError(
                         TranslationManager.translation("feature.friend.add.already_friend"),
                         Prefix.FRIEND,
@@ -63,7 +57,7 @@ public class FriendCommand {
                 );
                 return;
             }
-            FriendManager.addRequest(player.getUniqueId(), target.getUniqueId());
+            player.friends().addRequest(target);
             player.message().sendInfo(
                     TranslationManager.translation(
                             "feature.friend.add.sent",
@@ -81,11 +75,11 @@ public class FriendCommand {
             Component ignoreButton = TranslationManager.translation("feature.friend.button.ignore")
                     .color(NamedTextColor.GRAY)
                     .clickEvent(ClickEvent.callback(audience -> {
-                        if (!FriendManager.isRequestPending(player.getUniqueId())) {
+                        if (!player.friends().isRequestPending()) {
                             MessagesManager.sendMessage(target, TranslationManager.translation("feature.friend.request.expired"), Prefix.FRIEND, MessageType.INFO, true);
                             return;
                         }
-                        FriendManager.removeRequest(FriendManager.getRequest(player.getUniqueId()));
+                        player.friends().removeRequest(player.friends().getRequest());
                         MessagesManager.sendMessage(
                                 target,
                                 TranslationManager.translation(
@@ -136,11 +130,11 @@ public class FriendCommand {
                 player.message().send(TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
-            if (!FriendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
+            if (!player.friends().areFriends(target)) {
                 player.message().send(TranslationManager.translation("feature.friend.remove.not_friend"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            if (!FriendManager.removeFriend(player.getUniqueId(), target.getUniqueId())) {
+            if (!player.friends().removeFriend(target)) {
                 player.message().send(TranslationManager.translation("feature.friend.remove.error"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
@@ -181,7 +175,7 @@ public class FriendCommand {
         int currentPage = (page != null && page > 0) ? page : 1;
         final int ITEMS_PER_PAGE = 7;
 
-        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friends -> {
+        player.friends().getFriendsAsync().thenAccept(friends -> {
             if (friends.isEmpty()) {
                 player.message().send(TranslationManager.translation("feature.friend.list.none"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
@@ -219,13 +213,13 @@ public class FriendCommand {
                 OMCOfflinePlayer friend = OMCOfflinePlayer.of(friendUUID);
 
                 try {
-                    Timestamp timestamp = FriendManager.getTimestamp(player.getUniqueId(), friend.getUniqueId());
+                    Timestamp timestamp = player.friends().getTimestamp(friend);
                     String formattedDate = getFormattedDate(timestamp);
 
                     boolean isOnline = friend.isOnline();
 
-                    City city = CityManager.getPlayerCity(friend.getUniqueId());
-                    String formattedMoney = EconomyManager.getFormattedBalance(friend.getUniqueId());
+                    City city = City.ofPlayer(friend.getUniqueId());
+                    String formattedMoney = friend.economy().getFormattedBalance();
                     Component cityComponent = city != null ? Component.text(city.getName()).color(NamedTextColor.YELLOW) :
                             TranslationManager.translation("feature.friend.list.city.none").color(NamedTextColor.YELLOW);
                     Component moneyComponent = Component.text(formattedMoney).color(NamedTextColor.YELLOW);
@@ -332,12 +326,12 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
-            if (!FriendManager.isRequestPending(target.getUniqueId())) {
+            if (!target.friends().isRequestPending()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
 
-            FriendManager.addFriend(player.getUniqueId(), target.getUniqueId());
+            player.friends().addFriend(target);
             player.message().send(
                     TranslationManager.translation(
                             "feature.friend.request.accepted",
@@ -377,12 +371,12 @@ public class FriendCommand {
                 return;
             }
 
-            if (!FriendManager.isRequestPending(target.getUniqueId())) {
+            if (!target.friends().isRequestPending()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
 
-            FriendManager.removeRequest(FriendManager.getRequest(target.getUniqueId()));
+            target.friends().removeRequest(target.friends().getRequest());
             player.message().send(
                     TranslationManager.translation(
                             "feature.friend.request.denied",

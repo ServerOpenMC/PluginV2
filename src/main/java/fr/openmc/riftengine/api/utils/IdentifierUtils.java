@@ -3,6 +3,8 @@ package fr.openmc.riftengine.api.utils;
 import java.nio.file.Path;
 
 public class IdentifierUtils {
+    private IdentifierUtils() {}
+
     /**
      * Normalise un identifiant (qui n'a pas un namespace devant
      * @param id l'id (font/default.png, minecraft:font/default.png)

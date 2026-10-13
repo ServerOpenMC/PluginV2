@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -23,21 +24,22 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class ElevatorBlockListener implements Listener {
+    private final ElevatorManager elevatorManager = OMCRegistry.FEATURES.ELEVATOR.get();
 
     @EventHandler
     public void onPlayerJump(PlayerJumpEvent event) {
         Player player = event.getPlayer();
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(player.getUniqueId());
 
-        if (!ElevatorManager.isOnTop(player)) return;
+        if (!elevatorManager.isOnTop(player)) return;
 
-        if (!ElevatorManager.isSafeGround(player.getLocation()))  {
+        if (!elevatorManager.isSafeGround(player.getLocation()))  {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed_1"),
                     Prefix.OPENMC, MessageType.WARNING, true);
             return;
         }
 
-        Location locAfterTP = ElevatorManager.getNextTop(player);
+        Location locAfterTP = elevatorManager.getNextTop(player);
 
         if (locAfterTP.equals(player.getLocation())) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.limit.up"),
@@ -45,7 +47,7 @@ public class ElevatorBlockListener implements Listener {
             return;
         }
 
-        if (!ElevatorManager.isSafeGround(locAfterTP)) {
+        if (!elevatorManager.isSafeGround(locAfterTP)) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed_0"),
                     Prefix.OPENMC, MessageType.WARNING, true);
             return;
@@ -59,9 +61,9 @@ public class ElevatorBlockListener implements Listener {
         Player player = event.getPlayer();
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(player.getUniqueId());
 
-        if (!ElevatorManager.isOnTop(player)) return;
+        if (!elevatorManager.isOnTop(player)) return;
 
-        if (!ElevatorManager.isSafeGround(player.getLocation()))  {
+        if (!elevatorManager.isSafeGround(player.getLocation()))  {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed_1"),
                     Prefix.OPENMC, MessageType.WARNING, true);
             return;
@@ -69,7 +71,7 @@ public class ElevatorBlockListener implements Listener {
 
         if (event.isSneaking()) return;
 
-        Location locAfterTP = ElevatorManager.getNextDown(player);
+        Location locAfterTP = elevatorManager.getNextDown(player);
 
         if (locAfterTP.equals(player.getLocation())) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.limit.down"),
@@ -77,7 +79,7 @@ public class ElevatorBlockListener implements Listener {
             return;
         }
 
-        if (!ElevatorManager.isSafeGround(locAfterTP)) {
+        if (!elevatorManager.isSafeGround(locAfterTP)) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed_0"),
                     Prefix.OPENMC, MessageType.WARNING, true);
             return;
@@ -105,7 +107,7 @@ public class ElevatorBlockListener implements Listener {
 
             CustomStack custom = CustomStack.byItemStack(item);
 
-            if (custom != null && ElevatorManager.isElevator(custom)) {
+            if (custom != null && elevatorManager.isElevator(custom)) {
                 block = custom;
                 continue;
             }
@@ -133,16 +135,16 @@ public class ElevatorBlockListener implements Listener {
 
     @EventHandler
     public void onElevatorPlaced(CustomBlockPlaceEvent event) {
-        if (!ElevatorManager.isElevator(event.getNamespacedID())) return;
+        if (!elevatorManager.isElevator(event.getNamespacedID())) return;
 
-        ElevatorManager.addToColumn(event.getBlock().getLocation());
+        elevatorManager.addToColumn(event.getBlock().getLocation());
     }
 
     @EventHandler
     public void onElevatorRemove(CustomBlockBreakEvent event) {
-        if (!ElevatorManager.isElevator(event.getNamespacedID())) return;
+        if (!elevatorManager.isElevator(event.getNamespacedID())) return;
 
-        ElevatorManager.removeToColumn(event.getBlock().getLocation());
+        elevatorManager.removeToColumn(event.getBlock().getLocation());
     }
 
 }

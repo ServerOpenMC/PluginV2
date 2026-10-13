@@ -1,18 +1,15 @@
 package fr.openmc.core.features.city.menu;
 
-import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityDeleteAction;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
-import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -34,7 +31,6 @@ import java.util.function.Supplier;
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
 public class CityModifyMenu extends Menu {
-
     public CityModifyMenu(Player owner) {
         super(owner);
     }
@@ -62,14 +58,13 @@ public class CityModifyMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = player.city().getCity();
         assert city != null;
 
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CityPermission.RENAME);
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
-
 
         List<Component> loreRename;
 
@@ -87,20 +82,20 @@ public class CityModifyMenu extends Menu {
         inventory.put(11, new ItemMenuBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.rename.title"));
             itemMeta.lore(loreRename);
-        }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+        }).setOnClick(_ -> {
+            City cityCheck = player.city().getCity();
             if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
-            DialogInput.send(player, TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
+            player.inputs().sendStringDialogInput(TranslationManager.translation("feature.city.commands.create.enter_city_name"), MAX_LENGTH_CITY, input -> {
                 if (input == null) return;
                 if (InputUtils.isInputCityName(input)) {
-                    City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                    City playerCity = player.city().getCity();
 
                     playerCity.rename(input);
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.commands.rename.success", Component.text(input)), Prefix.CITY, MessageType.SUCCESS, false);
+                    player.message().sendSuccess(TranslationManager.translation("feature.city.commands.rename.success", Component.text(input)), Prefix.CITY, false);
 
                 } else {
-                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.menus.modify.rename.invalid"), Prefix.CITY, MessageType.ERROR, true);
+                    player.message().sendError(TranslationManager.translation("feature.city.menus.modify.rename.invalid"), Prefix.CITY, true);
                 }
             });
 
@@ -121,7 +116,7 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.transfer.title"));
             itemMeta.lore(loreTransfer);
         }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            City cityCheck = City.ofPlayer(player);
 
             if (!CityManageConditions.canCityTransfer(cityCheck, player)) return;
 
@@ -136,35 +131,35 @@ public class CityModifyMenu extends Menu {
         }));
 
         Supplier<ItemMenuBuilder> deleteItemSupplier = () -> {
-                List<Component> loreDelete;
-                if (hasPermissionOwner) {
-                    if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                        loreDelete = TranslationManager.translationLore(
-                                "feature.city.menus.modify.delete.lore.wait",
-                                Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big"))).color(NamedTextColor.RED)
-                        );
-                    } else {
-                        loreDelete = TranslationManager.translationLore("feature.city.menus.modify.delete.lore.click");
-                    }
-                } else {
-                    loreDelete = List.of(
-                            TranslationManager.translation("messages.global.cannot_do_this")
+            List<Component> loreDelete;
+            if (hasPermissionOwner) {
+                if (!player.cooldown().isReady("city:big")) {
+                    loreDelete = TranslationManager.translationLore(
+                            "feature.city.menus.modify.delete.lore.wait",
+                            Component.text(player.cooldown().getRemainingFormatted("city:big")).color(NamedTextColor.RED)
                     );
+                } else {
+                    loreDelete = TranslationManager.translationLore("feature.city.menus.modify.delete.lore.click");
                 }
-                return new ItemMenuBuilder(this, Material.TNT, itemMeta -> {
-                    itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.delete.title"));
-                    itemMeta.lore(loreDelete);
-                }).setOnClick(inventoryClickEvent -> {
-                    CityDeleteAction.startDeleteCity(player);
-                });
-            };
-
-            if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                MenuUtils.runDynamicItem(player, this, 15, deleteItemSupplier)
-                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             } else {
-                inventory.put(15, deleteItemSupplier.get());
+                loreDelete = List.of(
+                        TranslationManager.translation("messages.global.cannot_do_this")
+                );
             }
+
+            return new ItemMenuBuilder(this, Material.TNT, itemMeta -> {
+                itemMeta.itemName(TranslationManager.translation("feature.city.menus.modify.delete.title"));
+                itemMeta.lore(loreDelete);
+            }).setOnClick(_ ->
+                    CityDeleteAction.startDeleteCity(player));
+        };
+
+        if (!player.cooldown().isReady("city:big")) {
+            MenuUtils.runDynamicItem(player, this, 15, deleteItemSupplier)
+                    .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+        } else {
+            inventory.put(15, deleteItemSupplier.get());
+        }
 
         inventory.put(18, new ItemMenuBuilder(this, Material.ARROW, true));
 

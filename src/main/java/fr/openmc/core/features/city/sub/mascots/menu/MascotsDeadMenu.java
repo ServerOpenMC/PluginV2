@@ -7,8 +7,7 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -30,6 +29,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class MascotsDeadMenu extends Menu {
+    private static final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
     private final UUID cityUUID;
 
@@ -72,12 +72,12 @@ public class MascotsDeadMenu extends Menu {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mascots.menu.dead.title"));
                 itemMeta.lore(TranslationManager.translationLore(
                         "feature.city.mascots.menu.dead.lore",
-                        Component.text(DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))).color(NamedTextColor.RED),
+                        Component.text(DateUtils.convertMillisToTime(dynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))).color(NamedTextColor.RED),
                         Component.text(AYWENITE_REDUCE).color(NamedTextColor.LIGHT_PURPLE),
                         OMCRegistry.CUSTOM_ITEMS.AYWENITE.getSprite()
                 ));
-            }).setOnClick(inventoryClickEvent -> {
-                City city = CityManager.getCity(cityUUID);
+            }).setOnClick(_ -> {
+                City city = City.of(cityUUID);
                 if (city == null) {
                     MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
                     player.closeInventory();
@@ -86,7 +86,7 @@ public class MascotsDeadMenu extends Menu {
 
                 if (!ItemUtils.takeAywenite(player, AYWENITE_REDUCE)) return;
 
-                DynamicCooldownManager.reduceCooldown(player, cityUUID, "city:immunity", COOLDOWN_REDUCE);
+                dynamicCooldownManager.reduceCooldown(player, cityUUID, "city:immunity", COOLDOWN_REDUCE);
 
                 MessagesManager.sendMessage(player,
                         TranslationManager.translation(

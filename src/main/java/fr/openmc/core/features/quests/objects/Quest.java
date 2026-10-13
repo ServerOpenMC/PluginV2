@@ -20,7 +20,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.title.Title;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -294,10 +297,9 @@ public class Quest {
                 boolean hasEnoughSpace = true;
 
                 for (QuestReward reward : tier.getRewards()) {
-                    if (reward instanceof QuestItemReward itemReward) {
-                        if (!ItemUtils.hasEnoughSpace(player, itemReward.getItemStack())) {
-                            hasEnoughSpace = false;
-                        }
+                    if (reward instanceof QuestItemReward itemReward
+                            && !ItemUtils.hasEnoughSpace(player, itemReward.getItemStack())) {
+                        hasEnoughSpace = false;
                     }
 
                     if (hasEnoughSpace) {
@@ -315,9 +317,9 @@ public class Quest {
                     }
                 }
 
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player, this));
-                });
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                    Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player, this))
+                );
 
                 Component titleLabel = isLastTier
                         ? TranslationManager.translation("feature.quests.title.completed")
@@ -419,12 +421,11 @@ public class Quest {
         List<QuestReward> remainingRewards = new ArrayList<>();
 
         for (QuestReward reward : rewards) {
-            if (reward instanceof QuestItemReward itemReward) {
-                if (!ItemUtils.hasEnoughSpace(player, itemReward.getItemStack())) {
-                    remainingRewards.add(reward);
-                    allClaimed = false;
-                    continue;
-                }
+            if (reward instanceof QuestItemReward itemReward
+                    && !ItemUtils.hasEnoughSpace(player, itemReward.getItemStack())) {
+                remainingRewards.add(reward);
+                allClaimed = false;
+                continue;
             }
 
             reward.giveReward(player);
@@ -513,14 +514,12 @@ public class Quest {
         if (playerTier < this.tiers.size()) {
             QuestTier tier = this.tiers.get(playerTier);
             int currentProgress = this.progress.getOrDefault(playerUUID, 0);
-            Set<Integer> playerCompletedTiers = this.completedTiers.computeIfAbsent(playerUUID, (k) -> new HashSet<>());
+            Set<Integer> playerCompletedTiers = this.completedTiers.computeIfAbsent(playerUUID, (_) -> new HashSet<>());
 
-            if (currentProgress >= tier.target() && !playerCompletedTiers.contains(playerTier) &&
-                    (playerTier == 0 || playerCompletedTiers.contains(playerTier - 1))) {
-
-                if (!tier.isRequireStepsCompletion() || tier.areStepsCompleted(playerUUID)) {
-                    this.completeTier(playerUUID, playerTier);
-                }
+            if (currentProgress >= tier.target() && !playerCompletedTiers.contains(playerTier)
+                    && (playerTier == 0 || playerCompletedTiers.contains(playerTier - 1))
+                    && !tier.isRequireStepsCompletion() || tier.areStepsCompleted(playerUUID)) {
+                this.completeTier(playerUUID, playerTier);
             }
         }
     }

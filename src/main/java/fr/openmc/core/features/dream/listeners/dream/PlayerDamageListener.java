@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.features.dream.DreamUtils;
-import org.bukkit.entity.Entity;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

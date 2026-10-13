@@ -4,7 +4,6 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -36,6 +35,8 @@ import java.util.UUID;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 
 public class ItemUtils {
+    private ItemUtils() {}
+
     /**
      * Return a {@link TranslatableComponent} from a {@link ItemStack}
      *
@@ -317,7 +318,7 @@ public class ItemUtils {
                     MessageType.ERROR,
                     true
             );
-            MailboxManager.sendItems(player, player, new ItemStack[]{ item });
+            player.mailbox().sendItems(new ItemStack[]{ item });
             return false;
         }
 

@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.registries.mobs.listeners;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.registries.DreamBiome;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -16,7 +16,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
  */
 public class MudBeachMobSpawningListener implements Listener {
 
-    private final double CORRUPTED_TADPOLE_PROBABILITY = 0.05;
+    private static final double CORRUPTED_TADPOLE_PROBABILITY = 0.05;
 
     /**
      * Gère l'événement de spawn de créature.
@@ -43,7 +43,7 @@ public class MudBeachMobSpawningListener implements Listener {
 
         double choice = Math.random();
         if (choice < CORRUPTED_TADPOLE_PROBABILITY) {
-            DreamMobsRegistry.CORRUPTED_TADPOLE.spawn(spawningLoc);
+            OMCRegistry.DREAM_MOB.CORRUPTED_TADPOLE.spawn(spawningLoc);
             e.setCancelled(true);
         }
     }

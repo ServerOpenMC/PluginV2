@@ -1,19 +1,15 @@
 package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPACancelCommand {
-	
+
 	/**
 	 * Command to cancel a teleport request.
 	 * @param player The player who wants to cancel the request.
@@ -21,19 +17,19 @@ public class TPACancelCommand {
 	@Command("tpacancel")
 	@CommandPermission("omc.commands.tpa")
 	public void tpaCancel(OMCPlayer player) {
-		if (!TPAManager.requesterHasPendingRequest(player)) {
+		if (!player.tpa().requesterHasPendingRequest()) {
 			player.message().send(TranslationManager.translation("feature.tpa.cancel.no_pending"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
-		OMCPlayer target = TPAManager.getTargetByRequester(player);
+		OMCPlayer target = player.tpa().getTargetByRequester();
 
 		if (target == null) {
 			player.message().send(TranslationManager.translation("feature.tpa.cancel.player_not_online"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
 		
-		TPAManager.removeRequest(player, target);
+		player.tpa().removeRequest(target);
 		player.message().send(TranslationManager.translation(
 				"feature.tpa.cancel.success",
 				target.getNameWithHead().color(NamedTextColor.GOLD)

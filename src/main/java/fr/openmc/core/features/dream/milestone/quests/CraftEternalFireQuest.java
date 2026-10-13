@@ -1,11 +1,10 @@
 package fr.openmc.core.features.dream.milestone.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.dream.milestone.DreamSteps;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.dream.registries.items.blocks.EternalCampFire;
-import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.quests.objects.QuestTier;
@@ -22,7 +21,7 @@ public class CraftEternalFireQuest extends MilestoneQuest implements Listener {
 		super(
 				TranslationManager.translation("feature.dream.milestone.quest.craft_eternal_fire.name"),
 				TranslationManager.translationLore("feature.dream.milestone.quest.craft_eternal_fire.description"),
-				DreamItemRegistry.ETERNAL_CAMPFIRE,
+				OMCRegistry.DREAM_ITEM.ETERNAL_CAMPFIRE,
 				MilestoneType.DREAM,
 				DreamSteps.CRAFT_ETERNAL_FIRE,
 				new QuestTier(1),
@@ -38,10 +37,10 @@ public class CraftEternalFireQuest extends MilestoneQuest implements Listener {
 			ItemStack item = e.getCurrentItem();
 			if (item == null) return;
 			
-			DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
+			DreamItem dreamItem = OMCRegistry.DREAM_ITEM.getByItemStack(item);
 			if (dreamItem == null) return;
 			if (dreamItem instanceof EternalCampFire) {
-				if (MilestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
+				if (milestonesManager.getPlayerStep(getType(), player) != getStep().ordinal()) return;
 				this.incrementProgressInDream(player.getUniqueId());
 			}
 		}

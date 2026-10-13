@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 public class BitsMenu extends Menu {
-
     public BitsMenu(Player owner) {
         super(owner);
     }
@@ -48,15 +47,14 @@ public class BitsMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        double bits = BitsManager.getBitsPlayer(getOwner().getUniqueId()) == null ? 0 :
-                BitsManager.getBitsPlayer(getOwner().getUniqueId()).getBits();
+        double bits = getOwner().bits().getBits();
 
         inventory.put(12, new ItemMenuBuilder(this, Material.DIAMOND, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.bits.menu.main.bits"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.bits.menu.main.bits.lore",
                     Component.text(bits).color(NamedTextColor.AQUA),
-                    Component.text(BitsManager.LINE_REQ/BitsManager.BITS_PER_LINE_REQ).color(NamedTextColor.AQUA)
+                    Component.text(BitsManager.LINE_REQ / BitsManager.BITS_PER_LINE_REQ).color(NamedTextColor.AQUA)
             ));
         }));
 

@@ -1,7 +1,7 @@
 package fr.openmc.core.utils.text;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
+import fr.openmc.core.registry.features.Feature;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,13 +11,14 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MotdUtils extends Feature {
-    private static Component motd;
-    private static YamlConfiguration motdConfig = null;
+    private YamlConfiguration motdConfig = null;
+    private final Random random = ThreadLocalRandom.current();
 
     @Override
-    public void init() {
+    public void onEnable() {
         File motdFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "motd.yml");
 
         if (!motdFile.exists()) {
@@ -32,14 +33,14 @@ public class MotdUtils extends Feature {
             public void run() {
                 List<Map<?, ?>> motds = motdConfig.getMapList("motds");
 
-                int randomIndex = new Random().nextInt(motds.size());
+                int randomIndex = random.nextInt(motds.size());
                 Map<?, ?> motdData = motds.get(randomIndex);
 
                 String line1 = (String) motdData.get("line1");
                 String line2 = (String) motdData.get("line2");
 
 
-                motd = Component.text(line1 + "\n" + line2);
+                Component motd = Component.text(line1 + "\n" + line2);
                 Bukkit.getServer().motd(motd);
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 12000L); // 12 000 ticks = 10 minutes

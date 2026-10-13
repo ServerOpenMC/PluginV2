@@ -26,8 +26,10 @@ import java.util.Map;
 
 public class MachineBallsMenu extends Menu {
 
+    private final TicketManager ticketManager;
     public MachineBallsMenu(Player owner) {
         super(owner);
+        this.ticketManager = OMCRegistry.FEATURES.TICKETS.get();
     }
 
     @Override
@@ -49,7 +51,7 @@ public class MachineBallsMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> items = new HashMap<>();
 
-        PlayerStats stats = TicketManager.getPlayerStats(getOwner().getUniqueId());
+        PlayerStats stats = ticketManager.getPlayerStats(getOwner().getUniqueId());
         int tickets = stats != null ? stats.getTicketRemaining() : 0;
 
         items.put(2, new ItemMenuBuilder(
@@ -75,7 +77,7 @@ public class MachineBallsMenu extends Menu {
                         MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.already_claimed"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
-                    int ticketsToGive = TicketManager.giveTicket(getOwner().getUniqueId());
+                    int ticketsToGive = ticketManager.giveTicket(getOwner().getUniqueId());
                     if (ticketsToGive <= 0) {
                         MessagesManager.sendMessage(getOwner(), TranslationManager.translation("feature.tickets.menu.no_tickets"), Prefix.OPENMC, MessageType.ERROR, true);
                     } else {
@@ -105,7 +107,7 @@ public class MachineBallsMenu extends Menu {
                         return;
                     }
 
-                    if (TicketManager.useTicket(getOwner().getUniqueId())) {
+                    if (ticketManager.useTicket(getOwner().getUniqueId())) {
                         OMCRegistry.CUSTOM_LOOTBOXES.MACHINE_BALL.open(getOwner());
                     }
                 }

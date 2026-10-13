@@ -22,6 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @see CustomAmbient utilisation trés spécifique, on affiche une dimension_type sur le joueur, ds la dimension actuelle
  */
 public class PlayerRespawnNMS {
+    private PlayerRespawnNMS() {}
 
     /**
      * Envoie juste le packet respawn.

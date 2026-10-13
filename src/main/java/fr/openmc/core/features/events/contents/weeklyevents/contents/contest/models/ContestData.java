@@ -74,13 +74,11 @@ public class ContestData {
     }
 
     public Component getCampComponent(Integer campInt) {
-        if (campInt == 1) {
-            return getCamp1();
-        } else if (campInt == 2) {
-            return getCamp2();
-        } else {
-            return Component.empty();
-        }
+        return switch (campInt) {
+            case 1 -> getCamp1();
+            case 2 -> getCamp2();
+            default -> Component.empty();
+        };
     }
 
     public Component getCamp1() {

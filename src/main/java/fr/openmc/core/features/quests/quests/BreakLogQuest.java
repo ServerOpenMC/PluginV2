@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class BreakLogQuest extends Quest implements Listener {
 
-    private final static Map<Material, Integer> logWeights = new EnumMap<>(Material.class);
+    private static final Map<Material, Integer> logWeights = new EnumMap<>(Material.class);
     static {
         // Définir les poids (progression plus rapide pour les bûches rares)
         logWeights.put(Material.OAK_LOG, 1);

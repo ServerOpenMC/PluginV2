@@ -1,7 +1,7 @@
 package fr.openmc.core.utils;
 
 import fr.openmc.core.OMCBootstrap;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +23,8 @@ import java.util.stream.Stream;
  * Utilitaires pour la gestion des fichiers et dossiers
  */
 public class FilesUtils {
+    private FilesUtils() {}
+
     private static final Set<String> TEXT_EXTENSIONS = Set.of(
             "yml",
             "yaml",

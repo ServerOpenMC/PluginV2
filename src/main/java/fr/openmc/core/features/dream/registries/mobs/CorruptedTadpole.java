@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.registries.mobs;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.dream.models.registry.DreamMob;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -29,7 +29,7 @@ public class CorruptedTadpole extends DreamMob<Tadpole> {
 
     @Override
     public void onDeath(CustomMob<?> thisMob, EntityDeathEvent event) {
-        CustomMob<?> crazyFrog = DreamMobsRegistry.CRAZY_FROG.getMob();
+        CustomMob<?> crazyFrog = OMCRegistry.DREAM_MOB.CRAZY_FROG.getMob();
         if (crazyFrog == null) return;
         crazyFrog.spawn(event.getEntity().getLocation());
     }

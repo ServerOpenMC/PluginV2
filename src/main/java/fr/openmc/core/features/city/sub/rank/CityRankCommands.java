@@ -1,11 +1,11 @@
 package fr.openmc.core.features.city.sub.rank;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplete;
 import fr.openmc.core.features.city.commands.autocomplete.CityRanksAutoComplete;
-import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.rank.menus.CityRankDetailsMenu;
 import fr.openmc.core.features.city.sub.rank.menus.CityRanksMenu;
@@ -22,11 +22,10 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"city ranks", "ville grades"})
 public class CityRankCommands {
-
 	@CommandPlaceholder()
 	@CommandPermission("omc.commands.city.rank")
 	public void rank(Player player) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
@@ -46,7 +45,7 @@ public class CityRankCommands {
 	
 	@Subcommand("add")
 	@CommandPermission("omc.commands.city.rank.add")
-    public void add(Player player) {
+    public void add(OMCPlayer player) {
         CityRankAction.beginCreateRank(player);
 	}
 	
@@ -56,7 +55,7 @@ public class CityRankCommands {
 			Player player,
 			@Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName
 	) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -77,7 +76,7 @@ public class CityRankCommands {
 	 * @param permission The permission to swap.
 	 */
 	public static void swapPermission(Player player, DBCityRank rank, CityPermission permission) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -104,7 +103,7 @@ public class CityRankCommands {
 	 * @param rank   The rank to add the permissions to.
 	 */
 	public static void addAllPermissions(Player player, DBCityRank rank) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -131,7 +130,7 @@ public class CityRankCommands {
 	 * @param rank   The rank to remove the permissions from.
 	 */
 	public static void removeAllPermissions(Player player, DBCityRank rank) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
+		City city = City.ofPlayer(player);
 		if (city == null) {
 			MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -153,19 +152,23 @@ public class CityRankCommands {
 	
 	@Subcommand("assign")
 	@CommandPermission("omc.commands.city.rank.assign")
-	public void assign(Player player, @Optional @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName, @Optional @Named("player") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer target) {
+	public void assign(OMCPlayer player,
+					   @Optional @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName,
+					   @Optional @Named("player") @SuggestWith(CityMembersAutoComplete.class) OfflinePlayer target) {
 		CityRankAction.assignRank(player, rankName, target);
 	}
 	
 	@Subcommand("rename")
 	@CommandPermission("omc.commands.city.rank.rename")
-	public void rename(Player player, @Named("old") @SuggestWith(CityRanksAutoComplete.class) String rankName) {
+	public void rename(OMCPlayer player,
+					   @Named("old") @SuggestWith(CityRanksAutoComplete.class) String rankName) {
 		CityRankAction.renameRank(player, rankName);
 	}
 	
 	@Subcommand("delete")
 	@CommandPermission("omc.commands.city.rank.delete")
-	public void delete(Player player, @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName) {
+	public void delete(OMCPlayer player,
+					   @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName) {
 		CityRankAction.deleteRank(player, rankName);
 	}
 }

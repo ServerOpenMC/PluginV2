@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -17,9 +17,6 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -37,6 +34,8 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHead;
 
 public class SendingLetter extends Menu {
     private final OMCOfflinePlayer receiver;
+    private static final MailboxManager MAILBOX_MANAGER = OMCRegistry.FEATURES.MAILBOX.get();
+
     private boolean hasSent = false;
 
     public SendingLetter(OMCPlayer player, OMCOfflinePlayer receiver) {
@@ -76,14 +75,7 @@ public class SendingLetter extends Menu {
         getInventory().clear();
         getOwner().closeInventory();
 
-        sendMailItems(getOwner(), receiver, items);
-    }
-
-    private void sendMailItems(OMCPlayer player, OMCOfflinePlayer receiver, ItemStack[] items) {
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            if (!MailboxManager.sendItems(player, receiver, items))
-                MailboxManager.givePlayerItems(player, items);
-        });
+        getOwner().mailbox().sendItemsForce(receiver, items);
     }
 
     @Override
@@ -111,7 +103,7 @@ public class SendingLetter extends Menu {
     @Override
     public void onClose(InventoryCloseEvent e) {
         Inventory inv = e.getInventory();
-        if (!hasSent) MailboxManager.givePlayerItems(getOwner(), getItems(inv));
+        if (!hasSent) MAILBOX_MANAGER.givePlayerItems(getOwner(), getItems(inv));
     }
 
     @Override
@@ -130,8 +122,10 @@ public class SendingLetter extends Menu {
 
         items.put(49, new ItemMenuBuilder(this, getHead(receiver)));
         items.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
-        items.put(48, ItemMenuTemplate.BTN_MAILBOX_SEND.apply(this).setOnClick(e -> sendLetter(e.getInventory())));
-        items.put(50, ItemMenuTemplate.BTN_CLOSE.apply(this).setOnClick(_ -> getOwner().closeInventory()));
+        items.put(48, ItemMenuTemplate.BTN_MAILBOX_SEND.apply(this)
+                .setOnClick(e -> sendLetter(e.getInventory())));
+        items.put(50, ItemMenuTemplate.BTN_CLOSE.apply(this)
+                .setOnClick(_ -> getOwner().closeInventory()));
 
         return items;
     }

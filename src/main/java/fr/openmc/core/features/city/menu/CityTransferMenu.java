@@ -5,12 +5,12 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.actions.CityTransferAction;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -19,8 +19,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -31,7 +29,7 @@ import java.util.*;
 
 public class CityTransferMenu extends PaginatedMenu {
 
-    public CityTransferMenu(Player owner) {
+    public CityTransferMenu(OMCPlayer owner) {
         super(owner);
     }
 
@@ -48,37 +46,35 @@ public class CityTransferMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        assert city != null;
+        City city = City.ofPlayer(player.getUniqueId());
+        if (city == null) return new ArrayList<>();
 
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
-            for (UUID uuid : city.getMembers()) {
-                if (uuid.equals(city.getPlayerWithPermission(CityPermission.OWNER))) {
-                    continue;
+        for (UUID uuid : city.getMembers()) {
+            if (uuid.equals(city.getPlayerWithPermission(CityPermission.OWNER))) continue;
+
+            OMCOfflinePlayer playerOffline = OMCOfflinePlayer.of(uuid);
+
+            String title = city.getRankName(uuid) + " ";
+
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
+                itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                itemMeta.lore(TranslationManager.translationLore(
+                        "feature.city.menus.transfer.item.lore",
+                        Component.text(title + playerOffline.getName()).color(NamedTextColor.LIGHT_PURPLE)
+                ));
+            }).setOnClick(_ -> {
+                if (!hasPermissionOwner) {
+                    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_isnt_owner"), Prefix.CITY, MessageType.ERROR, false);
+                    return;
                 }
 
-                OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
-
-                String title = city.getRankName(uuid) + " ";
-
-                items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
-                    itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                    itemMeta.lore(TranslationManager.translationLore(
-                            "feature.city.menus.transfer.item.lore",
-                            Component.text(title + playerOffline.getName()).color(NamedTextColor.LIGHT_PURPLE)
-                    ));
-                }).setOnClick(inventoryClickEvent -> {
-                    if (!hasPermissionOwner) {
-                        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_isnt_owner"), Prefix.CITY, MessageType.ERROR, false);
-                        return;
-                    }
-
-                    CityTransferAction.transfer(player, city, playerOffline);
-                }));
-            }
+                CityTransferAction.transfer(player, city, playerOffline);
+            }));
+        }
 
         return items;
     }

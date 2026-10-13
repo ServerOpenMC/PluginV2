@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.rank;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.models.CityPermission;
+import fr.openmc.core.features.city.models.city.City;
+import fr.openmc.core.features.city.models.db.DBCityRank;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
  * autour d'un rank (utile pour faire une modif sur menu et commandes).
  */
 public class CityRankCondition {
+    private CityRankCondition() {}
 
     /**
      * Retourne un booleen pour dire si un rank peut etre créer

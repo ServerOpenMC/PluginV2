@@ -1,25 +1,23 @@
 package fr.openmc.core.features.events.contents.halloween.managers;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
-import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.utils.EconomyUtils;
 import fr.openmc.core.features.events.contents.halloween.commands.HalloweenCommands;
 import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCListener;
 import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -29,14 +27,12 @@ import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.keys.tags.DamageTypeTagKeys;
 import io.papermc.paper.registry.tag.Tag;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
 import org.bukkit.damage.DamageType;
 import org.bukkit.inventory.ItemStack;
@@ -47,11 +43,14 @@ import java.util.*;
 
 @SuppressWarnings("UnstableApiUsage")
 public class HalloweenManager extends Feature implements HasDatabase, HasCommands, HasListeners {
-    private static Object2ObjectMap<UUID, HalloweenData> halloweenData;
-    private static Dao<HalloweenData, String> halloweenDataDao;
+    private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
 
-    public void init() {
-       halloweenData = loadAllHalloweenDatas();
+    private final Object2ObjectMap<UUID, HalloweenData> halloweenData = new Object2ObjectOpenHashMap<>();
+    private final DBTable<HalloweenData, String> halloweenDataTable = DBTable.of(HalloweenData.class);
+
+    @Override
+    public void onEnable() {
+       halloweenData.putAll(halloweenDataTable.loadMap(HalloweenData::getPlayerUUID));
     }
 
     @Override
@@ -66,7 +65,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
         return Set.of(HalloweenNPCListener::new);
     }
 
-    public static void depositPumpkins(UUID playerUUID, int amount) {
+    public void depositPumpkins(UUID playerUUID, int amount) {
         HalloweenData data = halloweenData.get(playerUUID);
         data.depositPumpkins(amount);
         halloweenData.put(playerUUID, data);
@@ -78,56 +77,41 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
         }.runTaskAsynchronously(OMCPlugin.getInstance());
     }
 
-    public static int getPumpkinCount(UUID playerUUID) {
+    public int getPumpkinCount(UUID playerUUID) {
         HalloweenData data = halloweenData.computeIfAbsent(playerUUID, HalloweenData::new);
         return data.getPumpkinCount();
     }
 
-    public static Object2ObjectMap<UUID, HalloweenData> getAllHalloweenData() {
+    public Object2ObjectMap<UUID, HalloweenData> getAllHalloweenData() {
         return halloweenData;
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, HalloweenData.class);
-        halloweenDataDao = DaoManager.createDao(connectionSource, HalloweenData.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(halloweenDataTable);
     }
 
-    private static void saveHalloweenData(HalloweenData data) {
+    private void saveHalloweenData(HalloweenData data) {
         try {
-            halloweenDataDao.createOrUpdate(data);
+            halloweenDataTable.createOrUpdate(data);
         } catch (SQLException e) {
             OMCLogger.error("Failed to save halloween data {}", data.getPlayerUUID(), e);
         }
     }
 
-    private static Object2ObjectMap<UUID, HalloweenData> loadAllHalloweenDatas() {
-        Object2ObjectMap<UUID, HalloweenData> newHalloweenDatas = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
-        try {
-            List<HalloweenData> halloweenDataDBs = halloweenDataDao.queryForAll();
-            for (HalloweenData halloweenData : halloweenDataDBs) {
-                newHalloweenDatas.put(halloweenData.getPlayerUUID(), halloweenData);
-            }
-        } catch (SQLException e) {
-            OMCLogger.error("Failed to load halloween datas from database", e);
-        }
-
-        return newHalloweenDatas;
-    }
-
-    public static void endEvent() {
-        Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
+    public void endEvent() {
+        Map<UUID, ItemStack[]> playerItemsMap = new HashMap<>();
 
         Map<Integer, Map.Entry<String, String>> newMap = new TreeMap<>();
         int rank = 1;
 
-        Object2ObjectMap<UUID, HalloweenData> balances = HalloweenManager.getAllHalloweenData();
+        Object2ObjectMap<UUID, HalloweenData> balances = this.getAllHalloweenData();
         for (var entry : balances.entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue().getPumpkinCount(), entry1.getValue().getPumpkinCount()))
                 .limit(10)
                 .toList()) {
             String playerName = CachePlayerName.getName(entry.getKey());
-            String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
+            String formattedPumpkinCount = EconomyUtils.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
             newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
         }
 
@@ -135,7 +119,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
             rank = entries.getKey();
             String playerName = entries.getValue().getKey();
             String pumpkinCount = entries.getValue().getValue();
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
+            OMCOfflinePlayer offlinePlayer = OMCOfflinePlayer.of(playerName);
 
             List<ItemStack> rewards = new ArrayList<>();
 
@@ -164,7 +148,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone(), aywenite.clone()));
-                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 30000);
+                    offlinePlayer.economy().addBalance(30000);
                 }
 
                 case 2 -> {
@@ -188,7 +172,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite, aywenite.clone()));
-                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 20000);
+                    offlinePlayer.economy().addBalance(20000);
                 }
 
                 case 3 -> {
@@ -212,19 +196,19 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
                     });
 
                     rewards.addAll(List.of(customPumpkin, aywenite));
-                    EconomyManager.addBalance(offlinePlayer.getUniqueId(), 10000);
+                    offlinePlayer.economy().addBalance(10000);
                 }
 
                 default -> {
                     if (!pumpkinCount.equals("0"))
-                        EconomyManager.addBalance(offlinePlayer.getUniqueId(), 3000);
+                        offlinePlayer.economy().addBalance(3000);
                 }
             }
 
-            playerItemsMap.put(offlinePlayer, rewards.toArray(new ItemStack[0]));
+            playerItemsMap.put(offlinePlayer.getUniqueId(), rewards.toArray(new ItemStack[0]));
         }
 
-        MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
+        mailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
 
         NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
         Npc halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");

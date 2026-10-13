@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
@@ -21,22 +22,24 @@ import org.bukkit.event.block.BlockGrowEvent;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ObeseCropsListener implements Listener {
+    private final DailyEventsManager dailyEventsManager = OMCRegistry.FEATURES.DAILY_EVENTS.get();
+    private final GoldenHarvestManager goldenHarvestManager = OMCRegistry.DAILY_EVENTS.GOLDEN_HARVEST.feature();
     @EventHandler(ignoreCancelled = true)
     public void onCropFullyGrowed(BlockGrowEvent event) {
-        if (!DailyEventsManager.isActiveDailyEvent()
-                || !(DailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
+        if (!dailyEventsManager.isActiveDailyEvent()
+                || !(dailyEventsManager.getActiveDailyEvent() instanceof GoldenHarvestEvent)) return;
         BlockType blockType = event.getBlock().getType().asBlockType();
         KeyBlock keyBlock = KeyBlock.vanilla(blockType);
-        if (GoldenHarvestManager.getObeseCropsMapping().get(keyBlock) == null) return;
+        if (goldenHarvestManager.getObeseCropsMapping().get(keyBlock) == null) return;
 
         BlockData data = event.getNewState().getBlockData();
         if (!(data instanceof Ageable ageable)) return;
 
         if (ageable.getAge() == ageable.getMaximumAge()) {
-            if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.OBESE_CROP_CHANCE) return;
+            if (ThreadLocalRandom.current().nextDouble() > goldenHarvestManager.OBESE_CROP_CHANCE) return;
 
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
-                    GoldenHarvestManager.setObeseCrop(event.getBlock()), 1L);
+                    goldenHarvestManager.setObeseCrop(event.getBlock()), 1L);
 
             ParticleUtils.spawnDispersingParticles(
                     event.getBlock().getLocation().add(0.5, 0.5, 0.5),

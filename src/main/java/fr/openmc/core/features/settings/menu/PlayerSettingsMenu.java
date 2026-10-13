@@ -35,10 +35,11 @@ import java.util.stream.IntStream;
 public class PlayerSettingsMenu extends PaginatedMenu {
 
     private final PlayerSettings settings;
+    private static final PlayerSettingsManager PLAYER_SETTINGS = OMCRegistry.FEATURES.PLAYER_SETTINGS.get();
 
     public PlayerSettingsMenu(Player player) {
         super(player);
-        this.settings = PlayerSettingsManager.getPlayerSettings(player);
+        this.settings = PLAYER_SETTINGS.getPlayerSettings(player);
     }
 
     @Override
@@ -65,10 +66,10 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> buttons = new HashMap<>();
 
-        buttons.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED, meta -> {
+        buttons.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED, meta ->
             meta.displayName(TranslationManager.translation("feature.settings.reset.title")
-                    .decoration(TextDecoration.ITALIC, false));
-        }).setOnClick(_ ->
+                    .decoration(TextDecoration.ITALIC, false))
+        ).setOnClick(_ ->
                 new ConfirmMenu(getOwner(), () -> {
                     settings.resetAllSettings();
                     this.refresh();

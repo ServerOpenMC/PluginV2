@@ -1,5 +1,6 @@
 package fr.openmc.core.features.displays.scoreboards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.scoreboard.SternalBoard;
 import fr.openmc.api.scoreboard.repository.ObjectCacheRepository;
 import fr.openmc.core.OMCPlugin;
@@ -14,7 +15,6 @@ import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -22,17 +22,19 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GlobalTeamManager {
     private LuckPerms luckPerms = null;
+    private LuckPermsHook hook = null;
     private final ObjectCacheRepository<SternalBoard> boardCache;
     private final Map<String, Component> groupToPrefixCache = new ConcurrentHashMap<>();
     private record TeamState(Set<String> members, Component prefix) {}
     private final Map<String, TeamState> teams = new ConcurrentHashMap<>();
     private final Map<UUID, String> playerTeam = new ConcurrentHashMap<>();
 
-    public GlobalTeamManager(ObjectCacheRepository<SternalBoard> boardCache) {
+    public GlobalTeamManager(ObjectCacheRepository<SternalBoard> boardCache, LuckPermsHook hook) {
         this.boardCache = boardCache;
 
-        if (LuckPermsHook.isEnable()) {
-            this.luckPerms = LuckPermsHook.getApi();
+        if (hook.isEnable()) {
+            this.hook = hook;
+            this.luckPerms = hook.getApi();
             initSortedGroups();
 
             this.luckPerms.getEventBus().subscribe(
@@ -47,11 +49,11 @@ public class GlobalTeamManager {
         List<Group> sortedGroups = new ArrayList<>(luckPerms.getGroupManager().getLoadedGroups());
         sortedGroups.sort(Comparator.comparing(g -> -g.getWeight().orElse(0)));
         for (Group group : sortedGroups) {
-            groupToPrefixCache.put(group.getName(), LuckPermsHook.getFormattedPAPIPrefix(group));
+            groupToPrefixCache.put(group.getName(), hook.getFormattedPAPIPrefix(group));
         }
     }
 
-    public void updatePlayerTeam(Player player) {
+    public void updatePlayerTeam(OMCPlayer player) {
         if (player == null || luckPerms == null) return;
 
         UUID uuid = player.getUniqueId();
@@ -62,7 +64,7 @@ public class GlobalTeamManager {
 
         Component prefix = groupToPrefixCache.computeIfAbsent(
                 playerGroup.getName(),
-                _ -> LuckPermsHook.getFormattedPAPIPrefix(playerGroup)
+                _ -> hook.getFormattedPAPIPrefix(playerGroup)
         );
 
         int weight = playerGroup.getWeight().orElse(0);
@@ -130,8 +132,8 @@ public class GlobalTeamManager {
         broadcast(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, false));
     }
 
-    private void syncExistingTeamsTo(Player player) {
-        var connection = ((CraftPlayer) player).getHandle().connection;
+    private void syncExistingTeamsTo(OMCPlayer player) {
+        var connection = player.getServerPlayer().connection;
 
         for (var entry : teams.entrySet()) {
             TeamState state = entry.getValue();
@@ -172,7 +174,7 @@ public class GlobalTeamManager {
         }
     }
 
-    private Group getPlayerHighestWeightGroup(Player player) {
+    private Group getPlayerHighestWeightGroup(OMCPlayer player) {
         var user = luckPerms.getUserManager().getUser(player.getUniqueId());
         if (user == null) return null;
 

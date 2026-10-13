@@ -6,9 +6,9 @@ import com.comphenix.protocol.events.PacketContainer;
 import dev.lone.itemsadder.api.Events.PlayerEmoteEndEvent;
 import dev.lone.itemsadder.api.Events.PlayerEmotePlayEvent;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.features.animations.Animation;
 import fr.openmc.core.features.animations.PlayerAnimationInfo;
+import fr.openmc.core.lifecycle.interfaces.NotLoadInUnitTest;
 import fr.openmc.core.utils.EnumUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -21,9 +21,10 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class EmoteListener implements Listener, NotLoadInUnitTest {
-    public static final HashMap<Player, PlayerAnimationInfo> playingAnimations = new HashMap<>();
+    public static final Map<Player, PlayerAnimationInfo> playingAnimations = new HashMap<>();
 
     @EventHandler
     public void onAnimationStart(PlayerEmotePlayEvent e) {

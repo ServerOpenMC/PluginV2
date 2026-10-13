@@ -1,7 +1,6 @@
 package fr.openmc.core.features.dream.registries.loottable;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
@@ -25,37 +24,37 @@ public class CloudVaultLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
                 new ItemLoot(
-                        DreamItemRegistry.CLOUD_HELMET,
+                        OMCRegistry.DREAM_ITEM.CLOUD_HELMET,
                         0.125,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CLOUD_CHESTPLATE,
+                        OMCRegistry.DREAM_ITEM.CLOUD_CHESTPLATE,
                         0.125,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CLOUD_LEGGINGS,
+                        OMCRegistry.DREAM_ITEM.CLOUD_LEGGINGS,
                         0.125,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CLOUD_BOOTS,
+                        OMCRegistry.DREAM_ITEM.CLOUD_BOOTS,
                         0.125,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.SOMNIFERE,
+                        OMCRegistry.DREAM_ITEM.SOMNIFERE,
                         0.45,
                         1,
                         1
                 ),
                 new ItemLoot(
-                        DreamItemRegistry.CLOUD_FISHING_ROD,
+                        OMCRegistry.DREAM_ITEM.CLOUD_FISHING_ROD,
                         0.08,
                         1,
                         1

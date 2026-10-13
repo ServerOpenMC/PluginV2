@@ -1,27 +1,21 @@
 package fr.openmc.core.features.corpse;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.annotations.Credit;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.corpse.commnads.CorpseCommand;
 import fr.openmc.core.features.corpse.model.DBCorpse;
 import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.lifecycle.interfaces.HasCommands;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.interfaces.db.DBTable;
+import fr.openmc.core.lifecycle.interfaces.db.HasDatabase;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
+import fr.openmc.core.registry.features.annotations.Credit;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.DirectionUtils;
@@ -51,53 +45,66 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Credit(developers = {"Nocolm"})
-public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook>, HasDatabase, HasListeners, HasCommands {
+public class CorpseManager extends Feature implements HasDatabase, HasListeners, HasCommands {
 
     @Getter
-    private static Map<UUID, DBCorpse> corpsesDB;
+    private final Map<UUID, DBCorpse> corpsesDB = new HashMap<>();
+    private final DBTable<DBCorpse, String> corpsesTable = DBTable.of(DBCorpse.class);
 
-    private static Dao<DBCorpse, String> corpsesDao;
+    public CorpseNPCManager corpseNPCManager;
+    private final MailboxManager mailboxManager = OMCRegistry.FEATURES.MAILBOX.get();
+    private final DynamicCooldownManager dynamicCooldownManager = OMCRegistry.FEATURES.DYNAMIC_COOLDOWN.get();
 
-    public static final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
+    public final Map<UUID, Location> lastSafeLocation = new ConcurrentHashMap<>();
 
-    public static final List<String> ALLOWED_DIM = List.of(
+    public final List<String> ALLOWED_DIM = List.of(
             "world", "world_nether", "world_the_end"
     );
 
-
-
     @Override
-    public void init() {
-        CorpseNPCManager.init();
-        corpsesDB = loadAllCorpses();
+    public void onEnable() {
+        corpseNPCManager = new CorpseNPCManager(this);
+
+        corpseNPCManager.init();
+        loadAllCorpses();
         startVoidDetection();
     }
 
     @Override
-    public void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, DBCorpse.class);
-        corpsesDao = DaoManager.createDao(connectionSource, DBCorpse.class);
+    public List<DBTable<?, ?>> getTables() {
+        return List.of(corpsesTable);
     }
 
     @Override
-    protected void save() {
+    protected void onDisable() {
         saveAllCorpses();
     }
 
-    private static void saveAllCorpses() {
-        try {
-            corpsesDao.callBatchTasks(() -> {
-                for (DBCorpse player : corpsesDB.values()) {
-                    corpsesDao.createOrUpdate(player);
-                }
-                return null;
-            });
-        } catch (Exception e) {
-            OMCLogger.error("Impossible de sauvegarder les corpses pendant l'arret.", e);
-        }
+    @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                () -> new CorpseListener(this)
+        );
     }
 
-    private static void startVoidDetection() {
+    @Override
+    public Set<Object> getCommands() {
+        return Set.of(
+                new CorpseCommand(this)
+        );
+    }
+
+    public void loadAllCorpses() {
+        corpsesDB.clear();
+        corpsesDB.putAll(corpsesTable.loadMap(DBCorpse::getPlayerUUID));
+    }
+
+    private void saveAllCorpses() {
+        corpsesTable.saveMap(corpsesDB);
+        corpsesDB.clear();
+    }
+
+    private void startVoidDetection() {
         Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
 
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -106,8 +113,8 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
 
                 Location loc = player.getLocation();
 
-                if (lastSafeLocation.containsKey(player.getUniqueId()))
-                    if (lastSafeLocation.get(player.getUniqueId()).equals(loc)) continue;
+                if (lastSafeLocation.containsKey(player.getUniqueId())
+                        && lastSafeLocation.get(player.getUniqueId()).equals(loc)) continue;
 
                 Block blockUnder = loc.clone().subtract(0, 1, 0).getBlock();
 
@@ -119,25 +126,8 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         }, 0L, 10L);
     }
 
-    public static Map<UUID, DBCorpse> loadAllCorpses() {
-        Map<UUID, DBCorpse> corpses = new HashMap<>();
-
-        try {
-            List<DBCorpse> dbCorpses = corpsesDao.queryForAll();
-
-            for (DBCorpse corpse : dbCorpses) {
-                corpses.put(corpse.getPlayerUUID(), corpse);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return corpses;
-    }
-
-    public static boolean createCorpse(Player player, boolean killByPlayer, EntityDamageEvent.DamageCause cause) {
-
-        if (hasCorpseDB(player.getUniqueId())) return false;
+    public boolean createCorpse(OMCPlayer player, boolean killByPlayer, EntityDamageEvent.DamageCause cause) {
+        if (player.corpse().hasCorpseDB()) return false;
 
         ItemStack[] contents = player.getInventory().getContents().clone();
 
@@ -178,7 +168,7 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
             }
         }
 
-        return CorpseNPCManager.createNPCS(
+        return corpseNPCManager.createNPCS(
                 player,
                 location,
                 player.getEquipment().getHelmet(),
@@ -190,25 +180,25 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         );
     }
 
-    public static void deleteCorpse(UUID ownerUUID, FoundTypes found) {
+    public void deleteCorpse(UUID ownerUUID, FoundTypes found) {
         DBCorpse dbCorpse = corpsesDB.remove(ownerUUID);
 
         ItemStack[] items = dbCorpse.getInventoryContent().clone();
         Location deathLoc = dbCorpse.getLocation().clone();
 
         try {
-            corpsesDao.delete(dbCorpse);
+            corpsesTable.delete(dbCorpse);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        CorpseNPCManager.removeNPCS(ownerUUID);
+        corpseNPCManager.removeNPCS(ownerUUID);
 
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(ownerUUID);
 
         switch (found) {
             case FOUND -> {
-                DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
+                dynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
                 MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.found")
                                 .color(TextColor.color(Color.GREEN.asRGB())),
                         Prefix.CORPSE, MessageType.SUCCESS, true);
@@ -218,13 +208,13 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
                             .color(TextColor.color(Color.YELLOW.asRGB())),
                     Prefix.CORPSE, MessageType.WARNING, true);
 
-            case STRIP -> DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
+            case STRIP -> dynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
 
             case ABORT -> {
                 for (ItemStack item : items)
                     deathLoc.getWorld().dropItem(deathLoc, item);
 
-                DynamicCooldownManager.clear(ownerUUID, CorpseNPCManager.COOLDOWN_GROUP, false);
+                dynamicCooldownManager.clear(ownerUUID, corpseNPCManager.COOLDOWN_GROUP, false);
                 MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.corpse.messages.abort")
                                 .color(TextColor.color(Color.GREEN.asRGB())),
                         Prefix.CORPSE, MessageType.SUCCESS, true);
@@ -232,65 +222,43 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
         }
     }
 
-    public static void sendMailItems(OMCPlayer player, OMCOfflinePlayer receiver, ItemStack[] items) {
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            if (!MailboxManager.sendItems(player, receiver, items))
-                MailboxManager.givePlayerItems(player, items);
-        });
-    }
-
-    public static boolean hasCorpseDB(UUID playerUUID) {
+    public boolean hasCorpseDB(UUID playerUUID) {
         if (corpsesDB == null) return false;
         return corpsesDB.containsKey(playerUUID);
     }
 
-    public static Location getLastSafePositionOf(Player player) {
+    private Location getLastSafePositionOf(Player player) {
         if (!lastSafeLocation.containsKey(player.getUniqueId())) return player.getLocation();
         return lastSafeLocation.get(player.getUniqueId());
     }
 
-    public static Component getCorpseDirection(Player player, CorpseNPC corpse) {
-
+    public Component getCorpseDirection(Player player, CorpseNPC corpse) {
         if (player.getWorld() != corpse.getLocation().getWorld())
             return TranslationManager.translation(WorldUtils.getDisplayedWorldName(corpse.getLocation().getWorld().getName()))
                     .color(TextColor.color(0xFF8F06))
                     .decoration(TextDecoration.BOLD, false);
-        else
-            return Component.text(
+        else return Component.text(
                             DirectionUtils.getDirectionArrow(player, corpse.getLocation()),
                     TextColor.color(0xFF8F06)).decoration(TextDecoration.BOLD, false).font(Key.key("minecraft", "default"));
     }
 
-    public static Component getRemainingTime(UUID playerUUID) {
-
+    public Component getRemainingTime(OMCPlayer player) {
         Component alreadyEnd = TranslationManager.translation("feature.corpse.cooldown.already_end");
 
-        if (DynamicCooldownManager.getCooldowns(playerUUID) == null) return alreadyEnd;
-        if (DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP) == null) return alreadyEnd;
-        if (DynamicCooldownManager.getCooldowns(playerUUID).get(CorpseNPCManager.COOLDOWN_GROUP).isReady()) return alreadyEnd;
+        if (player.cooldown().getCooldowns() == null) return alreadyEnd;
+        if (player.cooldown().getCooldowns().get(corpseNPCManager.COOLDOWN_GROUP) == null) return alreadyEnd;
+        if (player.cooldown().getCooldowns().get(corpseNPCManager.COOLDOWN_GROUP).isReady()) return alreadyEnd;
         return Component.text(
-                DateUtils.convertMillisToTime(DynamicCooldownManager.getCooldowns(playerUUID)
-                        .get(CorpseNPCManager.COOLDOWN_GROUP)
+                DateUtils.convertMillisToTime(player.cooldown().getCooldowns()
+                        .get(corpseNPCManager.COOLDOWN_GROUP)
                         .getRemaining()), NamedTextColor.RED).decoration(TextDecoration.BOLD, false);
     }
 
-    public static Component getLocation(Location location) {
+    public Component getLocation(Location location) {
         return Component.text("world : " + TranslationManager.translation(WorldUtils.getDisplayedWorldName(location.getWorld().getName()))
                 + " x: " + location.getBlockX()
                 + " y: " + location.getBlockY()
                 + " z: " + location.getBlockZ()
-        );
-    }
-
-    @Override
-    public Set<ListenerFactory> getListeners() {
-        return Set.of(CorpseListener::new);
-    }
-
-    @Override
-    public Set<Object> getCommands() {
-        return Set.of(
-                new CorpseCommand()
         );
     }
 }

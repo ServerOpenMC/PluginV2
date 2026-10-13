@@ -1,6 +1,6 @@
 package fr.openmc.core.utils.nms;
 
-import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.lifecycle.integration.OMCLogger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class PlayerBiomeNMS {
+    private PlayerBiomeNMS() {}
+
     private static Field SECTION_BIOMES;
     static {
         try {

@@ -7,8 +7,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkType;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
@@ -62,15 +61,11 @@ public class PerkChoiceMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = City.ofPlayer(player);
         assert city != null;
         for (Perks newPerk : Perks.values()) {
-            if (type == MenuType.OWNER_1) {
-                if (newPerk.getType() == PerkType.BASIC) continue;
-            }
-            if (type == MenuType.CANDIDATE) {
-                if (newPerk.getType() == PerkType.EVENT) continue;
-            }
+            if (type == MenuType.OWNER_1 && newPerk.getType() == PerkType.BASIC) continue;
+            if (type == MenuType.CANDIDATE && newPerk.getType() == PerkType.EVENT)  continue;
 
             if (newPerk == perk1 || newPerk == perk2 || newPerk == perk3) continue;
 
@@ -190,11 +185,11 @@ public class PerkChoiceMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();
-        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.perk_choice.button.back"));
-        }).setOnClick(inventoryClickEvent -> {
-            new MayorCreateMenu(getOwner(), perk1, perk2, perk3, type).open();
-        }));
+        map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta ->
+            itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.perk_choice.button.back"))
+        ).setOnClick(_ ->
+            new MayorCreateMenu(getOwner(), perk1, perk2, perk3, type).open()
+        ));
 
         map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
         map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));

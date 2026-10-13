@@ -10,13 +10,17 @@ public class MayorConstant {
     private final int id = 1;
     @DatabaseField(canBeNull = false)
     @Getter
-    private int phase;
+    private String phaseId;
 
     MayorConstant() {
         // required for ORMLite
     }
 
-    public MayorConstant(int phase) {
-        this.phase = phase;
+    public MayorConstant(MayorPhase phase) {
+        this.phaseId = phase.name().toLowerCase();
+    }
+
+    public MayorPhase getPhase() {
+        return MayorPhase.valueOf(phaseId.toUpperCase());
     }
 }

@@ -13,10 +13,15 @@ import java.util.UUID;
 public class AltarCheckTask extends BukkitRunnable {
 
     private static final double MAX_DISTANCE = 30.0;
+    private final AltarManager altarManager;
+
+    public AltarCheckTask(AltarManager altarManager) {
+        this.altarManager = altarManager;
+    }
 
     @Override
     public void run() {
-        Iterator<Map.Entry<Location, UUID>> iterator = AltarManager.boundPlayers.entrySet().iterator();
+        Iterator<Map.Entry<Location, UUID>> iterator = altarManager.boundPlayers.entrySet().iterator();
 
         while (iterator.hasNext()) {
             Map.Entry<Location, UUID> entry = iterator.next();
@@ -25,19 +30,20 @@ public class AltarCheckTask extends BukkitRunnable {
 
             Player player = Bukkit.getPlayer(uuid);
             if (player == null || !player.isOnline()) {
-                AltarManager.unbind(altarLoc);
+                altarManager.unbind(altarLoc);
                 iterator.remove();
                 continue;
             }
 
-            if (!player.getWorld().equals(altarLoc.getWorld())) {
-                AltarManager.unbind(altarLoc);
+            Location loc = player.getLocation();
+            if (!player.getWorld().equals(altarLoc.getWorld()) || loc == null) {
+                altarManager.unbind(altarLoc);
                 iterator.remove();
                 continue;
             }
 
-            if (player.getLocation().distanceSquared(altarLoc) > MAX_DISTANCE * MAX_DISTANCE) {
-                AltarManager.unbind(altarLoc);
+            if (loc.distanceSquared(altarLoc) > MAX_DISTANCE * MAX_DISTANCE) {
+                altarManager.unbind(altarLoc);
                 iterator.remove();
             }
         }

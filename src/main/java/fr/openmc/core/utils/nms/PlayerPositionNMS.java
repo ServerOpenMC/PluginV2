@@ -14,6 +14,8 @@ import java.util.Set;
  * Afin de simplifier l'utilisation des NMS
  */
 public class PlayerPositionNMS {
+    private PlayerPositionNMS() {}
+
     public static void sendPos(ServerPlayer nmsPlayer, Vec3 location) {
         PositionMoveRotation positionMoveRotation = new PositionMoveRotation(
                 location,

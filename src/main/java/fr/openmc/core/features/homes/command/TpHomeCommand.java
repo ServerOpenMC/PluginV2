@@ -1,8 +1,8 @@
 package fr.openmc.core.features.homes.command;
 
+import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.events.HomeTpEvent;
@@ -64,11 +64,12 @@ public class TpHomeCommand {
                             Bukkit.getPluginManager().callEvent(new HomeTpEvent(h, player));
                         }
                     }.runTask(OMCPlugin.getInstance());
+
                     player.message().sendSuccess(
                             TranslationManager.translation(
                                     "feature.homes.command.teleport.other.success",
                                     Component.text(h.getName()).color(NamedTextColor.YELLOW),
-                                    Component.text(target.getName()).color(NamedTextColor.YELLOW)
+                                    target.getNameWithHead().color(NamedTextColor.YELLOW)
                             ),
                             Prefix.HOME,
                             true

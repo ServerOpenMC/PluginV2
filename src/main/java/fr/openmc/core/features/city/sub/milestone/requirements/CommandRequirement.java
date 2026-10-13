@@ -1,10 +1,8 @@
 package fr.openmc.core.features.city.sub.milestone.requirements;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.city.City;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
 import fr.openmc.core.features.city.sub.milestone.EventCityRequirement;
-import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -50,9 +48,7 @@ public class CommandRequirement implements EventCityRequirement {
      */
     @Override
     public boolean isPredicateDone(City city) {
-        return Objects.requireNonNull(
-                CityStatisticsManager.getOrCreateStat(city.getUniqueId(), getScope())
-        ).asInt() >= amountRequired;
+        return Objects.requireNonNull(city.getOrCreateStat(getScope())).asInt() >= amountRequired;
     }
 
     /**
@@ -98,9 +94,7 @@ public class CommandRequirement implements EventCityRequirement {
                 "feature.city.levels.requirements.command.progress",
                 Component.text(amountRequired),
                 Component.text(command),
-                Component.text(Objects.requireNonNull(
-                        CityStatisticsManager.getOrCreateStat(city.getUniqueId(), getScope())
-                ).asInt())
+                Component.text(Objects.requireNonNull(city.getOrCreateStat(getScope())).asInt())
         );
     }
 
@@ -128,13 +122,13 @@ public class CommandRequirement implements EventCityRequirement {
         if (!cmd.equals(command)) return;
 
         Player player = e.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        City playerCity = City.ofPlayer(player);
 
         if (playerCity == null) return;
 
-        if (Objects.requireNonNull(CityStatisticsManager.getOrCreateStat(playerCity.getUniqueId(), getScope())).asInt() >= amountRequired)
+        if (Objects.requireNonNull(playerCity.getOrCreateStat(getScope())).asInt() >= amountRequired)
             return;
 
-        CityStatisticsManager.increment(playerCity.getUniqueId(), getScope(), 1);
+        playerCity.incrementStats(getScope(), 1);
     }
 }

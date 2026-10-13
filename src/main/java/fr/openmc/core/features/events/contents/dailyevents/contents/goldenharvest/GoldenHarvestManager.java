@@ -2,12 +2,12 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharve
 
 import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
+import fr.openmc.core.lifecycle.interfaces.HasListeners;
+import fr.openmc.core.lifecycle.listeners.ListenerFactory;
+import fr.openmc.core.registry.features.Feature;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
@@ -21,21 +21,21 @@ import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GoldenHarvestManager extends Feature implements HasListeners {
-    public static HashMap<KeyBlock, Map<Double, CustomItem>> OBESE_CROPS_MAPPING = null;
+    public Map<KeyBlock, Map<Double, CustomItem>> obeseCropsMapping = null;
     public static final double OBESE_CROP_CHANCE = 0.05; // 10% d'avoir une crop obèse
 
-    public static HashMap<KeyBlock, ItemLoot> GOLDEN_CROPS_ON_BREAK_MAPPING = null;
-    public static HashMap<KeyBlock, KeyBlock> GOLDEN_CROPS_ON_GROW_MAPPING = null;
+    public Map<KeyBlock, ItemLoot> goldenCropsOnBreakMapping = null;
+    public Map<KeyBlock, KeyBlock> goldenCropsOnGrowMapping = null;
     public static final double GOLDEN_CROP_ON_CROP_CHANCE = 0.04; // 4% d'avoir une golden crosps sur des crops
     public static final double GOLDEN_CROP_ON_OBESE_CHANCE = 0.5; // 50% d'avoir une golden crosps sur des crops
 
     @Override
-    public void init() {
+    public void onEnable() {
         ObeseCropsRegistry.init();
     }
 
     @Override
-    public void save() {
+    public void onDisable() {
         ObeseCropsRegistry.save();
     }
 
@@ -55,9 +55,9 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
      * qu'on genere seulement sur le moment afin d'éviter des erreurs
      * @return notre mapping
      */
-    public static HashMap<KeyBlock, Map<Double, CustomItem>> getObeseCropsMapping() {
-        if (OBESE_CROPS_MAPPING == null) {
-            OBESE_CROPS_MAPPING = new HashMap<>(
+    public Map<KeyBlock, Map<Double, CustomItem>> getObeseCropsMapping() {
+        if (obeseCropsMapping == null) {
+            obeseCropsMapping = new HashMap<>(
                     Map.of(
                             KeyBlock.vanilla(BlockType.POTATOES), new TreeMap<>(Map.of(
                                     0.05, OMCRegistry.CUSTOM_ITEMS.OBESE_POISONOUS_POTATO,
@@ -69,7 +69,7 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
                     // todo: add obese onion, obese cabbage and more with ItemsAdder CropsApi
             );
         }
-        return OBESE_CROPS_MAPPING;
+        return obeseCropsMapping;
     }
 
     /**
@@ -77,9 +77,9 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
      * qu'on genere seulement sur le moment afin d'éviter des erreurs
      * @return notre mapping
      */
-    public static HashMap<KeyBlock, ItemLoot> getGoldenCropsOnBreakMapping() {
-        if (GOLDEN_CROPS_ON_BREAK_MAPPING == null) {
-            GOLDEN_CROPS_ON_BREAK_MAPPING = new HashMap<>(
+    public Map<KeyBlock, ItemLoot> getGoldenCropsOnBreakMapping() {
+        if (goldenCropsOnBreakMapping == null) {
+            goldenCropsOnBreakMapping = new HashMap<>(
                     Map.of(
                             KeyBlock.vanilla(BlockType.POTATOES),
                             new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GOLDEN_POTATO, 1, 1),
@@ -99,7 +99,7 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
                     )
             );
         }
-        return GOLDEN_CROPS_ON_BREAK_MAPPING;
+        return goldenCropsOnBreakMapping;
     }
 
     /**
@@ -108,9 +108,9 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
      * qu'on genere seulement sur le moment afin d'éviter des erreurs
      * @return notre mapping
      */
-    public static HashMap<KeyBlock, KeyBlock> getGoldenCropsOnGrowMapping() {
-        if (GOLDEN_CROPS_ON_GROW_MAPPING == null) {
-            GOLDEN_CROPS_ON_GROW_MAPPING = new HashMap<>(
+    public Map<KeyBlock, KeyBlock> getGoldenCropsOnGrowMapping() {
+        if (goldenCropsOnGrowMapping == null) {
+            goldenCropsOnGrowMapping = new HashMap<>(
                     Map.of(
                             KeyBlock.vanilla(BlockType.MELON),
                             KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.GOLDEN_MELON),
@@ -119,10 +119,10 @@ public class GoldenHarvestManager extends Feature implements HasListeners {
                     )
             );
         }
-        return GOLDEN_CROPS_ON_GROW_MAPPING;
+        return goldenCropsOnGrowMapping;
     }
 
-    public static void setObeseCrop(Block block) {
+    public void setObeseCrop(Block block) {
         BlockType type = block.getType().asBlockType();
 
         Map<Double, CustomItem> obeseCrops = getObeseCropsMapping().get(KeyBlock.vanilla(type));

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.homes.command;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.homes.command.autocomplete.HomeWorldAddAutoComplete;
 import fr.openmc.core.features.homes.command.autocomplete.HomeWorldRemoveAutoComplete;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
@@ -17,6 +18,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Description("Permet de définir les mondes où les homes sont interdits")
 @CommandPermission("omc.admins.commands.home.world")
 public class HomeWorldCommand {
+    private final DisabledWorldHome disabledWorldHome = OMCRegistry.HOME_FEATURES.DISABLED_WORLD_HOME;
 
     @Subcommand("add")
     @Description("Set the world where homes are disabled")
@@ -31,7 +33,7 @@ public class HomeWorldCommand {
             return;
         }
 
-        if (DisabledWorldHome.isDisabledWorld(world)) {
+        if (disabledWorldHome.isDisabledWorld(world)) {
             player.message().sendError(
                     TranslationManager.translation(
                             "feature.homes.world.already_disabled",
@@ -43,7 +45,7 @@ public class HomeWorldCommand {
             return;
         }
 
-        DisabledWorldHome.addDisabledWorld(world, player);
+        disabledWorldHome.addDisabledWorld(world, player);
         player.message().sendSuccess(
                 TranslationManager.translation(
                         "feature.homes.world.added",
@@ -71,8 +73,8 @@ public class HomeWorldCommand {
             return;
         }
 
-        if (DisabledWorldHome.isDisabledWorld(world)) {
-            DisabledWorldHome.removeDisabledWorld(world);
+        if (disabledWorldHome.isDisabledWorld(world)) {
+            disabledWorldHome.removeDisabledWorld(world);
             player.message().sendSuccess(
                     TranslationManager.translation(
                             "feature.homes.world.removed",
@@ -97,17 +99,17 @@ public class HomeWorldCommand {
     @Description("List the worlds where homes are disabled")
     @CommandPermission("omc.admins.commands.home.world")
     public void listWorlds(OMCPlayer player) {
-        if (DisabledWorldHome.getDisabledWorlds().isEmpty()) {
+        if (disabledWorldHome.getDisabledWorlds().isEmpty()) {
             player.message().sendError(TranslationManager.translation("feature.homes.world.list.empty"), Prefix.HOME, true);
             return;
         }
         player.message().sendInfo(TranslationManager.translation("feature.homes.world.list.title"), Prefix.HOME, true);
-        DisabledWorldHome.getDisabledWorlds().forEach(worldName1 ->
+        disabledWorldHome.getDisabledWorlds().forEach(worldName1 ->
                 player.sendMessage(
                         TranslationManager.translation(
                                 "feature.homes.world.list.item",
                                 Component.text(worldName1).color(NamedTextColor.YELLOW),
-                                DisabledWorldHome.getDisabledWorldInfo(worldName1)
+                                disabledWorldHome.getDisabledWorldInfo(worldName1)
                         )
                 ));
     }
