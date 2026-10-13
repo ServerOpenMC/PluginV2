@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.contents.halloween.managers;
+package fr.openmc.core.features.events.contents.halloween.pumpkin.managers;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -16,9 +16,9 @@ import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.contents.halloween.commands.HalloweenCommands;
-import fr.openmc.core.features.events.contents.halloween.listeners.HalloweenNPCListener;
-import fr.openmc.core.features.events.contents.halloween.models.HalloweenData;
+import fr.openmc.core.features.events.contents.halloween.pumpkin.commands.HalloweenCommands;
+import fr.openmc.core.features.events.contents.halloween.pumpkin.listeners.HalloweenNPCListener;
+import fr.openmc.core.features.events.contents.halloween.pumpkin.models.HalloweenData;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
