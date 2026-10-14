@@ -18,7 +18,7 @@ public class HomeButton implements ButtonMenu {
     public ItemStack item(OMCPlayer player) {
         return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.home.name"),
-                ButtonItems.hint("feature.mainmenu.item.home.command")
+                ButtonItems.gray("feature.mainmenu.item.home.command")
         );
     }
 

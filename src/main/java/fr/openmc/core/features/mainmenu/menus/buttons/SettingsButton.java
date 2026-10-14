@@ -18,7 +18,7 @@ public class SettingsButton implements ButtonMenu {
     public ItemStack item(OMCPlayer player) {
         return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.settings.name"),
-                ButtonItems.hint("feature.mainmenu.item.settings.command")
+                ButtonItems.gray("feature.mainmenu.item.settings.command")
         );
     }
 

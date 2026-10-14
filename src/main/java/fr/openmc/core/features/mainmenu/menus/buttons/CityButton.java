@@ -29,7 +29,7 @@ public class CityButton implements ButtonMenu {
                 : TranslationManager.translation("feature.mainmenu.item.city.no_city")
                 .color(NamedTextColor.GRAY);
 
-        return ButtonItems.item(name, ButtonItems.hint("feature.mainmenu.item.city.lore"));
+        return ButtonItems.item(name, ButtonItems.gray("feature.mainmenu.item.city.lore"));
     }
 
     @Override

@@ -18,7 +18,7 @@ public class QuestsButton implements ButtonMenu {
     public ItemStack item(OMCPlayer player) {
         return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.quests.name"),
-                ButtonItems.hint("feature.mainmenu.item.quests.lore"));
+                ButtonItems.gray("feature.mainmenu.item.quests.lore"));
     }
 
     @Override

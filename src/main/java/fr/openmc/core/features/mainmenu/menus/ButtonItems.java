@@ -30,11 +30,11 @@ public final class ButtonItems {
         return TranslationManager.translation(key).color(NamedTextColor.WHITE);
     }
 
-    public static Component hint(String key) {
+    public static Component gray(String key) {
         return TranslationManager.translation(key).color(NamedTextColor.DARK_GRAY);
     }
 
-    public static Component warn(String key) {
+    public static Component red(String key) {
         return TranslationManager.translation(key).color(NamedTextColor.RED);
     }
 

@@ -19,7 +19,7 @@ public class BankButton implements ButtonMenu {
     public ItemStack item(OMCPlayer player) {
         return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.bank.name"),
-                ButtonItems.hint("feature.mainmenu.item.bank.command"));
+                ButtonItems.gray("feature.mainmenu.item.bank.command"));
     }
 
     @Override

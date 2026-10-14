@@ -19,7 +19,7 @@ public class MilestonesButton implements ButtonMenu {
         return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.milestones.name"),
                 ButtonItems.white("feature.mainmenu.item.milestones.lore"),
-                ButtonItems.hint("feature.mainmenu.item.milestones.command"));
+                ButtonItems.gray("feature.mainmenu.item.milestones.command"));
     }
 
     @Override

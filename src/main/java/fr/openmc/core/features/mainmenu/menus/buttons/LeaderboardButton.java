@@ -25,7 +25,7 @@ public class LeaderboardButton implements ButtonMenu {
     public ItemStack item(OMCPlayer player) {
         return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.leaderboard.name"),
-                ButtonItems.hint("feature.mainmenu.item.leaderboard.command"));
+                ButtonItems.gray("feature.mainmenu.item.leaderboard.command"));
     }
 
     @Override

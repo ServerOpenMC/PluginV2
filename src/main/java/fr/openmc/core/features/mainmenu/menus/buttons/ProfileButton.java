@@ -22,7 +22,7 @@ public class ProfileButton implements ButtonMenu {
     public ItemStack item(OMCPlayer player) {
         return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.profile.name"),
-                ButtonItems.hint("feature.mainmenu.item.profile.command")
+                ButtonItems.gray("feature.mainmenu.item.profile.command")
         );
     }
 
@@ -34,7 +34,7 @@ public class ProfileButton implements ButtonMenu {
         head.editMeta(meta -> {
             meta.customName(ButtonItems.name("feature.mainmenu.item.profile.name")
                     .decoration(TextDecoration.ITALIC, false));
-            meta.lore(List.of(ButtonItems.warn("feature.mainmenu.item.profile.lore")));
+            meta.lore(List.of(ButtonItems.red("feature.mainmenu.item.profile.lore")));
             if (meta instanceof SkullMeta skull) skull.setOwningPlayer(player);
         });
         return head;

@@ -29,7 +29,7 @@ public class ContestButton implements ButtonMenu {
         if (!(WeeklyEventsManager.getCurrentEvent() instanceof Contest && WeeklyEventsManager.getCurrentPhase() != ContestPhase.END_PHASE.getPhase())) {
             return ButtonItems.item(
                     ButtonItems.name("feature.mainmenu.item.contest.name"),
-                    ButtonItems.hint("feature.mainmenu.item.contest.command"));
+                    ButtonItems.gray("feature.mainmenu.item.contest.command"));
         }
 
         Component time = Component.text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY))
@@ -39,7 +39,7 @@ public class ContestButton implements ButtonMenu {
                 ContestManager.data.getCampVSComponent(),
                 TranslationManager.translation("feature.mainmenu.item.contest.ends_in", time)
                         .color(NamedTextColor.RED),
-                ButtonItems.hint("feature.mainmenu.item.contest.command"));
+                ButtonItems.gray("feature.mainmenu.item.contest.command"));
     }
 
     @Override

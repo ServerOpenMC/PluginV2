@@ -18,7 +18,7 @@ public class ShopButton implements ButtonMenu {
     public ItemStack item(OMCPlayer player) {
         return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.shop.name"),
-                ButtonItems.hint("feature.mainmenu.item.shop.command")
+                ButtonItems.gray("feature.mainmenu.item.shop.command")
         );
     }
 
