@@ -1,6 +1,7 @@
 package fr.openmc.core.features.mainmenu.menus.buttons;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mainmenu.listeners.MainMenuListener;
 import fr.openmc.core.features.mainmenu.menus.ButtonItems;
@@ -8,8 +9,6 @@ import fr.openmc.core.features.mainmenu.menus.ButtonMenu;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
-import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,14 +32,9 @@ public class AdvancementsButton implements ButtonMenu {
 
     @Override
     public void open(OMCPlayer player) {
+        PacketMenuLib.closeMenu(player);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            ServerPlayer nmsPlayer = player.getServerPlayer();
-            ClientboundUpdateAdvancementsPacket packet = MainMenuListener.getAdvancementPackets().get(nmsPlayer.getUUID());
-            if (packet == null)
-                return;
-
-            nmsPlayer.connection.send(packet);
-            MainMenuListener.getEnabledAdvancements().add(nmsPlayer.getUUID());
+            MainMenuListener.setModeAdvancement(player);
             Component message = TranslationManager.translation(
                     "feature.mainmenu.message.advancements_hint",
                     Component.keybind("key.advancements").color(NamedTextColor.YELLOW)
