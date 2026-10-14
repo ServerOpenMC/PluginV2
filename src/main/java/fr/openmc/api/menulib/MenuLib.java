@@ -7,6 +7,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.homes.menu.HomeDeleteConfirmMenu;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -225,6 +226,7 @@ public final class MenuLib implements Listener {
 
         if (e.getInventory().getHolder(false) instanceof Menu menu) {
             menu.onClose(e);
+            menu.getOwner().postEffects().remove(Key.key("minecraft", "blur"));
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof Menu)) {
                     MenuLib.clearHistory(player);
