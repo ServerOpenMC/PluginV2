@@ -12,7 +12,6 @@ import java.util.function.Consumer;
  * {
  *   "attributes": {},
  *   "carvers": [],
- *   "creature_spawn_probability": 0.03,
  *   "downfall": 0,
  *   "effects": {
  *     "foliage_color": "#9e814d",
@@ -23,8 +22,6 @@ import java.util.function.Consumer;
  *   },
  *   "features": [],
  *   "has_precipitation": false,
- *   "spawn_costs": {},
- *   "spawners": {},
  *   "temperature": 2
  * }
  */
@@ -34,16 +31,20 @@ public final class BiomeBuilder implements ContentBuilder {
     @Getter
     private final JsonObject effects = new JsonObject();
     private final JsonArray features = new JsonArray();
-    private final JsonObject spawnCosts = new JsonObject();
-    private final JsonObject spawners = new JsonObject();
     private String temperatureModifier = "none";
-    private Double creatureSpawnProbability = 0.03;
     private Float downfall = 0.5f;
     private Float temperatures = 0.5f;
     private Boolean hasPrecipitation = true;
 
     public BiomeBuilder attributes(EnvironnementAttributeBuilder builder) {
-        this.attributes = builder.getOutputData();
+        if (attributes == null) {
+            this.attributes = builder.getOutputData();
+        } else {
+            for (var entry : builder.getOutputData().entrySet()) {
+                if (!attributes.has(entry.getKey()))
+                    attributes.add(entry.getKey(), entry.getValue());
+            }
+        }
         return this;
     }
 
@@ -59,11 +60,6 @@ public final class BiomeBuilder implements ContentBuilder {
 
     public BiomeBuilder temperatureModifier(String id) {
         this.temperatureModifier = id;
-        return this;
-    }
-
-    public BiomeBuilder creatureSpawnProbability(Double value) {
-        this.creatureSpawnProbability = value;
         return this;
     }
 
@@ -131,29 +127,6 @@ public final class BiomeBuilder implements ContentBuilder {
         return this;
     }
 
-    public BiomeBuilder spawnCosts(Consumer<JsonObject> builder) {
-        JsonObject obj = new JsonObject();
-        builder.accept(obj);
-        for (var entry : obj.entrySet()) {
-            this.spawnCosts.add(entry.getKey(), entry.getValue());
-        }
-        return this;
-    }
-
-    public BiomeBuilder spawnCosts(JsonObject spawnCosts) {
-        for (var entry : spawnCosts.entrySet()) {
-            this.spawnCosts.add(entry.getKey(), entry.getValue());
-        }
-        return this;
-    }
-
-    public BiomeBuilder spawners(JsonObject spawners) {
-        for (var entry : spawners.entrySet()) {
-            this.spawners.add(entry.getKey(), entry.getValue());
-        }
-        return this;
-    }
-
     public BiomeBuilder temperatures(Float value) {
         this.temperatures=value;
         return this;
@@ -166,9 +139,9 @@ public final class BiomeBuilder implements ContentBuilder {
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
+
         if (attributes != null) json.add("attributes", attributes);
         if (temperatureModifier != null) json.addProperty("temperature_modifier", temperatureModifier);
-        if (creatureSpawnProbability != null) json.addProperty("creature_spawn_probability", creatureSpawnProbability);
         json.add("carvers", carvers);
         if (downfall != null) json.addProperty("downfall", downfall);
         JsonObject effect = effects;
@@ -177,8 +150,6 @@ public final class BiomeBuilder implements ContentBuilder {
         json.add("effects", effects);
         json.add("features", features);
         if (hasPrecipitation != null) json.addProperty("has_precipitation", hasPrecipitation);
-        json.add("spawn_costs", spawnCosts);
-        json.add("spawners", spawners);
         if (temperatures != null) json.addProperty("temperature", temperatures);
 
         return json;

@@ -13,7 +13,7 @@ public abstract class Region extends CustomRegion {
             this.max = BlockVector3.ZERO;
             return;
         }
-        
+
         this.max = getPos1().getMaximum(getPos2());
         this.min = getPos1().getMinimum(getPos2());
     }
