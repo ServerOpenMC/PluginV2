@@ -22,7 +22,7 @@ public class PoisonVampireBat extends AbstractVampireBat {
                 .location(bat.getLocation())
                 .count(4)
                 .offset(0.2, 0.2, 0.2)
-                .extra(0.01)
+                .speed(0.01)
                 .data(Color.fromRGB(60, 160, 40))
                 .receivers(32, true)
                 .spawn();
@@ -70,7 +70,7 @@ public class PoisonVampireBat extends AbstractVampireBat {
                 .location(impactLocation)
                 .count(50)
                 .offset(2.0, 1.0, 2.0)
-                .extra(0.05)
+                .speed(0.05)
                 .data(Color.fromRGB(60, 160, 40))
                 .receivers(40, true)
                 .spawn();

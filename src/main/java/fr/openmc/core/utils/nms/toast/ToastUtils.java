@@ -10,8 +10,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -52,7 +54,7 @@ public class ToastUtils {
         Advancement adv = new Advancement(
                 Optional.empty(),
                 Optional.of(new DisplayInfo(
-                        ItemStackTemplate.fromNonEmptyStack(ItemStack.fromBukkitCopy(item)),
+                        ItemStackTemplate.fromNonEmptyStack(CraftItemStack.asNMSCopy(item)),
                         PaperAdventure.asVanilla(name),
                         PaperAdventure.asVanilla(description),
                         Optional.empty(),
@@ -68,6 +70,11 @@ public class ToastUtils {
         );
 
         AdvancementHolder holder = new AdvancementHolder(TOAST_IDENTIFIER, adv);
+        ClientboundUpdateAdvancementsPacket.PositionedAdvancement positionedAdvancement = new ClientboundUpdateAdvancementsPacket.PositionedAdvancement(
+                holder,
+                0,
+                0
+        );
 
         AdvancementProgress progress = new AdvancementProgress();
         progress.update(ADV_REQUIREMENTS);
@@ -76,7 +83,7 @@ public class ToastUtils {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
         nmsPlayer.connection.send(new ClientboundUpdateAdvancementsPacket(
                 false,
-                Set.of(holder),
+                List.of(positionedAdvancement),
                 Set.of(),
                 Map.of(TOAST_IDENTIFIER, progress),
                 true
@@ -84,7 +91,7 @@ public class ToastUtils {
 
         nmsPlayer.connection.send(new ClientboundUpdateAdvancementsPacket(
                 false,
-                Set.of(),
+                List.of(),
                 Set.of(TOAST_IDENTIFIER),
                 Map.of(),
                 false

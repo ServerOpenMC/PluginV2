@@ -16,7 +16,7 @@ import java.nio.file.Path;
 public class ResourcePacksGenerator {
 
     // https://minecraft.wiki/w/Pack_format
-    private static final String FORMAT_VERSION = "88";
+    private static final String FORMAT_VERSION = "97.1";
 
     /**
      * Generate the base structure of a resource pack in the plugin's data folder, with the given name.

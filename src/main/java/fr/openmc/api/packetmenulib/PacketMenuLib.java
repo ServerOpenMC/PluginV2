@@ -4,6 +4,7 @@ import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.api.packetmenulib.utils.PacketUtils;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -37,6 +38,7 @@ public final class PacketMenuLib {
         PacketUtils.sendOpenInventoryPacket(player.getPlayer(), windowId, menu.getInventoryType().getMenuType(), menu.getTitle(player));
         openMenus.put(player.getUniqueId(), menu);
         updateMenu(menu, player, 1);
+        player.postEffects().add(Key.key("minecraft", "blur"));
     }
 
     /**
@@ -52,6 +54,7 @@ public final class PacketMenuLib {
         windowIds.remove(player.getUniqueId());
         openMenus.remove(player.getUniqueId());
         updateInv(player);
+        player.postEffects().remove(Key.key("minecraft", "blur"));
     }
 
     /**
