@@ -23,7 +23,7 @@ public class ComingSoonButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(
+        return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.coming_soon.name"),
                 ButtonItems.warn("feature.mainmenu.item.coming_soon.lore"));
     }

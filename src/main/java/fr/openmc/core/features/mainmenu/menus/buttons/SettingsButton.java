@@ -16,7 +16,7 @@ public class SettingsButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(
+        return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.settings.name"),
                 ButtonItems.hint("feature.mainmenu.item.settings.command")
         );

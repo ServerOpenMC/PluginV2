@@ -16,7 +16,7 @@ public class ShopsDisabledButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(ButtonItems.name("feature.mainmenu.item.shops_disabled"));
+        return ButtonItems.item(ButtonItems.name("feature.mainmenu.item.shops_disabled"));
     }
 
     @Override

@@ -23,7 +23,7 @@ public class AdvancementsButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(ButtonItems.name("feature.mainmenu.item.advancements.name"));
+        return ButtonItems.item(ButtonItems.name("feature.mainmenu.item.advancements.name"));
     }
 
     @Override

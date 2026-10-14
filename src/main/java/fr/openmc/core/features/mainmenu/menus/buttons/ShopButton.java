@@ -16,7 +16,7 @@ public class ShopButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(
+        return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.shop.name"),
                 ButtonItems.hint("feature.mainmenu.item.shop.command")
         );

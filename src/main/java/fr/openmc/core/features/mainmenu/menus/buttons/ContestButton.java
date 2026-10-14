@@ -27,7 +27,7 @@ public class ContestButton implements ButtonMenu {
     @Override
     public ItemStack item(OMCPlayer player) {
         if (!(WeeklyEventsManager.getCurrentEvent() instanceof Contest && WeeklyEventsManager.getCurrentPhase() != ContestPhase.END_PHASE.getPhase())) {
-            return ButtonItems.hitbox(
+            return ButtonItems.item(
                     ButtonItems.name("feature.mainmenu.item.contest.name"),
                     ButtonItems.hint("feature.mainmenu.item.contest.command"));
         }
@@ -35,7 +35,7 @@ public class ContestButton implements ButtonMenu {
         Component time = Component.text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY))
                 .color(NamedTextColor.RED);
 
-        return ButtonItems.hitbox(
+        return ButtonItems.item(
                 ContestManager.data.getCampVSComponent(),
                 TranslationManager.translation("feature.mainmenu.item.contest.ends_in", time)
                         .color(NamedTextColor.RED),

@@ -20,7 +20,7 @@ public class ProfileButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(
+        return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.profile.name"),
                 ButtonItems.hint("feature.mainmenu.item.profile.command")
         );

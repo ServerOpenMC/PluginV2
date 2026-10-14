@@ -16,7 +16,7 @@ public class MailboxButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(
+        return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.mailbox.name"),
                 ButtonItems.hint("feature.mainmenu.item.mailbox.command")
         );

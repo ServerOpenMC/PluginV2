@@ -17,7 +17,7 @@ public class NextPageButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(ButtonItems.name("feature.mainmenu.item.next_page"));
+        return ButtonItems.item(ButtonItems.name("feature.mainmenu.item.next_page"));
     }
 
     @Override

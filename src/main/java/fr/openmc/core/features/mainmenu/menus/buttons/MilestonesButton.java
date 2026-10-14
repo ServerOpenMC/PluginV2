@@ -16,9 +16,9 @@ public class MilestonesButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(
+        return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.milestones.name"),
-                ButtonItems.text("feature.mainmenu.item.milestones.lore"),
+                ButtonItems.white("feature.mainmenu.item.milestones.lore"),
                 ButtonItems.hint("feature.mainmenu.item.milestones.command"));
     }
 

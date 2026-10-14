@@ -23,7 +23,7 @@ public class LeaderboardButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(
+        return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.leaderboard.name"),
                 ButtonItems.hint("feature.mainmenu.item.leaderboard.command"));
     }

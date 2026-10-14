@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class ButtonItems {
 
-    public static ItemStack hitbox(Component name, Component... lore) {
+    public static ItemStack item(Component name, Component... lore) {
         ItemStack item = new ItemStack(Material.PAPER);
         item.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.fromString("air"));
@@ -26,7 +26,7 @@ public final class ButtonItems {
         return TranslationManager.translation(key).color(NamedTextColor.YELLOW);
     }
 
-    public static Component text(String key) {
+    public static Component white(String key) {
         return TranslationManager.translation(key).color(NamedTextColor.WHITE);
     }
 

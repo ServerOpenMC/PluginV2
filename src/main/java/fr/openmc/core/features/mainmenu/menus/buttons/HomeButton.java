@@ -16,7 +16,7 @@ public class HomeButton implements ButtonMenu {
 
     @Override
     public ItemStack item(OMCPlayer player) {
-        return ButtonItems.hitbox(
+        return ButtonItems.item(
                 ButtonItems.name("feature.mainmenu.item.home.name"),
                 ButtonItems.hint("feature.mainmenu.item.home.command")
         );
