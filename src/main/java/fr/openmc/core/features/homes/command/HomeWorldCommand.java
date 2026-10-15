@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.api.entity.player.OMCPlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.homes.command.autocomplete.HomeWorldAddAutoComplete;
 import fr.openmc.core.features.homes.command.autocomplete.HomeWorldRemoveAutoComplete;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;

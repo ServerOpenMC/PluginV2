@@ -2,7 +2,6 @@ package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
@@ -11,6 +10,7 @@ import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.cache.CachePlayerName;
+import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -68,7 +68,7 @@ public class VampireBossLootManager {
             if (rankInt == 0 || rankInt == 1 || rankInt == 2) {
                 broadcastToWorld(world, TranslationManager.translation(
                         "feature.dailyevents.bloody_night.vampire_boss.defeated.rank",
-                        Component.text("#"+ (rankInt + 1), LeaderboardManager.getRankColor(rankInt + 1)),
+                        Component.text("#"+ (rankInt + 1), ColorUtils.getRankColor(rankInt + 1)),
                         CachePlayerName.name(entry.getKey()).color(NamedTextColor.GOLD),
                         Component.text(String.format("%.1f", entry.getValue()), NamedTextColor.RED)
                 ));
@@ -81,7 +81,7 @@ public class VampireBossLootManager {
 
                 player.sendMessage(TranslationManager.translation(
                         "feature.dailyevents.bloody_night.vampire_boss.defeated.midle",
-                        Component.text((rankInt + 1), LeaderboardManager.getRankColor(rankInt + 1)),
+                        Component.text((rankInt + 1), ColorUtils.getRankColor(rankInt + 1)),
                         CachePlayerName.name(entry.getKey()).color(NamedTextColor.GOLD),
                         Component.text(String.format("%.1f", entry.getValue()), NamedTextColor.RED)
                 ));

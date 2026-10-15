@@ -11,6 +11,7 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -85,6 +87,7 @@ public class PlayerEnteredBiome implements Listener {
                         }
 
                         applyEffects(player);
+                        applyPostEffects(player);
                         spawnParticles(player);
                     },
                     0L, 40L
@@ -98,15 +101,31 @@ public class PlayerEnteredBiome implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        stopTask(event.getPlayer());
+    }
+
     private void stopTask(Player player) {
         BukkitTask task = activeTasks.remove(player.getUniqueId());
-        if (task != null) task.cancel();
+        if (task != null) {
+            task.cancel();
+            removePostEffects(player);
+        }
     }
 
     private void applyEffects(Player player) {
         player.addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 60, 1, true, false));
         player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 60, 3, true, false));
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 60, 1, true, false));
+    }
+
+    private void applyPostEffects(Player player) {
+        player.postEffects().add(Key.key("minecraft", "spider"));
+    }
+
+    private void removePostEffects(Player player) {
+        player.postEffects().remove(Key.key("minecraft", "spider"));
     }
 
     private void spawnParticles(Player player) {

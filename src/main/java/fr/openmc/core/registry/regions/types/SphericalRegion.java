@@ -19,12 +19,12 @@ public abstract class SphericalRegion extends CustomRegion {
     }
 
     @Override
-    public BlockVector3 getMin() {
+    public BlockVector3 getPos1() {
         return null;
     }
 
     @Override
-    public BlockVector3 getMax() {
+    public BlockVector3 getPos2() {
         return null;
     }
 }

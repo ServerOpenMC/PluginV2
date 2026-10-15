@@ -1,5 +1,6 @@
 package fr.openmc.core.features.quests.rewards;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -12,5 +13,5 @@ public interface QuestReward {
      *
      * @param player The player to give the reward to.
      */
-    void giveReward(Player player);
+    void giveReward(OMCPlayer player);
 }

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.mecanism.singularity;
 
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -25,7 +26,8 @@ public class SingularityCraftListener implements Listener {
 
         DreamItem dreamItem = DreamItemRegistry.getByItemStack(item);
         if (dreamItem == null) return;
-        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (!(event.getWhoClicked() instanceof Player playerr)) return;
+        OMCPlayer player = OMCPlayer.of(playerr);
 
         if (!dreamItem.getId().equals(DreamItemRegistry.SINGULARITY.getId())) return;
 

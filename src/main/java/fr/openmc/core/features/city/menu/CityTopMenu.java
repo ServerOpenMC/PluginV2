@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -10,9 +11,9 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CachePlayerName;
+import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -81,11 +82,12 @@ public class CityTopMenu extends PaginatedMenu {
 
         cities.forEach(city -> {
             UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
+            OMCOfflinePlayer owner = OMCOfflinePlayer.of(ownerUUID);
 
             if (ownerUUID != null) {
                 List<Component> cityLore = new ArrayList<>();
 
-                Component ownerComponent = CachePlayerName.name(ownerUUID).color(NamedTextColor.GRAY);
+                Component ownerComponent = owner.getNameWithHead().color(NamedTextColor.GRAY);
                 Component levelComponent = Component.text(city.getLevel()).color(NamedTextColor.DARK_AQUA);
                 Component membersCurrent = Component.text(city.getMembers().size()).color(NamedTextColor.GREEN);
                 Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
@@ -97,7 +99,7 @@ public class CityTopMenu extends PaginatedMenu {
                 if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
                     Component mayorName = city.getMayor() == null
                             ? TranslationManager.translation("messages.menus.none")
-                            : city.getMayor().getName();
+                            : city.getMayor().getOMCOfflinePlayer().getNameWithHead();
                     NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null)
                             ? NamedTextColor.WHITE
                             : city.getMayor().getMayorColor();
@@ -133,9 +135,9 @@ public class CityTopMenu extends PaginatedMenu {
                 items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.city.menus.top.item.title",
-                            Component.text(currentRank).color(LeaderboardManager.getRankColor(currentRank)),
+                            Component.text(currentRank).color(ColorUtils.getRankColor(currentRank)),
                             Component.text(city.getName())
-                    ).color(LeaderboardManager.getRankColor(currentRank)).decoration(TextDecoration.ITALIC, false));
+                    ).color(ColorUtils.getRankColor(currentRank)).decoration(TextDecoration.ITALIC, false));
                     itemMeta.lore(cityLore);
                 }));
             }

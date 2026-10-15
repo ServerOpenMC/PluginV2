@@ -14,6 +14,8 @@ import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.registry.regions.CustomRegionRegistry;
+import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
+import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
 import java.io.IOException;
@@ -31,10 +33,14 @@ public final class OMCRegistry {
     public static CustomAmbientRegistry CUSTOM_AMBIENTS;
     public static CustomLootboxRegistry CUSTOM_LOOTBOXES;
     public static CustomRegionRegistry CUSTOM_REGIONS;
+    public static WorldTemplateRegistry WORLD_TEMPLATES;
 
     // * Registre des features
     public static WeeklyEventsRegistry WEEKLY_EVENTS;
     public static DailyEventsRegistry DAILY_EVENTS;
+
+    // * Registres internes
+    public static ScannerRegistry SCANNERS;
 
     private static final List<LifecycleRegistry> LOADED = new ArrayList<>();
 
@@ -56,12 +62,17 @@ public final class OMCRegistry {
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_MOBS = new CustomMobRegistry(),
                     RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> WORLD_TEMPLATES = new WorldTemplateRegistry(),
+                    RegistryLoadingType.BOOTSTRAP, RegistryLoadingType.RUNTIME),
             new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_REGIONS = new CustomRegionRegistry(),
-                    RegistryLoadingType.AFTER_IA)
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(
+                    () -> SCANNERS = new ScannerRegistry(),
+                    RegistryLoadingType.RUNTIME)
     );
 
     private OMCRegistry() {}
@@ -70,11 +81,12 @@ public final class OMCRegistry {
         for (RegistryContext ctx : OMCRegistry.ALL) {
             if (isNotTyped(ctx, RegistryLoadingType.BOOTSTRAP)) continue;
 
-            LifecycleRegistry r = load(ctx);
+            LifecycleRegistry r = null;
             try {
+                r = load(ctx);
                 r.bootstrap(context);
             } catch (IOException e) {
-                OMCLogger.errorFormatted("Erreur lors du chargement du registre '{}' lors du bootstrap", r.getClass().getSimpleName());
+                OMCLogger.errorFormatted("Erreur lors du chargement du registre lors du bootstrap");
                 OMCLogger.error(e.getMessage());
             }
             OMCLogger.successFormatted("Registre {} chargé pendant le bootstrap", r.getClass().getSimpleName());
@@ -86,12 +98,18 @@ public final class OMCRegistry {
             if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
             if (isNotTyped(ctx, RegistryLoadingType.RUNTIME)) continue;
 
-            LifecycleRegistry r = load(ctx);
+            LifecycleRegistry r = null;
+            try {
+                r = load(ctx);
 
-            if (r instanceof HasListeners hasListeners)
-                OMCPlugin.registerEvents(hasListeners.getListeners());
+                if (r instanceof HasListeners hasListeners)
+                    OMCPlugin.registerEvents(hasListeners.getListeners());
 
-            r.init();
+                r.init();
+            } catch (Exception e) {
+                OMCLogger.errorFormatted("Erreur lors du chargement du registre lors du runtime");
+                OMCLogger.error(e.getMessage());
+            }
             OMCLogger.successFormatted("Registre {} chargé pendant le runtime", r.getClass().getSimpleName());
         }
     }
@@ -101,12 +119,20 @@ public final class OMCRegistry {
             if (isTyped(ctx, RegistryLoadingType.NOT_LOADED_UNIT_TEST) && OMCPlugin.isUnitTestVersion()) continue;
             if (isNotTyped(ctx, RegistryLoadingType.AFTER_IA)) continue;
 
-            LifecycleRegistry r = load(ctx);
+            LifecycleRegistry r = null;
 
-            if (r instanceof HasListeners hasListeners)
-                OMCPlugin.registerEvents(hasListeners.getListeners());
+            try {
+                r = load(ctx);
 
-            r.postInit();
+                if (r instanceof HasListeners hasListeners)
+                    OMCPlugin.registerEvents(hasListeners.getListeners());
+
+                r.postInit();
+            } catch (Exception e) {
+                OMCLogger.errorFormatted("Erreur lors du chargement du registre apres ItemsAdder");
+                OMCLogger.error(e.getMessage());
+            }
+
             OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());
         }
     }

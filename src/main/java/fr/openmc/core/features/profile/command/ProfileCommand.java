@@ -1,5 +1,7 @@
 package fr.openmc.core.features.profile.command;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.profile.menu.ProfileMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -22,13 +24,11 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 public class ProfileCommand {
     @CommandPlaceholder
     public void openProfile(
-            Player player,
-            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target
+            OMCPlayer player,
+            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target
     ) {
-        OfflinePlayer selectedTarget = target == null ? player : target;
-        if (!selectedTarget.isOnline() && !selectedTarget.hasPlayedBefore()) {
-            MessagesManager.sendMessage(
-                    player,
+        if (!target.isConnected() && !target.hasPlayedBefore()) {
+            player.message().send(
                     TranslationManager.translation("feature.profile.message.player_not_found"),
                     Prefix.OPENMC,
                     MessageType.ERROR,
@@ -37,6 +37,6 @@ public class ProfileCommand {
             return;
         }
 
-        new ProfileMenu(player, selectedTarget).open();
+        new ProfileMenu(player, target).open();
     }
 }

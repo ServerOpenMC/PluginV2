@@ -12,7 +12,10 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Brightness;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Display;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -108,6 +111,15 @@ public class TextDisplay {
 
         removeViewers(viewersToRemove);
         addViewers(viewersToKeep);
+    }
+
+    public void refreshViewer(Player viewer) {
+        if (!viewer.isOnline()) return;
+
+        viewerList.remove(viewer.getUniqueId());
+        if (getPlayersWithinDistance(100).contains(viewer)) {
+            addViewer(viewer);
+        }
     }
 
     public void updateText(Component text) {

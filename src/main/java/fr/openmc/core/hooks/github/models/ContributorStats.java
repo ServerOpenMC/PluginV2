@@ -5,4 +5,8 @@ public record ContributorStats(int totalAddLines, int totalRemoveLines) {
     public int getTotalLines() {
         return totalAddLines - totalRemoveLines;
     }
+
+    public int getBrutLines(){
+        return totalAddLines + totalRemoveLines;
+    }
 }

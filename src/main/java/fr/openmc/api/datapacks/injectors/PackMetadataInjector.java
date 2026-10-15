@@ -1,6 +1,7 @@
 package fr.openmc.api.datapacks.injectors;
 
 import fr.openmc.api.datapacks.DatapackInjector;
+import fr.openmc.api.datapacks.builders.ContentBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class PackMetadataInjector implements DatapackInjector {
-    private static final double[] PACK_FORMAT = new double[] {107.1, 1};
+    private static final double[] PACK_FORMAT = new double[] {121.0, 1};
 
     @Override
     public void inject(File rootFile) {
@@ -32,5 +33,30 @@ public class PackMetadataInjector implements DatapackInjector {
                   }
                 }
                 """, PACK_FORMAT[0], PACK_FORMAT[0], PACK_FORMAT[1], PACK_FORMAT[0], PACK_FORMAT[1]);
+    }
+
+    @Override
+    public String[] getPath() {
+        return null;
+    }
+
+    @Override
+    public ContentBuilder getBuilder() {
+        return null;
+    }
+
+    @Override
+    public String getNamespace() {
+        return null;
+    }
+
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public String getExtension() {
+        return null;
     }
 }

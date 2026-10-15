@@ -60,7 +60,7 @@ import java.util.function.Consumer;
  *   }
  * }
  */
-public final class TimelineBuilder {
+public final class TimelineBuilder implements ContentBuilder {
     private String clock = "minecraft:overworld";
     private Integer periodTicks = null;
     private final Map<String, TrackBuilder> tracks = new LinkedHashMap<>();
