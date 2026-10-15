@@ -39,7 +39,7 @@ public class CityMoneyLeaderBoard extends LeaderBoard {
         for (int i = 0; i < cities.size(); i++){
             City city = cities.get(i);
             Component rank = Component.text("#" + (i+1)).color(ColorUtils.getRankColor(i+1));
-            Component cityBalance = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon())
+            Component cityBalance = Component.text(EconomyManager.getFormattedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon())
                     .color(NamedTextColor.WHITE);
             text = text.append(Component.text("\n").append(TranslationManager.translation(
                             "feature.leaderboards.line.city_money",

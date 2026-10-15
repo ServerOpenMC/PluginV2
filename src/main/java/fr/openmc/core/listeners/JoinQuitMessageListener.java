@@ -154,7 +154,6 @@ public class JoinQuitMessageListener implements Listener {
 
     public static Component getJoinMessageComponent(Player player) {
         String prefix = LuckPermsHook.getFormattedPAPIPrefix(player);
-        String prefix = LuckPermsHook.getFormattedPAPIPrefix(player);
         return Component.text("§8[§a§l+§8] §r")
                 .append(Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE))
                 .appendSpace()
