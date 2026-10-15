@@ -1,7 +1,5 @@
 package fr.openmc.core.hooks.itemsadder.sprite;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.riftengine.api.scanner.items.ItemEntry;
 import fr.openmc.riftengine.api.utils.IdentifierUtils;
@@ -11,7 +9,7 @@ import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.object.ObjectContents;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class SpriteUtils {
     public static ObjectComponent getSprite(CustomItem item) {
@@ -22,7 +20,7 @@ public class SpriteUtils {
         Key atlasKey = itemEntry.getBehaviour().isBlockBehaviour() ? Key.key("minecraft", "blocks")
                 : Key.key("minecraft", "items");
 
-        Set<String> bestResourcesId = itemEntry.getBestResourcesId();
+        Collection<String> bestResourcesId = itemEntry.getBestResourcesId().values();
         if (bestResourcesId == null || bestResourcesId.isEmpty()) return null;
 
         String bestResourceId = bestResourcesId.stream().findFirst().orElseThrow();
