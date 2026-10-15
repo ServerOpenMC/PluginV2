@@ -13,7 +13,6 @@ import fr.openmc.core.features.mainmenu.commands.MainMenuCommand;
 import fr.openmc.core.features.mainmenu.listeners.MainMenuListener;
 import fr.openmc.core.features.mainmenu.menus.Page1;
 import fr.openmc.core.hooks.ProtocolLibHook;
-import org.bukkit.entity.Player;
 
 import java.util.Set;
 
