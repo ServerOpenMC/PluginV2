@@ -24,6 +24,7 @@ public class BlockStateScanner extends AbstractScanner<Map<String, String>, Void
         for (String fileName : FilesUtils.listFileNames(blockstatesFolderPath.toAbsolutePath().toString())) {
             Path filePath = blockstatesFolderPath.resolve(fileName);
             Map<String, Object> root = YmlUtils.loadYml(filePath);
+            if (root == null) continue;
 
             for (var iterRoot : root.entrySet()) {
                 String key = iterRoot.getKey();
