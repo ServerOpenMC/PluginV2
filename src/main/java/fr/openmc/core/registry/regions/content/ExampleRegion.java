@@ -25,4 +25,9 @@ public class ExampleRegion extends Region {
     public BlockVector3 getPos2() {
         return null;
     }
+
+    @Override
+    public BlockVector3 getCenter() {
+        return null;
+    }
 }
