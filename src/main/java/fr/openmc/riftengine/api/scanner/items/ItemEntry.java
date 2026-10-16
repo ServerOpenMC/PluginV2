@@ -1,9 +1,8 @@
 package fr.openmc.riftengine.api.scanner.items;
 
-
-import fr.openmc.riftengine.api.scanner.items.entry.ItemBehaviour;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemGraphics;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemResource;
+import fr.openmc.riftengine.api.scanner.items.entry.behaviours.IABehaviour;
 import fr.openmc.riftengine.api.utils.IdentifierUtils;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -25,7 +24,7 @@ public class ItemEntry {
     private final ItemGraphics graphics;
     private final Function<Path, Map<String, Path>> resourcePath;
 
-    private final ItemBehaviour behaviour;
+    private final IABehaviour behaviour;
 
     private final Path sourceYml;
 
@@ -40,8 +39,7 @@ public class ItemEntry {
             ItemGraphics graphics,
             Function<Path, Map<String, Path>> resourcePath,
 
-            // tqdq rift engine faire un mapping des behavours (blocks et furnitures)
-            ItemBehaviour behaviour,
+            IABehaviour behaviour,
 
             Path sourceYml
     ) {
@@ -59,7 +57,7 @@ public class ItemEntry {
     public static ItemEntry from(Map<Material, Map<String, Integer>> cmdCache, Path sourceYml, String namespace, String key, Map<?, ?> data) {
         ItemResource itemResource = ItemResource.from(data);
         ItemGraphics itemGraphics = ItemGraphics.from(data);
-        ItemBehaviour behaviour = ItemBehaviour.from(data);
+        IABehaviour behaviour = IABehaviour.from(data);
 
         Material material = getMaterial(itemResource, itemGraphics);
 
