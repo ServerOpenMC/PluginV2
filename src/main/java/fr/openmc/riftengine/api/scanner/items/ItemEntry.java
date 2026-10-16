@@ -1,6 +1,7 @@
 package fr.openmc.riftengine.api.scanner.items;
 
 import fr.openmc.riftengine.api.scanner.items.entry.ItemGraphics;
+import fr.openmc.riftengine.api.scanner.items.entry.ItemInfo;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemResource;
 import fr.openmc.riftengine.api.scanner.items.entry.behaviours.IABehaviour;
 import fr.openmc.riftengine.api.utils.IdentifierUtils;
@@ -54,10 +55,17 @@ public class ItemEntry {
         this.sourceYml = sourceYml;
     }
 
-    public static ItemEntry from(Map<Material, Map<String, Integer>> cmdCache, Path sourceYml, String namespace, String key, Map<?, ?> data) {
+    public static ItemEntry from(Map<Material, Map<String, Integer>> cmdCache,
+                                 Map<String, String> blockStateCache,
+                                 Path sourceYml,
+                                 String namespace,
+                                 String key,
+                                 Map<?, ?> data) {
+        ItemInfo itemInfo = ItemInfo.from(namespace, key, cmdCache, blockStateCache);
+
         ItemResource itemResource = ItemResource.from(data);
         ItemGraphics itemGraphics = ItemGraphics.from(data);
-        IABehaviour behaviour = IABehaviour.from(data);
+        IABehaviour behaviour = IABehaviour.from(itemInfo, data);
 
         Material material = getMaterial(itemResource, itemGraphics);
 
