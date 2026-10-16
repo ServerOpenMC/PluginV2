@@ -61,13 +61,13 @@ public class ItemEntry {
                                  String namespace,
                                  String key,
                                  Map<?, ?> data) {
-        ItemInfo itemInfo = ItemInfo.from(namespace, key, cmdCache, blockStateCache);
-
         ItemResource itemResource = ItemResource.from(data);
         ItemGraphics itemGraphics = ItemGraphics.from(data);
+        Material material = getMaterial(itemResource, itemGraphics);
+        ItemInfo itemInfo = ItemInfo.from(namespace, key, cmdCache, blockStateCache);
+
         IABehaviour behaviour = IABehaviour.from(itemInfo, data);
 
-        Material material = getMaterial(itemResource, itemGraphics);
 
         Integer customModelData = null;
 

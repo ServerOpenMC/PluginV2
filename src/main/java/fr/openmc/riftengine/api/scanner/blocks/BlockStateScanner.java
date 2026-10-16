@@ -5,7 +5,6 @@ import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.FilesUtils;
 import fr.openmc.core.utils.YmlUtils;
 import fr.openmc.riftengine.api.registry.scanner.AbstractScanner;
-import fr.openmc.riftengine.api.utils.IdentifierUtils;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -31,7 +30,7 @@ public class BlockStateScanner extends AbstractScanner<Map<String, String>, Void
 
                 if (!(iterRoot.getValue() instanceof String valueStr)) continue;
 
-                blockstates.put(key, IdentifierUtils.removeExtensionPath(valueStr) + valueStr);
+                blockstates.put(key, valueStr);
             }
         }
 

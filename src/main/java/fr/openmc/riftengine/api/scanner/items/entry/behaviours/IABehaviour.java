@@ -12,7 +12,7 @@ public interface IABehaviour {
         Object resourceObj = data.get("behaviours");
         Object specificPropertiesObj = data.get("specific_properties");
 
-        if (resourceObj == null || specificPropertiesObj == null) return null;
+        if (resourceObj == null && specificPropertiesObj == null) return null;
 
         Map<?, ?> behaviours;
 
