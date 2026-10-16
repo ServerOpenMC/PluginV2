@@ -4,7 +4,6 @@ import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -56,7 +55,7 @@ public class MoneyLeaderBoard extends LeaderBoard {
                             "feature.leaderboards.line.money",
                             rank,
                             player.getNameWithHead().color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(EconomyManager.getFormattedSimplifiedNumber(balance.getValue()) + " " + EconomyManager.getEconomyIcon())
+                            Component.text(EconomyManager.getFormattedNumber(balance.getValue()) + " " + EconomyManager.getEconomyIcon())
                                     .color(NamedTextColor.WHITE)
                     )));
         }

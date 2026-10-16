@@ -59,7 +59,7 @@ public class PersonalBankWithdrawMenu extends Menu {
 
         List<Component> loreBankWithdrawAll = TranslationManager.translationLore(
                 "feature.economy.bank.withdraw.all.lore",
-                Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(EconomyManager.getFormattedNumber(moneyBankPlayer)).color(NamedTextColor.LIGHT_PURPLE),
                 Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
@@ -73,7 +73,7 @@ public class PersonalBankWithdrawMenu extends Menu {
 
         List<Component> loreBankWithdrawHalf = TranslationManager.translationLore(
                 "feature.economy.bank.withdraw.half.lore",
-                Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(EconomyManager.getFormattedNumber(halfMoneyBankPlayer)).color(NamedTextColor.LIGHT_PURPLE),
                 Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 

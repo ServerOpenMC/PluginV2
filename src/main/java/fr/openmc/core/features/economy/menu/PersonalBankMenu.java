@@ -83,9 +83,9 @@ public class PersonalBankMenu extends Menu {
             itemMeta.itemName(TranslationManager.translation("feature.economy.bank.menu.balance.name"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.economy.bank.menu.balance.lore",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(BankManager.getBankBalance(player.getUniqueId()))).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getFormattedNumber(BankManager.getBankBalance(player.getUniqueId()))).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(PlayerBankLimitRewards.getBankBalanceLimit(playerCity.getLevel()))).color(NamedTextColor.LIGHT_PURPLE),
+                    Component.text(EconomyManager.getFormattedNumber(PlayerBankLimitRewards.getBankBalanceLimit(playerCity.getLevel()))).color(NamedTextColor.LIGHT_PURPLE),
                     Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
                     Component.text(BankManager.calculatePlayerInterest(player.getUniqueId()) * 100 + "%").color(NamedTextColor.AQUA),
                     Component.text(DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest())).color(NamedTextColor.AQUA)

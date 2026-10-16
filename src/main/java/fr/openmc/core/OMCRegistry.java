@@ -14,8 +14,8 @@ import fr.openmc.core.registry.lootboxes.CustomLootboxRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.registry.regions.CustomRegionRegistry;
-import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
+import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
 import java.io.IOException;
@@ -87,7 +87,7 @@ public final class OMCRegistry {
                 r.bootstrap(context);
             } catch (IOException e) {
                 OMCLogger.errorFormatted("Erreur lors du chargement du registre lors du bootstrap");
-                OMCLogger.error(e.getMessage());
+                OMCLogger.error(e.getMessage(), e);
             }
             OMCLogger.successFormatted("Registre {} chargé pendant le bootstrap", r.getClass().getSimpleName());
         }
@@ -108,7 +108,7 @@ public final class OMCRegistry {
                 r.init();
             } catch (Exception e) {
                 OMCLogger.errorFormatted("Erreur lors du chargement du registre lors du runtime");
-                OMCLogger.error(e.getMessage());
+                OMCLogger.error(e.getMessage(), e);
             }
             OMCLogger.successFormatted("Registre {} chargé pendant le runtime", r.getClass().getSimpleName());
         }
@@ -130,7 +130,7 @@ public final class OMCRegistry {
                 r.postInit();
             } catch (Exception e) {
                 OMCLogger.errorFormatted("Erreur lors du chargement du registre apres ItemsAdder");
-                OMCLogger.error(e.getMessage());
+                OMCLogger.error(e.getMessage(), e);
             }
 
             OMCLogger.successFormatted("Registre {} chargé après ItemsAdder", r.getClass().getSimpleName());

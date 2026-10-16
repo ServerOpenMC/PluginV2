@@ -14,6 +14,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.bits.commands.BitsCommands;
 import fr.openmc.core.features.bits.models.BitsPlayer;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.github.models.ContributorStats;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -21,9 +22,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.NumberFormat;
 import java.util.*;
 
 @Credit(developers = {"iambibi_"})
@@ -117,13 +116,7 @@ public class BitsManager extends Feature implements HasDatabase, HasCommands {
     }
 
     public static String getFormattedBits(UUID playerUUID) {
-        String balance = String.valueOf(getBits(playerUUID));
-        Currency currency = Currency.getInstance(Locale.FRANCE);
-        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-        format.setCurrency(currency);
-        BigDecimal bd = new BigDecimal(balance);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(),
-                getBitsIcon());
+        return EconomyManager.getFormattedNumber(getBits(playerUUID));
     }
 
     public static String getBitsIcon() {

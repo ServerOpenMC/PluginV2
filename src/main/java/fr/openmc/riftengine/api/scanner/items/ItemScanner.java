@@ -32,13 +32,14 @@ public class ItemScanner extends AbstractScanner<List<ItemEntry>, Path> {
             if (!(itemsObj instanceof Map<?, ?> itemsMap)) continue;
 
             String namespace = OMCRegistry.SCANNERS.YAML_ITEMSADDER_NAMESPACE.scan(root);
-            Map<Material, Map<String, Integer>> mappedCache = OMCRegistry.SCANNERS.CUSTOM_MODEL_DATA_CACHE.scan(null);
+            Map<Material, Map<String, Integer>> cmdCache = OMCRegistry.SCANNERS.CUSTOM_MODEL_DATA_CACHE.scan(null);
+            Map<String, String> blockStateCache = OMCRegistry.SCANNERS.BLOCKSTATES_CACHE.scan(null);
 
             for (Map.Entry<?, ?> entry : itemsMap.entrySet()) {
                 String key = String.valueOf(entry.getKey());
                 if (!(entry.getValue() instanceof Map<?, ?> data)) continue;
 
-                result.add(ItemEntry.from(mappedCache, ymlFile, namespace, key, data));
+                result.add(ItemEntry.from(cmdCache, blockStateCache, ymlFile, namespace, key, data));
             }
         }
 

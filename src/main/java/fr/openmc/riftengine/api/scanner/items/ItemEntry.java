@@ -1,15 +1,16 @@
 package fr.openmc.riftengine.api.scanner.items;
 
-
-import fr.openmc.riftengine.api.scanner.items.entry.ItemBehaviour;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemGraphics;
+import fr.openmc.riftengine.api.scanner.items.entry.ItemInfo;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemResource;
+import fr.openmc.riftengine.api.scanner.items.entry.behaviours.IABehaviour;
 import fr.openmc.riftengine.api.utils.IdentifierUtils;
 import lombok.Getter;
 import org.bukkit.Material;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,9 +23,9 @@ public class ItemEntry {
 
     private final ItemResource resource;
     private final ItemGraphics graphics;
-    private final Function<Path, Set<Path>> resourcePath;
+    private final Function<Path, Map<String, Path>> resourcePath;
 
-    private final ItemBehaviour behaviour;
+    private final IABehaviour behaviour;
 
     private final Path sourceYml;
 
@@ -37,10 +38,9 @@ public class ItemEntry {
             // * Méthodes de création d'items (moderne ou legacy)
             ItemResource resource,
             ItemGraphics graphics,
-            Function<Path, Set<Path>> resourcePath,
+            Function<Path, Map<String, Path>> resourcePath,
 
-            // tqdq rift engine faire un mapping des behavours (blocks et furnitures)
-            ItemBehaviour behaviour,
+            IABehaviour behaviour,
 
             Path sourceYml
     ) {
@@ -55,12 +55,19 @@ public class ItemEntry {
         this.sourceYml = sourceYml;
     }
 
-    public static ItemEntry from(Map<Material, Map<String, Integer>> cmdCache, Path sourceYml, String namespace, String key, Map<?, ?> data) {
+    public static ItemEntry from(Map<Material, Map<String, Integer>> cmdCache,
+                                 Map<String, String> blockStateCache,
+                                 Path sourceYml,
+                                 String namespace,
+                                 String key,
+                                 Map<?, ?> data) {
         ItemResource itemResource = ItemResource.from(data);
         ItemGraphics itemGraphics = ItemGraphics.from(data);
-        ItemBehaviour behaviour = ItemBehaviour.from(data);
-
         Material material = getMaterial(itemResource, itemGraphics);
+        ItemInfo itemInfo = ItemInfo.from(namespace, key, cmdCache, blockStateCache);
+
+        IABehaviour behaviour = IABehaviour.from(itemInfo, data);
+
 
         Integer customModelData = null;
 
@@ -81,32 +88,26 @@ public class ItemEntry {
         );
     }
 
-    public Set<String> getBestResourcesId() {
+    public Map<String, String> getBestResourcesId() {
         if (resource != null) {
             if (resource.hasTextures())
                 return resource.textures().stream()
                         .map(id -> IdentifierUtils.normalizeId(id, namespace))
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toMap(id -> "_", id -> id));
             else if (resource.hasModel())
-                return Collections.singleton(IdentifierUtils.normalizeId(resource.model(), namespace));
+                return getMapResource(IdentifierUtils.normalizeId(resource.model(), namespace));
         }
 
         // * Méthode graphics
         if (graphics != null) {
             if (graphics.hasModel()) {
-                return Collections.singleton(IdentifierUtils.normalizeId(graphics.model(), namespace));
+                return getMapResource(IdentifierUtils.normalizeId(graphics.model(), namespace));
             }
             if (graphics.hasTexture()) {
-                return Collections.singleton(IdentifierUtils.normalizeId(graphics.texture(), namespace));
+                return getMapResource(IdentifierUtils.normalizeId(graphics.texture(), namespace));
             }
             if (graphics.hasTextures()) {
-                Set<String> texturesNormalized = new HashSet<>();
-
-                for (String value : graphics.textures().values()) {
-                    texturesNormalized.add(IdentifierUtils.normalizeId(value, namespace));
-                }
-                
-                return texturesNormalized;
+                return new HashMap<>(graphics.textures());
             }
         }
 
@@ -126,28 +127,34 @@ public class ItemEntry {
         return byDefault;
     }
 
-    private static Function<Path, Set<Path>> resolvePathFunction(String namespace, ItemGraphics graphics, ItemResource resource) {
+    private static Function<Path, Map<String, Path>> resolvePathFunction(String namespace, ItemGraphics graphics, ItemResource resource) {
         // * Méthode legacy
         if (resource != null) {
             if (resource.hasTextures())
                 return javaRoot -> resource.textures().stream()
                         .map(id -> IdentifierUtils.resolveTextureId(javaRoot,
                                 IdentifierUtils.normalizeId(id, namespace)))
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toMap(v -> "_", k -> k));
             else if (resource.hasModel())
-                return javaRoot -> Collections.singleton(IdentifierUtils.resolveModelId(javaRoot,
+                return javaRoot -> getMapResource(IdentifierUtils.resolveModelId(javaRoot,
                         IdentifierUtils.normalizeId(resource.model(), namespace)));
         }
 
         // * Méthode graphics
         if (graphics != null) {
             if (graphics.hasModel()) {
-                return javaRoot -> Collections.singleton(IdentifierUtils.resolveModelId(javaRoot,
+                return javaRoot -> getMapResource(IdentifierUtils.resolveModelId(javaRoot,
                         IdentifierUtils.normalizeId(graphics.model(), namespace)));
             }
             if (graphics.hasTexture()) {
-                return javaRoot -> Collections.singleton(IdentifierUtils.resolveTextureId(javaRoot,
+                return javaRoot -> getMapResource(IdentifierUtils.resolveTextureId(javaRoot,
                         IdentifierUtils.normalizeId(graphics.texture(), namespace)));
+            }
+            if (graphics.hasTextures()) {
+                return javaRoot -> graphics.textures().entrySet().stream()
+                        .map(entry -> Map.entry(entry.getKey(), IdentifierUtils.resolveTextureId(javaRoot,
+                                IdentifierUtils.normalizeId(entry.getValue(), namespace))))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             }
         }
 
@@ -156,5 +163,9 @@ public class ItemEntry {
 
     public String namespacedId() {
         return namespace + ":" + key;
+    }
+
+    public static <T> Map<String, T> getMapResource(T value) {
+        return Map.of("_", value);
     }
 }

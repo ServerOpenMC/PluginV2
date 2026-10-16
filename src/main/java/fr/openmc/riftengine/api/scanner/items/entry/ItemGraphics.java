@@ -3,7 +3,6 @@ package fr.openmc.riftengine.api.scanner.items.entry;
 import fr.openmc.core.utils.YmlUtils;
 import org.bukkit.Material;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public record ItemGraphics(
@@ -13,30 +12,19 @@ public record ItemGraphics(
         Material material
 ) {
     public static ItemGraphics from(Map<?, ?> data) {
-        if (!(data.get("graphics") instanceof Map<?, ?> graphics))
+        Map<?, ?> graphics = YmlUtils.getMap(data, "graphics");
+        if (graphics == null)
             return new ItemGraphics(null, null, null, Material.PAPER);
 
+        Material material = Material.valueOf(
+                YmlUtils.getString(data, "material", ItemResource.DEFAULT_MATERIAL).toUpperCase());
 
-        Map<String, String> textures = null;
-
-        Object texturesObj = graphics.get("textures");
-        if (texturesObj instanceof Map<?, ?> texturesMap) {
-            textures = new HashMap<>();
-
-            for (Map.Entry<?, ?> entry : texturesMap.entrySet()) {
-                textures.put(
-                        entry.getKey().toString(),
-                        entry.getValue().toString()
-                );
-            }
-        }
-
-        String texture = YmlUtils.getString(graphics.get("texture"), null);
-        String model = YmlUtils.getString(graphics.get("model"), null);
-        Material material = Material.valueOf(YmlUtils.getString(
-                data.get("material"), ItemResource.DEFAULT_MATERIAL).toUpperCase());
-
-        return new ItemGraphics(texture, textures, model, material);
+        return new ItemGraphics(
+                YmlUtils.getString(graphics, "texture", null),
+                YmlUtils.getStringMap(graphics, "textures"),
+                YmlUtils.getString(graphics, "model", null),
+                material
+        );
     }
 
     public boolean hasTexture() {

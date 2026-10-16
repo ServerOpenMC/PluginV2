@@ -332,14 +332,14 @@ public class WarManager {
         Component rewardMoney = bonusMoney > 0
                 ? TranslationManager.translation(
                         "feature.city.war.result.reward.money_bonus",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
+                        Component.text(EconomyManager.getFormattedNumber(amountStolen) + EconomyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD),
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(bonusMoney) + EconomyManager.getEconomyIcon())
+                        Component.text(EconomyManager.getFormattedNumber(bonusMoney) + EconomyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
                 )
                 : TranslationManager.translation(
                         "feature.city.war.result.reward.money",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
+                        Component.text(EconomyManager.getFormattedNumber(amountStolen) + EconomyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
                 );
         Component rewardClaims = TranslationManager.translation(
@@ -378,7 +378,7 @@ public class WarManager {
         );
         Component lossMoney = TranslationManager.translation(
                 "feature.city.war.result.loss.money",
-                Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
+                Component.text(EconomyManager.getFormattedNumber(amountStolen) + EconomyManager.getEconomyIcon())
                         .color(NamedTextColor.RED)
         );
         Component lossClaims = TranslationManager.translation(

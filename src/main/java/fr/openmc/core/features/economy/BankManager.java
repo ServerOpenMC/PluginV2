@@ -188,7 +188,7 @@ public class BankManager extends Feature implements HasDatabase {
         MessagesManager.sendMessage(offlinePlayer,
                 TranslationManager.translation(
                         "feature.economy.bank.withdraw.transferred",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(EconomyManager.getEconomyIcon())
                 ),
                 Prefix.BANK, MessageType.SUCCESS, false);
@@ -241,7 +241,7 @@ public class BankManager extends Feature implements HasDatabase {
                     TranslationManager.translation(
                             "feature.economy.bank.interest.received",
                             Component.text(interest * 100 + "%").color(NamedTextColor.LIGHT_PURPLE),
-                            Component.text(EconomyManager.getFormattedSimplifiedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(EconomyManager.getFormattedNumber(allowedAmount)).color(NamedTextColor.LIGHT_PURPLE),
                             Component.text(EconomyManager.getEconomyIcon())
                     ),
                     Prefix.CITY, MessageType.SUCCESS, false);

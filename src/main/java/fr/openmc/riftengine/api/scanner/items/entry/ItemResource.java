@@ -19,26 +19,23 @@ public record ItemResource(
         if (!(resourceObj instanceof Map<?, ?> resource))
             return new ItemResource(Material.valueOf(DEFAULT_MATERIAL), false, List.of(), null);
 
-        Material material = Material.valueOf(YmlUtils.getString(
-                resource.get("material"), DEFAULT_MATERIAL).toUpperCase());
+        Material material = Material.matchMaterial(YmlUtils.getString(resource, "material", DEFAULT_MATERIAL).toUpperCase());
 
-        boolean generate = YmlUtils.getBool(resource.get("generate"), false);
+        return new ItemResource(material,
+                YmlUtils.getBool(resource, "generate", false),
+                getTextures(resource),
+                YmlUtils.getString(resource, "model_path", null)
+        );
+    }
 
-        List<String> textures = resource.get("textures") instanceof List<?> list && resource.get("textures") != null
-                ? list.stream().map(String::valueOf).toList()
-                : List.of();
+    private static List<String> getTextures(Map<?, ?> resource) {
+        if (resource.get("textures") instanceof List<?>)
+            return YmlUtils.getStringList(resource, "textures");
 
-        if (resource.get("textures") == null && resource.get("texture") != null && textures.isEmpty())
-            textures = List.of(String.valueOf(resource.get("texture")));
+        String single = YmlUtils.getString(resource, "textures",
+                YmlUtils.getString(resource, "texture", null));
 
-        if (textures.isEmpty() && resource.get("textures") instanceof String string)
-            textures = List.of(string);
-
-        String modelPath = resource.get("model_path") != null
-                ? String.valueOf(resource.get("model_path"))
-                : null;
-
-        return new ItemResource(material, generate, textures, modelPath);
+        return single == null ? List.of() : List.of(single);
     }
 
     public boolean hasTextures() {
