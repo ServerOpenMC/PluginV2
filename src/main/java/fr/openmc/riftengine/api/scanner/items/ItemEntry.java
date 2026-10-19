@@ -1,9 +1,11 @@
 package fr.openmc.riftengine.api.scanner.items;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemGraphics;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemInfo;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemResource;
 import fr.openmc.riftengine.api.scanner.items.entry.behaviours.IABehaviour;
+import fr.openmc.riftengine.api.scanner.items.entry.behaviours.block.BlocksBehaviour;
 import fr.openmc.riftengine.api.utils.IdentifierUtils;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 
 @Getter
 public class ItemEntry {
+    public static final String DEFAULT_STATE = "normal";
+
     private final String namespace;
     private final String key;
     private final Integer customModelData;
@@ -55,23 +59,22 @@ public class ItemEntry {
         this.sourceYml = sourceYml;
     }
 
-    public static ItemEntry from(Map<Material, Map<String, Integer>> cmdCache,
-                                 Map<String, String> blockStateCache,
-                                 Path sourceYml,
+    public static ItemEntry from(Path sourceYml,
                                  String namespace,
                                  String key,
-                                 Map<?, ?> data) {
+                                 Map<?, ?> data) throws Exception {
         ItemResource itemResource = ItemResource.from(data);
         ItemGraphics itemGraphics = ItemGraphics.from(data);
         Material material = getMaterial(itemResource, itemGraphics);
-        ItemInfo itemInfo = ItemInfo.from(namespace, key, cmdCache, blockStateCache);
+        ItemInfo itemInfo = ItemInfo.from(namespace, key);
 
         IABehaviour behaviour = IABehaviour.from(itemInfo, data);
-
-
         Integer customModelData = null;
 
-        Map<String, Integer> map = cmdCache.get(material);
+        if (behaviour.isBlock() && behaviour instanceof BlocksBehaviour blockBehaviour)
+            material = blockBehaviour.blockState().materialBlock();
+
+        Map<String, Integer> map = OMCRegistry.SCANNERS.CUSTOM_MODEL_DATA_CACHE.getCache(null).get(material);
         if (map != null && map.get(namespace + ":" + key) != null)
             customModelData = map.get(namespace + ":" + key);
 
@@ -93,7 +96,7 @@ public class ItemEntry {
             if (resource.hasTextures())
                 return resource.textures().stream()
                         .map(id -> IdentifierUtils.normalizeId(id, namespace))
-                        .collect(Collectors.toMap(id -> "_", id -> id));
+                        .collect(Collectors.toMap(id -> DEFAULT_STATE, id -> id));
             else if (resource.hasModel())
                 return getMapResource(IdentifierUtils.normalizeId(resource.model(), namespace));
         }
@@ -134,7 +137,7 @@ public class ItemEntry {
                 return javaRoot -> resource.textures().stream()
                         .map(id -> IdentifierUtils.resolveTextureId(javaRoot,
                                 IdentifierUtils.normalizeId(id, namespace)))
-                        .collect(Collectors.toMap(v -> "_", k -> k));
+                        .collect(Collectors.toMap(v -> DEFAULT_STATE, k -> k));
             else if (resource.hasModel())
                 return javaRoot -> getMapResource(IdentifierUtils.resolveModelId(javaRoot,
                         IdentifierUtils.normalizeId(resource.model(), namespace)));
@@ -166,6 +169,6 @@ public class ItemEntry {
     }
 
     public static <T> Map<String, T> getMapResource(T value) {
-        return Map.of("_", value);
+        return Map.of(DEFAULT_STATE, value);
     }
 }

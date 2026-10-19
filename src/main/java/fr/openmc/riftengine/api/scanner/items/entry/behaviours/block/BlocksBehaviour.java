@@ -1,6 +1,8 @@
 package fr.openmc.riftengine.api.scanner.items.entry.behaviours.block;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.YmlUtils;
+import fr.openmc.riftengine.api.scanner.blocks.BlockStateScanner;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemInfo;
 import fr.openmc.riftengine.api.scanner.items.entry.behaviours.IABehaviour;
 
@@ -9,7 +11,7 @@ import java.util.Map;
 
 // note: toutes les options ne sont pas mappé
 public record BlocksBehaviour(PlacedModel placedModel,
-                               String blockState,
+                              BlockStateScanner.CustomBlockState blockState,
                                boolean dropWhenMined,
                                int lightLevel,
                                List<String> breakToolsBlacklist,
@@ -19,10 +21,11 @@ public record BlocksBehaviour(PlacedModel placedModel,
                                boolean noExplosion,
                                BlocksSound sounds
 ) implements IABehaviour {
-    public static BlocksBehaviour from(ItemInfo info, Map<?, ?> block) {
+    public static BlocksBehaviour from(ItemInfo info, Map<?, ?> block) throws Exception {
         double hardness = YmlUtils.getDouble(block, "hardness", 2d);
 
-        String blockState = info.blockStateCache().get(info.namespacedId());
+        BlockStateScanner.CustomBlockState blockState = OMCRegistry.SCANNERS.BLOCKSTATES_CACHE.getCache(null)
+                .get(info.namespacedId());
 
         return new BlocksBehaviour(
                 PlacedModel.from(YmlUtils.getMap(block, "placed_model")),

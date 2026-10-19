@@ -4,7 +4,6 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.utils.YmlUtils;
 import fr.openmc.riftengine.api.registry.scanner.AbstractScanner;
-import org.bukkit.Material;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +19,9 @@ public class ItemScanner extends AbstractScanner<List<ItemEntry>, Path> {
         if (!Files.isDirectory(itemsAdderContentsPath)) return new ArrayList<>();
 
         List<Path> ymlFiles = OMCRegistry.SCANNERS.YAML.scan(itemsAdderContentsPath);
+        // actualise les caches
+        OMCRegistry.SCANNERS.CUSTOM_MODEL_DATA_CACHE.getCache(null);
+        OMCRegistry.SCANNERS.BLOCKSTATES_CACHE.getCache(null);
 
         List<ItemEntry> result = new ArrayList<>();
 
@@ -32,14 +34,12 @@ public class ItemScanner extends AbstractScanner<List<ItemEntry>, Path> {
             if (!(itemsObj instanceof Map<?, ?> itemsMap)) continue;
 
             String namespace = OMCRegistry.SCANNERS.YAML_ITEMSADDER_NAMESPACE.scan(root);
-            Map<Material, Map<String, Integer>> cmdCache = OMCRegistry.SCANNERS.CUSTOM_MODEL_DATA_CACHE.scan(null);
-            Map<String, String> blockStateCache = OMCRegistry.SCANNERS.BLOCKSTATES_CACHE.scan(null);
 
             for (Map.Entry<?, ?> entry : itemsMap.entrySet()) {
                 String key = String.valueOf(entry.getKey());
                 if (!(entry.getValue() instanceof Map<?, ?> data)) continue;
 
-                result.add(ItemEntry.from(cmdCache, blockStateCache, ymlFile, namespace, key, data));
+                result.add(ItemEntry.from(ymlFile, namespace, key, data));
             }
         }
 

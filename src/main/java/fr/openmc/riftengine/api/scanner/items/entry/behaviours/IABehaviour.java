@@ -6,13 +6,13 @@ import fr.openmc.riftengine.api.scanner.items.entry.behaviours.block.BlocksBehav
 import java.util.Map;
 
 public interface IABehaviour {
-    static IABehaviour from(ItemInfo info, Map<?, ?> data) {
-        if (data == null) return null;
+    static IABehaviour from(ItemInfo info, Map<?, ?> data) throws Exception {
+        if (data == null) return new EmptyBehaviour();
 
         Object resourceObj = data.get("behaviours");
         Object specificPropertiesObj = data.get("specific_properties");
 
-        if (resourceObj == null && specificPropertiesObj == null) return null;
+        if (resourceObj == null && specificPropertiesObj == null) return new EmptyBehaviour();
 
         Map<?, ?> behaviours;
 
@@ -20,16 +20,20 @@ public interface IABehaviour {
             behaviours = b;
         } else if (specificPropertiesObj instanceof Map<?, ?> b) {
             behaviours = b;
-        } else return null;
+        } else return new EmptyBehaviour();
 
 
-        IABehaviour behaviour = null;
+        IABehaviour behaviour = new EmptyBehaviour();
 
         if (behaviours.get("block") instanceof Map<?, ?> block) {
             behaviour = BlocksBehaviour.from(info, block);
         }
 
         return behaviour;
+    }
+
+    default boolean isItem() {
+        return !this.isBlock();
     }
 
     default boolean isBlock() {
