@@ -5,7 +5,7 @@ public enum BlockType {
     REAL_NOTE,
     REAL,
     REAL_TRANSPARENT,
-    TILE,
+    ENTITY,
     FIRE, // le feu est un bloc cool
     UNKNOWN
     ;
