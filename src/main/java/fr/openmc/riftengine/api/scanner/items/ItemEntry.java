@@ -1,6 +1,7 @@
 package fr.openmc.riftengine.api.scanner.items;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.utils.YmlUtils;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemGraphics;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemInfo;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemResource;
@@ -24,6 +25,7 @@ public class ItemEntry {
     private final String key;
     private final Integer customModelData;
     private final Material material;
+    private final String tooltipResourceId;
 
     private final ItemResource resource;
     private final ItemGraphics graphics;
@@ -38,6 +40,7 @@ public class ItemEntry {
             String key,
             Integer customModelData,
             Material material,
+            String tooltipResourceId,
 
             // * Méthodes de création d'items (moderne ou legacy)
             ItemResource resource,
@@ -52,6 +55,7 @@ public class ItemEntry {
         this.key = key;
         this.customModelData = customModelData;
         this.material = material;
+        this.tooltipResourceId = tooltipResourceId;
         this.resource = resource;
         this.graphics = graphics;
         this.resourcePath = resourcePath;
@@ -67,6 +71,7 @@ public class ItemEntry {
         ItemGraphics itemGraphics = ItemGraphics.from(data);
         Material material = getMaterial(itemResource, itemGraphics);
         ItemInfo itemInfo = ItemInfo.from(namespace, key);
+        String tooltipResourceId = YmlUtils.getString(data, "tooltip_style", null);
 
         IABehaviour behaviour = IABehaviour.from(itemInfo, data);
         Integer customModelData = null;
@@ -83,6 +88,7 @@ public class ItemEntry {
                 key,
                 customModelData,
                 material,
+                tooltipResourceId,
                 itemResource,
                 itemGraphics,
                 resolvePathFunction(namespace, itemGraphics, itemResource),
