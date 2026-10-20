@@ -48,4 +48,8 @@ public class JsonUtils {
     public static Boolean getBool(JsonObject object, String key, Boolean def) {
         return object.has(key) ? object.get(key).getAsBoolean() : def;
     }
+
+    public static Float getFloat(JsonObject object, String key, Float def) {
+        return object.has(key) ? object.get(key).getAsFloat() : def;
+    }
 }
