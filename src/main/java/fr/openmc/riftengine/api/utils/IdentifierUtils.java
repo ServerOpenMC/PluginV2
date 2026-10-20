@@ -25,9 +25,23 @@ public class IdentifierUtils {
     }
 
     /**
-     * Résout un identifiant en un chemin de fichier dans les assets
+     * Résout un identifiant en un chemin vers une image (.png) dans les assets
      */
     public static Path resolveTextureId(Path rootPath, String id) {
+        return resolveFileId(rootPath, id, ".png");
+    }
+
+    /**
+     * Résout un identifiant en un chemin vers des meta donnée de mc (.mcmeta) dans les assets
+     */
+    public static Path resolveMetaId(Path rootPath, String id, String ext) {
+        return resolveFileId(rootPath, id, ext + ".mcmeta");
+    }
+
+    /**
+     * Résout un identifiant en un chemin de fichier dans les assets
+     */
+    public static Path resolveFileId(Path rootPath, String id, String ext) {
         String normalizedId = normalizeId(id);
         String[] split = normalizedId.split(":", 2);
 
@@ -42,8 +56,8 @@ public class IdentifierUtils {
             texturePath = split[0];
         }
 
-        if (!texturePath.endsWith(".png"))
-            texturePath += ".png";
+        if (!texturePath.endsWith(ext))
+            texturePath += ext;
 
 
         return rootPath
