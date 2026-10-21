@@ -4,6 +4,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.utils.YmlUtils;
 import fr.openmc.riftengine.api.registry.scanner.AbstractScanner;
+import fr.openmc.riftengine.api.scanner.equipements.EquipementEntry;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +20,8 @@ public class ItemScanner extends AbstractScanner<List<ItemEntry>, Path> {
         if (!Files.isDirectory(itemsAdderContentsPath)) return new ArrayList<>();
 
         List<Path> ymlFiles = OMCRegistry.SCANNERS.YAML.scan(itemsAdderContentsPath);
+        List<EquipementEntry> equipements = OMCRegistry.SCANNERS.ARMORS.scan(itemsAdderContentsPath);
+
         // actualise les caches
         OMCRegistry.SCANNERS.CUSTOM_MODEL_DATA_CACHE.getCache(null);
         OMCRegistry.SCANNERS.BLOCKSTATES_CACHE.getCache(null);
@@ -39,7 +42,7 @@ public class ItemScanner extends AbstractScanner<List<ItemEntry>, Path> {
                 String key = String.valueOf(entry.getKey());
                 if (!(entry.getValue() instanceof Map<?, ?> data)) continue;
 
-                result.add(ItemEntry.from(ymlFile, namespace, key, data));
+                result.add(ItemEntry.from(ymlFile, namespace, key, data, equipements));
             }
         }
 

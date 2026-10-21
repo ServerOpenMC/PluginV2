@@ -3,6 +3,7 @@ package fr.openmc.riftengine.api.registry.scanner;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.riftengine.api.scanner.blocks.BlockStateScanner;
+import fr.openmc.riftengine.api.scanner.equipements.EquipementsScanner;
 import fr.openmc.riftengine.api.scanner.general.YamlNamespaceIAScanner;
 import fr.openmc.riftengine.api.scanner.general.YamlScanner;
 import fr.openmc.riftengine.api.scanner.icons.CaracterUnicodeCacheScanner;
@@ -22,6 +23,7 @@ public class ScannerRegistry extends Registry<String, AbstractScanner<?, ?>>
     public final IconScanner ICONS = register(new IconScanner());
 
     public final ItemScanner ITEMS = register(new ItemScanner());
+    public final EquipementsScanner ARMORS = register(new EquipementsScanner());
 
     public final CustomModelDataScanner CUSTOM_MODEL_DATA_CACHE = register(new CustomModelDataScanner());
     public final BlockStateScanner BLOCKSTATES_CACHE = register(new BlockStateScanner());

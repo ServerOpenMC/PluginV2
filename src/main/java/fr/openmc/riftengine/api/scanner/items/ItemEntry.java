@@ -2,6 +2,7 @@ package fr.openmc.riftengine.api.scanner.items;
 
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.YmlUtils;
+import fr.openmc.riftengine.api.scanner.equipements.EquipementEntry;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemGraphics;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemInfo;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemResource;
@@ -13,6 +14,7 @@ import org.bukkit.Material;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -66,14 +68,15 @@ public class ItemEntry {
     public static ItemEntry from(Path sourceYml,
                                  String namespace,
                                  String key,
-                                 Map<?, ?> data) throws Exception {
+                                 Map<?, ?> data,
+                                 List<EquipementEntry> equipements) throws Exception {
         ItemResource itemResource = ItemResource.from(data);
         ItemGraphics itemGraphics = ItemGraphics.from(data);
         Material material = getMaterial(itemResource, itemGraphics);
         ItemInfo itemInfo = ItemInfo.from(namespace, key);
         String tooltipResourceId = YmlUtils.getString(data, "tooltip_style", null);
 
-        IABehaviour behaviour = IABehaviour.from(itemInfo, data);
+        IABehaviour behaviour = IABehaviour.from(itemInfo, data, equipements);
         Integer customModelData = null;
 
         if (behaviour.isBlock() && behaviour instanceof BlocksBehaviour blockBehaviour)
