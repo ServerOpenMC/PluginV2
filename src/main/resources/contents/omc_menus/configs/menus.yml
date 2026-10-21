@@ -65,7 +65,37 @@ font_images:
         permission: halloween.event_main_menu
         show_in_gui: true
         suggestion_in_command: false
-        path: "halloween_event_main_menu.png"
+        path: "halloween/halloween_event_main_menu.png"
+        y_position: 30
+    halloween_candy_jar_0:
+        permission: halloween.halloween_candy_jar_0
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_0.png"
+        y_position: 30
+    halloween_candy_jar_1:
+        permission: halloween.halloween_candy_jar_0
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_1.png"
+        y_position: 30
+    halloween_candy_jar_2:
+        permission: halloween.halloween_candy_jar_0
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_2.png"
+        y_position: 30
+    halloween_candy_jar_3:
+        permission: halloween.halloween_candy_jar_0
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_3.png"
+        y_position: 30
+    halloween_candy_jar_4:
+        permission: halloween.halloween_candy_jar_0
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_4.png"
         y_position: 30
     home_mailbox:
         permission: mailbox.home
