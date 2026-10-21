@@ -24,6 +24,13 @@ public class IdentifierUtils {
         return defaultNamespace + ":" + id;
     }
 
+    public static String removeNamespace(String namespacedId) {
+        String[] splited = namespacedId.split(":");
+        if (splited.length != 2) return namespacedId;
+
+        return splited[1];
+    }
+
     /**
      * Résout un identifiant en un chemin vers une image (.png) dans les assets
      */
@@ -96,6 +103,9 @@ public class IdentifierUtils {
     }
 
     public static String toBedrockTexturePath(String javaPath) {
+        if (!javaPath.endsWith(".png"))
+            javaPath = javaPath + ".png";
+
         if (javaPath.startsWith("textures/item/"))
             return "textures/items/" + javaPath.substring("textures/item/".length());
         if (javaPath.startsWith("textures/block/"))

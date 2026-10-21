@@ -5,7 +5,9 @@ import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.riftengine.api.scanner.blocks.BlockStateScanner;
 import fr.openmc.riftengine.api.scanner.general.YamlNamespaceIAScanner;
 import fr.openmc.riftengine.api.scanner.general.YamlScanner;
+import fr.openmc.riftengine.api.scanner.icons.CaracterUnicodeCacheScanner;
 import fr.openmc.riftengine.api.scanner.icons.IconScanner;
+import fr.openmc.riftengine.api.scanner.icons.OffsetCaracterScanner;
 import fr.openmc.riftengine.api.scanner.items.CustomModelDataScanner;
 import fr.openmc.riftengine.api.scanner.items.ItemScanner;
 import fr.openmc.riftengine.api.scanner.sounds.SoundScanner;
@@ -15,6 +17,8 @@ public class ScannerRegistry extends Registry<String, AbstractScanner<?, ?>>
 
     public final SoundScanner SOUNDS = register(new SoundScanner());
 
+    public final CaracterUnicodeCacheScanner CARACTER_UNICODE_CACHE = register(new CaracterUnicodeCacheScanner());
+    public final OffsetCaracterScanner OFFSET_CARACTER = register(new OffsetCaracterScanner());
     public final IconScanner ICONS = register(new IconScanner());
 
     public final ItemScanner ITEMS = register(new ItemScanner());
