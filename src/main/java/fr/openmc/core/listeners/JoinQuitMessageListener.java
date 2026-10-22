@@ -44,6 +44,7 @@ public class JoinQuitMessageListener implements Listener {
         player.message().send(TranslationManager.translation("core.player.join.welcome"), Prefix.OPENMC, MessageType.INFO, false);
 
         TabList.updateTabList(player);
+        String prefix = LuckPermsHook.getFormattedPAPIPrefix(player);
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
@@ -53,7 +54,7 @@ public class JoinQuitMessageListener implements Listener {
                             "core.player.join.friend_online",
                             Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE)
                                     .appendSpace()
-                                    .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.GREEN))
+                                    .append(Component.text((prefix != null ? prefix : "") + player.getName()).color(NamedTextColor.GREEN))
                     ), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
@@ -152,18 +153,20 @@ public class JoinQuitMessageListener implements Listener {
     }
 
     public static Component getJoinMessageComponent(Player player) {
+        String prefix = LuckPermsHook.getFormattedPAPIPrefix(player);
         return Component.text("§8[§a§l+§8] §r")
                 .append(Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE))
                 .appendSpace()
-                .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player)))
+                .append(Component.text(prefix == null ? "" : prefix))
                 .append(Component.text(player.getName()));
     }
 
     public static Component getQuitMessageComponent(Player player) {
+        String prefix = LuckPermsHook.getFormattedPAPIPrefix(player);
         return Component.text("§8[§c§l-§8] §r")
                 .append(Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE))
                 .appendSpace()
-                .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player)))
+                .append(Component.text(prefix == null ? "" : prefix))
                 .append(Component.text(player.getName()));
     }
 }

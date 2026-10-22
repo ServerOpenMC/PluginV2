@@ -24,14 +24,48 @@ public class IdentifierUtils {
         return defaultNamespace + ":" + id;
     }
 
+    public static String removeNamespace(String namespacedId) {
+        String[] splited = namespacedId.split(":");
+        if (splited.length != 2) return namespacedId;
+
+        return splited[1];
+    }
+
+    /**
+     * Résout un identifiant en un chemin vers une image (.png) dans les assets
+     */
+    public static Path resolveTextureId(Path rootPath, String id) {
+        return resolveFileId(rootPath, id, ".png");
+    }
+
+    /**
+     * Résout un identifiant en un chemin vers une image (.png) dans les assets
+     */
+    public static Path resolveTextureId(Path rootPath, String namespace, String id) {
+        return resolveFileId(rootPath,  namespace, id, ".png");
+    }
+
+    /**
+     * Résout un identifiant en un chemin vers des meta donnée de mc (.mcmeta) dans les assets
+     */
+    public static Path resolveMetaId(Path rootPath, String id, String ext) {
+        return resolveFileId(rootPath, id, ext + ".mcmeta");
+    }
+
     /**
      * Résout un identifiant en un chemin de fichier dans les assets
      */
-    public static Path resolveTextureId(Path rootPath, String id) {
-        String normalizedId = normalizeId(id);
+    public static Path resolveFileId(Path rootPath, String id, String ext) {
+        return resolveFileId(rootPath, "minecraft", id, ext);
+    }
+
+    /**
+     * Résout un identifiant en un chemin de fichier dans les assets
+     */
+    public static Path resolveFileId(Path rootPath, String namespace, String id, String ext) {
+        String normalizedId = normalizeId(id, namespace);
         String[] split = normalizedId.split(":", 2);
 
-        String namespace;
         String texturePath;
 
         if (split.length == 2) {
@@ -42,8 +76,8 @@ public class IdentifierUtils {
             texturePath = split[0];
         }
 
-        if (!texturePath.endsWith(".png"))
-            texturePath += ".png";
+        if (!texturePath.endsWith(ext))
+            texturePath += ext;
 
 
         return rootPath
@@ -56,11 +90,10 @@ public class IdentifierUtils {
     /**
      * Résout un identifiant en un chemin de fichier dans les assets pour les models
      */
-    public static Path resolveModelId(Path rootPath, String id) {
-        String normalizedId = normalizeId(id);
+    public static Path resolveModelId(Path rootPath, String namespace, String id) {
+        String normalizedId = normalizeId(id, namespace);
         String[] split = normalizedId.split(":", 2);
 
-        String namespace;
         String modelPath;
 
         if (split.length == 2) {
@@ -81,7 +114,17 @@ public class IdentifierUtils {
                 .resolve(modelPath);
     }
 
+    /**
+     * Résout un identifiant en un chemin de fichier dans les assets pour les models
+     */
+    public static Path resolveModelId(Path rootPath, String id) {
+        return resolveModelId(rootPath, "minecraft", id);
+    }
+
     public static String toBedrockTexturePath(String javaPath) {
+        if (!javaPath.endsWith(".png"))
+            javaPath = javaPath + ".png";
+
         if (javaPath.startsWith("textures/item/"))
             return "textures/items/" + javaPath.substring("textures/item/".length());
         if (javaPath.startsWith("textures/block/"))

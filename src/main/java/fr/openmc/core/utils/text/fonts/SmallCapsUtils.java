@@ -13,7 +13,7 @@ public class SmallCapsUtils {
     public final static Key SMALL_CAPS_FONT = Key.key("omc_fonts", "small_caps");
 
     public static Component toSmall(Player player, String text){
-        Component component = Component.text(text.toLowerCase());
+        Component component = Component.text(text);
 
         return BedrockHook.isBedrockPlayer(player) ? component : component.font(SMALL_CAPS_FONT);
     }

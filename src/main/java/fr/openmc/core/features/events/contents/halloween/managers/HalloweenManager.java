@@ -127,7 +127,7 @@ public class HalloweenManager extends Feature implements HasDatabase, HasCommand
                 .limit(10)
                 .toList()) {
             String playerName = CachePlayerName.getName(entry.getKey());
-            String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
+            String formattedPumpkinCount = EconomyManager.getFormattedNumber(entry.getValue().getPumpkinCount());
             newMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
         }
 

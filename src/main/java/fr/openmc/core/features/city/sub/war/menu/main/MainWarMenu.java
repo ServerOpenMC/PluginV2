@@ -132,7 +132,7 @@ public class MainWarMenu extends PaginatedMenu {
 
             loreCity.add(TranslationManager.translation(
                     "feature.city.war.menu.main.wealth",
-                    Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
+                    Component.text(EconomyManager.getFormattedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
                             .color(NamedTextColor.GOLD)
             ).color(NamedTextColor.GRAY));
 

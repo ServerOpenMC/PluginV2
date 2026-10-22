@@ -34,9 +34,9 @@ public record IconEntry(
                 javaRoot -> IdentifierUtils.resolveTextureId(javaRoot,
                         IdentifierUtils.normalizeId(String.valueOf(data.get("path")), namespace)),
                 permission,
-                YmlUtils.getBool(data.get("show_in_gui"), true),
-                YmlUtils.getDouble(data.get("scale_ratio"), null),
-                YmlUtils.getInt(data.get("y_position"), null),
+                YmlUtils.getBool(data, "show_in_gui", true),
+                YmlUtils.getDouble(data, "scale_ratio", null),
+                YmlUtils.getInt(data, "y_position", null),
                 sourceYml
         );
     }
