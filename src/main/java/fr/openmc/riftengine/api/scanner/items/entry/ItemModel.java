@@ -8,6 +8,7 @@ import fr.openmc.riftengine.api.utils.IdentifierUtils;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public record ItemModel(ItemInfo info, ItemResource resource, ItemGraphics graphics) {
     public List<String> texturesPath(Path javaRootPath) {
@@ -17,23 +18,33 @@ public record ItemModel(ItemInfo info, ItemResource resource, ItemGraphics graph
 
         if (model == null) return texturesPath;
 
-        Path targetJson = IdentifierUtils.resolveModelId(javaRootPath, model);
+        Path targetJson = IdentifierUtils.resolveModelId(javaRootPath, info.namespace(), model);
         JsonObject rootModelJson = JsonUtils.loadJson(targetJson);
 
         if (rootModelJson == null) return texturesPath;
 
         JsonObject textures = rootModelJson.getAsJsonObject("textures");
 
-        for (JsonElement textureName : textures.asMap().values()) {
-            if (!(textureName.isJsonPrimitive())) continue;
+        if (textures == null) return texturesPath;
+        Map<String, JsonElement> texturesMap = textures.asMap();
 
+        if (texturesMap == null) return texturesPath;
+
+        for (JsonElement textureName : texturesMap.values()) {
             String textureNameStr = textureName.getAsString();
+            if (textureNameStr.startsWith("#")) continue;
             if (textureNameStr.startsWith("_"))
                 textureNameStr = textureNameStr.substring(1);
 
-            texturesPath.add(textureNameStr);
+            String[] textureSplit = textureNameStr.split(":");
+
+            texturesPath.add(textureSplit[1]);
         }
         return texturesPath;
+    }
+
+    public String namespace() {
+        return this.info.namespace();
     }
 
     /**
@@ -50,6 +61,14 @@ public record ItemModel(ItemInfo info, ItemResource resource, ItemGraphics graph
     public String toBedrockGeometryId() {
         String[] id = IdentifierUtils.normalizeId(modelId()).split(":");
         return "geometry." + id[0] + "." + id[1].replace('/', '.');
+    }
+
+    /**
+     * ex omc_dream:orb/orb_cloud en textures/omc_dream/atlas/orb_cloud
+     */
+    public String toBedrockAtlasPath() {
+        String[] id = IdentifierUtils.normalizeId(modelId()).split(":");
+        return "textures/" + id[0] + "/atlas/" + id[1];
     }
 
     public boolean hasModel() {
