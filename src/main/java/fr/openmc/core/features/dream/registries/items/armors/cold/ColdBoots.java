@@ -13,8 +13,8 @@ public class ColdBoots extends DreamItem implements DreamEquipableItem {
         super(new DreamItemMeta(
                 "omc_dream:cold_boots",
                 TranslationManager.translation("feature.dream.item.cold_boots.name"),
-                DreamRarity.EPIC,
-                Material.LEATHER_LEGGINGS,
+                DreamRarity.LEGENDARY,
+                Material.LEATHER_BOOTS,
                 true
         ));
     }
