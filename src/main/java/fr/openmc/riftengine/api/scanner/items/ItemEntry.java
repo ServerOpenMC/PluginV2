@@ -73,7 +73,7 @@ public class ItemEntry {
         ItemResource itemResource = ItemResource.from(data);
         ItemGraphics itemGraphics = ItemGraphics.from(data);
         Material material = getMaterial(itemResource, itemGraphics);
-        ItemInfo itemInfo = ItemInfo.from(namespace, key);
+        ItemInfo itemInfo = ItemInfo.from(namespace, key, material);
         String tooltipResourceId = YmlUtils.getString(data, "tooltip_style", null);
 
         IABehaviour behaviour = IABehaviour.from(itemInfo, data, equipements);

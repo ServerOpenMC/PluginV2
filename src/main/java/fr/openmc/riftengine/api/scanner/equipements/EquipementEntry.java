@@ -1,7 +1,5 @@
 package fr.openmc.riftengine.api.scanner.equipements;
 
-import fr.openmc.riftengine.api.utils.IdentifierUtils;
-
 import java.nio.file.Path;
 
 public record EquipementEntry(String namespace, String key, String layer1Path, String layer2Path) {
@@ -10,10 +8,23 @@ public record EquipementEntry(String namespace, String key, String layer1Path, S
     }
 
     public Path getLayer1Path(Path javaRootPath) {
-        return IdentifierUtils.resolveTextureId(javaRootPath, namespace + ":" + layer1Path);
+        return baseLayerPath(javaRootPath).resolve("humanoid").resolve(key + ".png");
     }
 
     public Path getLayer2Path(Path javaRootPath) {
-        return IdentifierUtils.resolveTextureId(javaRootPath, namespace + ":" + layer2Path);
+        return baseLayerPath(javaRootPath).resolve("humanoid_leggings").resolve(key + ".png");
+    }
+
+    private Path baseLayerPath(Path javaRootPath) {
+        return javaRootPath.resolve("assets")
+                .resolve(namespace).resolve("textures/entity/equipment/");
+    }
+
+    public Path getLayer1BedrockPath(Path bedrockRootPath) {
+        return bedrockRootPath.resolve("textures").resolve(layer1Path + ".png");
+    }
+
+    public Path getLayer2BedrockPath(Path bedrockRootPath) {
+        return bedrockRootPath.resolve("textures").resolve(layer2Path + ".png");
     }
 }

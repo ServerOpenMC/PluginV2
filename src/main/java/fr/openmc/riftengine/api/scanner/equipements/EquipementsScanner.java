@@ -26,21 +26,21 @@ public class EquipementsScanner extends AbstractScanner<List<EquipementEntry>, P
 
             if (root == null) continue;
 
-            Object equipements = root.get("equipements");
-            if (!(equipements instanceof Map<?, ?> equipementsMap)) continue;
+            Map<?, ?> equipments = YmlUtils.getMap(root, "equipments");
+
+            if (equipments == null) continue;
 
             String namespace = OMCRegistry.SCANNERS.YAML_ITEMSADDER_NAMESPACE.scan(root);
 
-            for (Map.Entry<?, ?> entry : equipementsMap.entrySet()) {
+            for (Map.Entry<?, ?> entry : equipments.entrySet()) {
                 String key = String.valueOf(entry.getKey());
-
-                if (!(key.equals("layer_1") && key.equals("layer_2"))) continue;
+                Map<?, ?> keyInfo = YmlUtils.getMap(equipments, key);
 
                 result.add(new EquipementEntry(
                         namespace,
                         key,
-                        YmlUtils.getString(root, "layer_1", null),
-                        YmlUtils.getString(root, "layer_2", null)));
+                        YmlUtils.getString(keyInfo, "layer_1", null),
+                        YmlUtils.getString(keyInfo, "layer_2", null)));
             }
         }
 

@@ -11,12 +11,13 @@ import java.util.Map;
 public interface IABehaviour {
     static IABehaviour from(ItemInfo info, Map<?, ?> data, List<EquipementEntry> equipements) throws Exception {
         if (data == null) return new EmptyBehaviour();
-
         Object resourceObj = data.get("behaviours");
 
         IABehaviour behaviour = BlocksBehaviour.detectBlockBehaviour(info, data, resourceObj);
 
-        if (behaviour == null) return ArmorsBehaviour.detectArmorBehaviour(data, equipements);
+        if (behaviour instanceof EmptyBehaviour) {
+            return ArmorsBehaviour.detectArmorBehaviour(info, data, equipements);
+        }
 
         return behaviour;
     }
