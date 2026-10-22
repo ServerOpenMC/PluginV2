@@ -5,6 +5,7 @@ import fr.openmc.core.utils.YmlUtils;
 import fr.openmc.riftengine.api.scanner.equipements.EquipementEntry;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemGraphics;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemInfo;
+import fr.openmc.riftengine.api.scanner.items.entry.ItemModel;
 import fr.openmc.riftengine.api.scanner.items.entry.ItemResource;
 import fr.openmc.riftengine.api.scanner.items.entry.behaviours.IABehaviour;
 import fr.openmc.riftengine.api.scanner.items.entry.behaviours.block.BlocksBehaviour;
@@ -31,6 +32,7 @@ public class ItemEntry {
 
     private final ItemResource resource;
     private final ItemGraphics graphics;
+    private final ItemModel model;
     private final Function<Path, Map<String, Path>> resourcePath;
 
     private final IABehaviour behaviour;
@@ -47,6 +49,7 @@ public class ItemEntry {
             // * Méthodes de création d'items (moderne ou legacy)
             ItemResource resource,
             ItemGraphics graphics,
+            ItemModel model,
             Function<Path, Map<String, Path>> resourcePath,
 
             IABehaviour behaviour,
@@ -60,6 +63,7 @@ public class ItemEntry {
         this.tooltipResourceId = tooltipResourceId;
         this.resource = resource;
         this.graphics = graphics;
+        this.model = model;
         this.resourcePath = resourcePath;
         this.behaviour = behaviour;
         this.sourceYml = sourceYml;
@@ -74,6 +78,8 @@ public class ItemEntry {
         ItemGraphics itemGraphics = ItemGraphics.from(data);
         Material material = getMaterial(itemResource, itemGraphics);
         ItemInfo itemInfo = ItemInfo.from(namespace, key, material);
+        ItemModel itemModel = new ItemModel(itemInfo, itemResource, itemGraphics);
+
         String tooltipResourceId = YmlUtils.getString(data, "tooltip_style", null);
 
         IABehaviour behaviour = IABehaviour.from(itemInfo, data, equipements);
@@ -94,6 +100,7 @@ public class ItemEntry {
                 tooltipResourceId,
                 itemResource,
                 itemGraphics,
+                itemModel,
                 resolvePathFunction(namespace, itemGraphics, itemResource),
                 behaviour,
                 sourceYml
