@@ -3,8 +3,8 @@
 	"credit": "Made by Gex and rework by Nocolm",
 	"texture_size": [64, 64],
 	"textures": {
-		"2": "omc_halloween:root_halloween_plush_texture",
-		"particle": "omc_halloween:root_halloween_plush_texture"
+		"2": "omc_halloween:models/root_halloween_plush_texture",
+		"particle": "omc_halloween:models/root_halloween_plush_texture"
 	},
 	"elements": [
 		{
