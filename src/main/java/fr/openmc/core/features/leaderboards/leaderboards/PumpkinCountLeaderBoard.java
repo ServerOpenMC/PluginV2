@@ -5,7 +5,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.halloween.pumpkin.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -32,7 +31,7 @@ public class PumpkinCountLeaderBoard extends LeaderBoard {
 
     @Override
     public Component createComponent() {
-        if (HalloweenManager.getAllHalloweenData().isEmpty())
+        if (HalloweenManager.getAllHalloweenData() == null || HalloweenManager.getAllHalloweenData().isEmpty())
             return TranslationManager.translation("feature.leaderboards.empty.players")
                     .color(NamedTextColor.RED);
 
