@@ -151,7 +151,8 @@ public class OMCPlugin extends JavaPlugin {
             new WorldGuardHook(),
             new ItemsAdderHook(),
             new FancyNpcsHook(),
-            new GitHubHook()
+            new GitHubHook(),
+            new WorldEditHook()
     ));
 
     @Override

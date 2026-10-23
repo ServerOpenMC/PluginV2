@@ -1,10 +1,12 @@
 package fr.openmc.core.features.events.contents.halloween.festival.shop;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenManager;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.Floors;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -44,10 +46,11 @@ public class WitchShopManager {
         int page = 1;
 
         for (int i = 0; i < list.size(); i += SLOT_FACTOR) {
+            Set<WitchShopItem> subItems = new LinkedHashSet<>(
+                    list.subList(i, Math.min(i + SLOT_FACTOR, list.size()))
+            );
 
-            List<WitchShopItem> subList = list.subList(i, Math.min(i + SLOT_FACTOR, list.size()));
-
-            paginateItems.put(page++, new HashSet<>(subList));
+            paginateItems.put(page++, subItems);
         }
 
         return paginateItems;
@@ -88,16 +91,53 @@ public class WitchShopManager {
         int totalPrice = item.getPrice() * amount;
         if (ItemUtils.hasEnoughItems(player, item.getItem().getBest(), totalPrice)) {
 
-            ItemUtils.giveItem(player, item.getItem().getBest(), amount);
+            ItemUtils.giveItem((OMCPlayer) player, item.getItem().getBest(), amount);
 
             sendInfo(player, TranslationManager.translation("feature.adminshop.player_buy_item", //TODO
                     Component.text(amount), item.getName(), Component.text(AdminShopUtils.formatPrice(totalPrice))
             ));
 
             player.playSound(player, BUY_SOUND, 1f, new Random().nextFloat(0.6f, 1.4f));
+
+            TerrorHouseManager.updateAdvancement(item.getShopMoney().getScores() * item.getPrice());
+
+            HalloweenManager.addParticipant(player.getUniqueId());
+
         } else {
             sendError(player, TranslationManager.translation("feature.adminshop.have_enough_money")); //TODO
         }
+    }
+
+    /**
+     * Handles the selling of an item by the player.
+     *
+     * @param player  The player selling the item.
+     * @param item  The item sell.
+     * @param amount  The quantity to sell.
+     */
+    public static void sellItem(Player player, ShopMoney item, int amount) {
+        if (item == null) return;
+
+        if (amount <= 0) {
+            sendError(player, TranslationManager.translation("feature.adminshop.amount_sup")); //TODO
+            return;
+        }
+
+        // Check if the player has enough items to sell
+        if (!ItemUtils.hasEnoughItems(player, item.getItem().getBest(), amount)) {
+            sendError(player, TranslationManager.translation("feature.adminshop.player_not_enough_item")); //TODO
+            return;
+        }
+
+        int totalScore = item.getScores() * amount; // Calculate the total price for the items
+        ItemUtils.removeItemsFromPlayerInventory(player, item.getItem().getBest(), amount); // Remove items from the player's inventory
+
+        player.playSound(player, BUY_SOUND, 1f, new Random().nextFloat(0.6f, 1.4f));
+
+        TerrorHouseManager.updateAdvancement(totalScore);
+
+        sendInfo(player, TranslationManager.translation("feature.adminshop.player_sell_item", //TODO
+                Component.text(amount))); //TODO dire "vous avez ajouter xxxx points"
     }
 
     private static void sendError(Player player, Component message) {
@@ -112,10 +152,13 @@ public class WitchShopManager {
     public static List<Component> extractLoreForItem(WitchShopItem item) {
         List<Component> lore = new ArrayList<>();
 
-        if (HalloweenManager.hasUnlock(item.getAdvancements())) {
+        if (TerrorHouseManager.enabledFloors.contains(item.getAdvancements())) {
             lore.add(TranslationManager.translation("feature.adminshop.lore_item.buy", //TODO
                     getPrice(item)
             ).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
+            lore.add(TranslationManager.translation("feature.adminshop.lore_item.buy", //TODO halloween.shop.points
+                    Component.text(item.getShopMoney().getScores()).color(NamedTextColor.BLUE)
+            ).decoration(TextDecoration.ITALIC, false));
 
         }
         else {
@@ -127,14 +170,14 @@ public class WitchShopManager {
     }
 
     public static Component getPrice(WitchShopItem item) {
-        return Component.text(item.getPrice() + " " + item.getShopMoney().getIcon());
+        return Component.text(item.getPrice() + " " + item.getShopMoney().getItem().getSprite());
     }
 
-    public static String getMoneyItemIcon(String icon) {
+    public static String getHalloweenPointIcon() {
         if (ItemsAdderHook.isEnable()) {
-            return FontImageWrapper.replaceFontImages("§f:"+icon+":");
+            return FontImageWrapper.replaceFontImages("§f:halloween_point:");
         } else {
-            return "Ⓐ"; //TODO Translationmanager.translate("<...>." + icon)
+            return "Ⓟ";
         }
     }
 

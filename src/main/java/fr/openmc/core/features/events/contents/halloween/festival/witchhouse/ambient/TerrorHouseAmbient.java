@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.bukkit.Particle;
 
-public class WitchHouseAmbient extends CustomAmbient {
+public class TerrorHouseAmbient extends CustomAmbient {
     @Override
     public String getId() {
         return "witch_house_ambient";

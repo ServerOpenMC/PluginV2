@@ -1,9 +1,11 @@
 package fr.openmc.core.features.events.contents.halloween.festival.shop.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.WitchHouseButton;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.ChoiceButton;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.TerorHouseButton;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.WitchStoreButton;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -34,7 +36,7 @@ public class WitchShopMainMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return "§r§f:offset_-48::halloween_event_main_menu:";
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::halloween_event_main_menu:");
     }
 
     @Override
@@ -46,8 +48,7 @@ public class WitchShopMainMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        // ** Witch House Button
-        WitchHouseButton.init(this, inventory, WITCH_HOUSE_SLOTS);
+        ChoiceButton.init(this, inventory, WITCH_HOUSE_SLOTS);
 
         // ** Witch Store Button
         WitchStoreButton.init(this, inventory, WITCH_SHOP_SLOTS);

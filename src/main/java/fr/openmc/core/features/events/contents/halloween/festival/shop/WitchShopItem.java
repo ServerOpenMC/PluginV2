@@ -1,7 +1,8 @@
 package fr.openmc.core.features.events.contents.halloween.festival.shop;
 
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenManager;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.Floors;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
 import fr.openmc.core.registry.items.CustomItem;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -31,7 +32,7 @@ public class WitchShopItem {
     }
 
     public Component getName() {
-        if (HalloweenManager.hasUnlock(advancements))
+        if (TerrorHouseManager.enabledFloors.contains(advancements))
             return name;
         return Component.text("§knotunlockyet");
     }

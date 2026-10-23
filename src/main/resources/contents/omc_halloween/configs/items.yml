@@ -67,6 +67,32 @@ items:
       nutrition: 1
       saturation: 0.6
 
+  peluche_root_halloween_2026:
+    display_name: <lang:itemsadder.omc_halloween.root_plush.name>
+    resource:
+      material: PAPER
+      model_path: root_plush
+    behaviours:
+      furniture:
+        entity: item_display
+        display_transformation:
+          transform: HEAD
+          right_rotation:
+            axis_angle:
+              angle: 180
+              axis:
+                x: 0
+                y: 1
+                z: 0
+          translation:
+            x: 0
+            y: -0.3
+            z: 0
+          scale:
+            x: 0.8
+            y: 0.8
+            z: 0.8
+
 recipes:
   iaa_crafting_table:
     fermentum:

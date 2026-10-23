@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.floor1_3;
 
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.WitchHouseManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class HouseZombieLV1 extends CustomMob<Zombie> {
 
-    double RADIUS = 3.0;
+    final double RADIUS = 3.0;
 
     public HouseZombieLV1(String id) {
         super(id,
@@ -58,7 +58,7 @@ public class HouseZombieLV1 extends CustomMob<Zombie> {
 
         zombie.getNearbyEntities(RADIUS, RADIUS, RADIUS).stream()
                 .filter(entity -> entity instanceof Player)
-                .forEach(player -> WitchHouseManager.repulsePlayer(player, 0.3f));
+                .forEach(player -> TerrorHouseManager.repulsePlayer(player, 0.3f));
 
         return zombie;
     }

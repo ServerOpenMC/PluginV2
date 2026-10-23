@@ -5,6 +5,9 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.WitchChoiceMenu;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.PointRewards;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -18,7 +21,7 @@ import java.util.Map;
 
 public class AdvancementMenu extends Menu {
 
-    protected AdvancementMenu(Player owner) {
+    public AdvancementMenu(Player owner) {
         super(owner);
     }
 
@@ -29,7 +32,20 @@ public class AdvancementMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop:");//TODO jar avec des bonbons, faire selon l'avancement ? ( en vrai ouais )
+
+        int textureIndex = 4;
+
+        PointRewards reward = TerrorHouseManager.currentRewardToReach;
+        int advancement = TerrorHouseManager.globalAdvancement;
+
+        if (!reward.equals(PointRewards.NULL) && advancement < reward.getGlobalPointsRequire()) {
+            textureIndex = (int) Math.floor(
+                    (double) TerrorHouseManager.globalAdvancement / reward.getGlobalPointsRequire() * 5
+            ) - 1;
+            textureIndex = Math.clamp(textureIndex, 0, 4);
+        }
+
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::halloween_candy_jar_" + textureIndex + ":");
     }
 
     @Override
@@ -46,7 +62,23 @@ public class AdvancementMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
-        content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));
+        content.put(21, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.CANDY_RED, itemMeta -> {
+            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page")); //TODO
+        }).setOnClick(click -> {
+            if (click.isRightClick()) {
+                new RewardViewMenu(getOwner()).open();
+            }
+
+            if (click.isLeftClick()) {
+                new CandyChoiceMenu(getOwner()).open();
+            }
+        }));
+
+        content.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
+            itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
+        }).setOnClick(event -> {
+            new WitchChoiceMenu(getOwner()).open();
+        }));
 
         return content;
     }

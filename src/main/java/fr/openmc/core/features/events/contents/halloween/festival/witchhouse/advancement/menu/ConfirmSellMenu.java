@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.contents.halloween.festival.shop.menu;
+package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
@@ -7,7 +7,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopItem;
+import fr.openmc.core.features.adminshop.ShopItem;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.ShopMoney;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -15,6 +17,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -27,32 +30,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class ConfirmMenu extends Menu {
+public class ConfirmSellMenu extends Menu {
 
-    private final WitchShopItem shopItem;
+    // Copy of the ConfirmMenu from the AdminShop //
+
+    private final ShopMoney shopItem;
     private int quantity;
     private final int maxQuantity;
 
-    public ConfirmMenu(Player owner, WitchShopItem shopItem) {
+    public ConfirmSellMenu(Player owner, ShopMoney shopItem) {
         super(owner);
         this.shopItem = shopItem;
         this.quantity = 1;
-        this.maxQuantity = getMaxBuyQuantity(owner, shopItem);
+        this.maxQuantity = countPlayerItems(owner, shopItem.getItem().getBest());
     }
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.adminshop.menu.confirm.name");
+        return TranslationManager.translation("feature.adminshop.menu.confirm.name"); //TODO
     }
 
     @Override
     public String getTexture() {
-        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop:");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::halloween_purchase_confirm_menu:");
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
@@ -61,18 +66,21 @@ public class ConfirmMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
-        int pricePerUnit = shopItem.getPrice();
-        int totalPrice = pricePerUnit * quantity;
+        double scorePerUnit = shopItem.getScores();
+        double totalScore = scorePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
 
-        List<Component> lore = TranslationManager.translationLore("feature.adminshop.menu.confirm.lore",
+        Component shiftRightSellAll = TranslationManager.translation("feature.adminshop.menu.confirm.sell_all"); //TODO
+
+        List<Component> lore = TranslationManager.translationLore("feature.adminshop.menu.confirm.lore", //TODO
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
                 quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
-                Component.text(AdminShopManager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
-                Component.text(shopItem.getShopMoney().getIcon(), NamedTextColor.GREEN),
-                Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
-                Component.text(shopItem.getShopMoney().getIcon(), NamedTextColor.GREEN)
+                Component.text(AdminShopManager.priceFormat.format(scorePerUnit), NamedTextColor.GREEN),
+                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN), //TODO faire icon halloween point
+                Component.text(AdminShopManager.priceFormat.format(totalScore), NamedTextColor.GREEN),
+                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN), //TODO faire icon halloween point
+                shiftRightSellAll
 
         );
 
@@ -100,10 +108,10 @@ public class ConfirmMenu extends Menu {
             meta.displayName(shopItem.getName().color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
         }).setOnClick(event -> {
-            if (event.getClick() == ClickType.MIDDLE) {
-                DialogInput.sendFloat(
+            switch (event.getClick()) {
+                case ClickType.MIDDLE -> DialogInput.sendFloat(
                         getOwner(),
-                        TranslationManager.translation("feature.adminshop.menu.confirm.input"),
+                        TranslationManager.translation("feature.adminshop.menu.confirm.input"), //TODO
                         1,
                         maxQuantity,
                         quantity,
@@ -117,6 +125,17 @@ public class ConfirmMenu extends Menu {
                             }
                         }
                 );
+                case ClickType.SHIFT_RIGHT -> {
+                    int itemCount = ItemUtils.countItems(getOwner(), shopItem.getItem().getBest());
+                    if (itemCount > 0) {
+                        getOwner().closeInventory();
+                        AdminShopManager.sellItem(
+                                getOwner(),
+                                shopItem.getItem().getId(),
+                                itemCount
+                        );
+                    }
+                }
             }
         }));
 
@@ -127,10 +146,10 @@ public class ConfirmMenu extends Menu {
         content.put(16, createQuantityButton("+64", OMCRegistry.CUSTOM_ITEMS.BTN_64, event -> increaseQuantity(64)));
 
         content.put(17, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN, meta -> {
-            meta.displayName(TranslationManager.translation("messages.global.accept"));
+            meta.displayName(TranslationManager.translation("messages.global.accept")); //TODO
         }).setOnClick(event -> {
             getOwner().closeInventory();
-            WitchShopManager.buyItem(getOwner(), shopItem, quantity);
+            WitchShopManager.sellItem(getOwner(), shopItem, quantity);
         }));
 
         return content;
@@ -147,10 +166,10 @@ public class ConfirmMenu extends Menu {
     private ItemMenuBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
         boolean plus = text.contains("+");
         return new ItemMenuBuilder(this, itemStack, meta ->
-            meta.displayName(TranslationManager.translation("feature.adminshop.menu.confirm.quantity",
+            meta.displayName(TranslationManager.translation("feature.adminshop.menu.confirm.quantity", //TODO
                     plus ?
-                            TranslationManager.translation("feature.adminshop.menu.confirm.add") :
-                    TranslationManager.translation("feature.adminshop.menu.confirm.remove"),
+                            TranslationManager.translation("feature.adminshop.menu.confirm.add") : //TODO
+                    TranslationManager.translation("feature.adminshop.menu.confirm.remove"), //TODO
                     Component.text(text.replace("+", "").replace("-", "")))
                     .color(plus ? NamedTextColor.GREEN : NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false)))
@@ -171,27 +190,30 @@ public class ConfirmMenu extends Menu {
     }
 
     /**
+     * Counts the number of items of a specific material in a player's inventory.
+     *
+     * @param player   The player whose inventory to check.
+     * @param toCount The item to count.
+     * @return The count of items of the specified material in the player's inventory.
+     */
+    private int countPlayerItems(Player player, ItemStack toCount) {
+        int count = 0;
+        for (ItemStack item : player.getInventory().getContents())
+            if (item != null && item.isSimilar(toCount))
+                count += item.getAmount();
+        return count;
+    }
+
+    /**
      * Increases the quantity by the specified amount, ensuring it does not exceed the maximum allowed quantity.
      *
      * @param amount The amount to increase the quantity by.
      */
     private void increaseQuantity(int amount) {
-        quantity = Math.min(quantity + amount, maxQuantity);
+        int playerItemCount = countPlayerItems(getOwner(), shopItem.getItem().getBest());
+        quantity = Math.min(quantity + amount, playerItemCount);
         this.open();
     }
-
-    private int getMaxBuyQuantity(Player player, WitchShopItem shopItem) {
-        int freePlaces = ItemUtils.getFreePlacesForItem(player, shopItem.getItem().getBest());
-
-        double buyPrice = shopItem.getPrice();
-        if (buyPrice <= 0) return freePlaces;
-
-        double balance = ItemUtils.countItems(player, shopItem.getItem().getBest());
-        int affordable = (int) Math.floor(balance / buyPrice);
-
-        return Math.min(freePlaces, affordable);
-    }
-
 
     @Override
     public void onClose(InventoryCloseEvent event) {

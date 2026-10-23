@@ -15,7 +15,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.LegendaryFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.RareFishingTreasureLootbox;
-import fr.openmc.core.features.events.contents.halloween.halloween.CandyItem;
+import fr.openmc.core.features.events.contents.halloween.festival.CandyItem;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorBlock;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorColor;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -95,6 +95,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem PELUCHE_ROOT = register("omc_plush:peluche_root", Material.PAPER);
     public final CustomItem URNE = register("omc_blocks:urne", Material.GLASS);
     public final CustomItem CAISSE = register("omc_shops:caisse", Material.PAPER);
+    public final CustomItem PELUCHE_ROOT_HALLOWEEN_2026 = register("omc_halloween:peluche_root_halloween_2026", Material.PAPER);
 
     public final CustomItem ELEVATOR_GRAY = register(new ElevatorBlock(ElevatorColor.GRAY));
     public final CustomItem ELEVATOR_RED = register(new ElevatorBlock(ElevatorColor.RED));

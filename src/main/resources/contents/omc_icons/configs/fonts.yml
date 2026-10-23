@@ -31,3 +31,9 @@ font_images:
     path: "font/bits.png"
     scale_ratio: 12
     y_position: 9
+  halloween_point:
+    permission: halloween_point
+    show_in_gui: true
+    path: "font/halloween_point.png"
+    scale_ratio: 12
+    y_position: 9

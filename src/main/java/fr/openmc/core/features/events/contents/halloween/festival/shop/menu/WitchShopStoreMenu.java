@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.shop.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -31,8 +32,8 @@ public class WitchShopStoreMenu extends PaginatedMenu {
     @Getter
     private final int page;
 
-    private final Column.Range line = new Column.Range(10, 16);
-    private final int column = 4;
+    private final Column.Range line = new Column.Range(1, 7);
+    private final int COLUMN = 4;
 
     public WitchShopStoreMenu(Player owner, int page) {
         super(owner);
@@ -64,7 +65,7 @@ public class WitchShopStoreMenu extends PaginatedMenu {
 
         Iterator<WitchShopItem> contents = WitchShopManager.getStoreContent(this.page).iterator();
 
-        for (int c = 0; c < column; c++) {
+        for (int c = 0; c < COLUMN; c++) {
             for (int l = line.floor(); l <= line.ceiling(); l++) {
 
                 if (!contents.hasNext()) break;
@@ -75,7 +76,7 @@ public class WitchShopStoreMenu extends PaginatedMenu {
                     itemMeta.displayName(item.getName());
                     itemMeta.lore(WitchShopManager.extractLoreForItem(item));
                 }).setOnClick(event -> {
-                    //TODO open confirm menu if has enough moneyItem
+                    new ConfirmBuyMenu(getOwner(), item);
                 }));
             }
         }
@@ -101,12 +102,6 @@ public class WitchShopStoreMenu extends PaginatedMenu {
             new WitchShopMainMenu(getOwner()).open();
         }));
 
-        //TODO filter :
-        // - room
-        // - unlocked
-        // - lower cost
-        // - highest cost
-
         if (hasNextPage()) {
             map.put(53, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
@@ -124,7 +119,7 @@ public class WitchShopStoreMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return "§r§f:offset_-48::city_template6x9:"; //TODO
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::halloween_store_menu:");
     }
 
     @Override

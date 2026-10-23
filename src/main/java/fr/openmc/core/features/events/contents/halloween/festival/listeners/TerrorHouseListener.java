@@ -3,16 +3,19 @@ package fr.openmc.core.features.events.contents.halloween.festival.listeners;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.WitchHouseManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floor;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
 import fr.openmc.core.registry.regions.CustomRegion;
 import fr.openmc.core.registry.regions.events.EntityCustomRegionEnterEvent;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class WitchHouseListener implements Listener {
+public class TerrorHouseListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -30,10 +33,10 @@ public class WitchHouseListener implements Listener {
 
         if (HalloweenManager.getHalloweenDB().isActive()) {
             if (event.getFrom().equals(DimensionGenerator.HALLOWEEN_WORLD))
-                WitchHouseManager.getWitchHouseAmbient().reset(player);
+                TerrorHouseManager.getWitchHouseAmbient().reset(player);
 
             if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
-                WitchHouseManager.getWitchHouseAmbient().apply(player);
+                TerrorHouseManager.getWitchHouseAmbient().apply(player);
         } else {
             if (player.isOp()) return;
 
@@ -48,9 +51,39 @@ public class WitchHouseListener implements Listener {
     public void onHouseRegionEnter(EntityCustomRegionEnterEvent event) {
         CustomRegion region = event.getRegion();
 
-        if (!WitchHouseManager.enabledRegions.contains(region)) return;
+        if (!region.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            return;
 
-        if (event.getEntity() instanceof Player player)
-            WitchHouseManager.repulsePlayer(region, player, 0.3);
+        Entity entity = event.getEntity();
+
+        Floors floors = TerrorHouseManager.enabledFloors.stream()
+                .filter(floor -> floor.getFloor().getRegion().equals(region))
+                .findAny().orElse(null);
+
+        if (floors == null) {
+            checkAndRepulse(region, entity);
+            return;
+        }
+
+        Floor floor = floors.getFloor();
+
+        if (floor == null) {
+            checkAndRepulse(region, entity);
+            return;
+        }
+
+        if (TerrorHouseManager.limitPassed()) return;
+
+        if (floor.canSpawn) {
+            floor.spawnMob();
+        }
+    }
+
+    private void checkAndRepulse(CustomRegion region, Entity entity) {
+        if (TerrorHouseManager.useRegions.contains(region))
+            if (entity instanceof Player player) {
+                TerrorHouseManager.repulsePlayer(region, player, 0.3);
+                // TODO message
+            }
     }
 }

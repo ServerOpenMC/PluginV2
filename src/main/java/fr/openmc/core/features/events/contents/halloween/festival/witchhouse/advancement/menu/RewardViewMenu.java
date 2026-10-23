@@ -5,6 +5,9 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.WitchShopMainMenu;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.reward.PointReward;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -16,9 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RewardsMenu extends Menu {
+public class RewardViewMenu extends Menu {
 
-    protected RewardsMenu(Player owner) {
+    public RewardViewMenu(Player owner) {
         super(owner);
     }
 
@@ -29,12 +32,12 @@ public class RewardsMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop:");//TODO
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::halloween_reward_menu:");
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
@@ -46,7 +49,18 @@ public class RewardsMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
-        content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));
+        PointReward reward = TerrorHouseManager.currentRewardToReach.getReward();
+
+        content.put(13, new ItemMenuBuilder(this, reward.getItemMenuPreview(), itemMeta -> {
+            itemMeta.displayName(reward.getRewardName());
+            itemMeta.lore(reward.getRewardLore());
+        }));
+
+        content.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
+            itemMeta.displayName(TranslationManager.translation("messages.menus.close"));
+        }).setOnClick(event -> {
+            new AdvancementMenu(getOwner()).open();
+        }));
 
         return content;
     }

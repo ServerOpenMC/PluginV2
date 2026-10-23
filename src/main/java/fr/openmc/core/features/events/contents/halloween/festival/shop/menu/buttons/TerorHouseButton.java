@@ -8,14 +8,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-public class WitchHouseButton {
+public class TerorHouseButton {
     public static void init(Menu menu, Map<Integer, ItemMenuBuilder> contents, int[] slots) {
-        Player player = menu.getOwner();
-
         MenuUtils.createButtonItem(
                 contents,
                 slots,
