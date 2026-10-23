@@ -93,44 +93,44 @@ items:
             y: 0.8
             z: 0.8
 
-recipes:
-  iaa_crafting_table:
-    fermentum:
-      shapeless: true
-      ingredients:
-        - item: omc_daily_events:golden_wheat
-          amount: 5
-        - item: omc_daily_events:golden_beetroot
-          amount: 5
-        - item: omc_daily_events:really_golden_carrot
-          amount: 5
-        - item: omc_daily_events:golden_potato
-          amount: 5
-        - item: omc_daily_events:golden_melon
-          amount: 5
-        - item: omc_daily_events:golden_pumpkin
-          amount: 5
-      result:
-        item: omc_daily_events:fermentum
-
-    blessed_bread:
-      enabled: true
-      pattern:
-        - FFF
-        - XXX
-        - XXX
-      pattern_2:
-        - XXX
-        - FFF
-        - XXX
-      pattern_3:
-        - XXX
-        - XXX
-        - FFF
-      ingredients:
-        F:
-          item: omc_daily_events:golden_wheat
-          amount: 192
-      result:
-        item: omc_daily_events:blessed_bread
-        amount: 1
+#recipes:
+#  iaa_crafting_table:
+#    fermentum:
+#      shapeless: true
+#      ingredients:
+#        - item: omc_daily_events:golden_wheat
+#          amount: 5
+#        - item: omc_daily_events:golden_beetroot
+#          amount: 5
+#        - item: omc_daily_events:really_golden_carrot
+#          amount: 5
+#        - item: omc_daily_events:golden_potato
+#          amount: 5
+#        - item: omc_daily_events:golden_melon
+#          amount: 5
+#        - item: omc_daily_events:golden_pumpkin
+#          amount: 5
+#      result:
+#        item: omc_daily_events:fermentum
+#
+#    blessed_bread:
+#      enabled: true
+#      pattern:
+#        - FFF
+#        - XXX
+#        - XXX
+#      pattern_2:
+#        - XXX
+#        - FFF
+#        - XXX
+#      pattern_3:
+#        - XXX
+#        - XXX
+#        - FFF
+#      ingredients:
+#        F:
+#          item: omc_daily_events:golden_wheat
+#          amount: 192
+#      result:
+#        item: omc_daily_events:blessed_bread
+#        amount: 1
