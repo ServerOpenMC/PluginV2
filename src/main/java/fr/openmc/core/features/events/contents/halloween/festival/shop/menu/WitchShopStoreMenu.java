@@ -32,7 +32,7 @@ public class WitchShopStoreMenu extends PaginatedMenu {
     @Getter
     private final int page;
 
-    private final Column.Range line = new Column.Range(1, 7);
+    private final Column.Range LINE = new Column.Range(1, 7);
     private final int COLUMN = 4;
 
     public WitchShopStoreMenu(Player owner, int page) {
@@ -55,7 +55,12 @@ public class WitchShopStoreMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.getStandardSlots(getInventorySize());
+        return StaticSlots.combine(StaticSlots.getBottomSlots(getInventorySize()),
+                StaticSlots.combine(StaticSlots.getLeftSlots(getInventorySize()),
+                        StaticSlots.combine(StaticSlots.getRightSlots(getInventorySize()),
+                                List.of(36, 37, 38, 39, 40, 41, 42, 43, 44)) // LINE 5 in the LARGEST Inventory
+                )
+        );
     }
 
     @Override
@@ -66,7 +71,7 @@ public class WitchShopStoreMenu extends PaginatedMenu {
         Iterator<WitchShopItem> contents = WitchShopManager.getStoreContent(this.page).iterator();
 
         for (int c = 0; c < COLUMN; c++) {
-            for (int l = line.floor(); l <= line.ceiling(); l++) {
+            for (int l = LINE.floor(); l <= LINE.ceiling(); l++) {
 
                 if (!contents.hasNext()) break;
 

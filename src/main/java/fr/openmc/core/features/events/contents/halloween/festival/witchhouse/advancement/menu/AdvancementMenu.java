@@ -5,11 +5,14 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.WitchChoiceMenu;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.PointRewards;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -62,8 +65,12 @@ public class AdvancementMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
-        content.put(21, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.CANDY_RED, itemMeta -> {
+        content.put(22, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.CANDY_RED, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("messages.menus.next_page")); //TODO
+            itemMeta.lore(List.of(
+                    Component.text("Total des points : " + EconomyManager.getFormattedSimplifiedNumber(TerrorHouseManager.globalAdvancement) + " " + WitchShopManager.getHalloweenPointIcon())
+                            .color(NamedTextColor.GOLD)
+            ));
         }).setOnClick(click -> {
             if (click.isRightClick()) {
                 new RewardViewMenu(getOwner()).open();

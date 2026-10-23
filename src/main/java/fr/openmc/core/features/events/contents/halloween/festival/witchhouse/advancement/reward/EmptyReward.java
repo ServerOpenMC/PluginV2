@@ -22,6 +22,6 @@ public class EmptyReward implements PointReward{
 
     @Override
     public List<Component> getRewardLore() {
-        return new ArrayList<>();
+        return List.of(Component.empty());
     }
 }

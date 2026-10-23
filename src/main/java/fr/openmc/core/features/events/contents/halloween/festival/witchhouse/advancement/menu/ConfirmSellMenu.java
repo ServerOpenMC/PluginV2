@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.menu;
 
+import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
@@ -7,8 +8,6 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.adminshop.ShopItem;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.ShopMoney;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.registry.items.CustomItem;
@@ -17,7 +16,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -42,7 +40,7 @@ public class ConfirmSellMenu extends Menu {
         super(owner);
         this.shopItem = shopItem;
         this.quantity = 1;
-        this.maxQuantity = countPlayerItems(owner, shopItem.getItem().getBest());
+        this.maxQuantity = countPlayerCandies();
     }
 
     @Override
@@ -77,9 +75,9 @@ public class ConfirmSellMenu extends Menu {
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
                 quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
                 Component.text(AdminShopManager.priceFormat.format(scorePerUnit), NamedTextColor.GREEN),
-                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN), //TODO faire icon halloween point
+                Component.text(WitchShopManager.getHalloweenPointIcon(), NamedTextColor.GREEN),
                 Component.text(AdminShopManager.priceFormat.format(totalScore), NamedTextColor.GREEN),
-                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN), //TODO faire icon halloween point
+                Component.text(WitchShopManager.getHalloweenPointIcon(), NamedTextColor.GREEN),
                 shiftRightSellAll
 
         );
@@ -129,9 +127,9 @@ public class ConfirmSellMenu extends Menu {
                     int itemCount = ItemUtils.countItems(getOwner(), shopItem.getItem().getBest());
                     if (itemCount > 0) {
                         getOwner().closeInventory();
-                        AdminShopManager.sellItem(
+                        WitchShopManager.sellItem(
                                 getOwner(),
-                                shopItem.getItem().getId(),
+                                shopItem,
                                 itemCount
                         );
                     }
@@ -192,16 +190,23 @@ public class ConfirmSellMenu extends Menu {
     /**
      * Counts the number of items of a specific material in a player's inventory.
      *
-     * @param player   The player whose inventory to check.
-     * @param toCount The item to count.
      * @return The count of items of the specified material in the player's inventory.
      */
-    private int countPlayerItems(Player player, ItemStack toCount) {
-        int count = 0;
-        for (ItemStack item : player.getInventory().getContents())
-            if (item != null && item.isSimilar(toCount))
-                count += item.getAmount();
-        return count;
+    private int countPlayerCandies() {
+        int amount = 0;
+
+        for (ItemStack item : getOwner().getInventory().getContents()) {
+            if (item == null) continue;
+
+            CustomStack customStack = CustomStack.byItemStack(item);
+            if (customStack == null) continue;
+
+            if (customStack.getNamespacedID().equals(
+                    shopItem.getItem().getCustomStack().getNamespacedID()))
+                amount += item.getAmount();
+        }
+
+        return amount;
     }
 
     /**
@@ -210,7 +215,7 @@ public class ConfirmSellMenu extends Menu {
      * @param amount The amount to increase the quantity by.
      */
     private void increaseQuantity(int amount) {
-        int playerItemCount = countPlayerItems(getOwner(), shopItem.getItem().getBest());
+        int playerItemCount = countPlayerCandies();
         quantity = Math.min(quantity + amount, playerItemCount);
         this.open();
     }

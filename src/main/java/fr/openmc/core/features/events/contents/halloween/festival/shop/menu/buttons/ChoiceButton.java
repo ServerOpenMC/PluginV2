@@ -19,7 +19,7 @@ public class ChoiceButton {
                 contents,
                 slots,
                 new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
-                    itemMeta.displayName(TranslationManager.translation("feature.city.menus.main.ranks.title"));//TODO
+                    itemMeta.displayName(Component.text("test OwO"));//TODO
                     itemMeta.lore(TranslationManager.translationLore(
                             "feature.city.menus.main.ranks.lore.unlocked", //TODO
                             Component.text("").color(NamedTextColor.LIGHT_PURPLE)

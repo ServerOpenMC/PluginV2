@@ -137,7 +137,7 @@ public class WitchShopManager {
         TerrorHouseManager.updateAdvancement(totalScore);
 
         sendInfo(player, TranslationManager.translation("feature.adminshop.player_sell_item", //TODO
-                Component.text(amount))); //TODO dire "vous avez ajouter xxxx points"
+                Component.text(amount))); //TODO dire "You add xxxx points for xx <candy.sprite>"
     }
 
     private static void sendError(Player player, Component message) {

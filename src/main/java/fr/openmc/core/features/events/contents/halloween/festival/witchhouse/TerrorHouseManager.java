@@ -33,7 +33,9 @@ public class TerrorHouseManager {
 
     public static int globalAdvancement;
     public static int floorAdvancement;
-    public static boolean finalRoomReach;
+    public static boolean finalFloorReach;
+
+    public static final Floors FINAL_FLOOR = Floors.FLOOR_15;
 
     public static int entityCount = 0;
     public static final int MAX_ENTITY = 225; // 15 entities * 15 floors
@@ -42,15 +44,17 @@ public class TerrorHouseManager {
     public static CustomAmbient witchHouseAmbient = OMCRegistry.CUSTOM_AMBIENTS.WITCH_HOUSE;
 
     public static void init(int gAdvancement, int fAdvancement) {
+        // Advancement
         globalAdvancement = gAdvancement;
         floorAdvancement = fAdvancement;
 
+        // Current things that are reachable
         currentFloorToReach = getFloorFromAdvancement(globalAdvancement);
         currentRewardToReach = getRewardFromAdvancement(globalAdvancement);
 
+        // Floors
         enabledFloors = EnumUtils.getValuesBefore(currentFloorToReach, false);
-
-        finalRoomReach = currentFloorToReach.equals(Floors.FLOOR_2); //TODO last floor FLOOR_15
+        finalFloorReach = currentFloorToReach.equals(FINAL_FLOOR);
 
         for (Floors floors : Floors.values()) {
             Floor floor = floors.getFloor();
@@ -69,7 +73,7 @@ public class TerrorHouseManager {
 
         CheckForPointRewards();
 
-        if (currentFloorToReach.equals(Floors.FLOOR_2)) //TODO last floor FLOOR_15
+        if (currentFloorToReach.equals(FINAL_FLOOR))
             return;
 
         if (currentFloorToReach.getRequire() > floorAdvancement)

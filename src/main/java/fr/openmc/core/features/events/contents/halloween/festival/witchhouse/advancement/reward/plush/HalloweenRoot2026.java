@@ -57,11 +57,11 @@ public class HalloweenRoot2026 implements PointReward {
 
     @Override
     public Component getRewardName() {
-        return null; //TODO item name
+        return Component.empty(); //TODO item name
     }
 
     @Override
     public List<Component> getRewardLore() {
-        return null; //TODO item lore
+        return List.of(Component.empty()); //TODO item lore
     }
 }
