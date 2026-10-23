@@ -10,6 +10,7 @@ import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.ambient.BloodyAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.contents.ambient.GoldenAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.ambient.BlessedAmbient;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.ambient.TerrorHouseAmbient;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
 import fr.openmc.core.registry.ambient.contents.HellAmbient;
 import fr.openmc.core.registry.ambient.listeners.AmbientFixedTimeListener;
@@ -37,6 +38,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
     public final CustomAmbient GOLDEN = register(new GoldenAmbient());
     public final CustomAmbient BLOODY = register(new BloodyAmbient());
     public final CustomAmbient BLESSED = register(new BlessedAmbient());
+    public final CustomAmbient WITCH_HOUSE = register(new TerrorHouseAmbient());
 
     @Override
     public Set<ListenerFactory> getListeners() {

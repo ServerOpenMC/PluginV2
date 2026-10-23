@@ -61,6 +61,72 @@ font_images:
         suggestion_in_command: false
         path: "city_template6x9.png"
         y_position: 30
+    halloween_event_main_menu:
+        permission: halloween.event_main_menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_festival_main_menu.png"
+        y_position: 30
+    halloween_candy_jar_0:
+        permission: halloween.halloween_candy_jar_0
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_0.png"
+        y_position: 30
+    halloween_candy_jar_1:
+        permission: halloween.halloween_candy_jar_1
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_1.png"
+        y_position: 30
+    halloween_candy_jar_2:
+        permission: halloween.halloween_candy_jar_2
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_2.png"
+        y_position: 30
+    halloween_candy_jar_3:
+        permission: halloween.halloween_candy_jar_3
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_3.png"
+        y_position: 30
+    halloween_candy_jar_4:
+        permission: halloween.halloween_candy_jar_4
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_candy_jar_4.png"
+        y_position: 30
+    halloween_reward_menu:
+        permission: halloween.halloween_reward_menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_reward_menu.png"
+        y_position: 30
+    halloween_deposit_menu:
+        permission: halloween.halloween_deposit_menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_deposit_menu.png"
+        y_position: 30
+    halloween_purchase_confirm_menu:
+        permission: halloween.halloween_purchase_confirm_menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_purchase_confirm_menu.png"
+        y_position: 30
+    halloween_store_menu:
+        permission: halloween.halloween_store_menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_store_menu.png"
+        y_position: 30
+    halloween_choice_menu:
+        permission: halloween.halloween_choice_menu
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "halloween/halloween_choice_menu.png"
+        y_position: 30
     home_mailbox:
         permission: mailbox.home
         show_in_gui: true

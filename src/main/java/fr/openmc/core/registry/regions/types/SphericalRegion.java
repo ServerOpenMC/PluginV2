@@ -5,8 +5,6 @@ import fr.openmc.core.registry.regions.CustomRegion;
 
 public abstract class SphericalRegion extends CustomRegion {
 
-    public abstract BlockVector3 getCenter();
-
     public abstract double getRadius();
 
     @Override

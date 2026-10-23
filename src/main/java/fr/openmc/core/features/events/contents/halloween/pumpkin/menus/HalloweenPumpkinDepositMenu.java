@@ -1,9 +1,9 @@
-package fr.openmc.core.features.events.contents.halloween.menus;
+package fr.openmc.core.features.events.contents.halloween.pumpkin.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
-import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;

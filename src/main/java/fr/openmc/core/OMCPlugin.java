@@ -35,7 +35,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
-import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
@@ -118,6 +118,7 @@ public class OMCPlugin extends JavaPlugin {
             MailboxManager::new,
             DiscordLinkManager::new,
             ProfileManager::new,
+            () -> new fr.openmc.core.features.events.contents.halloween.festival.HalloweenManager(),
             () -> new ElevatorManager(),
             () -> new CorpseManager(),
             QuestsManager::new,
@@ -150,7 +151,8 @@ public class OMCPlugin extends JavaPlugin {
             new WorldGuardHook(),
             new ItemsAdderHook(),
             new FancyNpcsHook(),
-            new GitHubHook()
+            new GitHubHook(),
+            new WorldEditHook()
     ));
 
     @Override
