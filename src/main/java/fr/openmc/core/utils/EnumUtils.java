@@ -1,8 +1,10 @@
 package fr.openmc.core.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class EnumUtils {
     /**
@@ -44,8 +46,10 @@ public class EnumUtils {
      */
     public static <T extends Enum<T>> List<T> getValuesBefore(T value, boolean withIt) {
         return Arrays.stream(value.getDeclaringClass().getEnumConstants())
-                .filter(e -> withIt ? e.ordinal() <= value.ordinal() : e.ordinal() < value.ordinal())
-                .toList();
+                .filter(e -> withIt
+                        ? e.ordinal() <= value.ordinal()
+                        : e.ordinal() < value.ordinal())
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -57,8 +61,10 @@ public class EnumUtils {
      */
     public static <T extends Enum<T>> List<T> getValuesAfter(T value, boolean withIt) {
         return Arrays.stream(value.getDeclaringClass().getEnumConstants())
-                .filter(e -> withIt ? e.ordinal() >= value.ordinal() : e.ordinal() > value.ordinal())
-                .toList();
+                .filter(e -> withIt
+                        ? e.ordinal() >= value.ordinal()
+                        : e.ordinal() > value.ordinal())
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
