@@ -13,7 +13,6 @@ import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.events.sbinfos.ContestInfos;
-import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.hooks.WorldGuardHook;
