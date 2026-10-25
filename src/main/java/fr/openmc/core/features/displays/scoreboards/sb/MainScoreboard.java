@@ -12,17 +12,11 @@ import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
-import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
-import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.Contest;
-import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestPhase;
-import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
-import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.models.ContestData;
+import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
-import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -33,7 +27,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,33 +59,20 @@ public class MainScoreboard extends BaseScoreboard {
             );
         }
 
-        // Contest
-        if (WeeklyEventsManager.isEventActive() &&
-                WeeklyEventsManager.getCurrentEvent() instanceof Contest) {
-            ContestData data = ContestManager.data;
-            if (WeeklyEventsManager.getCurrentPhase() != ContestPhase.VOTE_CAMP.getPhase()) {
-                lines.add(MiniMessage.miniMessage().deserialize(
-                        "<gradient:#FFB800:#F0DF49><title></gradient>",
-                        Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.contest.title", true))
-                ).decoration(TextDecoration.BOLD, true));
-                lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                        .append(data.getCamp1ToSmall())
-                        .appendSpace()
-                        .append(TranslationManager.translation(player, "feature.displays.scoreboard.contest.vs", true).color(NamedTextColor.GRAY))
-                        .append(data.getCamp2ToSmall())
-                );
-                lines.add(Component.text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                        .append(TranslationManager.translation(player, "feature.displays.scoreboard.contest.ends", true).color(NamedTextColor.GRAY))
-                        .appendSpace()
-                        .append(text(DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY), TextColor.color(0xFF8F06)))
-                );
-            }
-        }
+        updateSwapping(player, lines);
 
         lines.add(empty());
         lines.add(getFooter());
 
         board.updateLines(lines);
+    }
+
+    @Override
+    protected List<InfoSwapper> getSwapping() {
+        return List.of(
+                //new HalloweenFestivalInfos(),
+                //new ContestInfos()
+        );
     }
 
     public static List<Component> getDefaultLines(Player player, boolean inWar) {

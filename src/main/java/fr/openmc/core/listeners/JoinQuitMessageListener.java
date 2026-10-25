@@ -85,12 +85,7 @@ public class JoinQuitMessageListener implements Listener {
         });
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
-            event.joinMessage(Component.text("§8[§a§l+§8] §r")
-                    .append(Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE))
-                    .appendSpace()
-                    .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player)))
-                    .append(Component.text(player.getName()))
-            );
+            event.joinMessage(getJoinMessageComponent(player));
 
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
@@ -153,11 +148,22 @@ public class JoinQuitMessageListener implements Listener {
         }
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
-            event.quitMessage(Component.text("§8[§c§l-§8] §r")
-                    .append(Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE))
-                    .appendSpace()
-                    .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player)))
-                    .append(Component.text(player.getName()))
-            );
+            event.quitMessage(getQuitMessageComponent(player));
+    }
+
+    public static Component getJoinMessageComponent(Player player) {
+        return Component.text("§8[§a§l+§8] §r")
+                .append(Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE))
+                .appendSpace()
+                .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player)))
+                .append(Component.text(player.getName()));
+    }
+
+    public static Component getQuitMessageComponent(Player player) {
+        return Component.text("§8[§c§l-§8] §r")
+                .append(Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE))
+                .appendSpace()
+                .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player)))
+                .append(Component.text(player.getName()));
     }
 }

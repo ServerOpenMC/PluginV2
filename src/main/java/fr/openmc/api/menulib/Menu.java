@@ -13,6 +13,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -164,6 +165,8 @@ public abstract class Menu implements InventoryHolder {
 
             if (this instanceof OpenMenu om)
                 om.onOpen(new InventoryOpenEvent(openedMenu));
+
+            owner.postEffects().add(Key.key("minecraft", "blur"));
         } catch (Exception e) {
             MessagesManager.sendMessage(owner, TranslationManager.translation("api.menulib.an_error_occurred"), Prefix.OPENMC, MessageType.ERROR, false);
             owner.closeInventory();

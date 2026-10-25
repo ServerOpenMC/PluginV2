@@ -11,8 +11,8 @@ import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
 import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import net.minecraft.world.inventory.ContainerInput;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Objects;
@@ -30,10 +30,10 @@ public class PacketMenuListener extends PacketAdapter {
 
     @Override
     public void onPacketSending(PacketEvent event) {
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
         if (event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW) {
             PacketContainer packet = event.getPacket();
             int windowId = packet.getIntegers().read(0);
-            OMCPlayer player = OMCPlayer.of(event.getPlayer());
             UUID uuid = player.getUniqueId();
 
             if (PacketMenuLib.getOpenMenus().containsKey(uuid) && PacketMenuLib.getWindowIds().get(uuid) != windowId) {
@@ -59,6 +59,8 @@ public class PacketMenuListener extends PacketAdapter {
 
     @Override
     public void onPacketReceiving(PacketEvent event) {
+        OMCPlayer player = OMCPlayer.of(event.getPlayer());
+        UUID uuid = player.getUniqueId();
         if (event.getPacketType() == PacketType.Play.Client.WINDOW_CLICK) {
             PacketContainer packet = event.getPacket();
             int windowId = packet.getIntegers().read(0);
@@ -67,10 +69,8 @@ public class PacketMenuListener extends PacketAdapter {
             byte button = packet.getBytes().read(0);
             int mode = ((ContainerInput) packet.getStructures().withType(ContainerInput.class).read(0)).ordinal();
 
-            if (PacketMenuLib.getWindowIds().containsKey(event.getPlayer().getUniqueId()) && windowId == PacketMenuLib.getWindowIds().get(event.getPlayer().getUniqueId())) {
-                OMCPlayer player = OMCPlayer.of(event.getPlayer());
+            if (PacketMenuLib.getWindowIds().containsKey(uuid) && windowId == PacketMenuLib.getWindowIds().get(uuid)) {
                 event.setCancelled(true);
-                UUID uuid = player.getUniqueId();
 
                 if (PacketMenuLib.getOpenMenus().containsKey(uuid)) {
                     Menu menu = PacketMenuLib.getOpenMenus().get(uuid);
@@ -91,14 +91,12 @@ public class PacketMenuListener extends PacketAdapter {
                 }
             }
         } else if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
-            OMCPlayer player = OMCPlayer.of(event.getPlayer());
-            UUID uuid = player.getUniqueId();
-
             if (PacketMenuLib.getOpenMenus().containsKey(uuid)) {
                 PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player.getPlayer()));
                 PacketMenuLib.getOpenMenus().remove(uuid);
                 PacketMenuLib.getWindowIds().remove(uuid);
                 PacketMenuLib.updateInv(player);
+                player.postEffects().remove(Key.key("minecraft", "blur"));
             } // We don't verify if it is a good window id because if we do, the player can close the inventory without a packet and the event will never be called
         }
     }
