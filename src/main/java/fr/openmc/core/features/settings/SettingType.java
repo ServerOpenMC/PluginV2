@@ -35,8 +35,8 @@ public enum SettingType {
             Material.ENDER_PEARL, Material.GRAY_DYE, "feature.settings.type.teleport_title_fade.description"),
     JOIN_ANIMATION(ValueType.BOOLEAN, true, "feature.settings.type.join_animation.name",
             Material.GLOW_INK_SAC, Material.INK_SAC, "feature.settings.type.join_animation.description"),
-    SWAPPING_UPDATE_TIME(ValueType.ENUM, SwappingValues.NORMAL, "feature.settings.type.private_message.name",//TODO
-            Material.CLOCK, "feature.settings.type.private_message.description"),//TODO
+    SWAPPING_UPDATE_TIME(ValueType.ENUM, SwappingValues.NORMAL, "feature.settings.type.swapping_update_time.name",
+            Material.CLOCK, "feature.settings.type.swapping_update_time.description"),
 
     ;
 

@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 public enum SwappingValues implements Policy {
-    FULL("feature.settings.policy.city.everyone.name", "feature.settings.policy.city.everyone.description", -1),//TODO
-    SLOW("feature.settings.policy.city.friends.name", "feature.settings.policy.city.friends.description", 120),//TODO
-    NORMAL("feature.settings.policy.city.nobody.name", "feature.settings.policy.city.nobody.description", 60),//TODO
-    FAST("feature.settings.policy.city.nobody.name", "feature.settings.policy.city.nobody.description", 30);//TODO
+    FULL("feature.settings.values.swapping.full.name", "feature.settings.values.swapping.full.description", -1),
+    SLOW("feature.settings.values.swapping.slow.name", "feature.settings.values.swapping.slow.description", 120),
+    NORMAL("feature.settings.values.swapping.normal.name", "feature.settings.values.swapping.normal.description", 60),
+    FAST("feature.settings.values.swapping.fast.name", "feature.settings.values.swapping.fast.description", 30);
 
     private final String displayName;
     private final String description;
