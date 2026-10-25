@@ -3,6 +3,7 @@ package fr.openmc.core.features.settings;
 import fr.openmc.core.features.settings.policy.CityPolicy;
 import fr.openmc.core.features.settings.policy.FriendPolicy;
 import fr.openmc.core.features.settings.policy.GlobalPolicy;
+import fr.openmc.core.features.settings.values.SwappingValues;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import lombok.Getter;
@@ -34,6 +35,8 @@ public enum SettingType {
             Material.ENDER_PEARL, Material.GRAY_DYE, "feature.settings.type.teleport_title_fade.description"),
     JOIN_ANIMATION(ValueType.BOOLEAN, true, "feature.settings.type.join_animation.name",
             Material.GLOW_INK_SAC, Material.INK_SAC, "feature.settings.type.join_animation.description"),
+    SWAPPING_UPDATE_TIME(ValueType.ENUM, SwappingValues.NORMAL, "feature.settings.type.swapping_update_time.name",
+            Material.CLOCK, "feature.settings.type.swapping_update_time.description"),
 
     ;
 
