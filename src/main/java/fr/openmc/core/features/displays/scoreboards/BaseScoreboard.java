@@ -22,7 +22,7 @@ public abstract class BaseScoreboard {
 
     private int currentSwappingTime = 200; // Pour éviter d'attendre XXs au début
     private int currentSwappingInfoIndex = 0;
-    InfoSwapper currentInfo = null;
+    private InfoSwapper currentInfo = null;
 
     /**
      * Initialise le scoreboard pour un joueur
