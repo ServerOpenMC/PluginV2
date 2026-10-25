@@ -71,6 +71,16 @@ public record ItemModel(ItemInfo info, ItemResource resource, ItemGraphics graph
         return "textures/" + id[0] + "/atlas/" + id[1];
     }
 
+    public String toBedrockAnimationId() {
+        String[] id = IdentifierUtils.normalizeId(modelId()).split(":");
+        return "animation." + id[0] + "." + id[1].replace('/', '.');
+    }
+
+    public String toBedrockAnimationPath() {
+        String[] id = IdentifierUtils.normalizeId(modelId()).split(":");
+        return "animations/" + id[0] + "/" + id[1] + ".animation.json";
+    }
+
     public boolean hasModel() {
         return getModel() != null;
     }
@@ -89,7 +99,6 @@ public record ItemModel(ItemInfo info, ItemResource resource, ItemGraphics graph
      */
     public String modelId() {
         if (getModel() == null) return null;
-        return IdentifierUtils.normalizeId(this.getModel(), info.namespace()); // ⚠ adapte
+        return IdentifierUtils.normalizeId(this.getModel(), info.namespace());
     }
-
 }

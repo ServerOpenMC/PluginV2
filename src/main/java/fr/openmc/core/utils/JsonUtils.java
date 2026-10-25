@@ -52,4 +52,12 @@ public class JsonUtils {
     public static Float getFloat(JsonObject object, String key, Float def) {
         return object.has(key) ? object.get(key).getAsFloat() : def;
     }
+
+    public static JsonObject getJsonObject(JsonObject object, String key, JsonObject def) {
+        return object.has(key) && object.get(key).isJsonObject() ? object.get(key).getAsJsonObject() : def;
+    }
+
+    public static JsonArray getJsonArray(JsonObject object, String key, JsonArray def) {
+        return object.has(key) && object.get(key).isJsonArray() ? object.get(key).getAsJsonArray() : def;
+    }
 }
