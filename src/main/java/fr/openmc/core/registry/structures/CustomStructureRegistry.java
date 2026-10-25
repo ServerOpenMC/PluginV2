@@ -12,29 +12,35 @@ import java.io.File;
 public class CustomStructureRegistry extends Registry<String, CustomStructure>
         implements KeyedRegistry<String, CustomStructure>, LoadIfEnable<WorldEditHook> {
 
-    private static final File structureFolder = new File(OMCPlugin.getInstance().getDataFolder(), "data/omc_structure");
+    private static final File STRUCTURE_FOLDER =
+            new File(OMCPlugin.getInstance().getDataFolder(), "data/omc_structure");
 
-    public static final String structureKey = "omc_structure";
+    public static final String STRUCTURE_KEY = "omc_structure";
 
-    // ** REGISTER STRUCTURES **
-    public final CustomStructure WITCH_SHOP = register("test","pillar.nbt");
+    public final CustomStructure WITCH_SHOP = register("test", "pillar.nbt");
 
     public CustomStructureRegistry() {
-        FilesUtils.createDirectoryIfNotExists(structureFolder);
+        FilesUtils.createDirectoryIfNotExists(STRUCTURE_FOLDER);
     }
 
     @Override
-    public String key(CustomStructure registryObject) {
-        return registryObject.getId();
+    public String key(CustomStructure structure) {
+        return structure.getId();
     }
 
     public CustomStructure register(String name, String fileName) {
-        return register(name, new File(structureFolder, fileName));
+        FilesUtils.createDirectoryIfNotExists(STRUCTURE_FOLDER);
+        return register(name, new File(STRUCTURE_FOLDER, fileName));
     }
 
     public CustomStructure register(String name, File file) {
-        if (file == null || name == null) return null;
-        if (!file.exists()) return null;
-        return KeyedRegistry.super.register(new CustomStructure((structureKey + name), file));
+        if (name == null || file == null) {
+            throw new IllegalArgumentException("Structure name and file must not be null.");
+        }
+        if (!file.isFile()) {
+            throw new IllegalArgumentException("Structure file not found: " + file.getAbsolutePath());
+        }
+
+        return KeyedRegistry.super.register(new CustomStructure(STRUCTURE_KEY + name, file));
     }
 }

@@ -1,6 +1,5 @@
 package fr.openmc.core.registry.structures;
 
-
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -15,306 +14,234 @@ import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.registry.structures.model.CustomStructureManager;
 import fr.openmc.core.registry.structures.model.DBPlacedStructure;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.structure.Structure;
 import org.bukkit.util.BlockVector;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
- * Une structure réutilisable (ex: "maison"). Elle peut être posée autant de fois qu'on veut,
- * chaque placement étant identifié par son propre UUID.
+ * Represents a reusable structure that can be placed multiple times.
+ * All public methods must be called on the server's main thread.
  */
 public class CustomStructure {
 
-    // Format utilisé pour stocker les undos en DB
     private static final ClipboardFormat BACKUP_FORMAT = BuiltInClipboardFormat.SPONGE_V3_SCHEMATIC;
 
-    private final OMCPlugin plugin = OMCPlugin.getInstance();
     @Getter
     private final String id;
-    private final File file; // .schem / .schematic / .nbt
+    private final File file;
 
     public CustomStructure(String id, File file) {
         this.id = id;
         this.file = file;
     }
 
-    // ------------------------------------------------------------------ PLACE
-
-    /** Pose la structure avec un UUID de placement généré. */
-    public CompletableFuture<UUID> place(Location location) {
-
-        if (!CustomStructureManager.actionAllow()) return null;
-
+    /**
+     * Places this structure and generates a unique ID for the placement.
+     */
+    public UUID place(Location location) throws Exception {
         return place(UUID.randomUUID(), location);
     }
 
     /**
-     * Pose la structure en lui donnant un identifiant UUID.
-     * Échoue si cet UUID est déjà utilisé par un placement existant.
-     * Peut être appelé depuis n'importe quel thread.
-     *
-     * @return le même UUID, une fois la structure posée et l'undo sauvegardé
+     * Places this structure using the provided placement ID.
+     * An ID that already exists in the database is rejected.
      */
-    public CompletableFuture<UUID> place(UUID placementId, Location location) {
+    public UUID place(UUID placementId, Location location) throws Exception {
+        requireMainThread();
 
-        if (!CustomStructureManager.actionAllow()) return null;
+        if (!CustomStructureManager.actionAllow()) {
+            throw new IllegalStateException("WorldEdit or FastAsyncWorldEdit is not enabled.");
+        }
+        if (placementId == null || location == null || location.getWorld() == null) {
+            throw new IllegalArgumentException("Placement ID, location and world must not be null.");
+        }
+        if (CustomStructureManager.existsPlacement(placementId)) {
+            throw new IllegalStateException("A structure placement with ID " + placementId + " already exists.");
+        }
 
-        CompletableFuture<UUID> future = new CompletableFuture<>();
-        final Location loc = location.clone();
+        Clipboard structure = readStructure(file);
+        World world = location.getWorld();
+        BlockVector3 target = BukkitAdapter.asBlockVector(location);
+        BlockVector3 offset = target.subtract(structure.getOrigin());
+        BlockVector3 min = structure.getRegion().getMinimumPoint().add(offset);
+        BlockVector3 max = structure.getRegion().getMaximumPoint().add(offset);
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try {
-                if (CustomStructureManager.existsPlacement(placementId)) {
-                    future.completeExceptionally(new IllegalStateException(
-                            "Le placement " + placementId + " existe déjà"));
-                    return;
-                }
-            } catch (Exception e) {
-                future.completeExceptionally(e);
-                return;
-            }
-
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                final DBPlacedStructure entry;
-                try {
-                    entry = pasteWithBackup(placementId, loc);
-                } catch (Exception e) {
-                    future.completeExceptionally(e);
-                    return;
-                }
-
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                    try {
-                        CustomStructureManager.savePlacement(entry);
-                        future.complete(placementId);
-                    } catch (Exception e) {
-                        OMCLogger.error("Structure posée mais undo non sauvegardé !", e);
-                        future.completeExceptionally(e);
-                    }
-                });
-            });
-        });
-        return future;
-    }
-
-    private DBPlacedStructure pasteWithBackup(UUID placementId, Location loc) throws Exception {
-
-        if (!CustomStructureManager.actionAllow()) return null;
-
-        Clipboard structure = readFile(file);
-        com.sk89q.worldedit.world.World weWorld = BukkitAdapter.adapt(loc.getWorld());
-
-        // Zone du monde qui sera écrasée
-        BlockVector3 to = BukkitAdapter.asBlockVector(loc);
-        BlockVector3 offset = to.subtract(structure.getOrigin());
-
-        Region r = structure.getRegion();
-
-        BlockVector3 min = r.getMinimumPoint().add(offset);
-        BlockVector3 max = r.getMaximumPoint().add(offset);
-
-        CuboidRegion area = new CuboidRegion(weWorld, min, max);
+        com.sk89q.worldedit.world.World weWorld = BukkitAdapter.adapt(world);
+        CuboidRegion affectedRegion = new CuboidRegion(weWorld, min, max);
+        byte[] backupData;
 
         try (EditSession session = WorldEdit.getInstance().newEditSession(weWorld)) {
-            // 1) sauvegarde de l'existant
-            BlockArrayClipboard backup = new BlockArrayClipboard(area);
-            ForwardExtentCopy copy = new ForwardExtentCopy(session, area, backup, min);
+            BlockArrayClipboard backup = new BlockArrayClipboard(affectedRegion);
+            backup.setOrigin(min);
+
+            ForwardExtentCopy copy = new ForwardExtentCopy(session, affectedRegion, backup, min);
             copy.setCopyingEntities(false);
             Operations.complete(copy);
 
-            // 2) collage
+            backupData = serialize(backup);
+
             Operations.complete(new ClipboardHolder(structure)
                     .createPaste(session)
-                    .to(to)
+                    .to(target)
                     .ignoreAirBlocks(false)
                     .build());
-
-            return new DBPlacedStructure(placementId, id, loc.getWorld().getUID().toString(),
-                    min.x(), min.y(), min.z(), serialize(backup));
         }
+
+        DBPlacedStructure placement = new DBPlacedStructure(
+                placementId,
+                id,
+                world.getUID().toString(),
+                min.x(),
+                min.y(),
+                min.z(),
+                backupData
+        );
+
+        try {
+            CustomStructureManager.savePlacement(placement);
+        } catch (Exception exception) {
+            // Roll back the paste if the placement could not be recorded.
+            restoreBackup(world, min, backupData);
+            throw exception;
+        }
+
+        return placementId;
     }
 
-    /** Retire UN placement précis grâce à son UUID.
-     * @return false si introuvable.
+    /**
+     * Restores the blocks that were present before the specified placement.
+     *
+     * @return true if a placement was found and restored, otherwise false
      */
-    public CompletableFuture<Boolean> remove(UUID placementId) {
+    public boolean remove(UUID placementId) throws Exception {
+        requireMainThread();
 
-        if (!CustomStructureManager.actionAllow()) return null;
+        if (!CustomStructureManager.actionAllow()) {
+            throw new IllegalStateException("WorldEdit or FastAsyncWorldEdit is not enabled.");
+        }
 
-        return removeInternal(() -> CustomStructureManager.getPlacement(placementId));
+        DBPlacedStructure placement = CustomStructureManager.getPlacement(placementId);
+        if (placement == null || !id.equals(placement.getStructureId())) {
+            return false;
+        }
+
+        World world = Bukkit.getWorld(UUID.fromString(placement.getWorld()));
+        if (world == null) {
+            throw new IllegalStateException("World not found: " + placement.getWorld());
+        }
+
+        BlockVector3 min = BlockVector3.at(placement.getX(), placement.getY(), placement.getZ());
+        restoreBackup(world, min, placement.getBackup());
+        CustomStructureManager.deletePlacement(placementId);
+        return true;
     }
 
-    /** Retire le placement le plus récent de cette structure. */
-    public CompletableFuture<Boolean> removeLast() {
-        return removeInternal(() -> CustomStructureManager.getLatestPlacement(id));
-    }
-
-    /** Retire TOUS les placements de cette structure (du plus récent au plus ancien). @return le nombre retiré */
-    public CompletableFuture<Integer> removeAll() {
-
-        if (!CustomStructureManager.actionAllow()) return null;
-
-        return list().thenCompose(placements -> {
-            CompletableFuture<Integer> chain = CompletableFuture.completedFuture(0);
-            for (DBPlacedStructure p : placements) {
-                chain = chain.thenCompose(count ->
-                        remove(p.getId()).thenApply(ok -> ok ? count + 1 : count));
-            }
-            return chain;
-        });
-    }
-
-    /** Tous les placements de cette structure, du plus récent au plus ancien. */
-    public CompletableFuture<List<DBPlacedStructure>> list() {
-        CompletableFuture<List<DBPlacedStructure>> f = new CompletableFuture<>();
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try { f.complete(CustomStructureManager.getPlacements(id)); }
-            catch (Exception e) { f.completeExceptionally(e); }
-        });
-        return f;
-    }
-
-    public CompletableFuture<Boolean> exists(UUID placementId) {
-        CompletableFuture<Boolean> f = new CompletableFuture<>();
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try { f.complete(CustomStructureManager.existsPlacement(placementId)); }
-            catch (Exception e) { f.completeExceptionally(e); }
-        });
-        return f;
-    }
-
-    private interface Lookup { DBPlacedStructure get() throws Exception; }
-
-    private CompletableFuture<Boolean> removeInternal(Lookup lookup) {
-
-        if (!CustomStructureManager.actionAllow()) return null;
-
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
-
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            // 1) lecture DB
-            final DBPlacedStructure placed;
-            try {
-                placed = lookup.get();
-            } catch (Exception e) { future.completeExceptionally(e); return; }
-            if (placed == null) { future.complete(false); return; }
-
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                // 2) restauration (main thread)
-                try {
-                    World world = Bukkit.getWorld(UUID.fromString(placed.getWorld()));
-                    if (world == null) throw new IllegalStateException("Monde introuvable");
-                    restore(placed, world);
-                } catch (Exception e) { future.completeExceptionally(e); return; }
-
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                    // 3) suppression de la ligne
-                    try {
-                        CustomStructureManager.deletePlacement(placed.getId());
-                        future.complete(true);
-                    } catch (Exception e) { future.completeExceptionally(e); }
-                });
-            });
-        });
-        return future;
-    }
-
-    private void restore(DBPlacedStructure placed, World world) throws Exception {
-
-        if (!CustomStructureManager.actionAllow()) return;
-
-        Clipboard backup = deserialize(placed.getBackup());
-        backup.setOrigin(backup.getRegion().getMinimumPoint());
-        BlockVector3 min = BlockVector3.at(placed.getX(), placed.getY(), placed.getZ());
-
+    private void restoreBackup(World world, BlockVector3 min, byte[] data) throws Exception {
+        Clipboard backup = deserialize(data);
         try (EditSession session = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world))) {
             Operations.complete(new ClipboardHolder(backup)
                     .createPaste(session)
                     .to(min)
-                    .ignoreAirBlocks(false) // remet aussi l'air
+                    .ignoreAirBlocks(false)
                     .build());
         }
     }
 
-    /** Lit un .schem / .schematic via WorldEdit, ou un .nbt vanilla converti en clipboard WorldEdit. */
-    private static Clipboard readFile(File file) throws IOException {
-
-        if (!CustomStructureManager.actionAllow()) return null;
+    private static Clipboard readStructure(File file) throws IOException {
+        if (file == null || !file.isFile()) {
+            throw new IOException("Structure file not found: " + file);
+        }
 
         if (file.getName().toLowerCase().endsWith(".nbt")) {
             return readNbt(file);
         }
-        ClipboardFormat format = ClipboardFormats.findByFile(file);
-        if (format == null) throw new IOException("Format de schematic inconnu : " + file.getName());
-        try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
+
+        ClipboardFormat format = ClipboardFormats.findByPath(file.toPath());
+        if (format == null) {
+            throw new IOException("Unsupported structure format: " + file.getName());
+        }
+
+        try (FileInputStream input = new FileInputStream(file);
+             ClipboardReader reader = format.getReader(input)) {
             return reader.read();
         }
     }
 
     /**
-     * Convertit un .nbt (structure block) en clipboard WorldEdit, sans rien placer dans le monde.
-     * Limites : le contenu des tile entities (coffres, panneaux...) et les entités ne sont pas conservés.
+     * Converts a vanilla structure-block NBT file into a WorldEdit clipboard.
+     * This basic conversion copies block data only, not entities or block-entity contents.
      */
     private static Clipboard readNbt(File file) throws IOException {
-
-        if (!CustomStructureManager.actionAllow()) return null;
-
         Structure structure = Bukkit.getStructureManager().loadStructure(file);
-        if (structure.getPaletteCount() == 0) throw new IOException("Structure vide : " + file.getName());
-
-        BlockVector size = structure.getSize();
-        CuboidRegion region = new CuboidRegion(
-                BlockVector3.ZERO,
-                BlockVector3.at(size.getBlockX() - 1, size.getBlockY() - 1, size.getBlockZ() - 1));
-        BlockArrayClipboard clipboard = new BlockArrayClipboard(region);
-        clipboard.setOrigin(BlockVector3.ZERO);
+        BlockArrayClipboard clipboard = getBlockArrayClipboard(file, structure);
 
         try {
-            for (org.bukkit.block.BlockState state : structure.getPalettes().get(0).getBlocks()) {
-                BlockVector3 pos = BlockVector3.at(state.getX(), state.getY(), state.getZ());
-                clipboard.setBlock(pos, BukkitAdapter.adapt(state.getBlockData()));
+            for (BlockState state : structure.getPalettes().getFirst().getBlocks()) {
+                BlockVector3 position = BlockVector3.at(state.getX(), state.getY(), state.getZ());
+                clipboard.setBlock(position, BukkitAdapter.adapt(state.getBlockData()));
             }
-        } catch (Exception e) {
-            throw new IOException("Conversion du .nbt impossible : " + file.getName(), e);
+        } catch (Exception exception) {
+            throw new IOException("Could not convert NBT structure: " + file.getName(), exception);
         }
+
+        return clipboard;
+    }
+
+    private static @NotNull BlockArrayClipboard getBlockArrayClipboard(File file, Structure structure) throws IOException {
+        if (structure.getPaletteCount() == 0) {
+            throw new IOException("Structure is empty: " + file.getName());
+        }
+
+        BlockVector size = structure.getSize();
+        BlockVector3 min = BlockVector3.ZERO;
+        BlockVector3 max = BlockVector3.at(
+                size.getBlockX() - 1,
+                size.getBlockY() - 1,
+                size.getBlockZ() - 1
+        );
+
+        BlockArrayClipboard clipboard = new BlockArrayClipboard(new CuboidRegion(min, max));
+        clipboard.setOrigin(BlockVector3.ZERO);
         return clipboard;
     }
 
     private static byte[] serialize(Clipboard clipboard) throws IOException {
-
-        if (!CustomStructureManager.actionAllow()) return null;
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try (ClipboardWriter writer = BACKUP_FORMAT.getWriter(out)) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (ClipboardWriter writer = BACKUP_FORMAT.getWriter(output)) {
             writer.write(clipboard);
         }
-        return out.toByteArray();
+        return output.toByteArray();
     }
 
     private static Clipboard deserialize(byte[] data) throws IOException {
+        if (data == null || data.length == 0) {
+            throw new IOException("The placement backup is empty.");
+        }
 
-        if (!CustomStructureManager.actionAllow()) return null;
-
-        try (ClipboardReader reader = BACKUP_FORMAT.getReader(new ByteArrayInputStream(data))) {
+        try (ByteArrayInputStream input = new ByteArrayInputStream(data);
+             ClipboardReader reader = BACKUP_FORMAT.getReader(input)) {
             return reader.read();
+        }
+    }
+
+    private static void requireMainThread() {
+        if (!Bukkit.isPrimaryThread()) {
+            throw new IllegalStateException("CustomStructure methods must be called on the server main thread.");
         }
     }
 }

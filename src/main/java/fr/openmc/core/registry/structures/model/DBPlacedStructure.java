@@ -1,6 +1,5 @@
 package fr.openmc.core.registry.structures.model;
 
-
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -8,39 +7,49 @@ import lombok.Getter;
 
 import java.util.UUID;
 
-/** Une instance de structure posée dans le monde + la sauvegarde de ce qu'il y avait avant (undo). */
+/**
+ * Stores one placed structure and the blocks that were there before it was placed.
+ */
 @Getter
 @DatabaseTable(tableName = "structures_placed")
 public class DBPlacedStructure {
 
-    /** Identifiant unique de CE placement (pas de la structure). */
     @DatabaseField(id = true, dataType = DataType.UUID)
     private UUID id;
 
-    /** Id de la CustomStructure (ex: "maison"). Plusieurs placements peuvent avoir le même. */
-    @DatabaseField(canBeNull = false, index = true)
+    @DatabaseField(canBeNull = false)
     private String structureId;
 
     @DatabaseField(canBeNull = false)
-    private String world; // UUID du monde
+    private String world;
 
-    // Coin minimum de la zone sauvegardée
-    @DatabaseField private int x;
-    @DatabaseField private int y;
-    @DatabaseField private int z;
+    @DatabaseField
+    private int x;
+
+    @DatabaseField
+    private int y;
+
+    @DatabaseField
+    private int z;
 
     @DatabaseField(dataType = DataType.BYTE_ARRAY, canBeNull = false)
-    private byte[] backup; // schematic WorldEdit de la zone AVANT placement
+    private byte[] backup;
 
-    @DatabaseField private long createdAt;
+    @DatabaseField
+    private long createdAt;
 
-    public DBPlacedStructure() {} // requis par ORMLite
+    public DBPlacedStructure() {
+        // Required by ORMLite.
+    }
 
-    public DBPlacedStructure(UUID id, String structureId, String world, int x, int y, int z, byte[] backup) {
+    public DBPlacedStructure(UUID id, String structureId, String world,
+                             int x, int y, int z, byte[] backup) {
         this.id = id;
         this.structureId = structureId;
         this.world = world;
-        this.x = x; this.y = y; this.z = z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
         this.backup = backup;
         this.createdAt = System.currentTimeMillis();
     }
