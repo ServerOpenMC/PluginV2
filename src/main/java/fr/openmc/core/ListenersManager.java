@@ -33,7 +33,8 @@ public class ListenersManager {
                 () -> new EntityGlowNMS(),
                 () -> new RegionTrackingListener(),
                 () -> new SpawnerExtractorListener(),
-                () -> new ItemsAddersListener()
+                () -> new ItemsAddersListener(),
+                RemovePostEffectListener::new
         );
     }
 
