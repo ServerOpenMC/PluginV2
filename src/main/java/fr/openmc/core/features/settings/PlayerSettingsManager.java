@@ -260,6 +260,17 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
     }
 
     /**
+     * Checks if a player can receive a friend's join and leave message.
+     *
+     * @param receiverUUID the UUID of the player receiving the message
+     * @return true if the receiver can receive a friend's join and leave message
+     */
+    public static boolean canReceiveFriendJoinLeaveMessages(UUID receiverUUID) {
+        PlayerSettings settings = getPlayerSettings(receiverUUID);
+        return settings.getSetting(SettingType.FRIEND_JOIN_LEAVE_MESSAGES);
+    }
+
+    /**
      * Checks if a player can receive a notification sound.
      *
      * @param playerUUID the UUID of the player

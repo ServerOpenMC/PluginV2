@@ -15,6 +15,8 @@ public enum SettingType {
     // - Friendship settings
     FRIEND_REQUESTS_POLICY(ValueType.ENUM, FriendPolicy.EVERYONE, "feature.settings.type.friend_requests.name",
             Material.PLAYER_HEAD, "feature.settings.type.friend_requests.description"),
+    FRIEND_JOIN_LEAVE_MESSAGES(ValueType.BOOLEAN, true, "feature.settings.type.friend_join_leave_messages.name",
+            Material.PAPER, "feature.settings.type.friend_join_leave_messages.description"),
 
     // - City settings
     CITY_JOIN_REQUESTS_POLICY(ValueType.ENUM, CityPolicy.EVERYONE, "feature.settings.type.city_join_requests.name",
