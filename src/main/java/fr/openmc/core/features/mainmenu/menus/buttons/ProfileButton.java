@@ -6,6 +6,7 @@ import fr.openmc.core.features.mainmenu.menus.ButtonItems;
 import fr.openmc.core.features.mainmenu.menus.ButtonMenu;
 import fr.openmc.core.features.profile.menu.ProfileMenu;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -30,7 +31,10 @@ public class ProfileButton implements ButtonMenu {
     public ItemStack itemAt(OMCPlayer player, int slot) {
         if (slot != 60) return item(player);
 
-        ItemStack head = CustomStack.getInstance("omc_main_menu:player_head").getItemStack();
+        CustomStack playerHead = CustomStack.getInstance("omc_main_menu:player_head");
+        if (playerHead == null) return ItemStack.of(Material.PLAYER_HEAD);
+
+        ItemStack head = playerHead.getItemStack();
         head.editMeta(meta -> {
             meta.customName(ButtonItems.name("feature.mainmenu.item.profile.name")
                     .decoration(TextDecoration.ITALIC, false));

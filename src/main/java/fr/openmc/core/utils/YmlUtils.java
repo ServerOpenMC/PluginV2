@@ -20,28 +20,59 @@ public class YmlUtils {
         }
     }
 
-    public static String getString(Object obj, String def) {
+    public static String getString(Map<?, ?> map, String key, String def) {
+        if (map == null) return def;
+        Object obj = map.get(key);
         if (obj == null) return def;
         if (obj instanceof String s) return s;
         return String.valueOf(obj);
     }
 
-    public static Integer getInt(Object obj, Integer def) {
+    public static Integer getInt(Map<?, ?> map, String key, Integer def) {
+        if (map == null) return def;
+        Object obj = map.get(key);
         if (obj == null) return def;
         if (obj instanceof Number n) return n.intValue();
         return Integer.parseInt(obj.toString());
     }
 
-    public static Boolean getBool(Object obj, Boolean def) {
+    public static Boolean getBool(Map<?, ?> map, String key, Boolean def) {
+        if (map == null) return def;
+        Object obj = map.get(key);
         if (obj == null) return def;
         if (obj instanceof Boolean b) return b;
         return Boolean.parseBoolean(obj.toString());
     }
 
-    public static Double getDouble(Object obj, Double def) {
+    public static Double getDouble(Map<?, ?> map, String key, Double def) {
+        if (map == null) return def;
+        Object obj = map.get(key);
         if (obj == null) return def;
         if (obj instanceof Number n) return n.doubleValue();
         return Double.parseDouble(obj.toString());
+    }
+
+    public static Map<String, String> getStringMap(Map<?, ?> map, String key) {
+        Map<?, ?> section = getMap(map, key);
+        if (section == null) return null;
+
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<?, ?> e : section.entrySet()) {
+            result.put(String.valueOf(e.getKey()), String.valueOf(e.getValue()));
+        }
+        return result;
+    }
+
+    public static Map<?, ?> getMap(Map<?, ?> map, String key) {
+        if (map == null) return null;
+        return map.get(key) instanceof Map<?, ?> m ? m : null;
+    }
+
+    public static List<String> getStringList(Map<?, ?> map, String key) {
+        if (map == null) return List.of();
+        return map.get(key) instanceof List<?> l
+                ? l.stream().map(String::valueOf).toList()
+                : List.of();
     }
 
     public static Object deepCopyObject(Object value) {

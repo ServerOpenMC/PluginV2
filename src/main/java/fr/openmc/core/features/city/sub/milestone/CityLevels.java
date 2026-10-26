@@ -127,7 +127,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("5k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyManager.getFormattedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -214,7 +214,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("15k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyManager.getFormattedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -294,7 +294,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("20k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyManager.getFormattedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -364,7 +364,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("30k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyManager.getFormattedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -455,7 +455,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("40k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyManager.getFormattedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -528,7 +528,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("60k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyManager.getFormattedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -620,7 +620,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("80k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyManager.getFormattedNumber(city.getBalance()))
                                 );
                             }
                     ),
@@ -700,7 +700,7 @@ public enum CityLevels {
                                 return TranslationManager.translation(
                                         "feature.city.levels.requirements.bank.progress",
                                         Component.text("200k"),
-                                        Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance()))
+                                        Component.text(EconomyManager.getFormattedNumber(city.getBalance()))
                                 );
                             }
                     ),

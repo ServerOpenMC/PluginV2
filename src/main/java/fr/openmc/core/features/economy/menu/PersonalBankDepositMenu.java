@@ -59,7 +59,7 @@ public class PersonalBankDepositMenu extends Menu {
 
         List<Component> loreBankDepositAll = TranslationManager.translationLore(
                 "feature.economy.bank.deposit.all.lore",
-                Component.text(EconomyManager.getFormattedSimplifiedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(EconomyManager.getFormattedNumber(moneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
                 Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 
@@ -74,7 +74,7 @@ public class PersonalBankDepositMenu extends Menu {
 
         List<Component> loreBankDepositHalf = TranslationManager.translationLore(
                 "feature.economy.bank.deposit.half.lore",
-                Component.text(EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
+                Component.text(EconomyManager.getFormattedNumber(halfMoneyPlayer)).color(NamedTextColor.LIGHT_PURPLE),
                 Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)
         );
 

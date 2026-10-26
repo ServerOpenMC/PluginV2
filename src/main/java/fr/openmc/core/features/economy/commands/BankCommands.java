@@ -87,7 +87,7 @@ public class BankCommands {
         player.message().sendInfo(
                 TranslationManager.translation(
                         "feature.economy.bank.command.balance",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(balance)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyManager.getFormattedNumber(balance)).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(EconomyManager.getEconomyIcon())
                 ),
                 Prefix.BANK

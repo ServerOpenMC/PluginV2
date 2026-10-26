@@ -104,7 +104,7 @@ public class CityBankManager {
         MessagesManager.sendMessage(player,
                 TranslationManager.translation(
                         "feature.city.bank.withdraw.success",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
+                        Component.text(EconomyManager.getFormattedNumber(amount)).color(NamedTextColor.LIGHT_PURPLE),
                         Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.LIGHT_PURPLE)
                 ),
                 Prefix.CITY, MessageType.SUCCESS, false);

@@ -1,7 +1,5 @@
 package fr.openmc.core.hooks.itemsadder.sprite;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.riftengine.api.scanner.items.ItemEntry;
 import fr.openmc.riftengine.api.utils.IdentifierUtils;
@@ -11,7 +9,7 @@ import net.kyori.adventure.text.ObjectComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.object.ObjectContents;
 
-import java.util.Set;
+import java.util.Map;
 
 public class SpriteUtils {
     public static ObjectComponent getSprite(CustomItem item) {
@@ -19,17 +17,18 @@ public class SpriteUtils {
 
         if (itemEntry == null)  return null;
 
-        Key atlasKey = itemEntry.getBehaviour().isBlockBehaviour() ? Key.key("minecraft", "blocks")
+        Key atlasKey = itemEntry.getBehaviour().isBlock() ? Key.key("minecraft", "blocks")
                 : Key.key("minecraft", "items");
 
-        Set<String> bestResourcesId = itemEntry.getBestResourcesId();
+
+        Map<String, String> bestResourcesId = itemEntry.getBestResourcesId();
         if (bestResourcesId == null || bestResourcesId.isEmpty()) return null;
 
-        String bestResourceId = bestResourcesId.stream().findFirst().orElseThrow();
+        String bestResourceId = bestResourcesId.values().stream().findFirst().orElseThrow();
 
         String prefix = "_";
 
-        if (itemEntry.getBehaviour().isBlockBehaviour()
+        if (itemEntry.getBehaviour().isBlock()
                 && itemEntry.getGraphics() != null
                 && itemEntry.getGraphics().hasTextures()) {
             prefix += "b_";
