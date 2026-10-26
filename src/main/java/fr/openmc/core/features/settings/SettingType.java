@@ -1,13 +1,16 @@
 package fr.openmc.core.features.settings;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.settings.policy.CityPolicy;
 import fr.openmc.core.features.settings.policy.FriendPolicy;
 import fr.openmc.core.features.settings.policy.GlobalPolicy;
 import fr.openmc.core.features.settings.values.SwappingValues;
+import fr.openmc.core.registry.items.CustomItem;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 @Getter
 public enum SettingType {
@@ -16,17 +19,17 @@ public enum SettingType {
     FRIEND_REQUESTS_POLICY(ValueType.ENUM, FriendPolicy.EVERYONE, "feature.settings.type.friend_requests.name",
             Material.PLAYER_HEAD, "feature.settings.type.friend_requests.description"),
     FRIEND_JOIN_LEAVE_MESSAGES(ValueType.BOOLEAN, true, "feature.settings.type.friend_join_leave_messages.name",
-            Material.PAPER, "feature.settings.type.friend_join_leave_messages.description"),
+            OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_INFORMATION, "feature.settings.type.friend_join_leave_messages.description"),
 
     // - City settings
     CITY_JOIN_REQUESTS_POLICY(ValueType.ENUM, CityPolicy.EVERYONE, "feature.settings.type.city_join_requests.name",
-            Material.PAPER, "feature.settings.type.city_join_requests.description"),
+            OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_CHATEAU, "feature.settings.type.city_join_requests.description"),
     MASCOT_PLAY_SOUND_POLICY(ValueType.BOOLEAN, true, "feature.settings.type.mascot_play_sound.name",
             Material.MUSIC_DISC_LAVA_CHICKEN, Material.GRAY_DYE, "feature.settings.type.mascot_play_sound.description", DataComponentTypes.JUKEBOX_PLAYABLE),
 
     // - Mailbox settings
     MAILBOX_RECEIVE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "feature.settings.type.mailbox_receive.name",
-            Material.PAPER, "feature.settings.type.mailbox_receive.description"),
+            OMCRegistry.CUSTOM_ITEMS.MAILBOX_SEND, "feature.settings.type.mailbox_receive.description"),
 
     // - General settings
     PRIVATE_MESSAGE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "feature.settings.type.private_message.name",
@@ -45,8 +48,8 @@ public enum SettingType {
     private final ValueType valueType;
     private final Object defaultValue;
     private final String name;
-    private final Material enabledMaterial;
-    private final Material disabledMaterial;
+    private final ItemStack enabledItem;
+    private final ItemStack disabledItem;
     private final String enumDescription;
     private final DataComponentType[] dataComponentType;
 
@@ -66,8 +69,8 @@ public enum SettingType {
         this.valueType = valueType;
         this.defaultValue = defaultValue;
         this.name = name;
-        this.enabledMaterial = enabledMaterial;
-        this.disabledMaterial = disabledMaterial;
+        this.enabledItem = ItemStack.of(enabledMaterial);
+        this.disabledItem = ItemStack.of(disabledMaterial);
         this.enumDescription = enumDescription;
         this.dataComponentType = dataToHide;
     }
@@ -86,7 +89,41 @@ public enum SettingType {
         this(valueType, defaultValue, name, enabledMaterial, enabledMaterial, enumDescription, dataToHide);
     }
 
+    /**
+     * Enum representing the type of setting, its default value, name, CustomItems for enabled/disabled states,
+     * and a description for enum values.
+     *
+     * @param valueType          The type of value this setting holds.
+     * @param defaultValue       The default value for this setting.
+     * @param name               The name of the setting.
+     * @param enabledItem    CustomItem representing the enabled state.
+     * @param disabledItem   CustomItem representing the disabled state.
+     * @param enumDescription    Description for enum values.
+     */
+    SettingType(ValueType valueType, Object defaultValue, String name,
+                CustomItem enabledItem, CustomItem disabledItem, String enumDescription, DataComponentType... dataToHide) {
+        this.valueType = valueType;
+        this.defaultValue = defaultValue;
+        this.name = name;
+        this.enabledItem = enabledItem.getBest();
+        this.disabledItem = disabledItem.getBest();
+        this.enumDescription = enumDescription;
+        this.dataComponentType = dataToHide;
+    }
 
+    /**
+     * Constructor for SettingType without a disabled CustomItem.
+     *
+     * @param valueType          The type of value this setting holds.
+     * @param defaultValue       The default value for this setting.
+     * @param name               The name of the setting.
+     * @param enabledItem    CustomItem representing the enabled state.
+     * @param enumDescription    Description for enum values.
+     */
+    SettingType(ValueType valueType, Object defaultValue, String name, CustomItem enabledItem,
+                String enumDescription, DataComponentType... dataToHide) {
+        this(valueType, defaultValue, name, enabledItem, enabledItem, enumDescription, dataToHide);
+    }
 
     /**
      * Checks if the provided value is valid for this setting type.
