@@ -128,9 +128,9 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     private ItemStack createBooleanItem(SettingType settingType, boolean currentValue) {
-        Material material = currentValue ? settingType.getEnabledMaterial() : settingType.getDisabledMaterial();
+        ItemStack itemStack = currentValue ? settingType.getEnabledItem() : settingType.getDisabledItem();
 
-        return new ItemMenuBuilder(this, material, meta -> {
+        return new ItemMenuBuilder(this, itemStack, meta -> {
             meta.displayName(TranslationManager.translation(settingType.getName()).color(NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
 
@@ -141,7 +141,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
             lore.add(TranslationManager.translation("feature.settings.item.change")
                     .decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
-        }).hide(settingType.getDataComponentType()).setOnClick(e -> {
+        }).hide(settingType.getDataComponentType()).setOnClick(_ -> {
             settings.setSetting(settingType, !currentValue);
             this.refresh();
 
@@ -155,7 +155,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     private ItemStack createEnumItem(SettingType settingType, Object currentValue) {
-        return new ItemMenuBuilder(this, settingType.getEnabledMaterial(), meta -> {
+        return new ItemMenuBuilder(this, settingType.getEnabledItem(), meta -> {
             meta.displayName(TranslationManager.translation(settingType.getName()).color(NamedTextColor.AQUA)
                     .decoration(TextDecoration.ITALIC, false));
 
@@ -174,7 +174,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
             lore.add(TranslationManager.translation("feature.settings.item.change")
                     .decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
-        }).setOnClick(e -> {
+        }).setOnClick(_ -> {
             Object nextValue = getNextEnumValue(settingType, currentValue);
             settings.setSetting(settingType, nextValue);
             this.refresh();
