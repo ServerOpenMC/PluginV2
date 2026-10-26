@@ -144,6 +144,33 @@ tasks.shadowJar {
     relocate("com.j256.ormlite", "fr.openmc.shaded.com.j256.ormlite")
 }
 
+tasks.runServer {
+    minecraftVersion("${minecraftVersion}")
+
+    systemProperty(
+            "net.kyori.adventure.text.warnWhenLegacyFormattingDetected",
+            rootProject.findProperty("net.kyori.adventure.text.warnWhenLegacyFormattingDetected") ?: false
+    )
+    systemProperty("com.mojang.eula.agree", rootProject.findProperty("com.mojang.eula.agree") ?: true)
+    systemProperty("Paper.IgnoreJavaVersion", true)
+
+    jvmArgs(
+            "-Xmx4096M",
+            "-Xms4096M",
+            "-XX:+AllowEnhancedClassRedefinition", // Remove if it doesn't launch
+            "-XX:HotswapAgent=core" // Remove if it doesn't launch
+
+    )
+
+    downloadPlugins {
+        modrinth("FancyNpcs", "2.12.1")
+        modrinth("FastAsyncWorldEdit", "2.16.1")
+        modrinth("LuckPerms", "v5.5.71-bukkit")
+        modrinth("PlaceholderAPI", "2.12.3")
+        modrinth("WorldGuard", "7.0.20")
+    }
+}
+
 tasks.test {
     useJUnitPlatform()
 }
