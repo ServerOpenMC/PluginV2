@@ -7,6 +7,8 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,10 +28,12 @@ public class VampireLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,1, 1, 10),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,1, 7, 15),
                 new ItemLoot(ItemType.OMINOUS_BOTTLE.createItemStack(
                         o -> o.setAmplifier(4)),0.7, 1),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.VAMPIRE_HEAD,0.50, 1),
+                new ItemLoot(ItemType.SPLASH_POTION.createItemStack(p ->
+                        p.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 5, 1), true)),0.7, 1, 3),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.VAMPIRE_HEAD,0.5, 1),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ENCHANTS.VAMPIRISM.getEnchantedBookItem(1, 2),
                         0.35,
