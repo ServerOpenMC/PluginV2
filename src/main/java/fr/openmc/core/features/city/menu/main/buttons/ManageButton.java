@@ -8,7 +8,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.menu.CityModifyMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -36,7 +35,7 @@ public class ManageButton {
             ));
             itemMeta.lore(getDynamicLore(city, player));
             itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (cityCheck == null) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_in_city"), Prefix.CITY, MessageType.ERROR, false);

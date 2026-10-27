@@ -12,11 +12,13 @@ import java.util.UUID;
 @SuppressWarnings({"unused", "removal", "deprecation"})
 public interface OMCOfflinePlayer extends OfflinePlayer {
     static OMCOfflinePlayer of(UUID playerUUID) {
+        if (playerUUID == null) return null;
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
         return new OMCOfflinePlayerImpl(offlinePlayer);
     }
 
     static OMCOfflinePlayer of(String playerName) {
+        if (playerName == null) return null;
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerName);
         return new OMCOfflinePlayerImpl(offlinePlayer);
     }
