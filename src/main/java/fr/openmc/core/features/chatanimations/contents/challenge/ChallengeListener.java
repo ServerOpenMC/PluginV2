@@ -1,6 +1,8 @@
 package fr.openmc.core.features.chatanimations.contents.challenge;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
+import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
 import fr.openmc.core.features.chatanimations.ChatAnimation;
 import fr.openmc.core.features.chatanimations.ChatAnimationManager;
 import fr.openmc.core.features.chatanimations.contents.challenge.types.*;
@@ -18,6 +20,22 @@ import org.bukkit.event.player.PlayerMoveEvent;
 public class ChallengeListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        ChatAnimation animation = ChatAnimationManager.getActive();
+        if (animation == null) return;
+        if (!(animation instanceof MineBlocksChallenge challenge)) return;
+        if (animation.isFinished()) return;
+        if (!challenge.getKeyBlock().matches(event.getBlock())) return;
+
+        Player player = event.getPlayer();
+        int count = challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);
+
+        if (count >= challenge.getTarget()) {
+            Player winner = event.getPlayer();
+            animation.complete(winner);
+        }
+    }
+    @EventHandler
+    public void onCustomBlockBreak(CustomBlockBreakEvent event) {
         ChatAnimation animation = ChatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof MineBlocksChallenge challenge)) return;
@@ -111,6 +129,22 @@ public class ChallengeListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        ChatAnimation animation = ChatAnimationManager.getActive();
+        if (animation == null) return;
+        if (!(animation instanceof PlaceBlocksChallenge challenge)) return;
+        if (animation.isFinished()) return;
+        if (!challenge.getKeyBlock().matches(event.getBlock())) return;
+
+        Player player = event.getPlayer();
+        int count = challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);
+
+        if (count >= challenge.getTarget()) {
+            animation.complete(player);
+        }
+    }
+
+    @EventHandler
+    public void onCustomBlockPlace(CustomBlockPlaceEvent event) {
         ChatAnimation animation = ChatAnimationManager.getActive();
         if (animation == null) return;
         if (!(animation instanceof PlaceBlocksChallenge challenge)) return;
