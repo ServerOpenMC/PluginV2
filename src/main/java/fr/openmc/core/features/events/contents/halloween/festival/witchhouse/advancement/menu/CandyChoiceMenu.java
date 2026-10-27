@@ -9,7 +9,6 @@ import fr.openmc.core.features.events.contents.halloween.festival.shop.ShopMoney
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -27,7 +26,7 @@ public class CandyChoiceMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.adminshop.menu.confirm.name");//TODO
+        return TranslationManager.translation("feature.events.halloween.festival.menu.candy_choice");
     }
 
     @Override
@@ -50,35 +49,35 @@ public class CandyChoiceMenu extends Menu {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         content.put(9, new ItemMenuBuilder(this, ShopMoney.MONSTER_CANDY.getItem(), itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page")); //TODO
+            itemMeta.displayName(TranslationManager.translation("itemsadder.omc_halloween.candy_brown.name"));
             itemMeta.lore(getCandyPoints(ShopMoney.MONSTER_CANDY));
         }).setOnClick(click -> {
                 new ConfirmSellMenu(getOwner(), ShopMoney.MONSTER_CANDY).open();
         }));
 
         content.put(20, new ItemMenuBuilder(this, ShopMoney.GREEN_CANDY.getItem(), itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page")); //TODO
+            itemMeta.displayName(TranslationManager.translation("itemsadder.omc_halloween.candy_green.name"));
             itemMeta.lore(getCandyPoints(ShopMoney.GREEN_CANDY));
         }).setOnClick(click -> {
                 new ConfirmSellMenu(getOwner(), ShopMoney.GREEN_CANDY).open();
         }));
 
         content.put(13, new ItemMenuBuilder(this, ShopMoney.BLUE_CANDY.getItem(), itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page")); //TODO
+            itemMeta.displayName(TranslationManager.translation("itemsadder.omc_halloween.candy_blue.name"));
             itemMeta.lore(getCandyPoints(ShopMoney.BLUE_CANDY));
         }).setOnClick(click -> {
                 new ConfirmSellMenu(getOwner(), ShopMoney.BLUE_CANDY).open();
         }));
 
         content.put(24, new ItemMenuBuilder(this, ShopMoney.RED_CANDY.getItem(), itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page")); //TODO
+            itemMeta.displayName(TranslationManager.translation("itemsadder.omc_halloween.candy_red.name"));
             itemMeta.lore(getCandyPoints(ShopMoney.RED_CANDY));
         }).setOnClick(click -> {
                 new ConfirmSellMenu(getOwner(), ShopMoney.RED_CANDY).open();
         }));
 
         content.put(17, new ItemMenuBuilder(this, ShopMoney.YELLOW_CANDY.getItem(), itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page")); //TODO
+            itemMeta.displayName(TranslationManager.translation("itemsadder.omc_halloween.candy_yellow.name"));
             itemMeta.lore(getCandyPoints(ShopMoney.YELLOW_CANDY));
         }).setOnClick(click -> {
                 new ConfirmSellMenu(getOwner(), ShopMoney.YELLOW_CANDY).open();
@@ -104,8 +103,10 @@ public class CandyChoiceMenu extends Menu {
     }
 
     private List<Component> getCandyPoints(ShopMoney money) {
-        return List.of(Component.text("Valeur : " + money.getScores() + " " + WitchShopManager.getHalloweenPointIcon())
-                .color(NamedTextColor.GOLD)
-        );//TODO translate
+        return List.of(TranslationManager.translation(
+                "feature.events.halloween.festival.menu.candy_choice.candy_point",
+                Component.text(money.getScores()),
+                Component.text(WitchShopManager.getHalloweenPointIcon())
+        ));
     }
 }

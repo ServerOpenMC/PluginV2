@@ -46,4 +46,8 @@ public enum Floors {
         this.floor = floor; // 15 au totale
         this.require = require; // 500k global au totale
     }
+
+    public String getSimplifyFloor() {
+        return "Floor " + (ordinal() + 1);
+    }
 }

@@ -2,11 +2,12 @@ package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.ad
 
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.events.contents.halloween.festival.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.reward.PointReward;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -27,7 +28,7 @@ public class HalloweenRoot2026 implements PointReward {
 
         ItemStack[] rewardToGive = new ItemStack[]{reward.getBest()};
 
-        for (UUID uuid : HalloweenManager.getParticipant()) {
+        for (UUID uuid : HalloweenFestivalManager.getParticipant()) {
 
             Player player = Bukkit.getPlayer(uuid);
 
@@ -35,7 +36,7 @@ public class HalloweenRoot2026 implements PointReward {
 
                 OMCPlayer omcPlayer = OMCPlayer.of(player);
 
-                HalloweenManager.sendMailItems(omcPlayer, omcPlayer, rewardToGive);
+                HalloweenFestivalManager.sendMailItems(omcPlayer, omcPlayer, rewardToGive);
             } else {
                 OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
@@ -57,11 +58,11 @@ public class HalloweenRoot2026 implements PointReward {
 
     @Override
     public Component getRewardName() {
-        return Component.empty(); //TODO item name
+        return TranslationManager.translation("itemsadder.omc_halloween.root_plush.name");
     }
 
     @Override
     public List<Component> getRewardLore() {
-        return List.of(Component.empty()); //TODO item lore
+        return List.of(TranslationManager.translation("itemsadder.omc_halloween.root_plush.lore.0"));
     }
 }

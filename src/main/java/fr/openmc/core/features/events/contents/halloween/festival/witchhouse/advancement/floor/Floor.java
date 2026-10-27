@@ -102,7 +102,7 @@ public class Floor {
     }
 
     public Location getRandomPosFromPlayer(Player player) {
-        return LocationUtils.randomLocation(
+        return LocationUtils.getSafeNearbySurface(LocationUtils.randomLocation(
                 new Location(
                         player.getWorld(),
                         player.getX(),
@@ -110,7 +110,7 @@ public class Floor {
                         player.getZ()
                 ),
                 radius
-        );
+        ), (int) radius);
     }
 
     public int getFloorPos(Player player) {

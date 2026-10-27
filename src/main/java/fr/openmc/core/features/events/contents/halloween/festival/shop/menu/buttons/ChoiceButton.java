@@ -19,10 +19,9 @@ public class ChoiceButton {
                 contents,
                 slots,
                 new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
-                    itemMeta.displayName(Component.text("test OwO"));//TODO
+                    itemMeta.displayName(TranslationManager.translation("feature.events.halloween.festival.button.house.name"));
                     itemMeta.lore(TranslationManager.translationLore(
-                            "feature.city.menus.main.ranks.lore.unlocked", //TODO
-                            Component.text("").color(NamedTextColor.LIGHT_PURPLE)
+                            "feature.events.halloween.festival.button.house.lore"
                     ));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
                 }).setOnClick(inventoryClickEvent -> new WitchChoiceMenu(menu.getOwner()).open())

@@ -30,7 +30,7 @@ public class AdvancementMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.adminshop.menu.confirm.name");//TODO
+        return TranslationManager.translation("feature.events.halloween.festival.menu.advancement");
     }
 
     @Override
@@ -66,10 +66,13 @@ public class AdvancementMenu extends Menu {
         Map<Integer, ItemMenuBuilder> content = new HashMap<>();
 
         content.put(22, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.CANDY_RED, itemMeta -> {
-            itemMeta.displayName(TranslationManager.translation("messages.menus.next_page")); //TODO
+            itemMeta.displayName(TranslationManager.translation("feature.events.halloween.festival.menu.advancement.item_name"));
             itemMeta.lore(List.of(
-                    Component.text("Total des points : " + EconomyManager.getFormattedSimplifiedNumber(TerrorHouseManager.globalAdvancement) + " " + WitchShopManager.getHalloweenPointIcon())
-                            .color(NamedTextColor.GOLD)
+                    TranslationManager.translation(
+                            "feature.events.halloween.festival.menu.advancement.item_lore",
+                            Component.text(EconomyManager.getFormattedSimplifiedNumber(TerrorHouseManager.globalAdvancement)),
+                            Component.text(WitchShopManager.getHalloweenPointIcon())
+                    )
             ));
         }).setOnClick(click -> {
             if (click.isRightClick()) {

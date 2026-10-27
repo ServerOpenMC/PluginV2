@@ -30,7 +30,7 @@ public class CandyItem extends CustomItem {
     public @NonNull ItemStack getVanilla() {
         ItemStack item = new ItemStack(baseItem);
         item.editMeta(meta -> meta.itemName(
-                TranslationManager.translation("feature." + super.getId().replace(":", ".") + ".name")
+                TranslationManager.translation("itemsadder." + super.getId().replace(":", ".") + ".name")
         ));
         return item;
     }

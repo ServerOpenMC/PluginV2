@@ -1,13 +1,17 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners;
 
 import fr.openmc.core.commands.utils.SpawnManager;
-import fr.openmc.core.features.events.contents.halloween.festival.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floor;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
 import fr.openmc.core.registry.regions.CustomRegion;
 import fr.openmc.core.registry.regions.events.EntityCustomRegionEnterEvent;
+import fr.openmc.core.utils.text.messages.MessageType;
+import fr.openmc.core.utils.text.messages.MessagesManager;
+import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,15 +27,15 @@ public class TerrorHouseListener implements Listener {
 
         if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
 
-        player.teleport(SpawnManager.getSpawnLocation());
-        // TODO message
+        if (!HalloweenFestivalManager.isActive())
+            player.teleport(SpawnManager.getSpawnLocation());
     }
 
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
 
-        if (HalloweenManager.getHalloweenDB().isActive()) {
+        if (HalloweenFestivalManager.getHalloweenDB().isActive()) {
             if (event.getFrom().equals(DimensionGenerator.HALLOWEEN_WORLD))
                 TerrorHouseManager.getWitchHouseAmbient().reset(player);
 
@@ -42,7 +46,12 @@ public class TerrorHouseListener implements Listener {
 
             if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) {
                 player.teleport(SpawnManager.getSpawnLocation());
-                // TODO message
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("feature.events.halloween.festival.player_not_allow"),
+                        Prefix.HALLOWEEN,
+                        MessageType.INFO,
+                        true
+                );
             }
         }
     }
@@ -83,7 +92,12 @@ public class TerrorHouseListener implements Listener {
         if (TerrorHouseManager.useRegions.contains(region))
             if (entity instanceof Player player) {
                 TerrorHouseManager.repulsePlayer(region, player, 0.3);
-                // TODO message
+                MessagesManager.sendMessage(player,
+                        TranslationManager.translation("feature.events.halloween.festival.floor_lock"),
+                        Prefix.HALLOWEEN,
+                        MessageType.INFO,
+                        true
+                );
             }
     }
 }

@@ -3,6 +3,8 @@ package fr.openmc.core.features.events.contents.halloween.festival.witchhouse;
 import com.sk89q.worldedit.math.BlockVector3;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.PointRewards;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floor;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
@@ -54,7 +56,7 @@ public class TerrorHouseManager {
 
         // Floors
         enabledFloors = EnumUtils.getValuesBefore(currentFloorToReach, false);
-        finalFloorReach = currentFloorToReach.equals(FINAL_FLOOR);
+        finalFloorReach = currentFloorToReach.equals(FINAL_FLOOR) && currentFloorToReach.getRequire() >= globalAdvancement;
 
         for (Floors floors : Floors.values()) {
             Floor floor = floors.getFloor();
@@ -73,15 +75,13 @@ public class TerrorHouseManager {
 
         CheckForPointRewards();
 
-        if (currentFloorToReach.equals(FINAL_FLOOR))
+        if (finalFloorReach)
             return;
 
         if (currentFloorToReach.getRequire() > floorAdvancement)
             return;
 
         updateFloor();
-
-        //TODO broadcast
     }
 
     private static void CheckForPointRewards() {
@@ -96,14 +96,12 @@ public class TerrorHouseManager {
     }
 
     private static void updateFloor() {
+        if (finalFloorReach)
+            return;
+
         floorAdvancement -= currentFloorToReach.getRequire();
 
         enabledFloors.add(currentFloorToReach);
-
-        currentFloorToReach = EnumUtils.getValueAfter(currentFloorToReach);
-
-        if (currentFloorToReach == null)
-            return;
 
         Floor floor = currentFloorToReach.getFloor();
 
@@ -111,6 +109,36 @@ public class TerrorHouseManager {
             return;
 
         floor.setCanSpawn(true);
+
+        if (currentFloorToReach.equals(Floors.FLOOR_15)) {
+
+            finalFloorReach = true;
+
+            HalloweenFestivalManager.broadcast(
+                    TranslationManager.translation(
+                            "feature.events.halloween.festival.last_floor_unlock",
+                            Component.text(currentRewardToReach.getGlobalPointsRequire()),
+                            Component.text(globalAdvancement),
+                            Component.text(WitchShopManager.getHalloweenPointIcon())
+                    )
+            );
+
+            return;
+        }
+
+        currentFloorToReach = EnumUtils.getValueAfter(currentFloorToReach);
+
+        if (currentFloorToReach == null)
+            return;
+
+        HalloweenFestivalManager.broadcast(
+                TranslationManager.translation(
+                        "feature.events.halloween.festival.new_floor_unlock",
+                        Component.text(currentFloorToReach.getRequire()),
+                        Component.text(floorAdvancement),
+                        Component.text(WitchShopManager.getHalloweenPointIcon())
+                )
+        );
     }
 
     public static Floors getFloorFromAdvancement(int advancement) {
@@ -119,8 +147,6 @@ public class TerrorHouseManager {
         for (Floors floors : Floors.values()) {
             if (floors.getRequire() < advancement)
                 currentFloors = floors;
-            else if (floors.getRequire() == advancement)
-                return floors;
             else break;
         }
 

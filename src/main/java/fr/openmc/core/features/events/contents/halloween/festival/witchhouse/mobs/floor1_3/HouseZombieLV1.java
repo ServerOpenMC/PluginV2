@@ -1,6 +1,8 @@
 package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.floor1_3;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
+import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.RandomUtils;
@@ -18,12 +20,13 @@ public class HouseZombieLV1 extends CustomMob<Zombie> {
 
     public HouseZombieLV1(String id) {
         super(id,
-                TranslationManager.translation("feature.dailyevents.miraculousfishing.mob.ancient_villager"), //TODO
+                TranslationManager.translation("feature.events.halloween.festival.mob.zombie.name.0"),
                 Zombie.class,
                 100,
                 67,
                 List.of(
-                        new XpLoot(100, 150, 0.5) //TODO ajouté les bonbons
+                        new XpLoot(50, 75, 0.5),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.3, 1, 4)
                 )
         );
     }

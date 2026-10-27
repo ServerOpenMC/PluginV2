@@ -42,7 +42,7 @@ public class ConfirmBuyMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.adminshop.menu.confirm.name"); //TODO
+        return TranslationManager.translation("feature.adminshop.menu.confirm.name");
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ConfirmBuyMenu extends Menu {
 
         int quantityToStack = Math.max(0, quantity / 64);
 
-        List<Component> lore = TranslationManager.translationLore("feature.adminshop.menu.confirm.lore", //TODO
+        List<Component> lore = TranslationManager.translationLore("feature.events.halloween.festival.shop.confirm_lore",
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
                 quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
@@ -111,7 +111,7 @@ public class ConfirmBuyMenu extends Menu {
             if (event.getClick() == ClickType.MIDDLE) {
                 DialogInput.sendFloat(
                         getOwner(),
-                        TranslationManager.translation("feature.adminshop.menu.confirm.input"), //TODO
+                        TranslationManager.translation("feature.adminshop.menu.confirm.input"),
                         1,
                         maxQuantity,
                         quantity,
@@ -155,10 +155,10 @@ public class ConfirmBuyMenu extends Menu {
     private ItemMenuBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
         boolean plus = text.contains("+");
         return new ItemMenuBuilder(this, itemStack, meta ->
-            meta.displayName(TranslationManager.translation("feature.adminshop.menu.confirm.quantity", //TODO
+            meta.displayName(TranslationManager.translation("feature.adminshop.menu.confirm.quantity",
                     plus ?
-                            TranslationManager.translation("feature.adminshop.menu.confirm.add") : //TODO
-                    TranslationManager.translation("feature.adminshop.menu.confirm.remove"), //TODO
+                            TranslationManager.translation("feature.adminshop.menu.confirm.add") :
+                    TranslationManager.translation("feature.adminshop.menu.confirm.remove"),
                     Component.text(text.replace("+", "").replace("-", "")))
                     .color(plus ? NamedTextColor.GREEN : NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false)))

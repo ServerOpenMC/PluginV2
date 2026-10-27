@@ -118,8 +118,10 @@ public class WitchShopStoreMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.city.menus.chest.name",
-                Component.text(""), Component.text(this.page)); //TODO
+        return TranslationManager.translation(
+                "feature.events.halloween.festival.menu.store.name",
+                Component.text(this.page)
+        );
     }
 
     @Override

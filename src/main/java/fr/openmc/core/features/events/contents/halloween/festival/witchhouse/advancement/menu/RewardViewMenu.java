@@ -29,7 +29,7 @@ public class RewardViewMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.adminshop.menu.confirm.name");//TODO
+        return TranslationManager.translation("feature.events.halloween.festival.menu.reward");
     }
 
     @Override

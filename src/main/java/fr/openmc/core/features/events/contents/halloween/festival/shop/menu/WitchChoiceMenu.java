@@ -5,8 +5,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.DepositButton;
-import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.TerorHouseButton;
-import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.WitchStoreButton;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.TerrorHouseButton;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Sound;
@@ -31,7 +30,7 @@ public class WitchChoiceMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.city.menus.main.name"); //TODO
+        return TranslationManager.translation("feature.events.halloween.festival.menu.choice.name");
     }
 
     @Override
@@ -48,8 +47,7 @@ public class WitchChoiceMenu extends Menu {
     public @NotNull Map<Integer, ItemMenuBuilder> getContent() {
         Map<Integer, ItemMenuBuilder> inventory = new HashMap<>();
 
-        // ** Witch House Button
-        TerorHouseButton.init(this, inventory, WITCH_HOUSE_SLOT);
+        TerrorHouseButton.init(this, inventory, WITCH_HOUSE_SLOT);
 
         DepositButton.init(this, inventory, DEPOSIT_SLOTS);
 

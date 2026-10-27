@@ -35,6 +35,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
@@ -62,6 +63,7 @@ import fr.openmc.core.hooks.*;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.ItemsAddersListener;
+import fr.openmc.core.registry.structures.model.CustomStructureManager;
 import fr.openmc.core.utils.text.MotdUtils;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
@@ -118,7 +120,8 @@ public class OMCPlugin extends JavaPlugin {
             MailboxManager::new,
             DiscordLinkManager::new,
             ProfileManager::new,
-            () -> new fr.openmc.core.features.events.contents.halloween.festival.HalloweenManager(),
+            CustomStructureManager::new,
+            () -> new HalloweenFestivalManager(),
             () -> new ElevatorManager(),
             () -> new CorpseManager(),
             QuestsManager::new,

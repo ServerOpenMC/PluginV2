@@ -5,7 +5,6 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.ChoiceButton;
-import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.TerorHouseButton;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.buttons.WitchStoreButton;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -31,7 +30,7 @@ public class WitchShopMainMenu extends Menu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.city.menus.main.name"); //TODO
+        return TranslationManager.translation("feature.events.halloween.festival.menu.main.name");
     }
 
     @Override
@@ -50,7 +49,6 @@ public class WitchShopMainMenu extends Menu {
 
         ChoiceButton.init(this, inventory, WITCH_HOUSE_SLOTS);
 
-        // ** Witch Store Button
         WitchStoreButton.init(this, inventory, WITCH_SHOP_SLOTS);
 
         return inventory;

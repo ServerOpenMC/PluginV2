@@ -5,8 +5,6 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.WitchShopStoreMenu;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -21,10 +19,9 @@ public class WitchStoreButton {
                 contents,
                 slots,
                 new ItemMenuBuilder(menu, Material.PAPER, itemMeta -> {
-                    itemMeta.displayName(TranslationManager.translation("feature.city.menus.main.ranks.title")); //TODO
+                    itemMeta.displayName(TranslationManager.translation("feature.events.halloween.festival.button.store.name"));
                     itemMeta.lore(TranslationManager.translationLore(
-                            "feature.city.menus.main.ranks.lore.unlocked", //TODO
-                            Component.text("").color(NamedTextColor.LIGHT_PURPLE)
+                            "feature.events.halloween.festival.button.store.lore"
                     ));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
                 }).setOnClick(inventoryClickEvent -> {
