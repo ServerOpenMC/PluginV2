@@ -34,7 +34,7 @@ public class EnragedMobLootTable extends CustomLootTable {
                 new ItemLoot(Material.GOLDEN_APPLE,0.2, 1, 2),
                 new ItemLoot(Material.GOLD_BLOCK,0.16, 1),
                 new ItemLoot(ItemType.SPLASH_POTION.createItemStack(p ->
-                        p.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 5, 1), true)),0.13, 1),
+                        p.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 5, 1), true)), 0.13, 1),
                 new ItemLoot(ItemType.OMINOUS_BOTTLE.createItemStack(o ->
                         o.setAmplifier(4)),0.13, 1, 2),
                 new ItemLoot(Material.DIAMOND,0.1, 1, 2),
