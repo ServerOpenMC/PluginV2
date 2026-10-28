@@ -1,30 +1,30 @@
 {
   "enabled": true,
   "name": "Reves",
-  "description": "Endormez le monde pour ouvrir le monde des reves.",
+  "description": "J'irais au bout de mes rêves !",
   "dimensionName": "world_omc_dream_dream",
   "requireDimension": "world_the_end",
   "icon": "omc_dream:somnifere",
   "steps": [
     {
-      "name": "Sommeil collectif",
-      "description": "Accumulez des membranes de phantom pour tisser le voile du reve.",
+      "name": "Monstre insomniaque",
+      "description": "Tuer ceux qui vous empêche de dormir",
       "type": "ITEMS",
-      "required": 128,
+      "required": 16,
       "material": "PHANTOM_MEMBRANE",
       "cooldownSeconds": 86400
     },
     {
-      "name": "Noyau amethyste",
-      "description": "Rassemblez un maximum de noyau amethyste pour détecter la Singurlarité.",
+      "name": "Eclat rayonnant",
+      "description": "Les éclats pour réveiller le Cube",
       "type": "ITEMS",
       "required": 256,
       "material": "AMETHYST_SHARD",
       "cooldownSeconds": 43200
     },
     {
-      "name": "Bout de corruption",
-      "description": "Trouvez un nombre raisonnant de fragments de corruption pour stabiliser la dimension.",
+      "name": "Eclat de corruption",
+      "description": "Déclencher le pouvoir du Cube pour vous faire rever",
       "type": "ITEMS",
       "required": 32,
       "material": "ECHO_SHARD",
@@ -32,15 +32,15 @@
     },
     {
       "name": "Sculk endormi",
-      "description": "Calmez la matiere vivante avant qu'elle se propage trop vite",
+      "description": "Détruisez la matière de corruption sur votre monde",
       "type": "ITEMS",
-      "required": 2048,
+      "required": 10000,
       "material": "SCULK",
       "cooldownSeconds": 43200
     },
     {
       "name": "Collecte onirique",
-      "description": "Financez la stabilisation de la dimension des reves.",
+      "description": "Financez la stabilisation de la dimension des rêves.",
       "type": "MONEY",
       "required": 50000,
       "material": "GOLD_INGOT",

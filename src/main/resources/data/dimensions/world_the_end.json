@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "name": "End",
-  "description": "Touvrez la route de l'End.",
+  "description": "Vers les étoiles",
   "dimensionName": "world_the_end",
   "requireDimension": "world_nether",
   "icon": "END_PORTAL_FRAME",
@@ -15,26 +15,18 @@
       "cooldownSeconds": 86400
     },
     {
-      "name": "Perles du seuil",
-      "description": "Accumulez les perles necessaires a la recherche du portail.",
+      "name": "Puissance du nether",
+      "description": "Montrez que vous êtes légitime à rentrer dans l'End.",
       "type": "ITEMS",
-      "required": 192,
-      "material": "ENDER_PEARL",
-      "cooldownSeconds": 43200
-    },
-    {
-      "name": "Souffle de blaze",
-      "description": "Broyez la puissance du Nether pour activer les yeux.",
-      "type": "ITEMS",
-      "required": 96,
-      "material": "BLAZE_ROD",
+      "required": 3,
+      "material": "NETHER_STAR",
       "cooldownSeconds": 43200
     },
     {
       "name": "Portail chargé",
       "description": "Chargez le portail avec les cristaux de l'End.",
       "type": "ITEMS",
-      "required": 16,
+      "required": 8,
       "material": "END_CRYSTAL",
       "cooldownSeconds": 86400
     },
