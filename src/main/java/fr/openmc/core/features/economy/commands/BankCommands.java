@@ -39,7 +39,7 @@ public class BankCommands {
             OMCPlayer player,
             @Named("montant") String input
     ) {
-        if (player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
+        if (!player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
             player.message().sendError(
                     TranslationManager.translation(
                             "feature.economy.bank.command.not_unlocked",
@@ -59,7 +59,7 @@ public class BankCommands {
             OMCPlayer player,
             @Named("montant") String input
     ) {
-        if (player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
+        if (!player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
             player.message().sendError(
                     TranslationManager.translation(
                             "feature.economy.bank.command.not_unlocked",
@@ -75,7 +75,7 @@ public class BankCommands {
 
     @Subcommand({"balance", "bal"})
     void withdraw(OMCPlayer player) {
-        if (player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
+        if (!player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
             player.message().sendError(
                     TranslationManager.translation(
                             "feature.economy.bank.command.not_unlocked",
