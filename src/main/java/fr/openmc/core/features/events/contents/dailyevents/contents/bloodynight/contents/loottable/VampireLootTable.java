@@ -32,7 +32,7 @@ public class VampireLootTable extends CustomLootTable {
                 new ItemLoot(ItemType.OMINOUS_BOTTLE.createItemStack(
                         o -> o.setAmplifier(4)),0.7, 1),
                 new ItemLoot(ItemType.SPLASH_POTION.createItemStack(p ->
-                        p.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 5, 1), true)),0.7, 1, 3),
+                        p.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 5, 1), true)), 0.7, 1, 3),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.VAMPIRE_HEAD, 0.5, 1),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ENCHANTS.VAMPIRISM.getEnchantedBookItem(1, 2),
