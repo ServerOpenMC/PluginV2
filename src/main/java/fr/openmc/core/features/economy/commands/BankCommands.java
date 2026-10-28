@@ -19,7 +19,7 @@ public class BankCommands {
     @CommandPlaceholder()
     @Description("Ouvre le menu de votre banque personelle")
     public static void openBankMenu(OMCPlayer player) {
-        if (player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
+        if (!player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
             player.message().sendError(
                     TranslationManager.translation(
                             "feature.economy.bank.command.not_unlocked",
@@ -81,6 +81,7 @@ public class BankCommands {
                             "feature.economy.bank.command.not_unlocked",
                             Component.text(FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK)).color(NamedTextColor.YELLOW)
                     ), Prefix.CITY);
+            return;
         }
 
         double balance = BankManager.getBankBalance(player.getUniqueId());
