@@ -12,12 +12,16 @@ import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class TerrorHouseListener implements Listener {
 
@@ -85,6 +89,26 @@ public class TerrorHouseListener implements Listener {
 
         if (floor.canSpawn) {
             floor.spawnMob();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
+        Material item = event.getMaterial();
+
+        if (item == Material.ENDER_PEARL || item == Material.CHORUS_FRUIT) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerToggleGlide(EntityToggleGlideEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+
+        if (event.isGliding()) {
+            event.setCancelled(true);
         }
     }
 
