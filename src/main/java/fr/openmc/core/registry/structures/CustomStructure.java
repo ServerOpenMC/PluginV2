@@ -171,7 +171,7 @@ public class CustomStructure {
             return readNbt(file);
         }
 
-        ClipboardFormat format = ClipboardFormats.findByPath(file.toPath());
+        ClipboardFormat format = ClipboardFormats.findByFile(file);
         if (format == null) {
             throw new IOException("Unsupported structure format: " + file.getName());
         }

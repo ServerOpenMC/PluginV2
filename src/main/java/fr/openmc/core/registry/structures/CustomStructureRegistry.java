@@ -1,27 +1,21 @@
 package fr.openmc.core.registry.structures;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.hooks.WorldEditHook;
-import fr.openmc.core.utils.FilesUtils;
 
 import java.io.File;
+
+import static fr.openmc.core.registry.structures.model.CustomStructureManager.STRUCTURE_FOLDER;
 
 public class CustomStructureRegistry extends Registry<String, CustomStructure>
         implements KeyedRegistry<String, CustomStructure>, LoadIfEnable<WorldEditHook> {
 
-    private static final File STRUCTURE_FOLDER =
-            new File(OMCPlugin.getInstance().getDataFolder(), "data/omc_structure");
-
     public static final String STRUCTURE_KEY = "omc_structure";
 
     public final CustomStructure WITCH_SHOP = register("test", "pillar.nbt");
-
-    public CustomStructureRegistry() {
-        FilesUtils.createDirectoryIfNotExists(STRUCTURE_FOLDER);
-    }
+    public final CustomStructure TERROR_HOUSE = register("terror house", "Terrorhouse.schem");
 
     @Override
     public String key(CustomStructure structure) {
@@ -29,7 +23,6 @@ public class CustomStructureRegistry extends Registry<String, CustomStructure>
     }
 
     public CustomStructure register(String name, String fileName) {
-        FilesUtils.createDirectoryIfNotExists(STRUCTURE_FOLDER);
         return register(name, new File(STRUCTURE_FOLDER, fileName));
     }
 
