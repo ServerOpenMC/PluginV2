@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-//todo
 @Getter
 public class PlaceBlocksChallenge extends ChallengeAnimation {
     private final KeyBlock keyBlock;
