@@ -10,6 +10,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.Restart;
+import fr.openmc.core.features.city.menu.CityChestMenu;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopItem;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
@@ -23,6 +24,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -90,7 +92,10 @@ public class WitchShopStoreMenu extends PaginatedMenu {
         if (hasPreviousPage()) {
             map.put(45, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_BACK_ORANGE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("messages.menus.previous_page"));
-            }).setPreviousPageButton());
+            }).setOnClick(inventoryClickEvent -> {
+                if (hasPreviousPage())
+                    new WitchShopStoreMenu(getOwner(), this.getPage() - 1).open();
+            }));
         }
 
         map.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_CANCEL, itemMeta -> {
@@ -102,7 +107,10 @@ public class WitchShopStoreMenu extends PaginatedMenu {
         if (hasNextPage()) {
             map.put(53, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_NEXT_ORANGE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("messages.menus.next_page"));
-            }).setNextPageButton());
+            }).setOnClick(inventoryClickEvent -> {
+                if (hasNextPage())
+                    new WitchShopStoreMenu(getOwner(), this.getPage() + 1).open();
+            }));
         }
 
         return map;

@@ -5,7 +5,6 @@ import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floor;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.chests.LootChestManager;
 import fr.openmc.core.registry.regions.CustomRegion;
@@ -20,6 +19,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -39,12 +39,8 @@ public class TerrorHouseListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
-
-        if (!HalloweenFestivalManager.isActive())
+        if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
             player.teleport(SpawnManager.getSpawnLocation());
-        else
-            TerrorHouseManager.getWitchHouseAmbient().apply(player);
     }
 
     @EventHandler
@@ -93,13 +89,17 @@ public class TerrorHouseListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
 
+        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            return;
+
         if (block != null && block.getType().equals(Material.CHEST)) {
             LootChestManager.openChestAt(block.getLocation(), event.getPlayer());
             event.setCancelled(true);
             return;
         }
 
-        if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getHand() != EquipmentSlot.HAND)
+            return;
 
         Material item = event.getMaterial();
 
@@ -113,6 +113,15 @@ public class TerrorHouseListener implements Listener {
                     false
             );
         }
+    }
+
+    @EventHandler
+    public void onPlayerBreakBlock(BlockBreakEvent event) {
+        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            return;
+
+        if (!event.getPlayer().isOp())
+            event.setCancelled(true);
     }
 
     @EventHandler

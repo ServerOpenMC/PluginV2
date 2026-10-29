@@ -63,6 +63,7 @@ items:
       material: PAPER
     lore:
       - <lang:itemsadder.omc_halloween.candy.lore.1>
+    components_nbt_file: "nbt/candy_brown_nbt.json" # marche pas j'ai pas la volonté de chercher
     consumable:
       nutrition: 1
       saturation: 0.6
@@ -93,44 +94,55 @@ items:
             y: 0.8
             z: 0.8
 
-#recipes:
-#  iaa_crafting_table:
-#    fermentum:
-#      shapeless: true
-#      ingredients:
-#        - item: omc_daily_events:golden_wheat
-#          amount: 5
-#        - item: omc_daily_events:golden_beetroot
-#          amount: 5
-#        - item: omc_daily_events:really_golden_carrot
-#          amount: 5
-#        - item: omc_daily_events:golden_potato
-#          amount: 5
-#        - item: omc_daily_events:golden_melon
-#          amount: 5
-#        - item: omc_daily_events:golden_pumpkin
-#          amount: 5
-#      result:
-#        item: omc_daily_events:fermentum
-#
-#    blessed_bread:
-#      enabled: true
-#      pattern:
-#        - FFF
-#        - XXX
-#        - XXX
-#      pattern_2:
-#        - XXX
-#        - FFF
-#        - XXX
-#      pattern_3:
-#        - XXX
-#        - XXX
-#        - FFF
-#      ingredients:
-#        F:
-#          item: omc_daily_events:golden_wheat
-#          amount: 192
-#      result:
-#        item: omc_daily_events:blessed_bread
-#        amount: 1
+recipes:
+  crafting_table:
+    candy_red:
+      enabled: true
+      pattern:
+        - BRB
+        - RBR
+        - BRB
+      ingredients:
+        R: RED_DYE
+        B: omc_halloween:candy_blue
+      result:
+        item: omc_halloween:candy_red
+        amount: 1
+    candy_blue:
+      enabled: true
+      pattern:
+        - GBG
+        - BGB
+        - GBG
+      ingredients:
+        G: omc_halloween:candy_green
+        B: BLUE_DYE
+      result:
+        item: omc_halloween:candy_blue
+        amount: 1
+    candy_green:
+      enabled: true
+      pattern:
+        - MGM
+        - GMG
+        - MGM
+      ingredients:
+        M: omc_halloween:candy_brown
+        G: LIME_DYE
+      result:
+        item: omc_halloween:candy_green
+        amount: 1
+    candy_brown:
+      enabled: true
+      pattern:
+        - BSR
+        - SES
+        - RSB
+      ingredients:
+        B: BONE
+        R: ROTTEN_FLESH
+        S: SUGAR
+        E: SPIDER_EYE
+      result:
+        item: omc_halloween:candy_brown
+        amount: 3

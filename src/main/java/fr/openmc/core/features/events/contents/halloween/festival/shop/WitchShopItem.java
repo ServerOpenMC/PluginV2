@@ -26,6 +26,10 @@ public class WitchShopItem {
         this(advancements, item, name, ShopMoney.MONSTER_CANDY, price);
     }
 
+    public WitchShopItem(Floors advancements, CustomItem item, ShopMoney moneyItem, int price) {
+        this(advancements, item, item.getBest().effectiveName(), moneyItem, price);
+    }
+
     public WitchShopItem(Floors advancements, CustomItem item, int price) {
         this(advancements, item, item.getBest().effectiveName(), price);
     }

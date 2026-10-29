@@ -1,12 +1,14 @@
 package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.hard;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Witch;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.List;
 
@@ -32,5 +34,11 @@ public class HouseWitchLV3 extends CustomMob<Witch> {
     @Override
     public Witch spawn(Location spawnLocation) {
         return getPreBuildMob(spawnLocation);
+    }
+
+    @Override
+    public void onDeath(CustomMob<?> thisMob, EntityDeathEvent event) {
+        if (TerrorHouseManager.entityCount > 0)
+            TerrorHouseManager.entityCount -= 1;
     }
 }

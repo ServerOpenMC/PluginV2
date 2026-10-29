@@ -55,8 +55,8 @@ public class TerrorHouseManager {
         currentRewardToReach = getRewardFromAdvancement(globalAdvancement);
 
         // Floors
-        enabledFloors = EnumUtils.getValuesBefore(currentFloorToReach, false);
-        finalFloorReach = currentFloorToReach.equals(FINAL_FLOOR) && currentFloorToReach.getRequire() >= globalAdvancement;
+        finalFloorReach = currentFloorToReach.equals(FINAL_FLOOR);
+        enabledFloors = EnumUtils.getValuesBefore(currentFloorToReach, finalFloorReach);
 
         for (Floors floors : Floors.values()) {
             Floor floor = floors.getFloor();

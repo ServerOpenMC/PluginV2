@@ -198,7 +198,7 @@ public class ConfirmBuyMenu extends Menu {
         double buyPrice = shopItem.getPrice();
         if (buyPrice <= 0) return freePlaces;
 
-        double balance = ItemUtils.countItems(player, shopItem.getItem().getBest());
+        double balance = ItemUtils.countItems(player, shopItem.getShopMoney().getItem().getBest());
         int affordable = (int) Math.floor(balance / buyPrice);
 
         return Math.min(freePlaces, affordable);

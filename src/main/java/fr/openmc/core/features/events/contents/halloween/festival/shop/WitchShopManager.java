@@ -68,7 +68,7 @@ public class WitchShopManager {
     }
 
     private static int getWitchStorePages() {
-        return (int) Math.ceil((double) witchStoreItems.size() / SLOT_FACTOR);
+        return paginateWitchStoreItems.size();
     }
 
     public static void buyItem(Player player, WitchShopItem item, int amount) {
@@ -88,6 +88,8 @@ public class WitchShopManager {
         if (ItemUtils.hasEnoughItems(player, item.getShopMoney().getItem().getBest(), totalPrice)) {
 
             ItemUtils.giveItem((OMCPlayer) player, item.getItem().getBest(), amount);
+
+            ItemUtils.removeItemsFromPlayerInventory(player, item.getShopMoney().getItem().getBest(), totalPrice);
 
             sendInfo(player, TranslationManager.translation(
                     "feature.events.halloween.festival.shop.player_buy_item",
@@ -208,18 +210,53 @@ public class WitchShopManager {
         }
     }
 
-    //TODO mettre les vrais items
     private static LinkedHashSet<WitchShopItem> getWitchStoreItems() {
         LinkedHashSet<WitchShopItem> items = new LinkedHashSet<>();
 
-        items.add(new WitchShopItem(
-                Floors.FLOOR_1, OMCRegistry.CUSTOM_ITEMS.AYWENITE, 10));
+        items.add(new WitchShopItem(Floors.FLOOR_1, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_CANDLE, 10));
+        items.add(new WitchShopItem(Floors.FLOOR_1, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_PUMPKIN, 10));
 
-        items.add(new WitchShopItem(
-                Floors.FLOOR_2, OMCRegistry.CUSTOM_ITEMS.KEBAB, 10));
+        items.add(new WitchShopItem(Floors.FLOOR_2, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_PUMPKIN_1, 15));
+        items.add(new WitchShopItem(Floors.FLOOR_2, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_WOOD_CROSS, 15));
 
-        items.add(new WitchShopItem(
-                Floors.FLOOR_2, OMCRegistry.CUSTOM_ITEMS.NETHERITE_HAMMER, 1000));
+        items.add(new WitchShopItem(Floors.FLOOR_3, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_SKULL_JAR, 20));
+        items.add(new WitchShopItem(Floors.FLOOR_3, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_TOMBE_1, 20));
+
+        items.add(new WitchShopItem(Floors.FLOOR_4, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_PUMPKIN_2, 25));
+        items.add(new WitchShopItem(Floors.FLOOR_4, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_CAULDRON, 25));
+
+        items.add(new WitchShopItem(Floors.FLOOR_5, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_SPIDER_IN_JAR, ShopMoney.GREEN_CANDY, 5));
+
+        items.add(new WitchShopItem(Floors.FLOOR_6, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_ROSE_IN_GLASS, ShopMoney.GREEN_CANDY, 10));
+
+        items.add(new WitchShopItem(Floors.FLOOR_7, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_PICTURE, ShopMoney.GREEN_CANDY, 10));
+        items.add(new WitchShopItem(Floors.FLOOR_7, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_TOMBE_2, ShopMoney.GREEN_CANDY, 10));
+
+        items.add(new WitchShopItem(Floors.FLOOR_8, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_PUMPKIN_3, ShopMoney.BLUE_CANDY, 5));
+        items.add(new WitchShopItem(Floors.FLOOR_8, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_COFFIN_OPEN, ShopMoney.BLUE_CANDY, 5));
+
+        items.add(new WitchShopItem(Floors.FLOOR_9, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_WALL_LAMP, ShopMoney.BLUE_CANDY, 5));
+        items.add(new WitchShopItem(Floors.FLOOR_9, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_TOILE_2, ShopMoney.BLUE_CANDY, 5));
+
+        items.add(new WitchShopItem(Floors.FLOOR_10, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_WITCH_POT, ShopMoney.BLUE_CANDY, 10));
+        items.add(new WitchShopItem(Floors.FLOOR_10, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_PUMPKIN_HAT, ShopMoney.BLUE_CANDY, 10));
+
+        items.add(new WitchShopItem(Floors.FLOOR_11, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_SCARECROW, 10));
+
+        items.add(new WitchShopItem(Floors.FLOOR_12, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_TOMB_STONE_1, ShopMoney.RED_CANDY, 2));
+
+        items.add(new WitchShopItem(Floors.FLOOR_13, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_SKULL_SUN_FLOWER, ShopMoney.RED_CANDY, 2));
+
+        items.add(new WitchShopItem(Floors.FLOOR_14, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_TOMB_STONE_2, ShopMoney.RED_CANDY, 2));
+        items.add(new WitchShopItem(Floors.FLOOR_14, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_COFFIN_CLOSE, ShopMoney.RED_CANDY, 2));
+
+        items.add(new WitchShopItem(Floors.FLOOR_15, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_TRICK_OR_TREAT_BOWL, ShopMoney.RED_CANDY, 3));
+        items.add(new WitchShopItem(Floors.FLOOR_15, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_BROOM, ShopMoney.RED_CANDY, 3));
+        items.add(new WitchShopItem(Floors.FLOOR_15, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_CELLING_LAMP, ShopMoney.RED_CANDY, 3));
+        items.add(new WitchShopItem(Floors.FLOOR_15, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_MR_THING, ShopMoney.RED_CANDY, 4));
+        items.add(new WitchShopItem(Floors.FLOOR_15, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_PUMPKIN_4, ShopMoney.RED_CANDY, 4));
+        items.add(new WitchShopItem(Floors.FLOOR_15, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_DECORATION_V1_SMILE_FLAG, ShopMoney.RED_CANDY, 4));
+        items.add(new WitchShopItem(Floors.FLOOR_15, OMCRegistry.CUSTOM_ITEMS.HALLOWEEN_PACK_TOILE_1, ShopMoney.RED_CANDY, 4));
 
         return items;
     }

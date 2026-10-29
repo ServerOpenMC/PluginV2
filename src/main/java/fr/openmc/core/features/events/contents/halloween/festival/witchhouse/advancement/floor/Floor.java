@@ -12,10 +12,14 @@ import fr.openmc.core.utils.world.LocationUtils;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class Floor {
@@ -25,9 +29,11 @@ public class Floor {
     private final List<BlockVector3> spawnLocations;
     private final int entityToSpawn;
 
-    private final int RADIUS = 5;
+    private final int RADIUS = 3;
 
+    private final List<Entity> clearLag = new ArrayList<>();
     private BukkitTask spawnTask;
+    private int timeTask = 0;
 
     public Floor(SquareRegion region, List<CustomMobEntry> entities, int entityToSpawn, List<BlockVector3> spawnLocations) {
         this.region = region;
@@ -36,24 +42,33 @@ public class Floor {
         this.spawnLocations = spawnLocations;
     }
 
-    //TODO marche pas a fix
-
     public void enableSpawn() {
+
         spawnTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
+
+            timeTask += 30;
+
+            if (timeTask>=300) // 5 minutes
+                clearLag();
 
             if (entities.isEmpty()) {
                 OMCLogger.warn("No mob register for the spawn mob, spawn disable for this floor");
+                clearLag();
                 spawnTask.cancel();
                 return;
             }
 
             if (spawnLocations.isEmpty()) {
                 OMCLogger.warn("No spawn location register for the spawn mob, spawn disable for this floor");
+                clearLag();
                 spawnTask.cancel();
                 return;
             }
 
             CustomMobEntry mobToSpawn = RandomUtils.getRandomObjectFromList(entities);
+
+            if (mobToSpawn == null)
+                return;
 
             if (!hasPlayer())
                 return;
@@ -63,24 +78,34 @@ public class Floor {
 
             int toSpawn = RandomUtils.randomBetween(1, entityToSpawn);
 
-            for (int i = 0; i < toSpawn; i++) {
-                mobToSpawn.spawn(getRandomSafeLocationInRegion());
-                OMCLogger.info("debug : spawn mob " + i);
-            }
+            for (int i = 0; i < toSpawn; i++)
+                clearLag.add(mobToSpawn.spawn(getRandomLocation()));
 
             TerrorHouseManager.entityCount += toSpawn;
-        }, 0L, 5L * 20L);
+        }, 0L, 15 * 20L);
     }
 
-    public Location getRandomSafeLocationInRegion() {
+    private void clearLag() {
+        for (Entity entity : clearLag)
+            entity.remove();
+        clearLag.clear();
+    }
 
-        return LocationUtils.randomLocation(
+    public Location getRandomLocation() {
+
+        BlockVector3 pos = RandomUtils.getRandomObjectFromList(spawnLocations);
+
+        Location newloc = LocationUtils.randomLocation(
                 LocationUtils.fromVector(
                         DimensionGenerator.HALLOWEEN_WORLD,
-                        RandomUtils.getRandomObjectFromList(spawnLocations)
+                        pos
                 ),
                 RADIUS
         );
+
+        newloc.setY(pos.y());
+
+        return newloc;
     }
 
     public boolean hasPlayer() {

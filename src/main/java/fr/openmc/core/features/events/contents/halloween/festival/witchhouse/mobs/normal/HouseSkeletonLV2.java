@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.normal;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.XpLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
@@ -8,6 +9,7 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Skeleton;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -38,5 +40,11 @@ public class HouseSkeletonLV2 extends CustomMob<Skeleton> {
         skeleton.getEquipment().setItemInMainHand(new ItemStack(Material.BOW));
 
         return skeleton;
+    }
+
+    @Override
+    public void onDeath(CustomMob<?> thisMob, EntityDeathEvent event) {
+        if (TerrorHouseManager.entityCount > 0)
+            TerrorHouseManager.entityCount -= 1;
     }
 }
