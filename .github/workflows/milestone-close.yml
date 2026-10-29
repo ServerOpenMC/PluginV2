@@ -7,7 +7,7 @@ on:
 jobs:
   build-release:
     name: Release
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - name: Verify Milestone Name
         run: |
@@ -17,7 +17,7 @@ jobs:
             exit 1
           fi
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: useblacksmith/checkout@v1
 
       - name: Set up JDK 25
         uses: actions/setup-java@v4
