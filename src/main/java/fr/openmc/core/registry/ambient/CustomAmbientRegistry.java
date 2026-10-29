@@ -12,6 +12,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharves
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.ambient.BlessedAmbient;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
 import fr.openmc.core.registry.ambient.contents.HellAmbient;
+import fr.openmc.core.registry.ambient.contents.OpenAmbient;
 import fr.openmc.core.registry.ambient.listeners.AmbientFixedTimeListener;
 import fr.openmc.core.registry.ambient.listeners.AmbientWeatherListener;
 import fr.openmc.core.registry.ambient.listeners.BiomesOnChunkLoad;
@@ -34,6 +35,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
     // ** REGISTER AMBIENT **
     public final CustomAmbient DARK = register(new DarkAmbient());
     public final CustomAmbient HELL = register(new HellAmbient());
+    public final CustomAmbient OPEN = register(new OpenAmbient());
     public final CustomAmbient GOLDEN = register(new GoldenAmbient());
     public final CustomAmbient BLOODY = register(new BloodyAmbient());
     public final CustomAmbient BLESSED = register(new BlessedAmbient());
