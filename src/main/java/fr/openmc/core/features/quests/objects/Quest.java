@@ -16,11 +16,15 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.title.Title;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -653,7 +657,15 @@ public class Quest {
     private Component formattedQuestComponent(Component initial, String target, String s) {
         Component result = initial;
         if (result instanceof TranslatableComponent translatable) {
-            result = translatable.arguments(Component.text(target), Component.text(s));
+            List<TranslationArgument> argument = translatable.arguments();
+
+            List<Component> components = new ArrayList<>();
+            for (TranslationArgument arg : argument) {
+                components.add(arg.asComponent());
+            }
+            components.addAll(List.of(Component.text(target), Component.text(s)));
+
+            result = translatable.arguments(components);
         }
         return result.replaceText(b -> {
             b.matchLiteral("[target]");
