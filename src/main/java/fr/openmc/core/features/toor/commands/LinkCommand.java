@@ -41,14 +41,14 @@ public class LinkCommand {
         } else {
             Component codeComponent = Component.text(code)
                     .color(NamedTextColor.GOLD)
-                    .decorate(TextDecoration.BOLD)
-                    .clickEvent(ClickEvent.copyToClipboard("/openmc link code:" + code))
-                    .hoverEvent(HoverEvent.showText(
-                            TranslationManager.translation("feature.discord.code.hover")
-                    ));
+                    .decorate(TextDecoration.BOLD);
 
             MessagesManager.sendMessage(player,
-                    TranslationManager.translation("feature.discord.code", codeComponent),
+                    TranslationManager.translation("feature.discord.code", codeComponent
+                                    .clickEvent(ClickEvent.copyToClipboard("/openmc link code:" + code))
+                                    .hoverEvent(HoverEvent.showText(
+                                            TranslationManager.translation("feature.discord.code.hover")
+                                    ))),
                     Prefix.OPENMC, MessageType.INFO, true);
         }
     }
