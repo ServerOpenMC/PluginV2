@@ -39,7 +39,7 @@ public class TerrorHouseListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
+        if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
             player.teleport(SpawnManager.getSpawnLocation());
     }
 
@@ -103,7 +103,7 @@ public class TerrorHouseListener implements Listener {
 
         Material item = event.getMaterial();
 
-        if (item == Material.ENDER_PEARL || item == Material.CHORUS_FRUIT) {
+        if (item == Material.ENDER_PEARL || item == Material.CHORUS_FRUIT || item == Material.WIND_CHARGE) {
             event.setCancelled(true);
             MessagesManager.sendMessage(
                     event.getPlayer(),
