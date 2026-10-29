@@ -57,6 +57,21 @@ public class LootChestManager {
 
     private List<LootChest> getChests() {
         return List.of(
+
+                new LootChest(15 * 60, BlockVector3.at(-58, -59, -67)),
+                new LootChest(15 * 60, BlockVector3.at(-50, -59, -75)),
+                new LootChest(15 * 60, BlockVector3.at(-58, -51, -63)),
+                new LootChest(15 * 60, BlockVector3.at(-47, -50, -62)),
+                new LootChest(15 * 60, BlockVector3.at(-63, -43, -46)),
+                new LootChest(15 * 60, BlockVector3.at(-67, -35, -70)),
+                new LootChest(15 * 60, BlockVector3.at(-81, -34, -46)),
+                new LootChest(15 * 60, BlockVector3.at(-43, -35, -48)),
+                new LootChest(15 * 60, BlockVector3.at(-63, -27, -90)),
+                new LootChest(15 * 60, BlockVector3.at(-43, -19, -76)),
+                new LootChest(15 * 60, BlockVector3.at(-77, -19, -80)),
+                new LootChest(15 * 60, BlockVector3.at(-65, -11, -67)),
+                new LootChest(15 * 60, BlockVector3.at(-46, -2, -70)),
+                new LootChest(15 * 60, BlockVector3.at(-56, -3, -57)),
                 new LootChest(15 * 60, BlockVector3.at(-41, 21, -71)),
                 new LootChest(15 * 60, BlockVector3.at(-39, 15, -62)),
                 new LootChest(15 * 60, BlockVector3.at(-38, 5, -64)),
@@ -64,8 +79,14 @@ public class LootChestManager {
                 new LootChest(15 * 60, BlockVector3.at(-78, 30, -56)),
                 new LootChest(15 * 60, BlockVector3.at(-40, 37, -66)),
                 new LootChest(15 * 60, BlockVector3.at(-60, 40, -81)),
-                new LootChest(15 * 60, BlockVector3.at(-58, -59, -67)),
-                new LootChest(15 * 60, BlockVector3.at(-50, -59, -75))
+                new LootChest(15 * 60, BlockVector3.at(-53, 45, -78)),
+                new LootChest(15 * 60, BlockVector3.at(-68, 45, -61)),
+                new LootChest(15 * 60, BlockVector3.at(-60, 55, -70)),
+                new LootChest(15 * 60, BlockVector3.at(-56, 55, -76)),
+                new LootChest(15 * 60, BlockVector3.at(-58, 55, -62)),
+                new LootChest(10 * 60, BlockVector3.at(-44, 54, -72)),
+                new LootChest(10 * 60, BlockVector3.at(-49, 54, -62)),
+                new LootChest(5 * 60, BlockVector3.at(-63, 56, -75))
         );
     }
 

@@ -52,14 +52,14 @@ public class Floor {
                 clearLag();
 
             if (entities.isEmpty()) {
-                OMCLogger.warn("No mob register for the spawn mob, spawn disable for this floor");
+                //OMCLogger.warn("No mob register for the spawn mob, spawn disable for this floor");
                 clearLag();
                 spawnTask.cancel();
                 return;
             }
 
             if (spawnLocations.isEmpty()) {
-                OMCLogger.warn("No spawn location register for the spawn mob, spawn disable for this floor");
+                //OMCLogger.warn("No spawn location register for the spawn mob, spawn disable for this floor");
                 clearLag();
                 spawnTask.cancel();
                 return;

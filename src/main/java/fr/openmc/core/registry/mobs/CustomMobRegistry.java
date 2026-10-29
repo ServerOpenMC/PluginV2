@@ -157,6 +157,11 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry>
             HouseSkeletonLV2::new
     ));
 
+    public final CustomMobEntry HOUSE_MOSSY_SKELETON_LV2 = register(new CustomMobEntry(
+            "omc_witch_house:house_mossy_skeleton_lv2",
+            HouseMossySkeletonLV2::new
+    ));
+
     public final CustomMobEntry HOUSE_SPIDER_LV2 = register(new CustomMobEntry(
             "omc_witch_house:house_spider_lv2",
             HouseSpiderLV2::new

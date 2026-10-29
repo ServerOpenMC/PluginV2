@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.ad
 
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.reward.PointReward;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -41,7 +42,7 @@ public class HalloweenRoot2026 implements PointReward {
                 OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
                 if (offlinePlayer == null) {
-                    //TODO problème
+                    OMCLogger.error("no offline player for " + uuid);
                     continue;
                 }
 
