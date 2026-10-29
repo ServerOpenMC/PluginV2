@@ -7,52 +7,52 @@ on:
 jobs:
   build-release:
     name: Release
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    timeout-minutes: 20
+    env:
+      # Passed through the environment instead of being pasted into the shell script.
+      MILESTONE_TITLE: ${{ github.event.milestone.title }}
     steps:
       - name: Verify Milestone Name
         run: |
-          if [[ ! "${{ github.event.milestone.title }}" =~ ^[a-zA-Z0-9_\.\-]+$ ]]; then
-            echo "Name '${{ github.event.milestone.title }}' is not valid"
+          if [[ ! "$MILESTONE_TITLE" =~ ^[a-zA-Z0-9_\.\-]+$ ]]; then
+            echo "Name '$MILESTONE_TITLE' is not valid"
             echo "It should only contain letters (a-z & A-Z), numbers (0-9), periods (.), dashes (-) and underscores (_)"
             exit 1
           fi
+
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: useblacksmith/checkout@v1
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: '25'
           distribution: 'temurin'
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
       - name: Build with Gradle
         run: |
-          VERSION=$(echo ${{ github.event.milestone.title }} | tr "." "_")
+          VERSION=$(echo "$MILESTONE_TITLE" | tr "." "_")
           ./gradlew shadowJar
           cp ./builds/OpenMC.jar ./builds/OpenMC-$VERSION.jar
         env:
           TAG: ${{ github.event.milestone.title }}
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: OpenMC-${{ github.event.milestone.title }}
-          path: builds/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.RELEASE_TOKEN }}
           tag_name: ${{ github.event.milestone.title }}
-          name: Release milestone ${{ github.event.milestone.title }} 
+          name: Release milestone ${{ github.event.milestone.title }}
           generate_release_notes: true
           fail_on_unmatched_files: true
           make_latest: true
           body: |
             # Mise à jour ${{ github.event.milestone.title }}
-            
+
             ${{ github.event.milestone.description }}
           files: builds/**
 
