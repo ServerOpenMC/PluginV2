@@ -1,4 +1,4 @@
-package fr.openmc.core.utils;
+package fr.openmc.core.utils.file;
 
 import fr.openmc.core.OMCBootstrap;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
@@ -9,10 +9,7 @@ import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.jar.JarEntry;
@@ -240,7 +237,31 @@ public class FilesUtils {
      * @throws IOException Si une erreur survient lors de la copie
      */
     public static void copyResourceFolder(String sourcePath, File destDir) throws IOException {
-        copyResourceFolder(sourcePath, destDir, null);
+        copyResourceFolder(sourcePath, destDir, null, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    /**
+     * Copie un dossier depuis les ressources vers le système de fichiers
+     *
+     * @param sourcePath Chemin dans les ressources (ex: "contents/omc_items")
+     * @param destDir Dossier destination
+     * @param copyOption L'option de copiage
+     * @throws IOException Si une erreur survient lors de la copie
+     */
+    public static void copyResourceFolder(String sourcePath, File destDir, CopyOption copyOption) throws IOException {
+        copyResourceFolder(sourcePath, destDir, null, copyOption);
+    }
+
+    /**
+     * Copie un dossier depuis les ressources vers le système de fichiers
+     *
+     * @param sourcePath Chemin dans les ressources (ex: "contents/omc_items")
+     * @param destDir Dossier destination
+     * @param textTransformer transformeur appliqué aux fichiers texte (peut être null).
+     * @throws IOException Si une erreur survient lors de la copie
+     */
+    public static void copyResourceFolder(String sourcePath, File destDir, Function<String, String> textTransformer) throws IOException {
+        copyResourceFolder(sourcePath, destDir, textTransformer, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**
@@ -249,10 +270,12 @@ public class FilesUtils {
      * @param sourcePath Chemin dans les ressources (ex: "contents/omc_items").
      * @param destDir Dossier destination.
      * @param textTransformer transformeur appliqué aux fichiers texte (peut être null).
+     * @param copyOption L'option de copiage
      * @throws IOException Si une erreur survient lors de la copie.
      */
     public static void copyResourceFolder(String sourcePath, File destDir,
-                                          Function<String, String> textTransformer) throws IOException {
+                                          Function<String, String> textTransformer,
+                                          CopyOption copyOption) throws IOException {
         try {
             Enumeration<URL> resources = CLASS_LOADER.getResources(sourcePath);
 
@@ -278,7 +301,14 @@ public class FilesUtils {
                                                     }
                                                 }
 
-                                                Files.copy(sourceFile, destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                                                if (copyOption == CustomCopyOption.SKIP_EXISTING
+                                                        && Files.exists(destFile.toPath())) return;
+
+                                                Files.copy(sourceFile, destFile.toPath(),
+                                                        copyOption instanceof CustomCopyOption ?
+                                                                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                                                                : copyOption
+                                                        );
                                                 if (textTransformer != null) {
                                                     transformTextFile(destFile, textTransformer);
                                                 }
@@ -319,9 +349,17 @@ public class FilesUtils {
                                         }
                                     }
 
+                                    if (copyOption == CustomCopyOption.SKIP_EXISTING
+                                            && Files.exists(destFile.toPath())) {
+                                        continue;
+                                    }
+
                                     // * Copie le fichier
                                     try (InputStream in = jar.getInputStream(entry)) {
-                                        Files.copy(in, destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                                        Files.copy(in, destFile.toPath(), copyOption instanceof CustomCopyOption ?
+                                                java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                                                : copyOption
+                                        );
                                         if (textTransformer != null) {
                                             transformTextFile(destFile, textTransformer);
                                         }

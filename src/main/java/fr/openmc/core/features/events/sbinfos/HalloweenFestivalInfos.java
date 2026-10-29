@@ -9,16 +9,14 @@ import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.adv
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
 import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
-import java.time.DayOfWeek;
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.text;
@@ -33,12 +31,9 @@ public class HalloweenFestivalInfos implements InfoSwapper {
     @Override
     public void addInfosTo(Player player, List<Component> lines) {
 
-        lines.add(MiniMessage.miniMessage().deserialize(
-                "<gradient:#F82C5D:#F64545><title></gradient>",
-                Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title", true))
-        ).decoration(TextDecoration.BOLD, true)); //TODO
+        lines.add(Prefix.HALLOWEEN.getPrefix().decoration(TextDecoration.BOLD, true));
 
-        PointRewards reward = TerrorHouseManager.currentRewardToReach.getNextReward();
+        PointRewards reward = TerrorHouseManager.currentRewardToReach;
         Floors floorToReach = TerrorHouseManager.currentFloorToReach;
 
         double globalAdvancement = TerrorHouseManager.globalAdvancement;
@@ -46,11 +41,11 @@ public class HalloweenFestivalInfos implements InfoSwapper {
 
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(reward.equals(PointRewards.NULL)
-                                ? TranslationManager.translation("",
+                                ? TranslationManager.translation("feature.events.halloween.festival.sb.info.0",
                                 text(EconomyManager.getFormattedSimplifiedNumber(globalAdvancement))
                         )
 
-                                : TranslationManager.translation("",
+                                : TranslationManager.translation("feature.events.halloween.festival.sb.info.1",
                                 text(EconomyManager.getFormattedSimplifiedNumber(globalAdvancement)),
                                 text(EconomyManager.getFormattedSimplifiedNumber(reward.getGlobalPointsRequire()))
                         )
@@ -60,12 +55,13 @@ public class HalloweenFestivalInfos implements InfoSwapper {
 
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(TerrorHouseManager.finalFloorReach
-                        ? TranslationManager.translation("last floor reached")//TODO
-                        : TranslationManager.translation("goal {étage} : xx / xx",//TODO
+                        ? TranslationManager.translation("feature.events.halloween.festival.sb.info.2")
+                        : TranslationManager.translation("feature.events.halloween.festival.sb.info.3",
                         text(floorToReach.getSimplifyFloor()),
                         text(EconomyManager.getFormattedSimplifiedNumber(floorAdvancement)),
-                        text(EconomyManager.getFormattedSimplifiedNumber(floorToReach.getRequire())))
-                )
+                        text(EconomyManager.getFormattedSimplifiedNumber(floorToReach.getRequire())),
+                        text(WitchShopManager.getHalloweenPointIcon())
+                ))
         );
 
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)

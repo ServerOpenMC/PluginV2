@@ -38,7 +38,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
     public final CustomAmbient GOLDEN = register(new GoldenAmbient());
     public final CustomAmbient BLOODY = register(new BloodyAmbient());
     public final CustomAmbient BLESSED = register(new BlessedAmbient());
-    public final CustomAmbient WITCH_HOUSE = register(new TerrorHouseAmbient());
+    public final CustomAmbient TERROR_HOUSE = register(new TerrorHouseAmbient());
 
     @Override
     public Set<ListenerFactory> getListeners() {

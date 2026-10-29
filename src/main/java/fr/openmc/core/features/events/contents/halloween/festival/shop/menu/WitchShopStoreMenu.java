@@ -8,9 +8,11 @@ import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopItem;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -31,9 +33,6 @@ public class WitchShopStoreMenu extends PaginatedMenu {
 
     @Getter
     private final int page;
-
-    private final Column.Range LINE = new Column.Range(1, 7);
-    private final int COLUMN = 4;
 
     public WitchShopStoreMenu(Player owner, int page) {
         super(owner);
@@ -68,23 +67,16 @@ public class WitchShopStoreMenu extends PaginatedMenu {
 
         List<ItemStack> items = new ArrayList<>();
 
-        Iterator<WitchShopItem> contents = WitchShopManager.getStoreContent(this.page).iterator();
+        Set<WitchShopItem> contents = WitchShopManager.getStoreContent(this.page);
 
-        for (int c = 0; c < COLUMN; c++) {
-            for (int l = LINE.floor(); l <= LINE.ceiling(); l++) {
-
-                if (!contents.hasNext()) break;
-
-                WitchShopItem item = contents.next();
-
-                items.add(new ItemMenuBuilder(this, item.getItem(), itemMeta -> {
-                    itemMeta.displayName(item.getName());
-                    itemMeta.lore(WitchShopManager.extractLoreForItem(item));
-                }).setOnClick(event -> {
-                    new ConfirmBuyMenu(getOwner(), item);
-                }));
-            }
-        }
+        for (WitchShopItem item : contents)
+            items.add(new ItemMenuBuilder(this, item.getItem(), itemMeta -> {
+                itemMeta.displayName(item.getName());
+                itemMeta.lore(WitchShopManager.extractLoreForItem(item));
+            }).setOnClick(event -> {
+                if (TerrorHouseManager.enabledFloors.contains(item.getAdvancements()))
+                    new ConfirmBuyMenu(getOwner(), item).open();
+            }));
 
         return items;
     }

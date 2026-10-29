@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.shop.menu;
 
+import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
@@ -28,6 +29,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class ConfirmBuyMenu extends Menu {
+
+    //TODO template ConfirmItemMenu
 
     private final WitchShopItem shopItem;
     private int quantity;
@@ -70,18 +73,19 @@ public class ConfirmBuyMenu extends Menu {
 
         int quantityToStack = Math.max(0, quantity / 64);
 
+        //TODO il bug aaaaaaaaaaaaaaa
         List<Component> lore = TranslationManager.translationLore("feature.events.halloween.festival.shop.confirm_lore",
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
                 quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
                 Component.text(AdminShopManager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
                 shopItem.getShopMoney().getItem().getSprite(),
+                Component.text(AdminShopManager.priceFormat.format(scorePerUnit), NamedTextColor.GREEN),
+                Component.text(WitchShopManager.getHalloweenPointIcon()),
                 Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
                 shopItem.getShopMoney().getItem().getSprite(),
-                Component.text(AdminShopManager.priceFormat.format(scorePerUnit) +
-                        WitchShopManager.getHalloweenPointIcon(), NamedTextColor.GREEN),
-                Component.text(AdminShopManager.priceFormat.format(totalScore) +
-                        WitchShopManager.getHalloweenPointIcon(), NamedTextColor.GREEN)
+                Component.text(AdminShopManager.priceFormat.format(totalScore), NamedTextColor.GREEN),
+                Component.text(WitchShopManager.getHalloweenPointIcon())
         );
 
         content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));
@@ -105,7 +109,7 @@ public class ConfirmBuyMenu extends Menu {
         }));
 
         content.put(13, new ItemMenuBuilder(this, shopItem.getItem(), meta -> {
-            meta.displayName(shopItem.getName().color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
+            meta.displayName(shopItem.getName());
             meta.lore(lore);
         }).setOnClick(event -> {
             if (event.getClick() == ClickType.MIDDLE) {
@@ -199,7 +203,6 @@ public class ConfirmBuyMenu extends Menu {
 
         return Math.min(freePlaces, affordable);
     }
-
 
     @Override
     public void onClose(InventoryCloseEvent event) {

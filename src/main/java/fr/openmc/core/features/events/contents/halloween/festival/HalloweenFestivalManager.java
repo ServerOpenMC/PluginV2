@@ -13,19 +13,26 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.*;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.events.contents.halloween.festival.commands.HalloweenFestivalCommands;
 import fr.openmc.core.features.events.contents.halloween.festival.listeners.TerrorHouseListener;
 import fr.openmc.core.features.events.contents.halloween.festival.npc.WitchNPCS;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.features.events.contents.halloween.festival.listeners.CandyListener;
 import fr.openmc.core.features.events.contents.halloween.festival.model.HalloweenDB;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.chests.LootChestManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.hooks.WorldEditHook;
+import fr.openmc.core.registry.structures.model.CustomStructureManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.core.UUIDUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -37,7 +44,7 @@ import java.util.concurrent.ExecutionException;
 
 public class HalloweenFestivalManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
 
-    //TODO quand acheter truc dans shop, augmenté avancement bonbons pour débloqué les étages, quand tous les étages débloqué, faire obtenir des récompenses a tous les joueurs ayant contribué
+    //TODO quand acheter truc dans shop
 
     @Getter
     private static HalloweenDB halloweenDB;
@@ -47,18 +54,21 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
     @Getter
     private static Set<UUID> participant;
 
-    private static final String EVENT_GROUP = "halloween_festival_event";
+    public static final String EVENT_GROUP = "halloween_festival_event";
     private static final UUID EVENT_UUID = UUIDUtil.createOfflinePlayerUUID(EVENT_GROUP);
+    private static final UUID TERROR_HOUSE_UUID = UUIDUtil.createOfflinePlayerUUID("halloween_terror_house");
 
     @Override
     public void init() {
         halloweenDB = loadEvent();
         participant = halloweenDB.getParticipants();
+        DimensionGenerator.init();
         WitchShopManager.init();
         TerrorHouseManager.init(
                 halloweenDB.getGlobalAdvancement(),
                 halloweenDB.getFloorAdvancement()
         );
+        new LootChestManager();
     }
 
     @Override
@@ -107,12 +117,28 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
             return;
 
         DynamicCooldownManager.use(EVENT_UUID, EVENT_GROUP, duration);
+        halloweenDB.setActive(true);
+        broadcast(TranslationManager.translation(
+                "feature.events.halloween.festival.start_message",
+                Component.text(2026).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD)
+        ));
     }
 
     public static void stopEvent() {
         if (!DynamicCooldownManager.isReady(EVENT_UUID, EVENT_GROUP)) {
             DynamicCooldownManager.clear(EVENT_UUID, EVENT_GROUP, false);
         }
+        halloweenDB.setActive(false);
+        broadcast(TranslationManager.translation(
+                "feature.events.halloween.festival.end_message",
+                Component.text(2026).color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD)
+        ));
+    }
+
+    public static void forceStopEvent() {
+        DynamicCooldownManager.clear(EVENT_UUID, EVENT_GROUP, false);
+        halloweenDB.setActive(false);
+        broadcast(TranslationManager.translation("feature.events.halloween.festival.end_message", Component.text(2026)));
     }
 
     public static boolean hasStart() {
@@ -165,6 +191,33 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
         }
     }
 
+    public static void placeTerrorHouse() {
+
+        try {
+            if (CustomStructureManager.existsPlacement(TERROR_HOUSE_UUID))
+                return;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            OMCRegistry.CUSTOM_STRUCTURES.TERROR_HOUSE.place(
+                    TERROR_HOUSE_UUID,
+                    new Location(DimensionGenerator.HALLOWEEN_WORLD, 0, 0, 0)
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void removeTerrorHouse() {
+        try {
+            OMCRegistry.CUSTOM_STRUCTURES.TERROR_HOUSE.remove(TERROR_HOUSE_UUID);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
@@ -177,7 +230,7 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-
+                new HalloweenFestivalCommands()
         );
     }
 }

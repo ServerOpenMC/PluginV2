@@ -6,6 +6,7 @@ import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.data.property.NpcVisibility;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.WitchShopMainMenu;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import org.bukkit.Bukkit;
@@ -73,6 +74,9 @@ public class WitchNPCS implements Listener {
     @EventHandler
     public void onNPCInteract(NpcInteractEvent event) {
         if (!event.getNpc().getData().getName().startsWith("witch-")) return;
+
+        if (!HalloweenFestivalManager.isActive())
+            return;
 
         Player player = event.getPlayer();
 

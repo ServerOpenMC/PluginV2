@@ -1,17 +1,19 @@
 package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor;
 
+import com.sk89q.worldedit.math.BlockVector3;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.registry.mobs.CustomMobEntry;
 import fr.openmc.core.registry.regions.preset.SquareRegion;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.world.LocationUtils;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 
@@ -20,135 +22,71 @@ public class Floor {
 
     private final SquareRegion region;
     private final List<CustomMobEntry> entities;
+    private final List<BlockVector3> spawnLocations;
     private final int entityToSpawn;
-    private final double radius;
 
-    @Setter
-    public boolean canSpawn;
+    private final int RADIUS = 5;
 
-    public Floor(SquareRegion region, List<CustomMobEntry> entities, double radius, int entityToSpawn) {
-        this(region, entities, entityToSpawn, radius, false);
-    }
+    private BukkitTask spawnTask;
 
-    public Floor(SquareRegion region, List<CustomMobEntry> entities, int entityToSpawn, double radius, boolean canSpawn) {
+    public Floor(SquareRegion region, List<CustomMobEntry> entities, int entityToSpawn, List<BlockVector3> spawnLocations) {
         this.region = region;
         this.entities = entities;
         this.entityToSpawn = entityToSpawn;
-        this.radius = radius;
-        this.canSpawn = canSpawn;
+        this.spawnLocations = spawnLocations;
     }
 
-    public void reloadMobSpawn() {
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            canSpawn = true;
-        },RandomUtils.randomBetween(60, 120) * 20L);
-    }
+    //TODO marche pas a fix
 
-    public void spawnMob() {
+    public void enableSpawn() {
+        spawnTask = Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
 
-        canSpawn = false;
+            if (entities.isEmpty()) {
+                OMCLogger.warn("No mob register for the spawn mob, spawn disable for this floor");
+                spawnTask.cancel();
+                return;
+            }
 
-        long time = 0;
+            if (spawnLocations.isEmpty()) {
+                OMCLogger.warn("No spawn location register for the spawn mob, spawn disable for this floor");
+                spawnTask.cancel();
+                return;
+            }
 
-        spawn();
+            CustomMobEntry mobToSpawn = RandomUtils.getRandomObjectFromList(entities);
 
-        for (int n = 0; n < entityToSpawn - 1; n++) {
-            time += RandomUtils.randomBetween(2, 7) + n;
-            Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::spawn, time * 20L);
-            TerrorHouseManager.entityCount++;
+            if (!hasPlayer())
+                return;
 
             if (TerrorHouseManager.limitPassed())
-                break;
-        }
+                return;
 
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::reloadMobSpawn, time * 20L);
-    }
+            int toSpawn = RandomUtils.randomBetween(1, entityToSpawn);
 
-    private void spawn() {
-
-        Location spawnLoc = getRandomPosFromPlayer(
-                getRandomPlayerInRegion()
-        );
-
-        new BukkitRunnable() {
-            private int maxPoints = 30; //gives the amount of time the mob takes to spawn, there it's 30*2 = 60 ticks = 3 seconds
-            private int points = 1;
-
-            @Override
-            public void run() {
-                spawnCircle(spawnLoc, 0.8, points);
-
-                points++;
-
-                if (points >= maxPoints) {
-                    cancel();
-
-                    CustomMobEntry selectEntity = RandomUtils.getRandomObjectFromList(entities);
-
-                   selectEntity.spawn(spawnLoc);
-                }
+            for (int i = 0; i < toSpawn; i++) {
+                mobToSpawn.spawn(getRandomSafeLocationInRegion());
+                OMCLogger.info("debug : spawn mob " + i);
             }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 2L);
+
+            TerrorHouseManager.entityCount += toSpawn;
+        }, 0L, 5L * 20L);
     }
 
-    public Player getRandomPlayerInRegion() {
-        return RandomUtils.getRandomObjectFromList(
-                OMCPlugin.getInstance().getServer()
-                        .getOnlinePlayers()
-                        .stream()
-                        .filter(p -> region.contains(p.getLocation()))
-                        .toList()
+    public Location getRandomSafeLocationInRegion() {
+
+        return LocationUtils.randomLocation(
+                LocationUtils.fromVector(
+                        DimensionGenerator.HALLOWEEN_WORLD,
+                        RandomUtils.getRandomObjectFromList(spawnLocations)
+                ),
+                RADIUS
         );
     }
 
-    public Location getRandomPosFromPlayer(Player player) {
-        return LocationUtils.getSafeNearbySurface(LocationUtils.randomLocation(
-                new Location(
-                        player.getWorld(),
-                        player.getX(),
-                        getFloorPos(player),
-                        player.getZ()
-                ),
-                radius
-        ), (int) radius);
-    }
-
-    public int getFloorPos(Player player) {
-        Block block = player.getLocation().getBlock();
-        if (player.isFlying() || player.isFlying()) {
-            int minY = region.getMin().y();
-
-            while (block.getY() >= minY && block.getType().isAir())
-                block = block.getRelative(0, -1, 0);
-        }
-        return block.getY() + 1;
-    }
-
-    public static void spawnCircle(Location center, double radius, int points) {
-        World world = center.getWorld();
-        if (world == null) return;
-
-        for (int i = 0; i < points; i++) {
-            double angle = 2 * Math.PI * i / points;
-
-            double x = center.getX() + radius * Math.cos(angle);
-            double z = center.getZ() + radius * Math.sin(angle);
-
-            Location particleLocation = new Location(
-                    world,
-                    x,
-                    center.getY() + 0.05,
-                    z
-            );
-
-            world.spawnParticle(
-                    Particle.DUST,
-                    particleLocation,
-                    1,
-                    0, 0, 0,
-                    0,
-                    new Particle.DustOptions(Color.RED, 1.0f)
-            );
-        }
+    public boolean hasPlayer() {
+        return DimensionGenerator.HALLOWEEN_WORLD.getPlayers()
+                .stream()
+                .filter(p -> region.contains(p.getLocation()))
+                .findAny().orElse(null) != null;
     }
 }

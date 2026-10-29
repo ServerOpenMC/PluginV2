@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.regions;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
@@ -20,6 +21,6 @@ public abstract class CustomRegion {
         if (getWorld() == null) return false;
         if (!loc.getWorld().getName().equals(getWorld().getName())) return false;
 
-        return contains(BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()));
+        return contains(BukkitAdapter.asBlockVector(loc));
     }
 }

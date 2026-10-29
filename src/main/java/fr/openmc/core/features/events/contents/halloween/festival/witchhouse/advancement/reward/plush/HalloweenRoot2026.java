@@ -63,6 +63,6 @@ public class HalloweenRoot2026 implements PointReward {
 
     @Override
     public List<Component> getRewardLore() {
-        return List.of(TranslationManager.translation("itemsadder.omc_halloween.root_plush.lore.0"));
+        return TranslationManager.translationLore("itemsadder.omc_halloween.root_plush.lore.0");
     }
 }

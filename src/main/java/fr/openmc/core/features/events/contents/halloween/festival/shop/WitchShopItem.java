@@ -27,7 +27,7 @@ public class WitchShopItem {
     }
 
     public WitchShopItem(Floors advancements, CustomItem item, int price) {
-        this(advancements, item, item.getBest().displayName(), price);
+        this(advancements, item, item.getBest().effectiveName(), price);
     }
 
     public Component getName() {

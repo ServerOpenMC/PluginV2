@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.halloween.festival.witchhouse;
 
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.World;
@@ -21,9 +22,9 @@ public class DimensionGenerator {
         if (!HALLOWEEN_WORLD.getName().equals(DIMENSION_NAME)) return;
 
         // ** SPAWNING RULES **
-        HALLOWEEN_WORLD.setSpawnLimit(SpawnCategory.MONSTER, 10);
+        HALLOWEEN_WORLD.setSpawnLimit(SpawnCategory.MONSTER, 55);
         HALLOWEEN_WORLD.setSpawnLimit(SpawnCategory.AMBIENT, 10);
-        HALLOWEEN_WORLD.setSpawnLimit(SpawnCategory.ANIMAL, 6);
+        HALLOWEEN_WORLD.setSpawnLimit(SpawnCategory.ANIMAL, 0);
 
         HALLOWEEN_WORLD.setTicksPerSpawns(SpawnCategory.MONSTER, 30);
         HALLOWEEN_WORLD.setTicksPerSpawns(SpawnCategory.AMBIENT, 15);
@@ -39,12 +40,17 @@ public class DimensionGenerator {
         HALLOWEEN_WORLD.setGameRule(GameRules.NATURAL_HEALTH_REGENERATION, false);
         HALLOWEEN_WORLD.setGameRule(GameRules.LOCATOR_BAR, false);
         HALLOWEEN_WORLD.setGameRule(GameRules.ALLOW_ENTERING_NETHER_USING_PORTALS, false);
+        HALLOWEEN_WORLD.setGameRule(GameRules.SPAWN_MONSTERS, false);
+        HALLOWEEN_WORLD.setGameRule(GameRules.SPAWN_MOBS, false);
+        HALLOWEEN_WORLD.setGameRule(GameRules.RANDOM_TICK_SPEED, 0);
 
         // ** SET WORLD BORDER AND TIME **
         HALLOWEEN_WORLD.getWorldBorder().setSize(500);
         HALLOWEEN_WORLD.setTime(14000);
         HALLOWEEN_WORLD.setThundering(true);
         HALLOWEEN_WORLD.setStorm(true);
+
+        HalloweenFestivalManager.placeTerrorHouse();
 
         OMCLogger.infoFormatted("Dimension de la Maison de la Sorcière setup (gamerules, worldborder, time)");
     }

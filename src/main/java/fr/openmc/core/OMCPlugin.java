@@ -36,7 +36,7 @@ import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
-import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
+//import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
@@ -112,7 +112,7 @@ public class OMCPlugin extends JavaPlugin {
             AdminShopManager::new,
             HelpConfigManager::new,
             () -> new AnimationsManager(),
-            () -> new HalloweenManager(),
+//            () -> new HalloweenManager(), pas cette année mon vieux
             QuestProgressSaveManager::new,
             MotdUtils::new,
             MascotsManager::new,

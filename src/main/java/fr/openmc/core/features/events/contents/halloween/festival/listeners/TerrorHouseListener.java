@@ -1,11 +1,13 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners;
 
+import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floor;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.chests.LootChestManager;
 import fr.openmc.core.registry.regions.CustomRegion;
 import fr.openmc.core.registry.regions.events.EntityCustomRegionEnterEvent;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -13,6 +15,7 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,6 +29,13 @@ import org.bukkit.inventory.EquipmentSlot;
 public class TerrorHouseListener implements Listener {
 
     @EventHandler
+    public void onEventEnd(CooldownEndEvent event) {
+        if (!event.getGroup().equals(HalloweenFestivalManager.EVENT_GROUP)) return;
+
+        HalloweenFestivalManager.stopEvent();
+    }
+
+    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
@@ -33,6 +43,8 @@ public class TerrorHouseListener implements Listener {
 
         if (!HalloweenFestivalManager.isActive())
             player.teleport(SpawnManager.getSpawnLocation());
+        else
+            TerrorHouseManager.getWitchHouseAmbient().apply(player);
     }
 
     @EventHandler
@@ -73,49 +85,56 @@ public class TerrorHouseListener implements Listener {
                 .filter(floor -> floor.getFloor().getRegion().equals(region))
                 .findAny().orElse(null);
 
-        if (floors == null) {
+        if (floors == null)
             checkAndRepulse(region, entity);
-            return;
-        }
-
-        Floor floor = floors.getFloor();
-
-        if (floor == null) {
-            checkAndRepulse(region, entity);
-            return;
-        }
-
-        if (TerrorHouseManager.limitPassed()) return;
-
-        if (floor.canSpawn) {
-            floor.spawnMob();
-        }
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        Block block = event.getClickedBlock();
+
+        if (block != null && block.getType().equals(Material.CHEST)) {
+            LootChestManager.openChestAt(block.getLocation(), event.getPlayer());
+            event.setCancelled(true);
+            return;
+        }
+
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Material item = event.getMaterial();
 
         if (item == Material.ENDER_PEARL || item == Material.CHORUS_FRUIT) {
             event.setCancelled(true);
+            MessagesManager.sendMessage(
+                    event.getPlayer(),
+                    TranslationManager.translation("feature.events.halloween.festival.player_not_allow"),
+                    Prefix.HALLOWEEN,
+                    MessageType.INFO,
+                    false
+            );
         }
     }
 
     @EventHandler
     public void onPlayerToggleGlide(EntityToggleGlideEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
+        if (!(event.getEntity() instanceof Player player)) return;
 
         if (event.isGliding()) {
             event.setCancelled(true);
+            MessagesManager.sendMessage(
+                    player,
+                    TranslationManager.translation("feature.events.halloween.festival.player_not_allow"),
+                    Prefix.HALLOWEEN,
+                    MessageType.INFO,
+                    false
+            );
         }
     }
 
     private void checkAndRepulse(CustomRegion region, Entity entity) {
         if (TerrorHouseManager.useRegions.contains(region))
             if (entity instanceof Player player) {
-                TerrorHouseManager.repulsePlayer(region, player, 0.3);
+                TerrorHouseManager.repulsePlayer(region, player, -2);
                 MessagesManager.sendMessage(player,
                         TranslationManager.translation("feature.events.halloween.festival.floor_lock"),
                         Prefix.HALLOWEEN,

@@ -43,7 +43,7 @@ public class TerrorHouseManager {
     public static final int MAX_ENTITY = 225; // 15 entities * 15 floors
 
     @Getter
-    public static CustomAmbient witchHouseAmbient = OMCRegistry.CUSTOM_AMBIENTS.WITCH_HOUSE;
+    public static CustomAmbient witchHouseAmbient = OMCRegistry.CUSTOM_AMBIENTS.TERROR_HOUSE;
 
     public static void init(int gAdvancement, int fAdvancement) {
         // Advancement
@@ -60,14 +60,17 @@ public class TerrorHouseManager {
 
         for (Floors floors : Floors.values()) {
             Floor floor = floors.getFloor();
-            if (floor == null) continue;
+            if (floor == null)
+                continue;
+
+            if (enabledFloors.contains(floors))
+                floor.enableSpawn();
+
             CustomRegion region = floor.getRegion();
             if (region != null)
                 useRegions.add(region);
         }
     }
-
-    // --- Advancement / Floor Part --- //
 
     public static void updateAdvancement(int increase) {
         globalAdvancement += increase;
@@ -108,7 +111,7 @@ public class TerrorHouseManager {
         if (floor == null)
             return;
 
-        floor.setCanSpawn(true);
+        floor.enableSpawn();
 
         if (currentFloorToReach.equals(Floors.FLOOR_15)) {
 
@@ -131,18 +134,23 @@ public class TerrorHouseManager {
         if (currentFloorToReach == null)
             return;
 
-        HalloweenFestivalManager.broadcast(
-                TranslationManager.translation(
-                        "feature.events.halloween.festival.new_floor_unlock",
-                        Component.text(currentFloorToReach.getRequire()),
-                        Component.text(floorAdvancement),
-                        Component.text(WitchShopManager.getHalloweenPointIcon())
-                )
-        );
+        if (floorAdvancement >= currentFloorToReach.getRequire())
+            updateFloor();
+
+        else
+            HalloweenFestivalManager.broadcast(
+                    TranslationManager.translation(
+                            "feature.events.halloween.festival.new_floor_unlock",
+                            Component.text(currentFloorToReach.getRequire()),
+                            Component.text(floorAdvancement),
+                            Component.text(WitchShopManager.getHalloweenPointIcon())
+                    )
+            );
+
     }
 
     public static Floors getFloorFromAdvancement(int advancement) {
-        Floors currentFloors = Floors.FLOOR_1;
+        Floors currentFloors = Floors.FLOOR_2;
 
         for (Floors floors : Floors.values()) {
             if (floors.getRequire() < advancement)
@@ -180,10 +188,6 @@ public class TerrorHouseManager {
         repulsePlayer(center, entity, force);
     }
 
-    public static void repulsePlayer(Entity entity, double force) {
-        repulsePlayer(entity.getLocation(), entity, force);
-    }
-
     public static void repulsePlayer(Location source, Entity entity, double force) {
         Location playerLocation = entity.getLocation();
 
@@ -195,16 +199,23 @@ public class TerrorHouseManager {
         Vector knockback = playerLocation.toVector()
                 .subtract(source.toVector());
 
+        knockback.setY(0);
+
         if (knockback.lengthSquared() < 1.0E-6) {
-            knockback = playerLocation.getDirection();
+            knockback = playerLocation.getDirection().setY(0);
+        }
+
+        if (knockback.lengthSquared() < 1.0E-6) {
+            knockback = new Vector(1, 0, 0);
         }
 
         knockback.normalize().multiply(force);
 
+        knockback.setY(-0.15);
+
         entity.setVelocity(knockback);
     }
 
-    // --- Entity part --- //
     public static boolean limitPassed() {
         return entityCount >= MAX_ENTITY;
     }

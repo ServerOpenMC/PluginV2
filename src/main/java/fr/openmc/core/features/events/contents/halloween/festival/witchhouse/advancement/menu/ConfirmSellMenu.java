@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 public class ConfirmSellMenu extends Menu {
 
     // Copy of the ConfirmMenu from the AdminShop //
+    //TODO template ConfirmItemMenu
 
     private final ShopMoney shopItem;
     private int quantity;
@@ -40,7 +41,7 @@ public class ConfirmSellMenu extends Menu {
         super(owner);
         this.shopItem = shopItem;
         this.quantity = 1;
-        this.maxQuantity = countPlayerCandies();
+        this.maxQuantity = ItemUtils.countItems(getOwner(), shopItem.getItem().getBest());
     }
 
     @Override
@@ -188,34 +189,12 @@ public class ConfirmSellMenu extends Menu {
     }
 
     /**
-     * Counts the number of items of a specific material in a player's inventory.
-     *
-     * @return The count of items of the specified material in the player's inventory.
-     */
-    private int countPlayerCandies() {
-        int amount = 0;
-
-        for (ItemStack item : getOwner().getInventory().getContents()) {
-            if (item == null) continue;
-
-            CustomStack customStack = CustomStack.byItemStack(item);
-            if (customStack == null) continue;
-
-            if (customStack.getNamespacedID().equals(
-                    shopItem.getItem().getCustomStack().getNamespacedID()))
-                amount += item.getAmount();
-        }
-
-        return amount;
-    }
-
-    /**
      * Increases the quantity by the specified amount, ensuring it does not exceed the maximum allowed quantity.
      *
      * @param amount The amount to increase the quantity by.
      */
     private void increaseQuantity(int amount) {
-        int playerItemCount = countPlayerCandies();
+        int playerItemCount = ItemUtils.countItems(getOwner(), shopItem.getItem().getBest());
         quantity = Math.min(quantity + amount, playerItemCount);
         this.open();
     }
