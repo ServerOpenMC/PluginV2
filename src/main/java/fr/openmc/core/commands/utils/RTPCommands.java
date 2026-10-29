@@ -13,6 +13,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -66,12 +67,11 @@ public class RTPCommands {
     }
 
     private void rtpPlayer(Player player, int tries) {
+        World world = player.getWorld();
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            int[] coords = generateRandomCoords();
+            int[] coords = generateRandomCoords(world);
             int chunkX = coords[0] >> 4;
             int chunkZ = coords[1] >> 4;
-
-            World world = player.getWorld();
 
             world.getChunkAtAsync(chunkX, chunkZ).thenAccept(_ -> {
                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
@@ -101,12 +101,20 @@ public class RTPCommands {
         });
     }
 
-    private int[] generateRandomCoords() {
+    private int[] generateRandomCoords(World world) {
+        WorldBorder border = world.getWorldBorder();
+        Location center = border.getCenter();
+
+        int borderRadius = (int) (border.getSize() / 2) - 1;
+        int effectiveMax = Math.min(maxRadius, borderRadius);
+        int effectiveMin = Math.min(minRadius, effectiveMax);
+
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int radius = random.nextInt(minRadius, maxRadius + 1);
+        int radius = random.nextInt(effectiveMin, effectiveMax + 1);
         double angle = random.nextDouble() * 2 * Math.PI;
-        int x = (int) (Math.cos(angle) * radius);
-        int z = (int) (Math.sin(angle) * radius);
+
+        int x = center.getBlockX() + (int) (Math.cos(angle) * radius);
+        int z = center.getBlockZ() + (int) (Math.sin(angle) * radius);
         return new int[]{x, z};
     }
 
