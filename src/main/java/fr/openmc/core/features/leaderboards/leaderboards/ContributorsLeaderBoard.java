@@ -30,8 +30,13 @@ public class ContributorsLeaderBoard extends LeaderBoard {
     public Component createComponent() {
         GitHubHook.fetchContributorStats();
         List<Map.Entry<String, ContributorStats>> stats = new ArrayList<>();
-        GitHubHook.getContributors().values().forEach(login -> stats.add(new AbstractMap.SimpleEntry<>(login, GitHubHook.getStats(login))));
-        stats.sort((stat1, stat2) -> Integer.compare(stat2.getValue().getBrutLines(), stat1.getValue().getBrutLines()));
+        GitHubHook.getContributors().values().forEach(login -> {
+            ContributorStats contributorStats = GitHubHook.getStats(login);
+            if (contributorStats == null) return;
+            stats.add(new AbstractMap.SimpleEntry<>(login, contributorStats));
+        });
+        stats.sort((stat1, stat2) ->
+                Integer.compare(stat2.getValue().getBrutLines(), stat1.getValue().getBrutLines()));
         if (stats.isEmpty())
             return TranslationManager.translation("feature.leaderboards.empty.contributors")
                     .color(NamedTextColor.RED);
