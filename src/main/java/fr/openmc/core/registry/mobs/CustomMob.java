@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.mobs;
 
+import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -13,7 +14,10 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 public abstract class CustomMob<T extends LivingEntity> {
@@ -21,7 +25,7 @@ public abstract class CustomMob<T extends LivingEntity> {
     private final Component name;
     private final Class<T> entityClass;
     private final Set<CustomMobAttribute> baseAttributes = new HashSet<>();
-    private final List<CustomLoot> loots = new ArrayList<>();
+    private CustomLootTable lootTable = null;
 
     public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, CustomMobAttribute... baseAttributes) {
         this.id = id;
@@ -42,6 +46,27 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
     }
 
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, double speed, CustomLootTable lootTable, CustomMobAttribute... baseAttributes) {
+        this.id = id;
+        this.name = name;
+        this.entityClass = entityClass;
+        this.baseAttributes.add(new CustomMobAttribute(Attribute.MAX_HEALTH, health));
+        this.baseAttributes.add(new CustomMobAttribute(Attribute.ATTACK_DAMAGE, damage));
+        this.baseAttributes.add(new CustomMobAttribute(Attribute.MOVEMENT_SPEED, speed));
+        this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
+        this.lootTable = lootTable;
+    }
+
+    public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, CustomLootTable lootTable, CustomMobAttribute... baseAttributes) {
+        this.id = id;
+        this.name = name;
+        this.entityClass = entityClass;
+        this.baseAttributes.add(new CustomMobAttribute(Attribute.MAX_HEALTH, health));
+        this.baseAttributes.add(new CustomMobAttribute(Attribute.ATTACK_DAMAGE, damage));
+        this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
+        this.lootTable = lootTable;
+    }
+
     public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, double speed, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
         this.id = id;
         this.name = name;
@@ -50,7 +75,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.baseAttributes.add(new CustomMobAttribute(Attribute.ATTACK_DAMAGE, damage));
         this.baseAttributes.add(new CustomMobAttribute(Attribute.MOVEMENT_SPEED, speed));
         this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
-        this.loots.addAll(loots);
+        this.lootTable = getPreBuildLootTable(loots);
     }
 
     public CustomMob(String id, Component name, Class<T> entityClass, double health, double damage, List<CustomLoot> loots, CustomMobAttribute... baseAttributes) {
@@ -60,7 +85,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         this.baseAttributes.add(new CustomMobAttribute(Attribute.MAX_HEALTH, health));
         this.baseAttributes.add(new CustomMobAttribute(Attribute.ATTACK_DAMAGE, damage));
         this.baseAttributes.addAll(Arrays.stream(baseAttributes).toList());
-        this.loots.addAll(loots);
+        this.lootTable = getPreBuildLootTable(loots);
     }
 
     // * peut etre Override
@@ -136,5 +161,24 @@ public abstract class CustomMob<T extends LivingEntity> {
 
     public void unregisterAsCustomMob(LivingEntity entity) {
         entity.getPersistentDataContainer().remove(CustomMobRegistry.CUSTOM_MOB_KEY);
+    }
+
+    private CustomLootTable getPreBuildLootTable(List<CustomLoot> lootList) {
+        return new CustomLootTable() {
+            @Override
+            public Component getName() {
+                return Component.empty();
+            }
+
+            @Override
+            public String getNamespace() {
+                return "omc_mobs:mob";
+            }
+
+            @Override
+            public Set<CustomLoot> getLoots() {
+                return new HashSet<>(lootList);
+            }
+        };
     }
 }

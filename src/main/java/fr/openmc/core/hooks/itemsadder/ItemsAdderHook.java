@@ -34,7 +34,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
     private static ItemsAdder api;
 
     private static final String CONTENTS_FOLDER_NAME = "contents";
-    private static final String MERGE_RESOURCEPACK_PATH = "resource-pack.zip.merge_other_plugins_resourcepacks_folders";
+    private static final String MERGE_RESOURCEPACK_PATH = "resource_pack.merge_other_plugins_resourcepacks_folders.list";
 
     @Getter
     private static Path extractedGeneratedResourcePack;

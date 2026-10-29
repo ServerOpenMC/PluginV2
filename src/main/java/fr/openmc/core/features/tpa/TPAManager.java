@@ -9,13 +9,9 @@ import fr.openmc.core.features.tpa.commands.TPACommand;
 import fr.openmc.core.features.tpa.commands.TPADenyCommand;
 import fr.openmc.core.features.tpa.commands.TPAcceptCommand;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +114,12 @@ public class TPAManager extends Feature implements HasCommands {
 	 */
 	public static List<OMCPlayer> getRequesters(OMCPlayer target) {
 		List<OMCPlayer> requesters = new ArrayList<>();
-		for (UUID playerUUID : tpaRequests.get(target.getUniqueId())) {
+
+		if (!tpaRequests.containsKey(target.getUniqueId()))
+			return List.of();
+
+		List<UUID> requestersUUID = tpaRequests.get(target.getUniqueId());
+		for (UUID playerUUID : requestersUUID) {
 			requesters.add(OMCPlayer.of(playerUUID));
 		}
 		return requesters;

@@ -11,6 +11,7 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.settings.command.SettingsCommand;
@@ -29,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 @Getter
-public class PlayerSettingsManager extends Feature implements HasDatabase, HasListeners, HasCommands {
+public class PlayerSettingsManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
 
     private static final Map<UUID, PlayerSettings> playersSettings = new ConcurrentHashMap<>();
     private static Dao<PlayerSettingEntity, Long> playerSettingDao;
@@ -248,15 +249,14 @@ public class PlayerSettingsManager extends Feature implements HasDatabase, HasLi
     }
 
     /**
-     * Checks if a player can receive a friend request from another player.
+     * Checks if a player can receive a friend's join and leave message.
      *
-     * @param receiverUUID the UUID of the player receiving the request
-     * @param senderUUID   the UUID of the player sending the request
-     * @return true if the receiver can receive the request, false otherwise
+     * @param receiverUUID the UUID of the player receiving the message
+     * @return true if the receiver can receive a friend's join and leave message
      */
-    public static boolean canReceiveFriendRequest(UUID receiverUUID, UUID senderUUID) {
+    public static boolean canReceiveFriendJoinLeaveMessages(UUID receiverUUID) {
         PlayerSettings settings = getPlayerSettings(receiverUUID);
-        return settings.canPerformAction(SettingType.FRIEND_REQUESTS_POLICY, senderUUID);
+        return settings.getSetting(SettingType.FRIEND_JOIN_LEAVE_MESSAGES);
     }
 
     /**
