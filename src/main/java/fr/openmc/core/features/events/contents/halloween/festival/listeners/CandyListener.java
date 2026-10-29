@@ -7,6 +7,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +38,8 @@ public class CandyListener implements Listener {
         sugarIdx += candy.getDiabetesIndex();
 
         if (sugarIdx >= 20) {
-            //TODO faire un truc
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 20 * 20, 0));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 20, 1));
             sugarIndex.put(uuid, 0);
         } else
             sugarIndex.put(uuid, sugarIdx);
