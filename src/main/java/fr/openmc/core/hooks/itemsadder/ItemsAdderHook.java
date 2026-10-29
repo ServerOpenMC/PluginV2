@@ -8,7 +8,6 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
 import fr.openmc.core.hooks.itemsadder.events.IAItemLoadEvent;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
-import fr.openmc.core.hooks.itemsadder.sprite.SpriteUtils;
 import fr.openmc.core.utils.FilesUtils;
 import fr.openmc.core.utils.ZipUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
@@ -35,7 +34,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
     private static ItemsAdder api;
 
     private static final String CONTENTS_FOLDER_NAME = "contents";
-    private static final String MERGE_RESOURCEPACK_PATH = "resource-pack.zip.merge_other_plugins_resourcepacks_folders";
+    private static final String MERGE_RESOURCEPACK_PATH = "resource_pack.merge_other_plugins_resourcepacks_folders.list";
 
     @Getter
     private static Path extractedGeneratedResourcePack;

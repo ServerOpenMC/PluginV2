@@ -5,17 +5,9 @@ import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.profile.menu.ProfileMenu;
 import fr.openmc.core.utils.text.messages.MessageType;
-import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.CommandPlaceholder;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Named;
-import revxrsal.commands.annotation.Optional;
-import revxrsal.commands.annotation.SuggestWith;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"profile", "profil"})
@@ -27,7 +19,9 @@ public class ProfileCommand {
             OMCPlayer player,
             @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target
     ) {
-        if (!target.isConnected() && !target.hasPlayedBefore()) {
+        OMCOfflinePlayer targetPlayer = target == null ? player : target;
+
+        if (!targetPlayer.isConnected() && !targetPlayer.hasPlayedBefore()) {
             player.message().send(
                     TranslationManager.translation("feature.profile.message.player_not_found"),
                     Prefix.OPENMC,
@@ -37,6 +31,6 @@ public class ProfileCommand {
             return;
         }
 
-        new ProfileMenu(player, target).open();
+        new ProfileMenu(player, targetPlayer).open();
     }
 }

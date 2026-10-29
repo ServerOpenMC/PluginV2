@@ -91,10 +91,12 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
             letters.add(letter);
 
             int id = letter.getLetterId();
-            OMCPlayer receiverPlayer = OMCPlayer.of(receiver.getPlayer())  ;
-            if (receiverPlayer != null) {
+            if (receiver.isOnline()) {
+                OMCPlayer receiverPlayer = OMCPlayer.of(receiver.getPlayer());
+                if (receiverPlayer == null) return true;
                 Inventory inv = receiverPlayer.getInventory();
-                if (inv instanceof PlayerMailbox receiverMailbox) receiverMailbox.open();
+                if (inv instanceof PlayerMailbox receiverMailbox)
+                    receiverMailbox.open();
                 sendLetterReceivedNotification(sender, receiverPlayer, numItems, id);
             }
 
@@ -146,40 +148,6 @@ public class MailboxManager extends Feature implements HasDatabase, HasCommands 
                     return clone;
                 })
                 .toArray(ItemStack[]::new);
-    }
-
-    public static void sendMailNotification(Player player) {
-        long count = letters.stream()
-                .filter(letter -> letter.getReceiverUUID().equals(player.getUniqueId()) && !letter.isRefused())
-                .count();
-
-        if (count == 0) return;
-
-        Component countLabel = count > 1
-                ? Component.text(count)
-                : TranslationManager.translation("feature.mailboxes.message.one_letter");
-        Component line1 = TranslationManager.translation(
-                "feature.mailboxes.message.new_letters.line1",
-                countLabel.color(NamedTextColor.GREEN),
-                pluralize(TranslationManager.translation("feature.mailboxes.letter"), count).color(NamedTextColor.DARK_GREEN)
-        ).color(NamedTextColor.DARK_GREEN);
-        Component clickComponent = TranslationManager.translation("feature.mailboxes.message.new_letters.click")
-                .color(NamedTextColor.YELLOW)
-                .clickEvent(ClickEvent.runCommand("/mailbox"))
-                .hoverEvent(getHoverEvent(TranslationManager.translation("feature.mailboxes.message.new_letters.hover")));
-        Component line2 = clickComponent
-                .append(Component.space())
-                .append(TranslationManager.translation("feature.mailboxes.message.new_letters.suffix")
-                        .color(NamedTextColor.GOLD));
-        Component message = line1.appendNewline().append(line2);
-
-        MessagesManager.sendMessage(
-                player,
-                message,
-                Prefix.MAILBOX,
-                MessageType.SUCCESS,
-                true
-        );
     }
 
     public static boolean deleteLetter(int id) {

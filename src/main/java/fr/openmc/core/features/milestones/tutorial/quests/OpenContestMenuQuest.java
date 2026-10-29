@@ -8,7 +8,6 @@ import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
@@ -48,18 +47,21 @@ public class OpenContestMenuQuest extends MilestoneQuest implements Listener {
                                 Prefix.MILLESTONE,
                                 MessageType.SUCCESS
                         ),
-                        new QuestItemReward(OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest(), 30),
 						new QuestMethodsReward(
 								player -> {
 									List<ItemStack> items = new ArrayList<>();
+
+									ItemStack ayweniteReward = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest().clone();
+									ayweniteReward.setAmount(30);
+									items.add(ayweniteReward);
 
 									FileConfiguration config = OMCPlugin.getConfigs();
 									if (config != null) {
 										LocalDate today = LocalDate.now();
 										LocalDate limitDate = LocalDate.of(
-												config.getInt("features.aywen_pelush.year", 2025),
+												config.getInt("features.aywen_pelush.year", 2026),
 												config.getInt("features.aywen_pelush.month", 11),
-												config.getInt("features.aywen_pelush.day", 3)
+												config.getInt("features.aywen_pelush.day", 7)
 										);
 
 										if (!limitDate.isBefore(today)) {
