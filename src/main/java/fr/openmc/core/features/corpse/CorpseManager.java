@@ -275,11 +275,11 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
     }
 
     public static Component getLocation(Location location) {
-        return Component.text("world : " + TranslationManager.translation(WorldUtils.getDisplayedWorldName(location.getWorld().getName()))
-                + " x: " + location.getBlockX()
+        return Component.text("world : ")
+                .append(TranslationManager.translation(WorldUtils.getDisplayedWorldName(location.getWorld().getName())))
+                .append(Component.text(" x: " + location.getBlockX()
                 + " y: " + location.getBlockY()
-                + " z: " + location.getBlockZ()
-        );
+                + " z: " + location.getBlockZ()));
     }
 
     @Override

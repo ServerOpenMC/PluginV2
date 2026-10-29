@@ -22,7 +22,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -265,9 +264,16 @@ public class QuestsMenu extends Menu {
             for (QuestReward reward : currentTier.getRewards()) {
                 if (reward instanceof QuestItemReward itemReward) {
                     ItemStack rewardItem = itemReward.getItemStack();
-                    String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
+
+                    Component name = rewardItem.getItemMeta() != null && rewardItem.getItemMeta().hasDisplayName()
+                            ? rewardItem.getItemMeta().displayName()
+                            : Component.translatable(rewardItem.translationKey());
+
+                    if (name == null)
+                        name = Component.text("Unknown Item", NamedTextColor.GRAY);
+
                     lore.add(Component.text("  - ", NamedTextColor.DARK_GRAY)
-                            .append(Component.text(itemName, NamedTextColor.WHITE))
+                            .append(name.color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
                             .append(Component.space())
                             .append(Component.text("x" + itemReward.getAmount(), NamedTextColor.GRAY))
                             .decoration(TextDecoration.ITALIC, false));

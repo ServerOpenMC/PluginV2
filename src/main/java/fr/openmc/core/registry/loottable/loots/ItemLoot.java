@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @Getter
@@ -23,7 +22,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     @Setter
     private double chance;
     private final ItemStack item;
-    private Predicate<Player> predicateToLoot = null;
+    private boolean predicateToLoot = true;
     private Supplier<ItemStack> itemSupplier = null;
     private final int minAmount;
     private final int maxAmount;
@@ -73,7 +72,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 amount);
     }
 
-    public ItemLoot(CustomItem item, Predicate<Player> predicate, double chance, int amount) {
+    public ItemLoot(CustomItem item, boolean predicate, double chance, int amount) {
         this(item.getBest(),
                 chance,
                 amount);
@@ -115,7 +114,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
 
     @Override
     public LootReward run(Player receiver) {
-        if (predicateToLoot != null && !predicateToLoot.test(receiver)) return null;
+        if (!predicateToLoot) return null;
 
         return runBase((items) -> {
             for (ItemStack item : items) {
@@ -129,7 +128,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     }
 
     public LootReward run(Player receiver, Location location) {
-        if (predicateToLoot != null && !predicateToLoot.test(receiver)) return null;
+        if (!predicateToLoot) return null;
 
         return runBase((items) -> {
             for (ItemStack item : items) {
