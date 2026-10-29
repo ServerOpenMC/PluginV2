@@ -72,7 +72,7 @@ public class ScoreboardManager extends Feature implements Listener, NotLoadInUni
             );
 
             long last = playerUpdates.getOrDefault(active, 0L);
-            if (now - last < active.updateInterval() * 1000L) return;
+            if (now - last < active.updateInterval(player) * 1000L) return;
 
 
             SternalBoard board = boardCache.find(player.getUniqueId()) == null ? createNewBoard(player) : boardCache.find(player.getUniqueId());
