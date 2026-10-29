@@ -3,7 +3,6 @@ name: Build & Test
 on:
   pull_request:
     paths-ignore:
-      - ".github/**"
       - ".gitignore"
       - "LICENSE"
       - "README.md"
@@ -14,7 +13,6 @@ on:
     # pull_request trigger, so pushing to them used to start every run twice.
     branches: [master]
     paths-ignore:
-      - ".github/**"
       - ".gitignore"
       - "LICENSE"
       - "README.md"
@@ -34,14 +32,14 @@ permissions:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 15
     permissions:
       contents: read
       checks: write # dorny/test-reporter creates a check run (not possible on fork PRs)
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: useblacksmith/checkout@v1
 
       - name: Set up JDK 25
         uses: actions/setup-java@v6
@@ -68,11 +66,11 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: useblacksmith/checkout@v1
         with:
           fetch-depth: 0
 
