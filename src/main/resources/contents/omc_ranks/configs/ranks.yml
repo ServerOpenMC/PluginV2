@@ -148,3 +148,11 @@ font_images:
     path: "animateur.png"
     scale_ratio: 9
     y_position: 8
+
+  twitch:
+    permission: "omc_ranks.twitch"
+    show_in_gui: true
+    suggest_in_command: false
+    path: "twitch.png"
+    scale_ratio: 9
+    y_position: 8
