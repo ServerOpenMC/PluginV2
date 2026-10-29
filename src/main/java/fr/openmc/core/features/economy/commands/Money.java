@@ -10,7 +10,6 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -24,7 +23,7 @@ public class Money {
     @CommandPlaceholder()
     public void getMoney(
             CommandSender sender,
-            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) @Default("me") OMCOfflinePlayer target
+            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target
     ) {
         if (sender instanceof OMCPlayer player && target == null) {
             player.message().sendInfo(TranslationManager.translation(
