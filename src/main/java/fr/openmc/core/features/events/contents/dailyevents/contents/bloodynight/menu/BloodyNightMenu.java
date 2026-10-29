@@ -56,7 +56,7 @@ public class BloodyNightMenu extends Menu {
         inventory.put(11, new ItemMenuBuilder(this, Material.STRIDER_SPAWN_EGG, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.bloody_night.menu.info.bloody_monster.name"));
             itemMeta.lore(TranslationManager.translationLore(
-                    "feature.dailyevents.bloody_night.menu.info.bloody_monster.lore"));
+                    "feature.dailyevents.bloody_night.menu.info.bloody_monster.lore1"));
             itemMeta.setEnchantmentGlintOverride(isActived);
         }).setOnClick(_ -> new BloodyMonsterMenu(getOwner()).open()));
 

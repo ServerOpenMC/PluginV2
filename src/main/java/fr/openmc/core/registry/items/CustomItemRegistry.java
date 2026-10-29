@@ -24,15 +24,12 @@ import fr.openmc.core.registry.items.listeners.BlockBreakListener;
 import fr.openmc.core.registry.items.listeners.BlockPlaceListener;
 import fr.openmc.core.registry.items.listeners.EquipableItemListener;
 import fr.openmc.core.registry.items.listeners.InteractListener;
-import io.papermc.paper.persistence.PersistentDataContainerView;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -40,9 +37,6 @@ import java.util.Set;
 
 public class CustomItemRegistry extends Registry<String, CustomItem>
         implements KeyedRegistry<String, CustomItem>, HasListeners {
-
-    public static final NamespacedKey CUSTOM_ITEM_KEY =
-            new NamespacedKey("openmc", "custom_item");
 
     /* Buttons */
     public final CustomItem ICON_CANCEL = register("_iainternal:icon_cancel", Material.DARK_OAK_DOOR, "Fermer");
@@ -317,18 +311,15 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public Optional<CustomItem> get(ItemStack stack) {
         if (stack == null) return Optional.empty();
 
-        PersistentDataContainerView view = stack.getPersistentDataContainer();
-        String id = view.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
+        if (!ItemsAdderHook.isEnable())
+            throw new IllegalStateException("Impossible d'avoir un CustomItem via un Block, néccésite que ItemsAdder soit activé");
 
-        if (id == null && ItemsAdderHook.isEnable()) {
-            CustomStack itemIa = CustomStack.byItemStack(stack);
 
-            if (itemIa == null) return Optional.empty();
+        CustomStack itemIa = CustomStack.byItemStack(stack);
 
-            return this.get(itemIa.getNamespacedID());
-        } else {
-            return this.get(id);
-        }
+        if (itemIa == null) return Optional.empty();
+
+        return this.get(itemIa.getNamespacedID());
     }
 
     public Optional<CustomItem> get(Block block) {
@@ -347,16 +338,13 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public CustomItem getOrThrow(ItemStack stack) {
         if (stack == null) throw new IllegalArgumentException("ItemStack cannot be null");
 
-        PersistentDataContainerView view = stack.getPersistentDataContainer();
-        String id = view.get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
+        if (!ItemsAdderHook.isEnable())
+            throw new IllegalStateException("Impossible d'avoir un CustomItem via un Block, néccésite que ItemsAdder soit activé");
 
-        if (id == null && ItemsAdderHook.isEnable()) {
-            CustomStack itemIa = CustomStack.byItemStack(stack);
 
-            return this.getOrThrow(itemIa.getNamespacedID());
-        } else {
-            return this.getOrThrow(id);
-        }
+        CustomStack itemIa = CustomStack.byItemStack(stack);
+
+        return this.getOrThrow(itemIa.getNamespacedID());
     }
 
     public CustomItem register(String name, ItemStack item) {
