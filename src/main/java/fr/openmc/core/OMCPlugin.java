@@ -158,8 +158,6 @@ public class OMCPlugin extends JavaPlugin {
         LoggerFactory.setLogBackendFactory(DatabaseManager.ShutUpOrmLite::new);
     }
 
-    // Trucaaaa
-
     /**
      * Initialise la configuration, les hooks, les managers et les features.
      */
