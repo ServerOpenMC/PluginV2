@@ -63,7 +63,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
             outgoingEvent.getDailyEvent().end();
         }
 
-        saveIncomingEventsDB(new IncomingEventsDB(incomingEvents));
+        saveIncomingEventsDB(incomingEvents);
     }
 
     @Override
@@ -114,11 +114,12 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     /**
      * Sauvegarde les données des Daily Event dans la DB, généralement pdt l'arrêt du serveur
      *
-     * @param data les données des daily events
+     * @param scheduledEvents les données des daily events
      */
-    public static void saveIncomingEventsDB(IncomingEventsDB data) {
+    public static void saveIncomingEventsDB(List<ScheduleDailyEvent> scheduledEvents) {
         try {
-            dao.createOrUpdate(data);
+            dao.deleteById(1);
+            dao.create(new IncomingEventsDB(scheduledEvents));
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la sauvegarde de IncomingEventsDB", e);
         }
