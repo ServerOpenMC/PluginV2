@@ -1,7 +1,5 @@
 name: Build & Test
 
-# truc pour test
-
 on:
   pull_request:
     paths-ignore:
@@ -12,6 +10,9 @@ on:
       - "CODE_OF_CONDUCT.md"
       - "CONTRIBUTING.md"
   push:
+    # Default branch only: branches with an open PR are already covered by the
+    # pull_request trigger, so pushing to them used to start every run twice.
+    branches: [master]
     paths-ignore:
       - ".github/**"
       - ".gitignore"
@@ -19,41 +20,46 @@ on:
       - "README.md"
       - "CODE_OF_CONDUCT.md"
       - "CONTRIBUTING.md"
+  workflow_dispatch:
+
+# A newer push to the same PR cancels the run that is still in progress.
+# Runs on master and manual runs are never cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
 
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      checks: write # dorny/test-reporter creates a check run (not possible on fork PRs)
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Cache Gradle
-        uses: actions/cache@v3
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Set up GraalVM JDK 25
-        uses: actions/setup-java@v4
-        with:
-          distribution: graalvm
+          distribution: temurin
           java-version: 25
-          cache: gradle
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Run Tests with Gradle
         run: ./gradlew test --no-daemon --stacktrace
 
       - name: Report test results
-        uses: dorny/test-reporter@v2
-        if: always()
+        uses: dorny/test-reporter@v3
+        # Fork PRs get a read-only token and cannot create check runs, so the
+        # reporter is skipped there (the failure is still visible in the Gradle log).
+        if: ${{ !cancelled() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
         with:
           name: Gradle Tests
           path: build/test-results/test/*.xml
@@ -63,34 +69,21 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      checks: write
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Cache Gradle
-        uses: actions/cache@v3
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Set up GraalVM JDK 25
-        uses: actions/setup-java@v4
-        with:
-          distribution: graalvm
+          distribution: temurin
           java-version: 25
-          cache: gradle
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Build with snapshot version
         env:
@@ -99,7 +92,7 @@ jobs:
         run: ./gradlew jar --no-daemon --stacktrace
 
       - name: Upload Plugin JAR
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: OpenMC-${{ github.sha }}
           path: builds/
