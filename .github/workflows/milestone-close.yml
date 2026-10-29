@@ -30,10 +30,10 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
 
-      # This job runs on master, so it restores the cache written by master's
-      # Build & Test runs instead of starting from an empty Gradle home.
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: false
 
       - name: Build with Gradle
         run: |
