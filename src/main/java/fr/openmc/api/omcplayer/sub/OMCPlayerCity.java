@@ -12,7 +12,7 @@ public class OMCPlayerCity extends OMCPlayerFeat {
 
     @Nullable
     public City getCity() {
-        return CityManager.getCity(getUniqueId());
+        return CityManager.getPlayerCity(getUniqueId());
     }
 
     public boolean hasCity() {

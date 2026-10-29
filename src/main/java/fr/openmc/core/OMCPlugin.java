@@ -37,6 +37,7 @@ import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 //import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.open.OpenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
@@ -103,6 +104,7 @@ public class OMCPlugin extends JavaPlugin {
             BitsManager::new,
             ScoreboardManager::new,
             HomesManager::new,
+            OpenManager::new,
             TPAManager::new,
             FreezeManager::new,
             TransactionsManager::new,

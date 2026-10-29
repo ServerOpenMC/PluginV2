@@ -19,9 +19,6 @@ import java.util.concurrent.CompletableFuture;
 @Credit(developers = {"Axeno"})
 public class FriendManager extends Feature implements HasDatabase, HasCommands {
 
-    // TODO: Configuration pour activer/désactiver les demandes d'amis (par défaut activé) & les messages de connexion/déconnexion
-    // Config: accepter que les joueurs voient l'argent, la ville, le status (En ligne, Hors ligne), le temps de jeu, ou autre
-
     @Getter
     public static final List<FriendRequest> friendsRequests = new ArrayList<>();
 

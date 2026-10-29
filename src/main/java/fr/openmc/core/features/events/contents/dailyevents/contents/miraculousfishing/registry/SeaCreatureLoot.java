@@ -86,7 +86,7 @@ public class SeaCreatureLoot implements CustomLoot, RepresentedItem {
         new LootsInfoMenu(
                 player,
                 TranslationManager.translation("feature.dailyevents.miraculousfishing.menu.loot_info.sea_creature"),
-                seaCreatureMob.getMob().getLoots()
+                seaCreatureMob.getMob().getLootTable().getLoots()
         ).open();
     }
 }

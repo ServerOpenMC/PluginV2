@@ -1,5 +1,6 @@
 package fr.openmc.core.features.dream.models.registry;
 
+import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.mobs.CustomMob;
 import fr.openmc.core.registry.mobs.CustomMobAttribute;
@@ -16,6 +17,12 @@ public abstract class DreamMob<T extends LivingEntity> extends CustomMob<T> {
 
     public DreamMob(String id, Component name, Class<T> entityClass, double health, Long damageTime, double speed, double scale) {
         super(id, name, entityClass, health, 0f, speed,
+                new CustomMobAttribute(Attribute.SCALE, scale));
+        this.damageTime = damageTime;
+    }
+
+    public DreamMob(String id, Component name, Class<T> entityClass, double health, Long damageTime, double speed, double scale, CustomLootTable loots) {
+        super(id, name, entityClass, health, 0f, speed, loots,
                 new CustomMobAttribute(Attribute.SCALE, scale));
         this.damageTime = damageTime;
     }

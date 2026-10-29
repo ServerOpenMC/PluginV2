@@ -9,6 +9,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.hooks.github.GitHubHook;
@@ -40,35 +41,19 @@ public class JoinQuitMessageListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         final OMCPlayer player = OMCPlayer.of(event.getPlayer());
+        UUID uuid = player.getUniqueId();
 
         player.message().send(TranslationManager.translation("core.player.join.welcome"), Prefix.OPENMC, MessageType.INFO, false);
 
         TabList.updateTabList(player);
 
-        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
-            for (UUID friendUUID : friendsUUIDS) {
-                final Player friend = Bukkit.getPlayer(friendUUID);
-                if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
-                    player.message().send(TranslationManager.translation(
-                            "core.player.join.friend_online",
-                            Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE)
-                                    .appendSpace()
-                                    .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.GREEN))
-                    ), Prefix.FRIEND, MessageType.NONE, true);
-                }
-            }
-        }).exceptionally(throwable -> {
-            OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
-            return null;
-        });
-
         // Quest pending reward notification
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             for (Quest quest : QuestsManager.getAllQuests()) {
-                if (!quest.hasPendingRewards(player.getUniqueId()))
+                if (!quest.hasPendingRewards(uuid))
                     continue;
 
-                int pendingRewardsNumber = quest.getPendingRewardTiers(player.getUniqueId()).size();
+                int pendingRewardsNumber = quest.getPendingRewardTiers(uuid).size();
                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                     player.message().send(
                             TranslationManager.translation("core.player.join.quest_reward", Component.text(pendingRewardsNumber))
@@ -81,16 +66,13 @@ public class JoinQuitMessageListener implements Listener {
                 });
             }
 
-            GitHubHook.refreshContributorId(player.getUniqueId());
+            GitHubHook.refreshContributorId(uuid);
         });
-
-        if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
-            event.joinMessage(getJoinMessageComponent(player));
 
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
             player.teleport(SpawnManager.getSpawnLocation());
-            EconomyManager.setBalance(player.getUniqueId(), this.balanceOnJoin);
+            EconomyManager.setBalance(uuid, this.balanceOnJoin);
         }
 
         new BukkitRunnable() {
@@ -104,39 +86,48 @@ public class JoinQuitMessageListener implements Listener {
                 TabList.updateTabList(player);
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 100L);
-    }
 
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        final OMCPlayer player = OMCPlayer.of(event.getPlayer());
-
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> QuestsManager.saveQuests(player.getUniqueId()));
-
-        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
+        FriendManager.getFriendsAsync(uuid).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = Bukkit.getPlayer(friendUUID);
-                if (friend != null && friend.isOnline() && !friend.hasMetadata(OMCPlugin.VANISH_META_KEY)) {
-                    MessagesManager.sendMessage(friend, TranslationManager.translation(
-                            "core.player.quit.friend_offline",
-                            Component.object(ObjectContents.playerHead(player.getUniqueId())).color(NamedTextColor.WHITE)
-                                    .appendSpace()
-                                    .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName())).color(NamedTextColor.YELLOW)
-                    ), Prefix.FRIEND, MessageType.NONE, true);
-                }
+                if (friend == null || !friend.isOnline() || friend.hasMetadata(OMCPlugin.VANISH_META_KEY))
+                    continue;
+
+                if (!PlayerSettingsManager.canReceiveFriendJoinLeaveMessages(friendUUID))
+                    continue;
+
+                MessagesManager.sendMessage(friend, TranslationManager.translation(
+                        "core.player.join.friend_online",
+                        Component.object(ObjectContents.playerHead(uuid)).color(NamedTextColor.WHITE)
+                                .appendSpace()
+                                .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.GREEN))
+                ), Prefix.FRIEND, MessageType.NONE, true);
             }
         }).exceptionally(throwable -> {
             OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
 
+        if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
+            event.joinMessage(getJoinMessageComponent(player));
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        final OMCPlayer player = OMCPlayer.of(event.getPlayer());
+        UUID uuid = player.getUniqueId();
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> QuestsManager.saveQuests(uuid));
+
         if (TPAManager.requesterHasPendingRequest(player)) {
             OMCPlayer targetTPA = TPAManager.getTargetByRequester(player);
-            if (targetTPA == null) return;
-            TPAManager.removeRequest(player, targetTPA);
-            MessagesManager.sendMessage(targetTPA, TranslationManager.translation(
-                    "core.player.tpa.expired_target",
-                    targetTPA.getNameWithHead().color(NamedTextColor.GOLD)
-            ), Prefix.OPENMC, MessageType.INFO, true);
+            if (targetTPA != null) {
+                TPAManager.removeRequest(player, targetTPA);
+                MessagesManager.sendMessage(targetTPA, TranslationManager.translation(
+                        "core.player.tpa.expired_target",
+                        targetTPA.getNameWithHead().color(NamedTextColor.GOLD)
+                ), Prefix.OPENMC, MessageType.INFO, true);
+            }
         } else if (TPAManager.hasPendingRequest(player)) {
             for (OMCPlayer requester : TPAManager.getRequesters(player)) {
                 TPAManager.removeRequest(requester, player);
@@ -146,6 +137,27 @@ public class JoinQuitMessageListener implements Listener {
                 ), Prefix.OPENMC, MessageType.WARNING, true);
             }
         }
+
+        FriendManager.getFriendsAsync(uuid).thenAccept(friendsUUIDS -> {
+            for (UUID friendUUID : friendsUUIDS) {
+                final Player friend = Bukkit.getPlayer(friendUUID);
+                if (friend == null || !friend.isOnline() || friend.hasMetadata(OMCPlugin.VANISH_META_KEY))
+                    continue;
+
+                if (!PlayerSettingsManager.canReceiveFriendJoinLeaveMessages(friendUUID))
+                    continue;
+
+                MessagesManager.sendMessage(friend, TranslationManager.translation(
+                        "core.player.quit.friend_offline",
+                        Component.object(ObjectContents.playerHead(uuid)).color(NamedTextColor.WHITE)
+                                .appendSpace()
+                                .append(Component.text(LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()).color(NamedTextColor.RED))
+                ), Prefix.FRIEND, MessageType.NONE, true);
+            }
+        }).exceptionally(throwable -> {
+            OMCLogger.error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
+            return null;
+        });
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
             event.quitMessage(getQuitMessageComponent(player));

@@ -68,6 +68,10 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
 
     @Override
     public @Nullable CraftPlayer getCraftPlayer() {
+        if (player == null) return null;
+        if (player instanceof OMCPlayer omcPlayer)
+            return omcPlayer.getCraftPlayer();
+
         return (CraftPlayer) player;
     }
 
