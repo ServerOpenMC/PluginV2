@@ -108,7 +108,7 @@ public class DreamScoreboard extends BaseScoreboard {
     }
 
     @Override
-    public int updateInterval() {
+    public int updateInterval(Player player) {
         return 1;
     }
 }

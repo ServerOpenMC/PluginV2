@@ -159,7 +159,7 @@ public class CityWarScoreboard extends BaseScoreboard {
     }
 
     @Override
-    protected int updateInterval() {
+    protected int updateInterval(Player player) {
         return 1;
     }
 
