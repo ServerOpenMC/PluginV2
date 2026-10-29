@@ -26,11 +26,11 @@ public class CorruptedMobLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(Material.IRON_INGOT,0.4, 1, 4),
-                new ItemLoot(Material.GOLD_INGOT,0.2, 1, 3),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE,0.2, 1, 3),
-                new ItemLoot(Material.DIAMOND,0.07, 1, 2),
-                new ItemLoot(Material.GOLDEN_APPLE,0.06, 1, 3)
+                new ItemLoot(Material.IRON_INGOT,0.6, 1, 4),
+                new ItemLoot(Material.GOLD_INGOT,0.4, 1, 3),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE,0.4, 1, 3),
+                new ItemLoot(Material.DIAMOND,0.17, 1, 2),
+                new ItemLoot(Material.GOLDEN_APPLE,0.16, 1, 3)
         ));
     }
 }

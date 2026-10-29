@@ -29,9 +29,9 @@ public class CursedMobLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(Material.IRON_BLOCK,0.3, 1, 2),
-                new ItemLoot(Material.GOLD_BLOCK,0.2, 1, 2),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,0.2, 2, 4),
+                new ItemLoot(Material.IRON_BLOCK,0.5, 1, 2),
+                new ItemLoot(Material.GOLD_BLOCK,0.3, 1, 2),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE_BLOCK,0.3, 2, 4),
                 new ItemLoot(Material.DIAMOND,0.2, 1, 2),
                 new ItemLoot(ItemType.SPLASH_POTION.createItemStack(p ->
                         p.addCustomEffect(new PotionEffect(PotionEffectType.INSTANT_HEALTH, 5, 1), true)),0.13, 1),

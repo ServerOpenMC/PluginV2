@@ -26,11 +26,11 @@ public class AncientMobLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(Material.IRON_BLOCK,0.3, 3, 6),
-                new ItemLoot(Material.GOLD_BLOCK,0.2, 1, 2),
-                new ItemLoot(Material.DIAMOND_BLOCK,0.13, 1),
-                new ItemLoot(Material.NETHERITE_SCRAP,0.1, 2),
-                new ItemLoot(OMCRegistry.CUSTOM_ENCHANTS.VAMPIRISM.getEnchantedBookItem(1),0.02, 1)
+                new ItemLoot(Material.IRON_BLOCK,0.6, 3, 6),
+                new ItemLoot(Material.GOLD_BLOCK,0.5, 1, 2),
+                new ItemLoot(Material.DIAMOND_BLOCK,0.33, 1),
+                new ItemLoot(Material.NETHERITE_SCRAP,0.2, 2),
+                new ItemLoot(OMCRegistry.CUSTOM_ENCHANTS.VAMPIRISM.getEnchantedBookItem(1),0.10, 1)
         ));
     }
 }
