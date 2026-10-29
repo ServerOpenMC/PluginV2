@@ -129,7 +129,7 @@ public class FriendCommand {
             @Named("ami") @SuggestWith(FriendsAutoComplete.class) OMCOfflinePlayer target
     ) {
         try {
-            if (!target.hasPlayedBefore()) {
+            if (!target.hasPlayedBefore() && !target.isOnline()) {
                 player.message().send(TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
@@ -371,7 +371,7 @@ public class FriendCommand {
             @Named("demande d'ami") @SuggestWith(FriendsRequestAutoComplete.class) OMCOfflinePlayer target
     ) {
         try {
-            if (!target.hasPlayedBefore()) {
+            if (!target.hasPlayedBefore() && !target.isOnline()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
