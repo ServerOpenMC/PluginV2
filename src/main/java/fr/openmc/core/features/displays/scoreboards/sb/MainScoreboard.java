@@ -47,7 +47,6 @@ public class MainScoreboard extends BaseScoreboard {
 
         // Corpse
         if (CorpseNPCManager.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
-
             lines.add(MiniMessage.miniMessage().deserialize(
                     "<gradient:#F82C5D:#F64545><title></gradient>",
                     Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title")))
@@ -99,11 +98,13 @@ public class MainScoreboard extends BaseScoreboard {
         lines.add(MiniMessage.miniMessage().deserialize(
                 "<gradient:#FF45B9:#FF1FCC><font:omc_fonts:small_caps>%s</font></gradient>".formatted(
                         player.getName())).decoration(TextDecoration.BOLD, true));
+
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation(player, "feature.displays.scoreboard.rank.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
                 .append(rank)
         );
+
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation(player, "feature.displays.scoreboard.city.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
@@ -111,6 +112,7 @@ public class MainScoreboard extends BaseScoreboard {
                         ? toSmall(player, city.getName()).color(TextColor.color(0xFF06DC))
                         : TranslationManager.translation(player, "feature.displays.scoreboard.city.none", true).color(TextColor.color(0xFF06DC)))
         );
+
         if (!inWar) {
             lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                     .append(TranslationManager.translation(player, "feature.displays.scoreboard.balance.label", true).color(NamedTextColor.GRAY))
@@ -119,6 +121,7 @@ public class MainScoreboard extends BaseScoreboard {
                     .appendSpace()
                     .append(text(EconomyManager.getEconomyIcon()))
             );
+
             if (bits > 0) {
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation(player, "feature.displays.scoreboard.bits.label", true).color(NamedTextColor.GRAY))
@@ -129,6 +132,7 @@ public class MainScoreboard extends BaseScoreboard {
                 );
             }
         }
+
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(TranslationManager.translation(player, "feature.displays.scoreboard.location.label", true).color(NamedTextColor.GRAY))
                 .appendSpace()
@@ -140,6 +144,7 @@ public class MainScoreboard extends BaseScoreboard {
             Npc halloweenNPC = null;
             if (npcManager != null)
                 halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
+
             if (halloweenNPC != null) {
                 String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
@@ -151,17 +156,22 @@ public class MainScoreboard extends BaseScoreboard {
         }
 
         lines.add(empty());
-
         return lines;
     }
 
     @Override
-    public boolean shouldDisplay(Player player) {
+    protected boolean shouldDisplay(Player player) {
         return true; // Toujours afficher ce scoreboard par défaut
     }
 
     @Override
-    public int priority() {
+    protected int priority() {
         return 0; // Priorité la plus basse
+    }
+
+    @Override
+    protected int updateInterval(Player player) {
+        // If the player has a corpse make the scoreboard update faster
+        return CorpseNPCManager.getNPC(player.getUniqueId()) != null ? 2 : 5;
     }
 }

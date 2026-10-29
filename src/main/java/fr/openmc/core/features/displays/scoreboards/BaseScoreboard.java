@@ -58,7 +58,7 @@ public abstract class BaseScoreboard {
      * @param lines les lines dont il faut ajouter les éléments du swapping
      */
     protected void updateSwapping(Player player, List<Component> lines) {
-        currentSwappingTime += updateInterval();
+        currentSwappingTime += updateInterval(player);
 
         int playerSwappingTime = getSwappingTime(player);
 
@@ -119,7 +119,7 @@ public abstract class BaseScoreboard {
     /**
      * @return L'intervalle de mise à jour en secondes
      */
-    protected int updateInterval() {
+    protected int updateInterval(Player player) {
         return 5; // Toutes les 5 secondes par défaut
     }
 
