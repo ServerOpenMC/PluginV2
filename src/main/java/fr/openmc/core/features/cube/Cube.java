@@ -199,9 +199,6 @@ public class Cube extends MultiBlock {
         for (Player player : world.getPlayers()) {
             if (player.getLocation().distance(this.getCenter()) <= shockRadius) {
                 world.spawnParticle(Particle.FLASH, player.getLocation().add(0, 1, 0), 5, 0.3, 0.5, 0.3, 0.01);
-                world.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 2f, 1f);
-            } else {
-                world.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1f, 2f);
             }
         }
     }
