@@ -21,12 +21,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class TransactionsMenu extends PaginatedMenu {
-    final Player owner;
-    final UUID target;
+    private final UUID target;
 
     public TransactionsMenu(Player owner, UUID target) {
         super(owner);
-        this.owner = owner;
         this.target = target;
     }
 
