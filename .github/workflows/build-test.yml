@@ -1,5 +1,7 @@
 name: Build & Test
 
+# truc pour test
+
 on:
   pull_request:
     paths-ignore:
