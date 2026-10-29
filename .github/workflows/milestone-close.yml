@@ -34,6 +34,8 @@ jobs:
       # Build & Test runs instead of starting from an empty Gradle home.
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: false
 
       - name: Build with Gradle
         run: |

@@ -51,6 +51,8 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: false
 
       - name: Run Tests with Gradle
         run: ./gradlew test --no-daemon --stacktrace
@@ -84,6 +86,8 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: false
 
       - name: Build with snapshot version
         env:
