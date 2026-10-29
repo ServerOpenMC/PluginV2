@@ -20,6 +20,7 @@ public interface CustomLoot {
 
     default Component buildLootComponent(int amount) {
         if (this.getDisplayText() == null || this instanceof TableLoot) return null;
+        if (this instanceof ItemLoot itemLoot && !itemLoot.isPredicateToLoot()) return null;
 
         Component base = Component.text(" - ", NamedTextColor.GRAY);
 

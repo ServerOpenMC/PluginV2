@@ -29,7 +29,7 @@ public class QuizzLootTable extends CustomLootTable {
         return Set.of(
                 new MoneyLoot(100, 300, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CONTEST_SHELL,
-                        (player) -> WeeklyEventsManager.isEventActive()
+                        WeeklyEventsManager.isEventActive()
                                 && WeeklyEventsManager.getCurrentEvent() instanceof Contest
                                 && ContestPhase.TRADE_PHASE.getPhase() == WeeklyEventsManager.getCurrentPhase(),
                         1,
