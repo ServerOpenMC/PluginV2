@@ -47,7 +47,7 @@ public class WitchNPCS implements Listener {
 
         dataCorpse.setType(EntityType.WITCH);
 
-        dataCorpse.setDisplayName("<red>☠ </red><gray><lang:feature.corpse.npc.display.owner:></gray>");//TODO
+        dataCorpse.setDisplayName("<purple><lang:feature.events.halloween.festival.npc.name.0:></purple>");
 
         dataCorpse.setVisibility(NpcVisibility.ALL);
 

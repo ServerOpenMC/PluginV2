@@ -3,7 +3,9 @@ package fr.openmc.core.features.events.contents.halloween.festival.shop.menu.but
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 
@@ -20,9 +22,15 @@ public class TerrorHouseButton {
                             "feature.events.halloween.festival.button.terror_house.lore"
                     ));
                     itemMeta.setItemModel(NamespacedKey.minecraft("air"));
-                }).setCloseButton()//.setOnClick(inventoryClickEvent -> { //TODO tp dans la dimension
-//                    inventoryClickEvent.getClickedInventory().close();
-//                })
+                }).setOnClick(inventoryClickEvent -> {
+                    menu.getOwner().teleport(
+                            new Location(
+                                    DimensionGenerator.HALLOWEEN_WORLD,
+                                    -58, -60, -67
+                            )
+                    );
+                    menu.getOwner().closeInventory();
+                })
         );
     }
 }
