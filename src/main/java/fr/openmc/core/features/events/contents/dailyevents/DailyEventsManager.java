@@ -31,7 +31,7 @@ import java.util.*;
 @Credit(developers = {"iambibi_"})
 public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
     private static final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
-            9, 13, 16, 21
+            10, 15, 21
     ));
 
     public static final int SHOW_BEGINNING_DELAY = 60; // en secondes
