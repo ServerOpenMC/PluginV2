@@ -21,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -41,6 +42,16 @@ public class TerrorHouseListener implements Listener {
 
         if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
             player.teleport(SpawnManager.getSpawnLocation());
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getPlayer();
+
+        if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) {
+            player.teleport(SpawnManager.getSpawnLocation());
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
