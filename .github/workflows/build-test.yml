@@ -1,7 +1,5 @@
 name: Build & Test
 
-# Wawa
-
 on:
   pull_request:
     paths-ignore:
