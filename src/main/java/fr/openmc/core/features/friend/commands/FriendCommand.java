@@ -9,7 +9,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsAutoComplete;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsRequestAutoComplete;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -20,8 +19,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 
@@ -328,10 +325,11 @@ public class FriendCommand {
             @Named("ami") @SuggestWith(FriendsRequestAutoComplete.class) OMCOfflinePlayer target
     ) {
         try {
-            if (!target.hasPlayedBefore()) {
+            if (!target.hasPlayedBefore() && !target.isOnline()) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
+
             if (!FriendManager.isRequestPending(target.getUniqueId())) {
                 MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
@@ -347,6 +345,7 @@ public class FriendCommand {
                     MessageType.INFO,
                     true
             );
+
             if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
                 MessagesManager.sendMessage(
                         targetPlayer,
