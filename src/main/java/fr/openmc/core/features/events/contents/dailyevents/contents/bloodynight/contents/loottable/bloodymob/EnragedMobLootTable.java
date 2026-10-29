@@ -29,8 +29,8 @@ public class EnragedMobLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE,0.4, 4, 8),
-                new ItemLoot(Material.IRON_BLOCK,0.23, 1),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE,0.6, 4, 8),
+                new ItemLoot(Material.IRON_BLOCK,0.33, 1),
                 new ItemLoot(Material.GOLDEN_APPLE,0.2, 1, 2),
                 new ItemLoot(Material.GOLD_BLOCK,0.16, 1),
                 new ItemLoot(ItemType.SPLASH_POTION.createItemStack(p ->
