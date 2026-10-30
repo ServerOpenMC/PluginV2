@@ -43,7 +43,7 @@ public class LootChestMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return ""; //TODO je sais pas quoi mettre
+        return ""; //il n'a pas besoin de texture
     }
 
     @Override

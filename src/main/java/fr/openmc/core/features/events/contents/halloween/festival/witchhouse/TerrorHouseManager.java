@@ -76,7 +76,7 @@ public class TerrorHouseManager {
         globalAdvancement += increase;
         floorAdvancement += increase;
 
-        CheckForPointRewards();
+        checkForPointRewards();
 
         if (finalFloorReach)
             return;
@@ -87,7 +87,7 @@ public class TerrorHouseManager {
         updateFloor();
     }
 
-    private static void CheckForPointRewards() {
+    private static void checkForPointRewards() {
         if (currentRewardToReach.equals(PointRewards.NULL))
             return;
 

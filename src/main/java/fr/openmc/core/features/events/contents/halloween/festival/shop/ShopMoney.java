@@ -8,7 +8,6 @@ import net.kyori.adventure.text.Component;
 
 @Getter
 public enum ShopMoney {
-    //TODO rajouter les crafts
     RED_CANDY(TranslationManager.translation("itemsadder.omc_halloween.candy_red.name"), OMCRegistry.CUSTOM_ITEMS.CANDY_RED, 1000),
     YELLOW_CANDY(TranslationManager.translation("itemsadder.omc_halloween.candy_yellow.name"), OMCRegistry.CUSTOM_ITEMS.CANDY_YELLOW, 10000), //extremely rare no craft
     GREEN_CANDY(TranslationManager.translation("itemsadder.omc_halloween.candy_green.name"), OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 10),

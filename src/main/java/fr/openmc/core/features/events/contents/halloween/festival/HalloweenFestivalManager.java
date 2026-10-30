@@ -44,8 +44,6 @@ import java.util.concurrent.ExecutionException;
 
 public class HalloweenFestivalManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
 
-    //TODO quand acheter truc dans shop
-
     @Getter
     private static HalloweenDB halloweenDB;
 
