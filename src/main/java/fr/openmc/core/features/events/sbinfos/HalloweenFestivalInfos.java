@@ -12,6 +12,7 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -56,14 +57,18 @@ public class HalloweenFestivalInfos implements InfoSwapper {
                 .append(text(WitchShopManager.getHalloweenPointIcon()))
         );
 
+        Component lore;
+        if (TerrorHouseManager.finalFloorReach) {
+            lore = TranslationManager.translation("feature.events.halloween.festival.sb.info.2", true);
+        } else {
+            lore = TranslationManager.translation("feature.events.halloween.festival.sb.info.3", true,
+                    text(floorToReach.getSimplifyFloor()),
+                    text(EconomyManager.getFormattedSimplifiedNumber(floorAdvancement)),
+                    text(EconomyManager.getFormattedSimplifiedNumber(floorToReach.getRequire()))
+            ).append(text(WitchShopManager.getHalloweenPointIcon()).font(Key.key("minecraft:default")));
+        }
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                .append(TerrorHouseManager.finalFloorReach
-                        ? TranslationManager.translation("feature.events.halloween.festival.sb.info.2", true)
-                        : TranslationManager.translation("feature.events.halloween.festival.sb.info.3", true,
-                        text(floorToReach.getSimplifyFloor()),
-                        text(EconomyManager.getFormattedSimplifiedNumber(floorAdvancement)),
-                        text(EconomyManager.getFormattedSimplifiedNumber(floorToReach.getRequire()))
-                ).append(text(WitchShopManager.getHalloweenPointIcon())))
+                .append(lore)
         );
 
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
