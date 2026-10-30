@@ -64,8 +64,6 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
             "world", "world_nether", "world_the_end"
     );
 
-
-
     @Override
     public void init() {
         CorpseNPCManager.init();
@@ -262,7 +260,6 @@ public class CorpseManager extends Feature implements LoadIfEnable<FancyNpcsHook
     }
 
     public static Component getRemainingTime(UUID playerUUID) {
-
         Component alreadyEnd = TranslationManager.translation("feature.corpse.cooldown.already_end");
 
         if (DynamicCooldownManager.getCooldowns(playerUUID) == null) return alreadyEnd;

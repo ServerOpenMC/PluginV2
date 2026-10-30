@@ -56,6 +56,12 @@ public class CorpseCommand {
                     Prefix.CORPSE, MessageType.WARNING, true);
     }
 
+    @Subcommand("delete")
+    @CommandPermission("omc.admins.commands.corpse.delete")
+    void onDeleteAdmin(CommandSender sender, @Named("player") @SuggestWith(CorpseOwnersAutoComplete.class) OfflinePlayer target) {
+        CorpseManager.deleteCorpse(target.getUniqueId(), FoundTypes.ABORT);
+    }
+
     @Subcommand("teleport")
     @CommandPermission("omc.admins.commands.corpse.teleport")
     void onTeleport(Player sender, @Named("player") @SuggestWith(CorpseOwnersAutoComplete.class) OfflinePlayer target) {

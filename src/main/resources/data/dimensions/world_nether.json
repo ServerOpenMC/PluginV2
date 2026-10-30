@@ -34,8 +34,8 @@
       "name": "L'appât des bêtes",
       "description": "Les bêtes vous redonneront l'appareil quand vous y serez.",
       "type": "ITEMS",
-      "required": 500,
-      "material": "IRON_INGOT",
+      "required": 300,
+      "material": "GOLD_INGOT",
       "cooldownSeconds": 86400
     },
     {
