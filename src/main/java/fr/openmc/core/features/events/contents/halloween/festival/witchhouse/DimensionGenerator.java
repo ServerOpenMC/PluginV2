@@ -43,6 +43,7 @@ public class DimensionGenerator {
         HALLOWEEN_WORLD.setGameRule(GameRules.SPAWN_MONSTERS, false);
         HALLOWEEN_WORLD.setGameRule(GameRules.SPAWN_MOBS, false);
         HALLOWEEN_WORLD.setGameRule(GameRules.RANDOM_TICK_SPEED, 0);
+        HALLOWEEN_WORLD.setGameRule(GameRules.PVP, false);
 
         // ** SET WORLD BORDER AND TIME **
         HALLOWEEN_WORLD.getWorldBorder().setSize(500);
