@@ -24,7 +24,6 @@ public class Money {
             CommandSender sender,
             @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target
     ) {
-        System.out.println("1");
         if (target == null && sender instanceof Player player) {
             MessagesManager.sendMessage(player, TranslationManager.translation(
                     "feature.economy.money.self",
