@@ -22,7 +22,7 @@ public class HouseSpiderLV1 extends CustomMob<Spider> {
                 3.0,
                 List.of(
                         new XpLoot(25, 50, 0.5),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.2, 1, 2)
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.4, 1, 2)
                 )
         );
     }

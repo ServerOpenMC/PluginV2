@@ -105,7 +105,6 @@ public class CustomStructure {
         );
 
         try {
-            System.out.println("CustomStructureManager.savePlacement(placement)");
             CustomStructureManager.savePlacement(placement);
         } catch (Exception exception) {
             // Roll back the paste if the placement could not be recorded.

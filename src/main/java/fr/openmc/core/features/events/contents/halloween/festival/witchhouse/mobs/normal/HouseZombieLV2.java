@@ -27,8 +27,8 @@ public class HouseZombieLV2 extends CustomMob<Zombie> {
                 List.of(
                         new XpLoot(75, 125, 0.7),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.4, 2, 5),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.13, 2, 5),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.04, 1)
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.16, 2, 5),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.1, 1)
                 )
         );
     }

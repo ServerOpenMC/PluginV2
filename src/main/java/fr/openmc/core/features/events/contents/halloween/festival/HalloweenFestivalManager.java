@@ -192,9 +192,7 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
     }
 
     public static void placeTerrorHouse() {
-
         try {
-            System.out.println("CustomStructureManager.existsPlacement(TERROR_HOUSE_UUID) " + CustomStructureManager.existsPlacement(TERROR_HOUSE_UUID) );
             if (CustomStructureManager.existsPlacement(TERROR_HOUSE_UUID))
                 return;
         } catch (SQLException e) {
@@ -202,7 +200,6 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
         }
 
         try {
-            System.out.println("place");
             OMCRegistry.CUSTOM_STRUCTURES.TERROR_HOUSE.place(
                     TERROR_HOUSE_UUID,
                     new Location(DimensionGenerator.HALLOWEEN_WORLD, 0, 0, 0)

@@ -27,19 +27,19 @@ public class HouseBlazeLV2 extends CustomMob<Blaze> {
                         new XpLoot(75, 110, 0.7),
                         new ItemLoot(
                                 OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN,
-                                0.35,
+                                0.55,
                                 1,
                                 4
                         ),
                         new ItemLoot(
                                 OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN,
-                                0.10,
+                                0.25,
                                 1,
                                 4
                         ),
                         new ItemLoot(
                                 OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE,
-                                0.02,
+                                0.1,
                                 1
                         )
                 )

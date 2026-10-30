@@ -25,8 +25,8 @@ public class HouseWitchLV3 extends CustomMob<Witch> {
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.6, 2, 6),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 0.2, 1, 5),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.008, 1, 2),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_RED, 0.0001, 1),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_YELLOW, 0.00004, 1)
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_RED, 0.002, 1),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_YELLOW, 0.0005, 1)
                 )
         );
     }

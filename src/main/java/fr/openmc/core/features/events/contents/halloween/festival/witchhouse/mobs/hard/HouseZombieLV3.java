@@ -28,8 +28,8 @@ public class HouseZombieLV3 extends CustomMob<Zombie> {
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.5, 3, 7),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 0.3, 1, 5),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.01, 1, 2),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_RED, 0.0002, 1),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_YELLOW, 0.00005, 1)
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_RED, 0.002, 1),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_YELLOW, 0.0005, 1)
                 )
         );
     }
