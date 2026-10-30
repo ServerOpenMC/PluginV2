@@ -32,18 +32,6 @@ public class HalloweenFestivalCommands {
         new WitchShopStoreMenu(player, 1).open();
     }
 
-//    @Subcommand("place store")
-//    @CommandPermission("omc.admins.commands.halloween_festival.place.store")
-//    public void placeStore(Player player) {
-//        HalloweenFestivalManager.placeWitchStore(player.getLocation());
-//    }
-//
-//    @Subcommand("remove store")
-//    @CommandPermission("omc.admins.commands.halloween_festival.remove.store")
-//    public void removeStore(Player player) {
-//        HalloweenFestivalManager.removeWitchStore();
-//    }
-
     @Subcommand("place house")
     @CommandPermission("omc.admins.commands.halloween_festival.place.house")
     public void placeHouse(Player player) {
