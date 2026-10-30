@@ -36,7 +36,7 @@ public class PumpkinCountLeaderBoard extends LeaderBoard {
                     .color(NamedTextColor.RED);
 
         List<HalloweenData> datas = HalloweenManager.getAllHalloweenData().values().stream()
-                .sorted(Comparator.comparingDouble(HalloweenData::getPumpkinCount))
+                .sorted(Comparator.comparingDouble(HalloweenData::getPumpkinCount).reversed())
                 .limit(10)
                 .toList();
 
