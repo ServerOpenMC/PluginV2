@@ -10,12 +10,24 @@ crops:
     min_light: 10
     seed: "omc_foods:courgette_seed"
     bottom_block: "farmland"
-    item_drop:
-      item: omc_foods:courgette
-      min_amount: 1
-      max_amount: 2
-      chance: 100
-      ignore_fortune: false
+    loots:
+      courgette:
+        triggers:
+          - BREAK
+        age: 3
+        item_drops:
+          courgette:
+            item: omc_foods:courgette
+            min_amount: 1
+            max_amount: 2
+            chance: 100
+            ignore_fortune: false
+          courgette_seed:
+            item: omc_foods:courgette_seed
+            min_amount: 1
+            max_amount: 1
+            chance: 100
+            ignore_fortune: true
 
   salad_crops:
     models_by_textures:
@@ -25,13 +37,25 @@ crops:
     max_age: 3
     min_light: 10
     seed: "omc_foods:salad_seed"
-    bottom_block: "farmland"
-    item_drop:
-      item: omc_foods:salade
-      min_amount: 1
-      max_amount: 1
-      chance: 100
-      ignore_fortune: false
+    bottom_block: farmland
+    loots:
+      salade:
+        triggers:
+          - BREAK
+        age: 3
+        item_drops:
+          salad:
+            item: omc_foods:salade
+            min_amount: 1
+            max_amount: 1
+            chance: 100
+            ignore_fortune: false
+          salad_seed:
+            item: omc_foods:salad_seed
+            min_amount: 1
+            max_amount: 1
+            chance: 100
+            ignore_fortune: true
 
   onion_crops:
     models_by_textures:
@@ -42,12 +66,24 @@ crops:
     min_light: 10
     seed: "omc_foods:onion_seed"
     bottom_block: "farmland"
-    item_drop:
-      item: omc_foods:onion
-      min_amount: 1
-      max_amount: 3
-      chance: 100
-      ignore_fortune: false
+    loots:
+      onion:
+        triggers:
+          - BREAK
+        age: 3
+        item_drops:
+          onion:
+            item: omc_foods:onion
+            min_amount: 1
+            max_amount: 3
+            chance: 100
+            ignore_fortune: false
+          onion_seed:
+            item: omc_foods:onion_seed
+            min_amount: 1
+            max_amount: 1
+            chance: 100
+            ignore_fortune: true
 
   tomato_crops:
     models_by_textures:
@@ -58,9 +94,21 @@ crops:
     min_light: 10
     seed: "omc_foods:tomato_seed"
     bottom_block: "farmland"
-    item_drop:
-      item: omc_foods:tomate
-      min_amount: 1
-      max_amount: 2
-      chance: 100
-      ignore_fortune: false
+    loots:
+      tomato:
+        triggers:
+          - BREAK
+        age: 3
+        item_drops:
+          tomato:
+            item: omc_foods:tomate
+            min_amount: 1
+            max_amount: 2
+            chance: 100
+            ignore_fortune: false
+          tomato_seed:
+            item: omc_foods:tomato_seed
+            min_amount: 1
+            max_amount: 1
+            chance: 100
+            ignore_fortune: true
