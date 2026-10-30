@@ -8,7 +8,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command("halloween")
 @CommandPermission("omc.admins.commands.halloween")
 public class HalloweenCommands {
-    @Subcommand("end")
+    @Subcommand("endPumpkin")
     public void endHalloweenCommand() {
         HalloweenManager.endEvent();
     }

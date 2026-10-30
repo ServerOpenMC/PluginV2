@@ -1,0 +1,10 @@
+info:
+  namespace: omc_halloween
+categories:
+  omc_halloween:
+    enabled: true
+    skip_if_already: false
+    icon: omc_halloween:candy_red
+    name: "OpenMC Halloween"
+    items:
+      - omc_halloween:*

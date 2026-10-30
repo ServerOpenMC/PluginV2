@@ -15,7 +15,7 @@ public class CustomStructureRegistry extends Registry<String, CustomStructure>
     public static final String STRUCTURE_KEY = "omc_structure";
 
     public final CustomStructure WITCH_SHOP = register("test", "pillar.nbt");
-    public final CustomStructure TERROR_HOUSE = register("terror house", "Terrorhouse.schem");
+    public final CustomStructure TERROR_HOUSE = register("terror house", "TerrorHouse.schem");
 
     @Override
     public String key(CustomStructure structure) {

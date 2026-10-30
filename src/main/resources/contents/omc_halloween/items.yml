@@ -56,6 +56,7 @@ items:
 
   candy_brown:
     display_name: <lang:itemsadder.omc_halloween.candy_brown.name>
+    components_nbt_file: "nbt/candy_nbt.json"
     resource:
       generate: true
       textures:
@@ -63,7 +64,6 @@ items:
       material: PAPER
     lore:
       - <lang:itemsadder.omc_halloween.candy.lore.1>
-    components_nbt_file: "nbt/candy_brown_nbt.json" # marche pas j'ai pas la volonté de chercher
     consumable:
       nutrition: 1
       saturation: 0.6
