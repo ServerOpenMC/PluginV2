@@ -19,6 +19,7 @@ import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.halloween.festival.commands.HalloweenFestivalCommands;
 import fr.openmc.core.features.events.contents.halloween.festival.listeners.CandyListener;
 import fr.openmc.core.features.events.contents.halloween.festival.listeners.TerrorHouseListener;
+import fr.openmc.core.features.events.contents.halloween.festival.listeners.protections.*;
 import fr.openmc.core.features.events.contents.halloween.festival.model.HalloweenDB;
 import fr.openmc.core.features.events.contents.halloween.festival.npc.WitchNPCS;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
@@ -222,7 +223,19 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
         return Set.of(
                 CandyListener::new,
                 TerrorHouseListener::new,
-                WitchNPCS::new
+                WitchNPCS::new,
+                EntityProtection::new,
+                FireProtection::new,
+                FishProtection::new,
+                HangingProtection::new,
+                InteractProtection::new,
+                LeashProtection::new,
+                MountProtection::new,
+                PotionProtection::new,
+                TeleportProtection::new,
+                TramplingProtection::new,
+                VehicleProtection::new,
+                CommandProtection::new
         );
     }
 
