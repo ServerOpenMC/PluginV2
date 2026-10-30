@@ -17,7 +17,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import static fr.openmc.core.features.economy.EconomyManager.*;
 
 public class PlayerDeathListener implements Listener {
-    public static final double LOSS_MONEY = 0.35;
+    public static final double LOSS_MONEY = 0.15;
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
     public void onPlayerDead(PlayerDeathEvent event) {
