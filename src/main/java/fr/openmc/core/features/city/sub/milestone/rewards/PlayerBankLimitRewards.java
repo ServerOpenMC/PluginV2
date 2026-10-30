@@ -75,6 +75,7 @@ public enum PlayerBankLimitRewards implements CityRewards {
      */
     @Override
     public Component getName() {
+        if (bankBalanceLimit == null) return null;
         return TranslationManager.translation(
                 "feature.city.levels.rewards.player_bank_limit",
                 Component.text(bankBalanceLimit).color(NamedTextColor.GOLD),
