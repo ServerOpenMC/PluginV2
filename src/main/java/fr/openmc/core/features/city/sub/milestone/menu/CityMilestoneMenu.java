@@ -181,6 +181,7 @@ public class CityMilestoneMenu extends Menu {
         lore.add(TranslationManager.translation("feature.city.levels.menu.rewards.header"));
 
         for (CityRewards reward : level.getRewards()) {
+            if (reward.getName() == null) continue;
             lore.add(Component.text(" ").append(reward.getName()).decoration(TextDecoration.ITALIC, false));
         }
 

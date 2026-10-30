@@ -73,6 +73,8 @@ public enum MemberLimitRewards implements CityRewards {
      */
     @Override
     public Component getName() {
+        if (memberLimit == null) return null;
+
         return TranslationManager.translation(
                 "feature.city.levels.rewards.member_limit",
                 Component.text(memberLimit).color(NamedTextColor.LIGHT_PURPLE)
