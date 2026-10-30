@@ -29,19 +29,19 @@ public class HouseWitherSkeletonLV2 extends CustomMob<WitherSkeleton> {
                         new XpLoot(90, 130, 0.75),
                         new ItemLoot(
                                 OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN,
-                                0.4,
+                                0.6,
                                 1,
                                 4
                         ),
                         new ItemLoot(
                                 OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN,
-                                0.13,
+                                0.23,
                                 1,
                                 2
                         ),
                         new ItemLoot(
                                 OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE,
-                                0.04,
+                                0.1,
                                 1
                         )
                 )

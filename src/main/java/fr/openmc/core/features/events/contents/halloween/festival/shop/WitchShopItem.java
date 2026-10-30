@@ -27,11 +27,11 @@ public class WitchShopItem {
     }
 
     public WitchShopItem(Floors advancements, CustomItem item, ShopMoney moneyItem, int price) {
-        this(advancements, item, item.getBest().effectiveName(), moneyItem, price);
+        this(advancements, item, item.getBest().effectiveName().asHoverEvent().value(), moneyItem, price);
     }
 
     public WitchShopItem(Floors advancements, CustomItem item, int price) {
-        this(advancements, item, item.getBest().effectiveName(), price);
+        this(advancements, item, item.getBest().effectiveName().asHoverEvent().value(), price);
     }
 
     public Component getName() {

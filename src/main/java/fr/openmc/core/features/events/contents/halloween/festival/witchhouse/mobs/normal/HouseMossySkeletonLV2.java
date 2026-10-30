@@ -9,7 +9,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Bogged;
-import org.bukkit.entity.Skeleton;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,9 +24,9 @@ public class HouseMossySkeletonLV2 extends CustomMob<Bogged> {
                 4.0,
                 List.of(
                         new XpLoot(75, 110, 0.7),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.35, 1, 4),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 0.10, 1, 4),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.04, 1)
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.55, 1, 4),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 0.20, 1, 4),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.08, 1)
                 )
         );
     }

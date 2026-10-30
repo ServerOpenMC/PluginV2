@@ -10,20 +10,22 @@ import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.*;
+import fr.openmc.core.bootstrap.features.types.HasCommands;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.halloween.festival.commands.HalloweenFestivalCommands;
+import fr.openmc.core.features.events.contents.halloween.festival.listeners.CandyListener;
 import fr.openmc.core.features.events.contents.halloween.festival.listeners.TerrorHouseListener;
+import fr.openmc.core.features.events.contents.halloween.festival.model.HalloweenDB;
 import fr.openmc.core.features.events.contents.halloween.festival.npc.WitchNPCS;
+import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
-import fr.openmc.core.features.events.contents.halloween.festival.listeners.CandyListener;
-import fr.openmc.core.features.events.contents.halloween.festival.model.HalloweenDB;
-import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.chests.LootChestManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.hooks.WorldEditHook;
 import fr.openmc.core.registry.structures.model.CustomStructureManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -39,8 +41,8 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.Set;
+import java.util.UUID;
 
 public class HalloweenFestivalManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
 
@@ -190,7 +192,6 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
     }
 
     public static void placeTerrorHouse() {
-
         try {
             if (CustomStructureManager.existsPlacement(TERROR_HOUSE_UUID))
                 return;

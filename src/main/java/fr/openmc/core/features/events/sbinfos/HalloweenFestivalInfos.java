@@ -9,8 +9,10 @@ import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.adv
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
 import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -31,7 +33,9 @@ public class HalloweenFestivalInfos implements InfoSwapper {
     @Override
     public void addInfosTo(Player player, List<Component> lines) {
 
-        lines.add(Prefix.HALLOWEEN.getPrefix().decoration(TextDecoration.BOLD, true));
+        lines.add(Prefix.HALLOWEEN.getPrefix()
+                .font(SmallCapsUtils.SMALL_CAPS_FONT)
+                .decoration(TextDecoration.BOLD, true));
 
         PointRewards reward = TerrorHouseManager.currentRewardToReach;
         Floors floorToReach = TerrorHouseManager.currentFloorToReach;
@@ -41,11 +45,11 @@ public class HalloweenFestivalInfos implements InfoSwapper {
 
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                 .append(reward.equals(PointRewards.NULL)
-                                ? TranslationManager.translation("feature.events.halloween.festival.sb.info.0",
+                                ? TranslationManager.translation("feature.events.halloween.festival.sb.info.0", true,
                                 text(EconomyManager.getFormattedSimplifiedNumber(globalAdvancement))
                         )
 
-                                : TranslationManager.translation("feature.events.halloween.festival.sb.info.1",
+                                : TranslationManager.translation("feature.events.halloween.festival.sb.info.1", true,
                                 text(EconomyManager.getFormattedSimplifiedNumber(globalAdvancement)),
                                 text(EconomyManager.getFormattedSimplifiedNumber(reward.getGlobalPointsRequire()))
                         )
@@ -53,15 +57,18 @@ public class HalloweenFestivalInfos implements InfoSwapper {
                 .append(text(WitchShopManager.getHalloweenPointIcon()))
         );
 
+        Component lore;
+        if (TerrorHouseManager.finalFloorReach) {
+            lore = TranslationManager.translation("feature.events.halloween.festival.sb.info.2", true);
+        } else {
+            lore = TranslationManager.translation("feature.events.halloween.festival.sb.info.3", true,
+                    text(floorToReach.getSimplifyFloor()),
+                    text(EconomyManager.getFormattedSimplifiedNumber(floorAdvancement)),
+                    text(EconomyManager.getFormattedSimplifiedNumber(floorToReach.getRequire()))
+            ).append(text(WitchShopManager.getHalloweenPointIcon()).font(Key.key("minecraft:default")));
+        }
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                .append(TerrorHouseManager.finalFloorReach
-                        ? TranslationManager.translation("feature.events.halloween.festival.sb.info.2")
-                        : TranslationManager.translation("feature.events.halloween.festival.sb.info.3",
-                        text(floorToReach.getSimplifyFloor()),
-                        text(EconomyManager.getFormattedSimplifiedNumber(floorAdvancement)),
-                        text(EconomyManager.getFormattedSimplifiedNumber(floorToReach.getRequire())),
-                        text(WitchShopManager.getHalloweenPointIcon())
-                ))
+                .append(lore)
         );
 
         lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)

@@ -22,7 +22,7 @@ public class HouseSpiderLV2 extends CustomMob<CaveSpider> {
                 3.0,
                 List.of(
                         new XpLoot(60, 90, 0.65),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.3, 1, 3),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.5, 1, 3),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 0.07, 1, 4),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.02, 1)
                 )

@@ -9,6 +9,7 @@ import fr.openmc.core.features.events.contents.halloween.festival.shop.ShopMoney
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -105,7 +106,7 @@ public class CandyChoiceMenu extends Menu {
     private List<Component> getCandyPoints(ShopMoney money) {
         return List.of(TranslationManager.translation(
                 "feature.events.halloween.festival.menu.candy_choice.candy_point",
-                Component.text(money.getScores()),
+                Component.text(money.getScores(), NamedTextColor.WHITE),
                 Component.text(WitchShopManager.getHalloweenPointIcon())
         ));
     }

@@ -132,6 +132,7 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
 
                 cooldowns.computeIfAbsent(cooldown.uniqueId, k -> new HashMap<>())
                         .put(cooldown.group, new Cooldown(cooldown.uniqueId, cooldown.group, cooldown.duration, cooldown.lastUse));
+                cooldownDao.delete(cooldown);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors du chargement des cooldowns depuis la base de données", e);
@@ -146,12 +147,6 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
                 if (!cooldown.isReady()) {
                     try {
                         cooldownDao.createOrUpdate(cooldown);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    try {
-                        cooldownDao.delete(cooldown);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
