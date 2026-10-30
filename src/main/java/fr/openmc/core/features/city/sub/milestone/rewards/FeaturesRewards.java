@@ -88,15 +88,14 @@ public enum FeaturesRewards implements CityRewards {
      */
     @Override
     public Component getName() {
-        if (features == null || features.length == 0) {
-            return TranslationManager.translation("feature.city.levels.rewards.none");
-        }
-        if (features.length == 1) {
+        if (features == null || features.length == 0)
+            return null;
+
+        if (features.length == 1)
             return TranslationManager.translation(
                     "feature.city.levels.rewards.unlock",
                     features[0].getName()
             );
-        }
 
         return TranslationManager.translation(
                 "feature.city.levels.rewards.unlock",
