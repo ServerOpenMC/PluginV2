@@ -12,8 +12,9 @@ import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.features.events.sbinfos.ContestInfos;
+import fr.openmc.core.features.events.sbinfos.HalloweenFestivalInfos;
 import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.hooks.WorldGuardHook;
@@ -70,7 +71,7 @@ public class MainScoreboard extends BaseScoreboard {
     @Override
     protected List<InfoSwapper> getSwapping() {
         return List.of(
-                //new HalloweenFestivalInfos(),
+                new HalloweenFestivalInfos(),
                 new ContestInfos()
         );
     }

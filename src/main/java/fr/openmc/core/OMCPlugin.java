@@ -35,7 +35,8 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.events.EventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
-import fr.openmc.core.features.events.contents.halloween.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
+//import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.open.OpenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
@@ -63,6 +64,7 @@ import fr.openmc.core.hooks.*;
 import fr.openmc.core.hooks.github.GitHubHook;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.listeners.ItemsAddersListener;
+import fr.openmc.core.registry.structures.model.CustomStructureManager;
 import fr.openmc.core.utils.text.MotdUtils;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
@@ -112,7 +114,7 @@ public class OMCPlugin extends JavaPlugin {
             AdminShopManager::new,
             HelpConfigManager::new,
             () -> new AnimationsManager(),
-            () -> new HalloweenManager(),
+//            () -> new HalloweenManager(), pas cette année mon vieux
             QuestProgressSaveManager::new,
             MotdUtils::new,
             MascotsManager::new,
@@ -120,6 +122,8 @@ public class OMCPlugin extends JavaPlugin {
             MailboxManager::new,
             DiscordLinkManager::new,
             ProfileManager::new,
+            CustomStructureManager::new,
+            () -> new HalloweenFestivalManager(),
             () -> new ElevatorManager(),
             () -> new CorpseManager(),
             QuestsManager::new,
@@ -152,7 +156,8 @@ public class OMCPlugin extends JavaPlugin {
             new WorldGuardHook(),
             new ItemsAdderHook(),
             new FancyNpcsHook(),
-            new GitHubHook()
+            new GitHubHook(),
+            new WorldEditHook()
     ));
 
     @Override

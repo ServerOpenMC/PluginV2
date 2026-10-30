@@ -16,6 +16,13 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.vampire.VampireSlave;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.*;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.mobs.kraken.Kraken;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.easy.HouseSkeletonLV1;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.easy.HouseSpiderLV1;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.easy.HouseZombieLV1;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.hard.HouseBruteLV3;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.hard.HouseWitchLV3;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.hard.HouseZombieLV3;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.mobs.normal.*;
 import fr.openmc.core.registry.mobs.listeners.CustomMobBossbarListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobDeathListener;
 import fr.openmc.core.registry.mobs.listeners.CustomMobLoadListener;
@@ -120,6 +127,69 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry>
     public final CustomMobEntry VAMPIRE_SLAVE = register(new CustomMobEntry(
             "omc_daily_events:vampire_slave",
             VampireSlave::new
+    ));
+
+    // TERROR HOUSE MOB //
+
+    public final CustomMobEntry HOUSE_ZOMBIE_LV1 = register(new CustomMobEntry(
+            "omc_witch_house:house_zombie_lv1",
+            HouseZombieLV1::new
+    ));
+
+    public final CustomMobEntry HOUSE_SKELETON_LV1 = register(new CustomMobEntry(
+            "omc_witch_house:house_skeleton_lv1",
+            HouseSkeletonLV1::new
+    ));
+
+    public final CustomMobEntry HOUSE_SPIDER_LV1 = register(new CustomMobEntry(
+            "omc_witch_house:house_spider_lv1",
+            HouseSpiderLV1::new
+    ));
+
+
+    public final CustomMobEntry HOUSE_ZOMBIE_LV2 = register(new CustomMobEntry(
+            "omc_witch_house:house_zombie_lv2",
+            HouseZombieLV2::new
+    ));
+
+    public final CustomMobEntry HOUSE_SKELETON_LV2 = register(new CustomMobEntry(
+            "omc_witch_house:house_skeleton_lv2",
+            HouseSkeletonLV2::new
+    ));
+
+    public final CustomMobEntry HOUSE_MOSSY_SKELETON_LV2 = register(new CustomMobEntry(
+            "omc_witch_house:house_mossy_skeleton_lv2",
+            HouseMossySkeletonLV2::new
+    ));
+
+    public final CustomMobEntry HOUSE_SPIDER_LV2 = register(new CustomMobEntry(
+            "omc_witch_house:house_spider_lv2",
+            HouseSpiderLV2::new
+    ));
+
+    public final CustomMobEntry HOUSE_BLAZE_LV2 = register(new CustomMobEntry(
+            "omc_witch_house:house_blaze_lv2",
+            HouseBlazeLV2::new
+    ));
+
+    public final CustomMobEntry HOUSE_WITHER_SKELETON_LV2 = register(new CustomMobEntry(
+            "omc_witch_house:house_wither_skeleton_lv2",
+            HouseWitherSkeletonLV2::new
+    ));
+
+    public final CustomMobEntry HOUSE_ZOMBIE_LV3 = register(new CustomMobEntry(
+            "omc_witch_house:house_zombie_lv3",
+            HouseZombieLV3::new
+    ));
+
+    public final CustomMobEntry HOUSE_WITCH_LV3 = register(new CustomMobEntry(
+            "omc_witch_house:house_witch_lv3",
+            HouseWitchLV3::new
+    ));
+
+    public final CustomMobEntry HOUSE_BRUTE_LV3 = register(new CustomMobEntry(
+            "omc_witch_house:house_brute_lv3",
+            HouseBruteLV3::new
     ));
 
     public final static Set<UUID> HAS_BOSSBAR = new HashSet<>();

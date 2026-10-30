@@ -2,7 +2,7 @@ package fr.openmc.api.datapacks;
 
 import fr.openmc.api.datapacks.injectors.PackMetadataInjector;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.FilesUtils;
+import fr.openmc.core.utils.file.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;

@@ -151,7 +151,10 @@ public abstract class BaseScoreboard {
 
         infos = infos.stream().filter(InfoSwapper::isActive).toList();
 
-        if (infos.size() <= 1)
+        if (infos.size() == 1)
+            return infos.getFirst();
+
+        if (infos.isEmpty())
             return null;
 
         currentSwappingInfoIndex = (currentSwappingInfoIndex + 1) % infos.size();

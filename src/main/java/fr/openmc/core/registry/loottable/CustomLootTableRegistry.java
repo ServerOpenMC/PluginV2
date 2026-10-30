@@ -21,6 +21,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.FishingFurnitureLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.LegendaryFishingTreasureLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.RareFishingTreasureLootTable;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.chests.loottable.LootChestLootTable;
 import fr.openmc.core.registry.loottable.contents.MachineBallLootTable;
 
 public class CustomLootTableRegistry extends Registry<String, CustomLootTable> implements KeyedRegistry<String, CustomLootTable> {
@@ -51,7 +52,7 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
 
     public final CustomLootTable QUIZZ = register(new QuizzLootTable());
     public final CustomLootTable CHALLENGE = register(new ChallengeLootTable());
-
+    public final CustomLootTable LOOTCHEST = register(new LootChestLootTable());
     @Override
     public String key(CustomLootTable registryObject) {
         return registryObject.getNamespace();

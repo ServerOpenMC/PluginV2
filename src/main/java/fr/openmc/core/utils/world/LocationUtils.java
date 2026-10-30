@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.world;
 
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -117,5 +118,9 @@ public class LocationUtils {
                 && a.getBlockX() == b.getBlockX()
                 && a.getBlockY() == b.getBlockY()
                 && a.getBlockZ() == b.getBlockZ();
+    }
+
+    public static Location fromVector(World world, BlockVector3 blockVector3) {
+        return new Location(world, blockVector3.x(), blockVector3.y(), blockVector3.z());
     }
 }

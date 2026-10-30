@@ -8,7 +8,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
 import fr.openmc.core.hooks.itemsadder.events.IAItemLoadEvent;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
-import fr.openmc.core.utils.FilesUtils;
+import fr.openmc.core.utils.file.FilesUtils;
 import fr.openmc.core.utils.ZipUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import lombok.Getter;

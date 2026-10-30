@@ -15,6 +15,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.LegendaryFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.RareFishingTreasureLootbox;
+import fr.openmc.core.features.events.contents.halloween.festival.CandyItem;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorBlock;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorColor;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -88,6 +89,7 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem PELUCHE_ROOT = register("omc_plush:peluche_root", Material.PAPER);
     public final CustomItem URNE = register("omc_blocks:urne", Material.GLASS);
     public final CustomItem CAISSE = register("omc_shops:caisse", Material.PAPER);
+    public final CustomItem PELUCHE_ROOT_HALLOWEEN_2026 = register("omc_halloween:peluche_root_halloween_2026", Material.PAPER);
 
     public final CustomItem ELEVATOR_GRAY = register(new ElevatorBlock(ElevatorColor.GRAY));
     public final CustomItem ELEVATOR_RED = register(new ElevatorBlock(ElevatorColor.RED));
@@ -190,6 +192,13 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem ABONDANCE_LEGGINGS = register("omc_daily_events:abondance_leggings", Material.IRON_LEGGINGS);
     public final CustomItem ABONDANCE_BOOTS = register("omc_daily_events:abondance_boots", Material.IRON_BOOTS);
 
+    public final CustomItem CANDY_RED = register(new CandyItem("omc_halloween:candy_red", 4, Material.APPLE));
+    public final CustomItem CANDY_YELLOW = register(new CandyItem("omc_halloween:candy_yellow", 2, Material.APPLE));
+    public final CustomItem CANDY_GREEN = register(new CandyItem("omc_halloween:candy_green", 3, Material.APPLE));
+    public final CustomItem CANDY_BLUE = register(new CandyItem("omc_halloween:candy_blue", 5, Material.APPLE));
+    public final CustomItem CANDY_BROWN = register(new CandyItem("omc_halloween:candy_brown", 20, Material.APPLE));
+
+    /* Lootbox */
     public final CustomItem KITCHEN_BARSTOOL = register("kitchen:kitchen_barstool", Material.PAPER);
     public final CustomItem KITCHEN_BIN = register("kitchen:kitchen_bin", Material.PAPER);
     public final CustomItem KITCHEN_CHAIR = register("kitchen:kitchen_chair", Material.PAPER);
@@ -271,6 +280,38 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem MODERN_FURNITURE_PACK_VOL2_TV = register("elitecreatures:modern_furniture_pack_vol2_tv", Material.PAPER);
     public final CustomItem MODERN_FURNITURE_PACK_VOL2_WARDROBE_01 = register("elitecreatures:modern_furniture_pack_vol2_wardrobe_01", Material.PAPER);
     public final CustomItem MODERN_FURNITURE_PACK_VOL2_WARDROBE_02 = register("elitecreatures:modern_furniture_pack_vol2_wardrobe_02", Material.PAPER);
+
+    public final CustomItem HALLOWEEN_DECORATION_V1_BROOM = register("elitecreatures:halloween_decoration_v1_broom", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_CANDLE = register("elitecreatures:halloween_decoration_v1_candle", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_CELLING_LAMP = register("elitecreatures:halloween_decoration_v1_celling_lamp", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_MR_THING = register("elitecreatures:halloween_decoration_v1_mr_thing", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_PICTURE = register("elitecreatures:halloween_decoration_v1_picture", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_PUMPKIN_1 = register("elitecreatures:halloween_decoration_v1_pumpkin_1", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_PUMPKIN_2 = register("elitecreatures:halloween_decoration_v1_pumpkin_2", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_PUMPKIN_3 = register("elitecreatures:halloween_decoration_v1_pumpkin_3", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_PUMPKIN_4 = register("elitecreatures:halloween_decoration_v1_pumpkin_4", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_ROSE_IN_GLASS = register("elitecreatures:halloween_decoration_v1_rose_in_glass", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_SCARECROW = register("elitecreatures:halloween_decoration_v1_scarecrow", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_SKULL_JAR = register("elitecreatures:halloween_decoration_v1_skull_jar", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_SKULL_SUN_FLOWER = register("elitecreatures:halloween_decoration_v1_skull_sun_flower", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_SMILE_FLAG = register("elitecreatures:halloween_decoration_v1_smile_flag", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_SPIDER_IN_JAR = register("elitecreatures:halloween_decoration_v1_spider_in_jar", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_TOMB_STONE_1 = register("elitecreatures:halloween_decoration_v1_tomb_stone_1", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_TOMB_STONE_2 = register("elitecreatures:halloween_decoration_v1_tomb_stone_2", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_TRICK_OR_TREAT_BOWL = register("elitecreatures:halloween_decoration_v1_trick_or_treat_bowl", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_WALL_LAMP = register("elitecreatures:halloween_decoration_v1_wall_lamp", Material.PAPER);
+    public final CustomItem HALLOWEEN_DECORATION_V1_WITCH_POT = register("elitecreatures:halloween_decoration_v1_witch_pot", Material.PAPER);
+
+    public final CustomItem HALLOWEEN_PACK_CAULDRON = register("pack_halloween_pack_fur:cauldron", Material.PAPER);
+    public final CustomItem HALLOWEEN_PACK_TOILE_1 = register("pack_halloween_pack_fur:toile_1", Material.PAPER);
+    public final CustomItem HALLOWEEN_PACK_TOILE_2 = register("pack_halloween_pack_fur:toile_2", Material.PAPER);
+    public final CustomItem HALLOWEEN_PACK_TOMBE_1 = register("pack_halloween_pack_fur:tombe_1", Material.PAPER);
+    public final CustomItem HALLOWEEN_PACK_TOMBE_2 = register("pack_halloween_pack_fur:tombe_2", Material.PAPER);
+    public final CustomItem HALLOWEEN_PACK_WOOD_CROSS = register("pack_halloween_pack_fur:wood_cross", Material.PAPER);
+    public final CustomItem HALLOWEEN_PACK_COFFIN_OPEN = register("pack_halloween_pack_fur:coffin_open", Material.PAPER);
+    public final CustomItem HALLOWEEN_PACK_COFFIN_CLOSE = register("pack_halloween_pack_fur:coffin_close", Material.PAPER);
+    public final CustomItem HALLOWEEN_PACK_PUMPKIN_HAT = register("pack_halloween_pack_fur:pumpkin_hat", Material.PAPER);
+    public final CustomItem HALLOWEEN_PACK_PUMPKIN = register("pack_halloween_pack_fur:pumpkin", Material.PAPER);
 
     public final CustomItem MODERN_BOX = register(new ModernBox("omc_bits:modern_box"));
     public final CustomItem KITCHEN_BOX = register(new KitchenBox("omc_bits:kitchen_box"));

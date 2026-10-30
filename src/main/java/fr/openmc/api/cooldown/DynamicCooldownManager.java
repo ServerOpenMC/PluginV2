@@ -270,9 +270,9 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
     public static void clear(String group) {
         cooldowns.forEach((uuid, userCooldowns) -> {
             Cooldown removed = userCooldowns.remove(group);
-            if (removed != null) removed.cancelTask();
+            clear(removed);
         });
-        cooldowns.entrySet().removeIf(entry -> entry.getValue().isEmpty()); // A test
+        cooldowns.entrySet().removeIf(entry -> entry.getValue().isEmpty());
     }
 
     /**
@@ -288,8 +288,19 @@ public class DynamicCooldownManager extends Feature implements LoadAfterItemsAdd
             if (callEvent) Bukkit.getPluginManager().callEvent(new CooldownEndEvent(uuid, group));
 
             Cooldown removed = userCooldowns.remove(group);
-            if (removed != null) removed.cancelTask();
+            clear(removed);
             if (userCooldowns.isEmpty()) cooldowns.remove(uuid);
+        }
+    }
+
+    private static void clear(Cooldown cooldown) {
+        if (cooldown == null) return;
+
+        cooldown.cancelTask();
+        try {
+            cooldownDao.delete(cooldown);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -1,0 +1,148 @@
+info:
+  namespace: omc_halloween
+
+items:
+  candy_red:
+    display_name: <lang:itemsadder.omc_halloween.candy_red.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_red
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_yellow:
+    display_name: <lang:itemsadder.omc_halloween.candy_yellow.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_yellow
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_green:
+    display_name: <lang:itemsadder.omc_halloween.candy_green.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_green
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_blue:
+    display_name: <lang:itemsadder.omc_halloween.candy_blue.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_blue
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy.lore.0>
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  candy_brown:
+    display_name: <lang:itemsadder.omc_halloween.candy_brown.name>
+    resource:
+      generate: true
+      textures:
+        - candy/candy_brown
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_halloween.candy.lore.1>
+    components_nbt_file: "nbt/candy_brown_nbt.json" # marche pas j'ai pas la volonté de chercher
+    consumable:
+      nutrition: 1
+      saturation: 0.6
+
+  peluche_root_halloween_2026:
+    display_name: <lang:itemsadder.omc_halloween.root_plush.name>
+    resource:
+      material: PAPER
+      model_path: root_plush
+    behaviours:
+      furniture:
+        entity: item_display
+        display_transformation:
+          transform: HEAD
+          right_rotation:
+            axis_angle:
+              angle: 180
+              axis:
+                x: 0
+                y: 1
+                z: 0
+          translation:
+            x: 0
+            y: -0.3
+            z: 0
+          scale:
+            x: 0.8
+            y: 0.8
+            z: 0.8
+
+recipes:
+  crafting_table:
+    candy_red:
+      enabled: true
+      pattern:
+        - BRB
+        - RBR
+        - BRB
+      ingredients:
+        R: RED_DYE
+        B: omc_halloween:candy_blue
+      result:
+        item: omc_halloween:candy_red
+        amount: 1
+    candy_blue:
+      enabled: true
+      pattern:
+        - GBG
+        - BGB
+        - GBG
+      ingredients:
+        G: omc_halloween:candy_green
+        B: BLUE_DYE
+      result:
+        item: omc_halloween:candy_blue
+        amount: 1
+    candy_green:
+      enabled: true
+      pattern:
+        - MGM
+        - GMG
+        - MGM
+      ingredients:
+        M: omc_halloween:candy_brown
+        G: LIME_DYE
+      result:
+        item: omc_halloween:candy_green
+        amount: 1
+    candy_brown:
+      enabled: true
+      pattern:
+        - BSR
+        - SES
+        - RSB
+      ingredients:
+        B: BONE
+        R: ROTTEN_FLESH
+        S: SUGAR
+        E: SPIDER_EYE
+      result:
+        item: omc_halloween:candy_brown
+        amount: 3

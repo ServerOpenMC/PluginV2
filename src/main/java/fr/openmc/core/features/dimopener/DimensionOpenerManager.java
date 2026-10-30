@@ -16,7 +16,7 @@ import fr.openmc.core.features.dimopener.data.StepDimensionData;
 import fr.openmc.core.features.dimopener.listener.DimensionAccessListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.registry.items.CustomItem;
-import fr.openmc.core.utils.FilesUtils;
+import fr.openmc.core.utils.file.FilesUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

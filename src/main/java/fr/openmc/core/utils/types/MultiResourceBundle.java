@@ -1,6 +1,6 @@
 package fr.openmc.core.utils.types;
 
-import fr.openmc.core.utils.FilesUtils;
+import fr.openmc.core.utils.file.FilesUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
