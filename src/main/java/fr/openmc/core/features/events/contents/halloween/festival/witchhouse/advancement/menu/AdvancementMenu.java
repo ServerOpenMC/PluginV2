@@ -70,7 +70,7 @@ public class AdvancementMenu extends Menu {
             itemMeta.lore(List.of(
                     TranslationManager.translation(
                             "feature.events.halloween.festival.menu.advancement.item_lore",
-                            Component.text(EconomyManager.getFormattedSimplifiedNumber(TerrorHouseManager.globalAdvancement)),
+                            Component.text(EconomyManager.getFormattedSimplifiedNumber(TerrorHouseManager.globalAdvancement), NamedTextColor.WHITE),
                             Component.text(WitchShopManager.getHalloweenPointIcon())
                     )
             ));

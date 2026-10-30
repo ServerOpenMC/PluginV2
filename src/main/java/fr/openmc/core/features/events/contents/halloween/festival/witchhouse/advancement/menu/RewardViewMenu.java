@@ -11,6 +11,7 @@ import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.adv
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -57,7 +58,7 @@ public class RewardViewMenu extends Menu {
                 Stream.of(Component.text(
                         "Goal : " + reward.getGlobalPointsRequire()
                                 + WitchShopManager.getHalloweenPointIcon())
-                        .color(NamedTextColor.WHITE)
+                        .color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
                 ),
                 reward.getReward().getRewardLore().stream()
         ).toList();
