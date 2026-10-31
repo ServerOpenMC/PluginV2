@@ -5,11 +5,14 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
+import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -27,7 +30,7 @@ public class AdminMayorCommands {
     ) {
         if (phase == 1) {
             MayorManager.initPhase1();
-        } else if (phase == 2){
+        } else if (phase == 2) {
             MayorManager.initPhase2();
         }
     }
@@ -62,5 +65,33 @@ public class AdminMayorCommands {
                 Component.text(city.getName())
         ), Prefix.STAFF, MessageType.INFO, false);
 
+    }
+
+    @Subcommand("warp")
+    @CommandPermission("omc.admins.commands.adminmayor.warp")
+    public void warpTeleport(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name
+    ) {
+        City playerCity = CityManager.getCityByName(name);
+
+        if (playerCity == null) return;
+
+        CityLaw law = playerCity.getLaw();
+        Location warp = law.getWarp();
+
+        if (warp == null) {
+            if (MayorManager.phaseMayor == 2) {
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.command.warp.not_set.phase2"), Prefix.CITY, MessageType.INFO, true);
+                return;
+            }
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.mayor.command.warp.not_set.no_mayor"), Prefix.CITY, MessageType.INFO, true);
+            return;
+        }
+
+        PlayerUtils.sendFadeTitleTeleport(
+                player,
+                warp
+        );
     }
 }
