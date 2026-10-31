@@ -51,9 +51,9 @@ public class AdminShopManager extends Feature implements HasCommands {
     /**
      * Opens the confirmation menu for buying an item.
      *
-     * @param player       The player who initiated the action.
-     * @param categoryId   The ID of the category.
-     * @param itemId       The ID of the item.
+     * @param player     The player who initiated the action.
+     * @param categoryId The ID of the category.
+     * @param itemId     The ID of the item.
      */
     public static void openBuyConfirmMenu(Player player, String categoryId, String itemId) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
@@ -65,9 +65,9 @@ public class AdminShopManager extends Feature implements HasCommands {
     /**
      * Opens the confirmation menu for selling an item.
      *
-     * @param player       The player who initiated the action.
-     * @param categoryId   The ID of the category.
-     * @param itemId       The ID of the item.
+     * @param player     The player who initiated the action.
+     * @param categoryId The ID of the category.
+     * @param itemId     The ID of the item.
      */
     public static void openSellConfirmMenu(Player player, String categoryId, String itemId) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
@@ -84,9 +84,9 @@ public class AdminShopManager extends Feature implements HasCommands {
     /**
      * Handles the purchase of an item by the player.
      *
-     * @param player  The player buying the item.
-     * @param itemId  The ID of the item.
-     * @param amount  The quantity to purchase.
+     * @param player The player buying the item.
+     * @param itemId The ID of the item.
+     * @param amount The quantity to purchase.
      */
     public static void buyItem(Player player, String itemId, int amount) {
         ShopItem item = getCurrentItem(player, itemId);
@@ -125,9 +125,9 @@ public class AdminShopManager extends Feature implements HasCommands {
     /**
      * Handles the selling of an item by the player.
      *
-     * @param player  The player selling the item.
-     * @param itemId  The ID of the item.
-     * @param amount  The quantity to sell.
+     * @param player The player selling the item.
+     * @param itemId The ID of the item.
+     * @param amount The quantity to sell.
      */
     public static void sellItem(Player player, String itemId, int amount) {
         ShopItem item = getCurrentItem(player, itemId); // Get the item from the current category
@@ -176,12 +176,10 @@ public class AdminShopManager extends Feature implements HasCommands {
         // Calculate the adjustment factor based on the amount
         double factor = Math.log10(amount + 1) * 0.003; // Logarithmic scale for adjustment
 
-        double newSell = item.getActualSellPrice() * (isBuying ? 1 - factor : 1 + factor); // Calculate new sell price
-        double newBuy = item.getActualBuyPrice() * (isBuying ? 1 + factor : 1 - factor); // Calculate new buy price
-
-        item.setActualSellPrice(clamp(newSell, item.getInitialSellPrice())); // Set new sell price
-        item.setActualBuyPrice(clamp(newBuy, item.getInitialBuyPrice())); // Set new buy price
-
+        if (isBuying)
+            item.setActualBuyPrice(clamp(item.getActualBuyPrice() * (1 + factor), item.getInitialBuyPrice()));
+        else
+            item.setActualSellPrice(clamp(item.getActualSellPrice() * (1 - factor), item.getInitialSellPrice()));
         adminShopYAML.saveConfig(); // Save the updated configuration
     }
 
