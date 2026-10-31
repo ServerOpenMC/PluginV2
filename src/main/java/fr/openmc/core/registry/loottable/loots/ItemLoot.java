@@ -1,5 +1,6 @@
 package fr.openmc.core.registry.loottable.loots;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -121,7 +123,9 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 if (ItemUtils.hasEnoughSpace(receiver, item)) {
                     receiver.getInventory().addItem(item);
                 } else {
-                    receiver.getWorld().dropItemNaturally(receiver.getLocation(), item);
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                        receiver.getWorld().dropItemNaturally(receiver.getLocation(), item)
+                    );
                 }
             }
         });
@@ -132,7 +136,9 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
 
         return runBase((items) -> {
             for (ItemStack item : items) {
-                receiver.getWorld().dropItemNaturally(location, item);
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                        receiver.getWorld().dropItemNaturally(location, item)
+                );
             }
         });
     }
