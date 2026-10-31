@@ -102,7 +102,7 @@ public class Money {
     public void removeMoney(CommandSender player,
                             @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
                             @Range(min = 1E-10) double amount) {
-        if (EconomyManager.withdrawBalance(target.getUniqueId(), amount, "Admin  - Retirer par " + player == null ? "Console" : player.getName())) {
+        if (EconomyManager.withdrawBalance(target.getUniqueId(), amount, "Admin  - Retirer par " + (player == null ? "Console" : player.getName()))) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation(
                             "feature.economy.money.remove.success",
