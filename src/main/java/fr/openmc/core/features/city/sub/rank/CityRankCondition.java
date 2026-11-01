@@ -44,10 +44,12 @@ public class CityRankCondition {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
         if (city.getRanks().size() >= RankLimitRewards.getRankLimit(city.getLevel())) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.grade.max_reach"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
         return true;
     }
 

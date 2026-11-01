@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -34,6 +35,8 @@ public class CityKickCondition {
             return false;
         }
 
+        if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) return true;
+
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.KICK))) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_kick"), Prefix.CITY, MessageType.ERROR, false);
             return false;
@@ -43,8 +46,12 @@ public class CityKickCondition {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_kick"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
-        
-        if (city.getRankOfMember(player.getUniqueId()).getPriority() <= city.getRankOfMember(playerToKick.getUniqueId()).getPriority()) {
+
+        DBCityRank playerRank = city.getRankOfMember(player.getUniqueId());
+        DBCityRank playerToKickRank = city.getRankOfMember(playerToKick.getUniqueId());
+        if (playerRank != null
+                && playerToKickRank != null
+                && playerToKickRank.getPriority() <= playerRank.getPriority()) {
             MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.player_cannot_kick"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
