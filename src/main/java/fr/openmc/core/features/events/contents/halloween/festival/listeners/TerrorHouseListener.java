@@ -148,6 +148,7 @@ public class TerrorHouseListener implements Listener {
     @EventHandler
     public void onPlayerToggleGlide(EntityToggleGlideEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
+        if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
 
         if (event.isGliding()) {
             event.setCancelled(true);
