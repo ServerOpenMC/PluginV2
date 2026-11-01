@@ -2,10 +2,7 @@ package fr.openmc.core.utils.text;
 
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -179,9 +176,16 @@ public class DateUtils {
      * Renvoie une chaine de caractère (ex dimanche 7 juin)
      */
     public static String formatDate(LocalDateTime dateTime) {
-        return dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.FRANCE)
+        return formatDate(dateTime, Locale.FRANCE);
+    }
+
+    /**
+     * Renvoie une chaine de caractère
+     */
+    public static String formatDate(LocalDateTime dateTime, Locale locale) {
+        return dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, locale)
                 + " " + dateTime.getDayOfMonth() + " "
-                + dateTime.getMonth().getDisplayName(TextStyle.FULL, Locale.FRANCE);
+                + dateTime.getMonth().getDisplayName(TextStyle.FULL, locale);
     }
 
     /**
