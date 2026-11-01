@@ -1,5 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -17,7 +19,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
@@ -34,25 +35,25 @@ public class AdminCityCommands {
     @Subcommand("deleteCity")
     @CommandPermission("omc.admins.commands.admincity.deleteCity")
     void deleteCity(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name
     ) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.not_found"), Prefix.STAFF);
             return;
         }
 
         CityManager.deleteCity(city);
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.delete.success"), Prefix.STAFF, MessageType.SUCCESS, false);
+        player.message().send(TranslationManager.translation("feature.city.admin.commands.delete.success"), Prefix.STAFF);
     }
 
     private static final int PER_PAGE = 10;
 
     @Subcommand("list")
     @CommandPermission("omc.admins.commands.admincity.list")
-    void list(Player player) {
+    void list(OMCPlayer player) {
         List<City> all = new ArrayList<>(CityManager.getCities());
 
         all.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
@@ -66,12 +67,9 @@ public class AdminCityCommands {
         int start = (page - 1) * PER_PAGE;
         int end = Math.min(start + PER_PAGE, total);
         List<City> sub = all.subList(start, end);
-        MessagesManager.sendMessage(
-                player,
+        player.message().send(
                 TranslationManager.translation("feature.city.admin.commands.list.header", Component.text(page), Component.text(maxPage)).color(NamedTextColor.GOLD),
-                Prefix.STAFF,
-                MessageType.SUCCESS,
-                false
+                Prefix.STAFF
         );
 
         sub.forEach(city -> {
@@ -110,13 +108,13 @@ public class AdminCityCommands {
     @Subcommand("info")
     @CommandPermission("omc.admins.commands.admincity.info")
     void info(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name
     ) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.info.not_found"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.admin.commands.info.not_found"), Prefix.STAFF);
             return;
         }
 
@@ -126,36 +124,36 @@ public class AdminCityCommands {
     @Subcommand("rename")
     @CommandPermission("omc.admins.commands.admincity.rename")
     void rename(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
             @Named("nouveau nom") String newName
     ) {
         City newNameCity = CityManager.getCityByName(newName);
         if (newNameCity != null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.rename.name_already_used"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.admin.commands.rename.name_already_used"), Prefix.STAFF);
             return;
         }
 
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.not_found"), Prefix.STAFF);
             return;
         }
         city.rename(newName);
 
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.rename.success"), Prefix.STAFF, MessageType.SUCCESS, false);
+        player.message().send(TranslationManager.translation("feature.city.admin.commands.rename.success"), Prefix.STAFF);
     }
 
     @Subcommand("setOwner")
     @CommandPermission("omc.admins.commands.admincity.setOwner")
     void setOwner(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
-            @Named("nouveau propriétaire") @SuggestWith(OnlinePlayerAutoComplete.class) Player newOwner) {
+            @Named("nouveau propriétaire") @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer newOwner) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.not_found"), Prefix.STAFF);
             return;
         }
 
@@ -165,44 +163,44 @@ public class AdminCityCommands {
     @Subcommand("setBalance")
     @CommandPermission("omc.admins.commands.admincity.setBalance")
     void setBalance(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
             @Named("balance") double newBalance
     ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.not_found"), Prefix.STAFF);
             return;
         }
 
         city.setBalance(newBalance);
-	    MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.balance.set_success"), Prefix.STAFF, MessageType.SUCCESS, false);
+        player.message().send(TranslationManager.translation("feature.city.admin.commands.balance.set_success"), Prefix.STAFF);
     }
 
     @Subcommand("getBalance")
     @CommandPermission("omc.admins.commands.admincity.getBalance")
     void getBalance(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name
     ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().send(TranslationManager.translation("messages.city.not_found"), Prefix.STAFF);
             return;
         }
 
-        MessagesManager.sendMessage(player, TranslationManager.translation(
+        player.message().send(TranslationManager.translation(
                 "feature.city.admin.commands.balance.get_success",
                 Component.text(city.getBalance() + EconomyManager.getEconomyIcon())
-        ), Prefix.STAFF, MessageType.INFO, false);
+        ), Prefix.STAFF);
     }
 
     @Subcommand("addPlayer")
     @CommandPermission("omc.admins.commands.admincity.addplayer")
     void add(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
-            @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player newMember) {
+            @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer newMember) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
@@ -211,7 +209,7 @@ public class AdminCityCommands {
         }
 
         if (CityManager.getPlayerCity(newMember.getUniqueId()) != null) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.add_player.already_in_city"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.add_player.already_in_city"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -222,68 +220,67 @@ public class AdminCityCommands {
     @Subcommand("remove")
     @CommandPermission("omc.admins.commands.admincity.remove")
     void remove(
-            Player player,
-            @Named("nom de ville") @SuggestWith(OnlinePlayerAutoComplete.class) Player member
+            OMCPlayer player,
+            @Named("nom de ville") @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer member
     ) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.remove_player.not_in_city"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.admin.commands.remove_player.not_in_city"), Prefix.STAFF);
             return;
         }
 
         if (city.hasPermission(member.getUniqueId(), CityPermission.OWNER)) {
-	        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.remove_player.is_owner"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.admin.commands.remove_player.is_owner"), Prefix.STAFF);
             return;
         }
 
         city.removePlayer(member.getUniqueId());
-        MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.remove_player.success"), Prefix.STAFF, MessageType.SUCCESS, false);
+        player.message().send(TranslationManager.translation("feature.city.admin.commands.remove_player.success"), Prefix.STAFF);
     }
 
     @Subcommand("getcity")
     @CommandPermission("omc.admins.commands.admincity.getPlayer")
     void getPlayer(
-            Player player,
-            @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player member
+            OMCPlayer player,
+            @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer member
     ) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.getcity.not_in_city"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("feature.city.admin.commands.getcity.not_in_city"), Prefix.STAFF);
             return;
         }
 
-        MessagesManager.sendMessage(player, TranslationManager.translation(
+        player.message().send(TranslationManager.translation(
                 "feature.city.admin.commands.getcity.success",
                 Component.text(city.getName()),
                 Component.text(city.getUniqueId().toString())
-        ), Prefix.STAFF, MessageType.INFO, false);
+        ), Prefix.STAFF);
     }
 
     @Subcommand("claim bypass")
     @CommandPermission("omc.admins.commands.admincity.claim.bypass")
-    public void bypass(Player player) {
+    public void bypass(OMCPlayer player) {
         UUID uuid = player.getUniqueId();
         boolean canBypass = ProtectionsManager.canBypassPlayer.contains(uuid);
 
         if (canBypass) {
             ProtectionsManager.canBypassPlayer.remove(uuid);
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.claim_bypass.disabled"), Prefix.STAFF, MessageType.SUCCESS, false);
+            player.message().send(TranslationManager.translation("feature.city.admin.commands.claim_bypass.disabled"), Prefix.STAFF);
         } else {
             ProtectionsManager.canBypassPlayer.add(uuid);
-            MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.admin.commands.claim_bypass.enabled"), Prefix.STAFF, MessageType.SUCCESS, false);
-
+            player.message().send(TranslationManager.translation("feature.city.admin.commands.claim_bypass.enabled"), Prefix.STAFF);
         }
     }
 
     @Subcommand("freeclaim add")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.add")
     public void freeClaimAdd(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
             @Named("claim") int claim) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.not_found"), Prefix.STAFF);
             return;
         }
         city.updateFreeClaims(claim);
@@ -292,13 +289,13 @@ public class AdminCityCommands {
     @Subcommand("freeclaim remove")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.remove")
     public void freeClaimRemove(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
             @Named("claim") int claim
     ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.not_found"), Prefix.STAFF);
             return;
         }
 
@@ -308,12 +305,12 @@ public class AdminCityCommands {
     @Subcommand("freeclaim delete")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.remove")
     public void freeClaimDelete(
-            Player player,
+            OMCPlayer player,
             @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name
     ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
-            MessagesManager.sendMessage(player, TranslationManager.translation("messages.city.not_found"), Prefix.STAFF, MessageType.ERROR, false);
+            player.message().sendError(TranslationManager.translation("messages.city.not_found"), Prefix.STAFF);
             return;
         }
 
