@@ -1,13 +1,16 @@
 package fr.openmc.core.listeners;
 
+import org.bukkit.GameMode;
 import org.bukkit.GameRules;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -38,21 +41,21 @@ public class SleepListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		World world = event.getPlayer().getWorld();
-		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers().size() + 1));
+		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers()));
 	}
 	
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		World world = event.getPlayer().getWorld();
-		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers().size() - 1));
+		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers()));
 	}
 	
 	@EventHandler
 	public void onChangeWorld(PlayerChangedWorldEvent event) {
 		World oldWorld = event.getFrom();
 		World newWorld = event.getPlayer().getWorld();
-		oldWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(oldWorld.getPlayers().size()));
-		newWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(newWorld.getPlayers().size()));
+		oldWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(oldWorld.getPlayers()));
+		newWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(newWorld.getPlayers()));
 	}
 	
 	/**
@@ -62,7 +65,11 @@ public class SleepListener implements Listener {
 	 * @param players The number of players in the world.
 	 * @return The percentage of players needed to sleep in the world.
 	 */
-	private int getPercentage(int players) {
-		return PLAYER_THRESHOLDS.ceilingEntry(players).getValue();
+	private int getPercentage(List<Player> players) {
+		long playersCount = players.stream()
+				.filter(player -> player.getGameMode().equals(GameMode.SURVIVAL))
+				.count();
+
+		return PLAYER_THRESHOLDS.ceilingEntry((int) playersCount).getValue();
 	}
 }
