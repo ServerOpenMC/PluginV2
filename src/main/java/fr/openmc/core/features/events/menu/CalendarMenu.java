@@ -170,7 +170,7 @@ public class CalendarMenu extends PaginatedMenu implements OpenMenu {
                         phase.getStartMinutes()
                 );
 
-                String formattedDate = DateUtils.formatDate(dateEvent);
+                String formattedDate = DateUtils.formatDate(dateEvent, getOwner().locale());
                 String formattedTime = DateUtils.formatHourMinute(phase.getStartHour(), phase.getStartMinutes());
 
                 eventLore.add(TranslationManager.translation(
