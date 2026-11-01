@@ -70,7 +70,6 @@ public class CityChatManager {
 				)
 		);
 
-		System.out.println(city.getMembers());
 		for (UUID uuid : city.getOnlineMembers()) {
 			Player member = Bukkit.getPlayer(uuid);
 			if (member == null) continue;
