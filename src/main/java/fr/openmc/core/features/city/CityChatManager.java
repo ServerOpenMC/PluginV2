@@ -1,13 +1,12 @@
 package fr.openmc.core.features.city;
 
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -19,14 +18,14 @@ public class CityChatManager {
 	/**
 	 * Liste des joueurs dans le chat de ville
 	 */
-	public static final List<Player> cityChatMembers = new ArrayList<>();
+	private static final List<UUID> cityChatMembers = new ArrayList<>();
 	
 	/**
 	 * Ajoute un joueur au chat de ville
 	 * @param player Le joueur à ajouter
 	 */
 	public static void addCityChatMember(Player player) {
-		cityChatMembers.add(player);
+		cityChatMembers.add(player.getUniqueId());
 		MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.chat.entered"),
 				Prefix.CITY, MessageType.INFO, false);
 	}
@@ -36,7 +35,7 @@ public class CityChatManager {
 	 * @param player Le joueur à retirer
 	 */
 	public static void removeCityChatMember(Player player) {
-		cityChatMembers.remove(player);
+		cityChatMembers.remove(player.getUniqueId());
 		MessagesManager.sendMessage(player, TranslationManager.translation("feature.city.chat.leaved"),
 				Prefix.CITY, MessageType.INFO, false);
 	}
@@ -47,7 +46,7 @@ public class CityChatManager {
 	 * @return true si le joueur est dans le chat de ville, false sinon
 	 */
 	public static boolean isCityChatMember(Player player) {
-		return cityChatMembers.contains(player);
+		return cityChatMembers.contains(player.getUniqueId());
 	}
 	
 	/**
@@ -63,19 +62,18 @@ public class CityChatManager {
 			return;
 		}
 		
-		Component msg_component = TranslationManager.translation("feature.city.chat.prefix").color(NamedTextColor.GOLD)
+		Component msgComponent = TranslationManager.translation("feature.city.chat.prefix").color(NamedTextColor.GOLD)
 				.appendSpace()
-				.append(sender.displayName().color(NamedTextColor.WHITE)).append(
-				Component.text(" » ").color(NamedTextColor.GRAY).append(
+				.append(sender.displayName().color(NamedTextColor.WHITE))
+				.append(Component.text(" » ").color(NamedTextColor.GRAY).append(
 						message.color(NamedTextColor.WHITE)
 				)
 		);
-		
-		for (UUID uuid : city.getMembers()) {
-			OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
-			if (offlinePlayer.isOnline() && offlinePlayer instanceof Player player) {
-				player.sendMessage(msg_component);
-			}
+
+		for (UUID uuid : city.getOnlineMembers()) {
+			Player member = Bukkit.getPlayer(uuid);
+			if (member == null) continue;
+			member.sendMessage(msgComponent);
 		}
 	}
 }
