@@ -15,6 +15,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.milestones.bossbar.MilestoneBossBar;
+import fr.openmc.core.features.milestones.commands.AdminMilestoneCommand;
 import fr.openmc.core.features.milestones.commands.MilestoneCommand;
 import fr.openmc.core.features.milestones.listeners.PlayerJoinListener;
 import fr.openmc.core.features.milestones.models.Milestone;
@@ -44,7 +45,8 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
     @Override
     public Set<Object> getCommands() {
         return Set.of(
-                new MilestoneCommand()
+                new MilestoneCommand(),
+                new AdminMilestoneCommand()
         );
     }
 
