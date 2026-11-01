@@ -27,6 +27,7 @@ public class MascotsInteractionListener implements Listener {
     @SneakyThrows
     @EventHandler
     void onInteractWithMascots(PlayerInteractEntityEvent e) {
+        System.out.println("PlayerIneractEntityEvent");
         if (e.getHand() != EquipmentSlot.HAND) return;
 
         Player player = e.getPlayer();
@@ -49,6 +50,7 @@ public class MascotsInteractionListener implements Listener {
         if (city.isInWar()) return;
 
         UUID cityUUID = city.getUniqueId();
+        e.setCancelled(true);
         if (mascotsUUID.equals(cityUUID)) {
             Mascot mascot = city.getMascot();
             if (mascot == null) {
