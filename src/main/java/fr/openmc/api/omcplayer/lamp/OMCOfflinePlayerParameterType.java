@@ -1,6 +1,7 @@
 package fr.openmc.api.omcplayer.lamp;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -18,16 +19,15 @@ public class OMCOfflinePlayerParameterType implements ParameterType<BukkitComman
     public OMCOfflinePlayer parse(@NotNull MutableStringStream input,
                                   @NotNull ExecutionContext<BukkitCommandActor> context) {
         String name = input.readString();
-        OfflinePlayer player = Bukkit.getPlayerExact(name);
+        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(name);
 
-        if (player == null) player = Bukkit.getOfflinePlayerIfCached(name);
         if (player == null) throw new InvalidPlayerException(name);
         return OMCOfflinePlayer.of(player);
     }
 
     @Override
     public @NotNull SuggestionProvider<BukkitCommandActor> defaultSuggestions() {
-        return context -> Bukkit.getOnlinePlayers()
+        return _ -> Bukkit.getOnlinePlayers()
                 .stream()
                 .map(Player::getName)
                 .toList();
