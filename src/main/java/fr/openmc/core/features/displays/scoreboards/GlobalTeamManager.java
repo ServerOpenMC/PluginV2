@@ -40,6 +40,7 @@ public class GlobalTeamManager {
                     GroupDataRecalculateEvent.class,
                     e -> groupToPrefixCache.remove(e.getGroup().getName())
             );
+            this.luckPerms.getGroupManager().loadAllGroups();
         }
     }
 
