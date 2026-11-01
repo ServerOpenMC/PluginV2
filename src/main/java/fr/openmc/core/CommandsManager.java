@@ -11,6 +11,7 @@ import fr.openmc.core.commands.debug.CustomItemCommand;
 import fr.openmc.core.commands.debug.ToastCommand;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
+import fr.openmc.core.commands.fun.Taille;
 import fr.openmc.core.commands.utils.RTPCommands;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.commands.utils.Socials;
@@ -64,7 +65,8 @@ public class CommandsManager {
                 new CustomAmbientCommands(),
                 new CustomMobsCommands(),
                 new ToastCommand(),
-                new GithubLinkCommand()
+                new GithubLinkCommand(),
+                new Taille()
         );
     }
 }
