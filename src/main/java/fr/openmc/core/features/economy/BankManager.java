@@ -113,13 +113,14 @@ public class BankManager extends Feature implements HasDatabase {
     public static void deposit(UUID playerUUID, String input) {
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
 
-        if (!InputUtils.isInputMoney(input)) {
+        boolean all = InputUtils.isInputAll(input);
+
+        if (!all && !InputUtils.isInputMoney(input)) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.BANK, MessageType.ERROR, true);
             return;
         }
 
-        double amount = InputUtils.convertToMoneyValue(input);
         City city = CityManager.getPlayerCity(playerUUID);
 
         if (city == null || city.getLevel() < 2) {
@@ -136,6 +137,15 @@ public class BankManager extends Feature implements HasDatabase {
             MessagesManager.sendMessage(offlinePlayer,
                     TranslationManager.translation("feature.economy.bank.deposit.limit_reached",
                             Component.text(EconomyManager.getFormattedNumber(limit)).color(NamedTextColor.LIGHT_PURPLE)),
+                    Prefix.BANK, MessageType.ERROR, false);
+            return;
+        }
+
+        // "all" est résolu ici (au moment de l'exécution) pour refléter le solde actuel du joueur
+        double amount = all ? EconomyManager.getBalance(playerUUID) : InputUtils.convertToMoneyValue(input);
+
+        if (amount <= 0) {
+            MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.economy.bank.deposit.not_enough_money"),
                     Prefix.BANK, MessageType.ERROR, false);
             return;
         }
@@ -170,15 +180,18 @@ public class BankManager extends Feature implements HasDatabase {
     public static void withdraw(UUID playerUUID, String input) {
         OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
 
-        if (!InputUtils.isInputMoney(input)) {
+        boolean all = InputUtils.isInputAll(input);
+
+        if (!all && !InputUtils.isInputMoney(input)) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.BANK, MessageType.ERROR, true);
             return;
         }
 
-        double amount = InputUtils.convertToMoneyValue(input);
+        // "all" est résolu ici (au moment de l'exécution) pour refléter le solde actuel de la banque
+        double amount = all ? getBankBalance(playerUUID) : InputUtils.convertToMoneyValue(input);
 
-        if (!withdraw(playerUUID, amount)) {
+        if (amount <= 0 || !withdraw(playerUUID, amount)) {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("feature.economy.bank.withdraw.not_enough"), Prefix.BANK, MessageType.ERROR, false);
             return;
         }

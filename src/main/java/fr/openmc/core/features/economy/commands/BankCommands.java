@@ -1,6 +1,7 @@
 package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.commands.autocomplete.MoneyAmountAutoComplete;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.economy.BankManager;
@@ -37,7 +38,7 @@ public class BankCommands {
     @Description("Ajout de l'argent a votre banque personelle")
     void deposit(
             OMCPlayer player,
-            @Named("montant") String input
+            @Named("montant") @SuggestWith(MoneyAmountAutoComplete.class) String input
     ) {
         if (!player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
             player.message().sendError(
@@ -57,7 +58,7 @@ public class BankCommands {
     @Description("Retire de l'argent de votre banque personelle")
     void withdraw(
             OMCPlayer player,
-            @Named("montant") String input
+            @Named("montant") @SuggestWith(MoneyAmountAutoComplete.class) String input
     ) {
         if (!player.city().hasCity() || !FeaturesRewards.hasUnlockFeature(player.city().getCity(), FeaturesRewards.Feature.PLAYER_BANK)) {
             player.message().sendError(
