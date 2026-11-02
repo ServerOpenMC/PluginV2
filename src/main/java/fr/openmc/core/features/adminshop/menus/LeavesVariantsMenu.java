@@ -100,7 +100,6 @@ public class LeavesVariantsMenu extends Menu {
                         );
 
                         Runnable back = () -> new LeavesVariantsMenu(getOwner(), categoryId, originalItem).open();
-                        System.out.println(event.getClick());
                         if (event.getClick() == ClickType.SHIFT_LEFT && originalItem.getInitialSellPrice() > 0) {
                             AdminShopManager.registerNewItem(categoryId, leaveVariant.getId(), leaveVariant);
                             AdminShopManager.sellAll(getOwner(), leaveVariant.getId());
