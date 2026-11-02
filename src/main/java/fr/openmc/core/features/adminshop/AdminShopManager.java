@@ -184,7 +184,7 @@ public class AdminShopManager extends Feature implements HasCommands {
     }
 
     private static double clamp(double actual, double initial) {
-        double min = initial * 0.8;
+        double min = initial * 0.5;
         double max = initial * 2.0; // plafond au double du prix existant
         return Math.max(min, Math.min(actual, max));
     }
