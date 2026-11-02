@@ -168,10 +168,10 @@ public class CityListDetailsMenu extends Menu {
 							"feature.city.menus.list.details.population",
 							Component.text(city.getMembers().size()).color(NamedTextColor.AQUA),
 							Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.AQUA),
-							Component.text(city.getMembers().size() > 1 ? "s" : "")
+							Component.text(city.getMembers().size() > 1 ? "s" : "").color(NamedTextColor.GRAY)
 					));
 					itemMeta.lore(TranslationManager.translationLore("feature.city.menus.list.details.population.lore"));
-				}).setOnClick(inventoryClickEvent -> new CityPlayerListMenu(getOwner(), city).open()));
+				}).setOnClick(_ -> new CityPlayerListMenu(getOwner(), city).open()));
 
 		map.put(26, new ItemMenuBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
 				itemMeta -> itemMeta.displayName(TranslationManager.translation("feature.city.menus.list.details.type", city.getType().getDisplayName()))));

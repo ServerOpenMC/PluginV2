@@ -27,7 +27,6 @@ public class MascotsInteractionListener implements Listener {
     @SneakyThrows
     @EventHandler
     void onInteractWithMascots(PlayerInteractEntityEvent e) {
-        System.out.println("PlayerIneractEntityEvent");
         if (e.getHand() != EquipmentSlot.HAND) return;
 
         Player player = e.getPlayer();
