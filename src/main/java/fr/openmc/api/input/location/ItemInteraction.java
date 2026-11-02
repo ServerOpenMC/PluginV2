@@ -20,6 +20,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -95,6 +96,68 @@ public class ItemInteraction implements Listener {
         playerChronometerData
                 .computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
                 .put(chronometerGroup, new InteractionInfo(itemInteraction, new ChronometerInfo(chronometerGroup, chronometerTime)));
+    }
+
+    public static boolean hasInteraction(Player player) {
+        return playerChronometerData.containsKey(player.getUniqueId()) && !playerChronometerData.get(player.getUniqueId()).isEmpty();
+    }
+
+    /*
+     * Méthode qui permet d'arreter une interaction
+     */
+    public static void stopInteraction(Player player, String chronometerGroup) {
+        HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
+        HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
+
+        if (playerCallbacksMap != null && playerChronometerMap != null) {
+            Function<Location, Boolean> callback = playerCallbacksMap.get(chronometerGroup);
+            ItemStack item = playerChronometerMap.get(chronometerGroup).item();
+            ChronometerInfo chronoInfo = playerChronometerMap.get(chronometerGroup).chronometerInfo();
+            ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(chronometerGroup);
+
+            if (chronoInfo != null) {
+                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, null);
+            }
+
+            int slotOfItem = ItemUtils.getSlotOfItem(player, item);
+
+            player.getInventory().remove(item);
+            if (slotOfItem != -1) player.getInventory().setItem(slotOfItem, oldItem);
+
+            if (ItemUtils.isSimilar(player.getInventory().getItemInOffHand(), item)) {
+                player.getInventory().setItemInOffHand(null);
+            }
+
+            if (ItemUtils.isSimilar(player.getItemOnCursor(), item)) {
+                player.setItemOnCursor(null);
+            }
+
+            playerCallbacksMap.remove(chronometerGroup);
+            playerChronometerMap.remove(chronometerGroup);
+
+            callback.apply(null);
+        }
+    }
+
+    /*
+     * Méthode qui permet d'arreter toutes les intéractions d'un joueur
+     */
+    public static void stopAllInteractions(Player player) {
+        if (player == null) return;
+
+        HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
+        HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
+
+        if (playerCallbacksMap != null) {
+            for (String interactionId : playerCallbacksMap.keySet()) {
+                stopInteraction(player, interactionId);
+            }
+        }
+        if (playerChronometerMap != null) {
+            for (String interactionId : playerChronometerMap.keySet()) {
+                stopInteraction(player, interactionId);
+            }
+        }
     }
 
     /*
@@ -279,6 +342,19 @@ public class ItemInteraction implements Listener {
     }
 
     /*
+     * Empecher de prendre un item quand il a un item d'interaction
+     */
+    @EventHandler
+    void onItemPickup(EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (hasInteraction(player)) {
+            event.setCancelled(true);
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("api.iteminteraction.cant_pickup_item"), Prefix.OPENMC, MessageType.ERROR, false);
+        }
+    }
+
+    /*
      * Empecher de mettre l'Item dans une ItemFrame
      */
     @EventHandler
@@ -334,63 +410,4 @@ public class ItemInteraction implements Listener {
 
         stopInteraction(player, chronometerGroup);
     }
-
-    /*
-     * Méthode qui permet d'arreter une interaction
-     */
-    public static void stopInteraction(Player player, String chronometerGroup) {
-        HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
-        HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
-
-        if (playerCallbacksMap != null && playerChronometerMap != null) {
-            Function<Location, Boolean> callback = playerCallbacksMap.get(chronometerGroup);
-            ItemStack item = playerChronometerMap.get(chronometerGroup).item();
-            ChronometerInfo chronoInfo = playerChronometerMap.get(chronometerGroup).chronometerInfo();
-            ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(chronometerGroup);
-
-            if (chronoInfo != null) {
-                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, null);
-            }
-
-            int slotOfItem = ItemUtils.getSlotOfItem(player, item);
-
-            player.getInventory().remove(item);
-            if (slotOfItem != -1) player.getInventory().setItem(slotOfItem, oldItem);
-
-            if (ItemUtils.isSimilar(player.getInventory().getItemInOffHand(), item)) {
-                player.getInventory().setItemInOffHand(null);
-            }
-
-            if (ItemUtils.isSimilar(player.getItemOnCursor(), item)) {
-                player.setItemOnCursor(null);
-            }
-
-            playerCallbacksMap.remove(chronometerGroup);
-            playerChronometerMap.remove(chronometerGroup);
-
-            callback.apply(null);
-        }
-    }
-
-    /*
-     * Méthode qui permet d'arreter toutes les intéractions d'un joueur
-     */
-    public static void stopAllInteractions(Player player) {
-        if (player == null) return;
-
-        HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
-        HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
-
-        if (playerCallbacksMap != null) {
-            for (String interactionId : playerCallbacksMap.keySet()) {
-                stopInteraction(player, interactionId);
-            }
-        }
-        if (playerChronometerMap != null) {
-            for (String interactionId : playerChronometerMap.keySet()) {
-                stopInteraction(player, interactionId);
-            }
-        }
-    }
-
 }
