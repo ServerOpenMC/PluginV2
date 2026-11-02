@@ -1,6 +1,6 @@
 package fr.openmc.core.features.milestones.commands.autocomplete;
 
-import fr.openmc.core.features.milestones.commands.MilestoneCommand;
+import fr.openmc.core.features.milestones.MilestonesManager;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
@@ -18,6 +18,6 @@ import java.util.List;
 public class PlayerMilestoneAutocomplete implements SuggestionProvider<BukkitCommandActor> {
     @Override
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
-        return MilestoneCommand.getMilestoneNames();
+        return MilestonesManager.getMilestoneNames();
     }
 }

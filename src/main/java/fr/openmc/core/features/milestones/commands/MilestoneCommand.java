@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.sub.milestone.menu.CityMilestoneMenu;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.commands.autocomplete.PlayerMilestoneAutocomplete;
 import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
 import fr.openmc.core.features.milestones.menus.MilestoneMenu;
@@ -19,21 +20,9 @@ import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 @Command("milestones")
 @CommandPermission("omc.commands.milestones")
 public class MilestoneCommand {
-
-    /**
-     * Nom, dans la commande, du milestone de ville.
-     * Il n'est pas un {@link MilestoneType} (il dépend de la ville du joueur), mais il est
-     * accessible depuis le menu principal des milestones au même titre que les autres.
-     */
-    public static final String CITY_MILESTONE = "city";
-
     @CommandPlaceholder()
     void mainCommand(
             Player player,
@@ -45,7 +34,7 @@ public class MilestoneCommand {
             return;
         }
 
-        if (milestoneName.equalsIgnoreCase(CITY_MILESTONE)) {
+        if (milestoneName.equalsIgnoreCase("city")) {
             // Même comportement que le bouton "Ville" du menu principal
             City city = CityManager.getPlayerCity(player.getUniqueId());
 
@@ -65,23 +54,8 @@ public class MilestoneCommand {
                 TranslationManager.translation(
                         "feature.milestones.command.not_found",
                         Component.text(milestoneName).color(NamedTextColor.YELLOW),
-                        Component.text(String.join(", ", getMilestoneNames())).color(NamedTextColor.YELLOW)
+                        Component.text(String.join(", ", MilestonesManager.getMilestoneNames())).color(NamedTextColor.YELLOW)
                 ),
                 Prefix.MILLESTONE, MessageType.ERROR, true);
-    }
-
-    /**
-     * @return Les noms (en minuscules) des milestones ouvrables via {@code /milestones <milestone>}
-     */
-    public static List<String> getMilestoneNames() {
-        List<String> names = new ArrayList<>();
-
-        for (MilestoneType type : MilestoneType.values()) {
-            names.add(type.name().toLowerCase(Locale.ROOT));
-        }
-
-        names.add(CITY_MILESTONE);
-
-        return names;
     }
 }
