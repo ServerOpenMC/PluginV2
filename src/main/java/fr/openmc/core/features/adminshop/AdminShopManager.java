@@ -259,6 +259,20 @@ public class AdminShopManager extends Feature implements HasCommands {
     }
 
     /**
+     * Opens the menu of a category and marks it as the player's current category.
+     * <p>
+     * The current category is required afterwards by {@link #buyItem} and {@link #sellItem}
+     * to resolve the item, so every way of opening a category menu must go through here.
+     *
+     * @param player     The player.
+     * @param categoryId The ID of the category (must exist, see {@link #findCategory(String)}).
+     */
+    public static void openCategoryMenu(Player player, String categoryId) {
+        currentCategory.put(player.getUniqueId(), categoryId);
+        new AdminShopCategoryMenu(player, categoryId).open();
+    }
+
+    /**
      * Opens the menu displaying color variants of a shop item.
      *
      * @param player       The player.
@@ -319,6 +333,25 @@ public class AdminShopManager extends Feature implements HasCommands {
      */
     public static ShopCategory getCategory(String categoryId) {
         return categories.get(categoryId);
+    }
+
+    /**
+     * Finds a shop category from player input, ignoring case.
+     *
+     * @param input The category ID typed by the player.
+     * @return The matching ShopCategory, or null if there is none.
+     */
+    public static ShopCategory findCategory(String input) {
+        if (input == null) return null;
+
+        String id = input.trim();
+        ShopCategory exact = categories.get(id);
+        if (exact != null) return exact;
+
+        return categories.values().stream()
+                .filter(category -> category.id().equalsIgnoreCase(id))
+                .findFirst()
+                .orElse(null);
     }
 
     /**

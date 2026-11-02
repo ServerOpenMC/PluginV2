@@ -42,13 +42,13 @@ public class CityBankManager {
     public static void depositCityBank(City city, Player player, String input) {
         if (!CityBankConditions.canCityDeposit(city, player)) return;
 
-        if (!InputUtils.isInputMoney(input)) {
+        boolean all = InputUtils.isInputAll(input);
+
+        if (!all && !InputUtils.isInputMoney(input)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.CITY, MessageType.ERROR, true);
             return;
         }
-
-        double amount = InputUtils.convertToMoneyValue(input);
 
         if (city == null || city.getLevel() < 2) {
             MessagesManager.sendMessage(player,
@@ -57,7 +57,10 @@ public class CityBankManager {
             return;
         }
 
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), amount)) {
+        // "all" est résolu ici (au moment de l'exécution) pour refléter le solde actuel du joueur
+        double amount = all ? EconomyManager.getBalance(player.getUniqueId()) : InputUtils.convertToMoneyValue(input);
+
+        if (amount <= 0 || !EconomyManager.withdrawBalance(player.getUniqueId(), amount)) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("messages.global.player_missing_money"),
                     Prefix.CITY, MessageType.ERROR, false);
@@ -83,15 +86,18 @@ public class CityBankManager {
     public static void withdrawCityBank(City city, Player player, String input) {
         if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
-        if (!InputUtils.isInputMoney(input)) {
+        boolean all = InputUtils.isInputAll(input);
+
+        if (!all && !InputUtils.isInputMoney(input)) {
             MessagesManager.sendMessage(player, TranslationManager.translation("messages.global.invalid_input"),
                     Prefix.CITY, MessageType.ERROR, true);
             return;
         }
 
-        double amount = InputUtils.convertToMoneyValue(input);
+        // "all" est résolu ici (au moment de l'exécution) pour refléter le solde actuel de la banque de ville
+        double amount = all ? city.getBalance() : InputUtils.convertToMoneyValue(input);
 
-        if (city.getBalance() < amount) {
+        if (amount <= 0 || city.getBalance() < amount) {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.city.bank.errors.not_enough_city_money"),
                     Prefix.CITY, MessageType.ERROR, false);
