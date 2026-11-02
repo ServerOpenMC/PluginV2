@@ -9,6 +9,7 @@ import revxrsal.commands.node.ExecutionContext;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Suggère les catégories de l'adminshop, dans le même ordre que le menu principal.
@@ -18,7 +19,7 @@ public class AdminShopCategoryAutoComplete implements SuggestionProvider<BukkitC
     public @NotNull List<String> getSuggestions(@NotNull ExecutionContext<BukkitCommandActor> context) {
         return AdminShopManager.getCategories().stream()
                 .sorted(Comparator.comparingInt(ShopCategory::position))
-                .map(ShopCategory::id)
+                .map(shopCategory -> shopCategory.id().toLowerCase(Locale.ROOT))
                 .toList();
     }
 }
