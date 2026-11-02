@@ -55,8 +55,8 @@ public class BitsMenu extends Menu {
             itemMeta.displayName(TranslationManager.translation("feature.bits.menu.main.bits"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.bits.menu.main.bits.lore",
-                    Component.text(bits).color(NamedTextColor.AQUA),
-                    Component.text(BitsManager.LINE_REQ/BitsManager.BITS_PER_LINE_REQ).color(NamedTextColor.AQUA)
+                    Component.text(BitsManager.LINE_REQ / BitsManager.BITS_PER_LINE_REQ).color(NamedTextColor.AQUA),
+                    Component.text(bits).color(NamedTextColor.AQUA)
             ));
         }));
 
