@@ -41,21 +41,21 @@ public class SleepListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		World world = event.getPlayer().getWorld();
-		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers()));
+		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers(), 1));
 	}
 	
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		World world = event.getPlayer().getWorld();
-		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers()));
+		world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(world.getPlayers(), -1));
 	}
 	
 	@EventHandler
 	public void onChangeWorld(PlayerChangedWorldEvent event) {
 		World oldWorld = event.getFrom();
 		World newWorld = event.getPlayer().getWorld();
-		oldWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(oldWorld.getPlayers()));
-		newWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(newWorld.getPlayers()));
+		oldWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(oldWorld.getPlayers(), 0));
+		newWorld.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, getPercentage(newWorld.getPlayers(), 0));
 	}
 	
 	/**
@@ -65,10 +65,10 @@ public class SleepListener implements Listener {
 	 * @param players The number of players in the world.
 	 * @return The percentage of players needed to sleep in the world.
 	 */
-	private int getPercentage(List<Player> players) {
+	private int getPercentage(List<Player> players, int add) {
 		long playersCount = players.stream()
 				.filter(player -> player.getGameMode().equals(GameMode.SURVIVAL))
-				.count();
+				.count() + add;
 
 		return PLAYER_THRESHOLDS.ceilingEntry((int) playersCount).getValue();
 	}
