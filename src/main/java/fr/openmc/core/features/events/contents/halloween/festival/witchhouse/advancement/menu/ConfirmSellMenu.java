@@ -1,6 +1,5 @@
 package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
@@ -69,8 +68,6 @@ public class ConfirmSellMenu extends Menu {
         double totalScore = scorePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
 
-        Component shiftRightSellAll = TranslationManager.translation("feature.adminshop.menu.confirm.sell_all");
-
         List<Component> lore = TranslationManager.translationLore("feature.adminshop.menu.confirm.lore",
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
@@ -78,9 +75,7 @@ public class ConfirmSellMenu extends Menu {
                 Component.text(AdminShopManager.priceFormat.format(scorePerUnit), NamedTextColor.GREEN),
                 Component.text(WitchShopManager.getHalloweenPointIcon(), NamedTextColor.GOLD),
                 Component.text(AdminShopManager.priceFormat.format(totalScore), NamedTextColor.GREEN),
-                Component.text(WitchShopManager.getHalloweenPointIcon(), NamedTextColor.GOLD),
-                shiftRightSellAll
-
+                Component.text(WitchShopManager.getHalloweenPointIcon(), NamedTextColor.GOLD)
         );
 
         content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));

@@ -16,6 +16,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
@@ -87,7 +88,7 @@ public class LeavesVariantsMenu extends Menu {
                 meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
             }).setItemId(variant.name())
                     .setOnClick(event -> {
-                        ShopItem colorVariant = new ShopItem(
+                        ShopItem leaveVariant = new ShopItem(
                                 variant.name(),
                                 variantName,
                                 variant,
@@ -98,13 +99,18 @@ public class LeavesVariantsMenu extends Menu {
                                 originalItem.getActualBuyPrice()
                         );
 
-
-                        if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                        Runnable back = () -> new LeavesVariantsMenu(getOwner(), categoryId, originalItem).open();
+                        System.out.println(event.getClick());
+                        if (event.getClick() == ClickType.SHIFT_LEFT && originalItem.getInitialSellPrice() > 0) {
+                            AdminShopManager.registerNewItem(categoryId, leaveVariant.getId(), leaveVariant);
+                            AdminShopManager.sellAll(getOwner(), leaveVariant.getId());
+                            back.run();
+                        } else if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
+                            AdminShopManager.registerNewItem(categoryId, leaveVariant.getId(), leaveVariant);
+                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, leaveVariant.getId(), back);
                         } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            AdminShopManager.registerNewItem(categoryId, leaveVariant.getId(), leaveVariant);
+                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, leaveVariant.getId(), back);
                         }
                     }));
         }

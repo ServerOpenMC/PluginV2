@@ -14,6 +14,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
@@ -60,6 +61,7 @@ public class AdminShopCategoryMenu extends Menu {
         Map<String, ShopItem> categoryItems = AdminShopManager.getCategoryItems(categoryId);
 
         if (categoryItems != null) {
+            Runnable back = () -> new AdminShopCategoryMenu(getOwner(), categoryId).open();
             for (ShopItem item : categoryItems.values()) {
                 Material material = item.getMaterial();
 
@@ -78,10 +80,14 @@ public class AdminShopCategoryMenu extends Menu {
                         AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item);
                     else if (item.isHasColorVariant())
                         AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item);
+                    else if (event.getClick() == ClickType.SHIFT_LEFT && item.getInitialSellPrice() > 0) {
+                        AdminShopManager.sellAll(getOwner(), item.getId());
+                        back.run(); // Refresh prices in the lore
+                    }
                     else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
-                        AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId());
+                        AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId(), back);
                     else if (event.isRightClick() && item.getInitialSellPrice() > 0)
-                        AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId());
+                        AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId(), back);
                 }).setItemId(item.getId()));
             }
         }
