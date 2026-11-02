@@ -152,13 +152,13 @@ public class MainMenuListener implements Listener {
         });
     }
 
-    public static void setModeAdvancement(Player player) {
+    public static void setModeAdvancement(OMCPlayer player) {
         UUID uuid = player.getUniqueId();
         isModeAdvancementActived.add(uuid);
 
         ClientboundUpdateAdvancementsPacket realTree = mainMenuOpened.get(uuid);
         if (realTree != null) {
-            ((CraftPlayer) player).getHandle().connection.send(realTree);
+            player.getServerPlayer().connection.send(realTree);
         }
     }
 
