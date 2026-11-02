@@ -26,6 +26,10 @@ import java.util.*;
  */
 @Credit(developers = {"Axeno"}, graphist = {"Gexary"})
 public class AdminShopManager extends Feature implements HasCommands {
+    private static final double MIN_PRICE_MULTIPLIER = 0.5;
+    private static final double MAX_PRICE_MULTIPLIER = 2.5;
+    private static final double PRICE_CHANGE_RATE = 0.005;
+
     public static final Map<String, ShopCategory> categories = new HashMap<>();
     public static final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
     public static final Map<UUID, String> currentCategory = new HashMap<>();
@@ -162,31 +166,58 @@ public class AdminShopManager extends Feature implements HasCommands {
     }
 
     /**
-     * Dynamically adjusts the price of an item based on quantity and transaction type.
+     * Dynamically adjusts an item's price based on the total quantity traded.
+     * <p>
+     * The adjustment is applied per individual item rather than per transaction.
+     * This ensures that splitting a quantity across multiple transactions
+     * produces the same price adjustment as trading the entire quantity at once.
      *
-     * @param categoryId The ID of the category.
-     * @param itemId     The ID of the item.
-     * @param amount     The quantity bought/sold.
-     * @param isBuying   True if buying, false if selling.
+     * <p>Buying increases the item's actual buy price, while selling decreases
+     * its actual sell price.</p>
+     *
+     * @param categoryId The ID of the item's category.
+     * @param itemId     The ID of the item being traded.
+     * @param amount     The total quantity of items traded.
+     * @param isBuying   True if the player is buying, false if selling.
      */
     private static void adjustPrice(String categoryId, String itemId, int amount, boolean isBuying) {
-        ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId); // Get the item from the category
+        if (amount <= 0) return;
+
+        ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId);
         if (item == null) return;
 
-        // Calculate the adjustment factor based on the amount
-        double factor = Math.log10(amount + 1) * 0.003; // Logarithmic scale for adjustment
+        // Calculate the cumulative multiplier for the entire quantity.
+        double multiplier = Math.pow(
+                isBuying ? 1 + PRICE_CHANGE_RATE : 1 - PRICE_CHANGE_RATE,
+                amount
+        );
 
-        if (isBuying)
-            item.setActualBuyPrice(clamp(item.getActualBuyPrice() * (1 + factor), item.getInitialBuyPrice()));
-        else
-            item.setActualSellPrice(clamp(item.getActualSellPrice() * (1 - factor), item.getInitialSellPrice()));
-        adminShopYAML.saveConfig(); // Save the updated configuration
+        if (isBuying) {
+            // Increase the buy price based on the quantity purchased.
+            double newPrice = item.getActualBuyPrice() * multiplier;
+            item.setActualBuyPrice(clamp(newPrice, item.getInitialBuyPrice()));
+        } else {
+            // Decrease the sell price based on the quantity sold.
+            double newPrice = item.getActualSellPrice() * multiplier;
+            item.setActualSellPrice(clamp(newPrice, item.getInitialSellPrice()));
+        }
+
+        adminShopYAML.saveConfig();
     }
 
+    /**
+     * Clamps an item's actual price between its configured minimum and maximum.
+     *
+     * @param actual  The calculated price before applying the limits.
+     * @param initial The item's original configured price.
+     * @return The price constrained within the allowed range.
+     */
     private static double clamp(double actual, double initial) {
-        double min = initial * 0.8;
-        double max = initial * 2.0; // plafond au double du prix existant
-        return Math.max(min, Math.min(actual, max));
+        return Math.clamp(
+                actual,
+                initial * MIN_PRICE_MULTIPLIER,
+                initial * MAX_PRICE_MULTIPLIER
+        );
     }
 
     /**
