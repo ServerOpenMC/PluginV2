@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Manages the admin shop system including items, categories, and player interactions.
  */
-@Credit(developers = {"Axeno"}, graphist = {"Gexary"})
+@Credit(developers = {"Axeno", "PuppyTransGirl"}, graphist = {"Gexary"})
 public class AdminShopManager extends Feature implements HasCommands {
     private static final double MIN_PRICE_MULTIPLIER = 0.5;
     private static final double MAX_PRICE_MULTIPLIER = 2.5;
@@ -58,12 +58,14 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player     The player who initiated the action.
      * @param categoryId The ID of the category.
      * @param itemId     The ID of the item.
+     * @param onFinish   Action run after the purchase is confirmed (typically reopens the menu the player came from).
+     *                   If null, the inventory is simply closed.
      */
-    public static void openBuyConfirmMenu(Player player, String categoryId, String itemId) {
+    public static void openBuyConfirmMenu(Player player, String categoryId, String itemId, Runnable onFinish) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
-        new ConfirmMenu(player, item, true).open();
+        new ConfirmMenu(player, item, true, onFinish).open();
     }
 
     /**
@@ -72,8 +74,10 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player     The player who initiated the action.
      * @param categoryId The ID of the category.
      * @param itemId     The ID of the item.
+     * @param onFinish   Action run after the sale is confirmed (typically reopens the menu the player came from).
+     *                   If null, the inventory is simply closed.
      */
-    public static void openSellConfirmMenu(Player player, String categoryId, String itemId) {
+    public static void openSellConfirmMenu(Player player, String categoryId, String itemId, Runnable onFinish) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
@@ -82,9 +86,8 @@ public class AdminShopManager extends Feature implements HasCommands {
             return;
         }
 
-        new ConfirmMenu(player, item, false).open();
+        new ConfirmMenu(player, item, false, onFinish).open();
     }
-
     /**
      * Handles the purchase of an item by the player.
      *
@@ -166,11 +169,30 @@ public class AdminShopManager extends Feature implements HasCommands {
     }
 
     /**
-     * Dynamically adjusts an item's price based on the total quantity traded.
-     * <p>
-     * The adjustment is applied per individual item rather than per transaction.
-     * This ensures that splitting a quantity across multiple transactions
-     * produces the same price adjustment as trading the entire quantity at once.
+     * Sells every item of the given type in the player's inventory, without confirmation menu.
+     *
+     * @param player The player selling the items.
+     * @param itemId The ID of the item.
+     */
+    public static void sellAll(Player player, String itemId) {
+        ShopItem item = getCurrentItem(player, itemId);
+        if (item == null) return;
+
+        int amount = 0;
+        for (ItemStack stack : player.getInventory().getContents())
+            if (stack != null && stack.getType() == item.getMaterial())
+                amount += stack.getAmount();
+
+        if (amount <= 0) {
+            sendError(player, TranslationManager.translation("feature.adminshop.have_enough_item"));
+            return;
+        }
+
+        sellItem(player, itemId, amount);
+    }
+
+    /**
+     * Dynamically adjusts the price of an item based on quantity and transaction type.
      *
      * <p>Buying increases the item's actual buy price, while selling decreases
      * its actual sell price.</p>

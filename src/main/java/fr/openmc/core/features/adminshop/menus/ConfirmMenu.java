@@ -17,7 +17,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -34,11 +33,13 @@ public class ConfirmMenu extends Menu {
     private final boolean isBuying;
     private int quantity;
     private final int maxQuantity;
+    private final Runnable onFinish;
 
-    public ConfirmMenu(Player owner, ShopItem shopItem, boolean isBuying) {
+    public ConfirmMenu(Player owner, ShopItem shopItem, boolean isBuying, Runnable onFinish) {
         super(owner);
         this.shopItem = shopItem;
         this.isBuying = isBuying;
+        this.onFinish = onFinish;
         this.quantity = 1;
         this.maxQuantity = isBuying ? getMaxBuyQuantity(owner, shopItem) : countPlayerItems(owner, shopItem.getMaterial());
     }
@@ -68,9 +69,6 @@ public class ConfirmMenu extends Menu {
         double totalPrice = pricePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
 
-        Component shiftRightSellAll = !isBuying ? TranslationManager.translation("feature.adminshop.menu.confirm.sell_all")
-                : Component.empty();
-
         List<Component> lore = TranslationManager.translationLore("feature.adminshop.menu.confirm.lore",
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
@@ -78,9 +76,7 @@ public class ConfirmMenu extends Menu {
                 Component.text(AdminShopManager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
                 Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
                 Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
-                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
-                shiftRightSellAll
-
+                Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN)
         );
 
         content.put(9, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));
@@ -91,7 +87,7 @@ public class ConfirmMenu extends Menu {
             this.open();
         }));
 
-        content.put(11, createQuantityButton("-10", OMCRegistry.CUSTOM_ITEMS.MINUS_BTN, event -> {
+        content.put(11, createQuantityButton("-10", OMCRegistry.CUSTOM_ITEMS.BTN_10, event -> {
             if (quantity > 10) quantity -= 10;
             else quantity = 1;
             this.open();
@@ -106,34 +102,23 @@ public class ConfirmMenu extends Menu {
         content.put(13, new ItemMenuBuilder(this, shopItem.getMaterial(), meta -> {
             meta.displayName(shopItem.getName().color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
-        }).setOnClick(event -> {
-            switch (event.getClick()) {
-                case ClickType.MIDDLE -> DialogInput.sendFloat(
-                        getOwner(),
-                        TranslationManager.translation("feature.adminshop.menu.confirm.input"),
-                        1,
-                        maxQuantity,
-                        quantity,
-                        input -> {
-                            if (input != null) {
-                                int inputQuantity = (int) input.doubleValue();
-                                if (inputQuantity > 0) {
-                                    quantity = Math.min(inputQuantity, maxQuantity);
-                                    this.open();
-                                }
+        }).setOnClick(_ -> {
+            DialogInput.sendFloat(
+                    getOwner(),
+                    TranslationManager.translation("feature.adminshop.menu.confirm.input"),
+                    1,
+                    maxQuantity,
+                    quantity,
+                    input -> {
+                        if (input != null) {
+                            int inputQuantity = (int) input.doubleValue();
+                            if (inputQuantity > 0) {
+                                quantity = Math.min(inputQuantity, maxQuantity);
+                                this.open();
                             }
                         }
-                );
-                case ClickType.SHIFT_RIGHT -> {
-                    if (!isBuying && ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())) > 0) {
-                        getOwner().closeInventory();
-                        AdminShopManager.sellItem(
-                                getOwner(),
-                                shopItem.getId(),
-                                ItemUtils.countItems(getOwner(), ItemStack.of(shopItem.getMaterial())));
                     }
-                }
-            }
+            );
         }));
 
         content.put(14, createQuantityButton("+1", OMCRegistry.CUSTOM_ITEMS.BTN_1, event -> increaseQuantity(1)));
@@ -144,10 +129,12 @@ public class ConfirmMenu extends Menu {
 
         content.put(17, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN, meta -> {
             meta.displayName(TranslationManager.translation("messages.global.accept"));
-        }).setOnClick(event -> {
-            getOwner().closeInventory();
+        }).setOnClick(_ -> {
             if (isBuying) AdminShopManager.buyItem(getOwner(), shopItem.getId(), quantity);
             else AdminShopManager.sellItem(getOwner(), shopItem.getId(), quantity);
+
+            if (onFinish != null) onFinish.run();
+            else getOwner().closeInventory();
         }));
 
         return content;
