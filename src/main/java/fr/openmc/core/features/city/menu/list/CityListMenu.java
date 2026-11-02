@@ -16,7 +16,6 @@ import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -87,7 +86,7 @@ public class CityListMenu extends PaginatedMenu {
 			Component levelComponent = Component.text(city.getLevel()).color(NamedTextColor.DARK_AQUA);
 			Component membersCurrent = Component.text(city.getMembers().size()).color(NamedTextColor.GREEN);
 			Component membersLimit = Component.text(MemberLimitRewards.getMemberLimit(city.getLevel())).color(NamedTextColor.GREEN);
-			Component membersSuffix = Component.text(city.getMembers().size() > 1 ? "s" : "");
+			Component membersSuffix = Component.text(city.getMembers().size() > 1 ? "s" : "").color(NamedTextColor.GRAY);
 			Component typeComponent = city.getType().getDisplayName();
 			Component wealthComponent = Component.text(EconomyManager.getFormattedSimplifiedNumber(city.getBalance())).color(NamedTextColor.GOLD);
 			Component wealthIcon = Component.text(EconomyManager.getEconomyIcon()).color(NamedTextColor.GOLD);
@@ -130,7 +129,7 @@ public class CityListMenu extends PaginatedMenu {
 						Component.text(city.getName()).color(NamedTextColor.GREEN)
 				));
 				itemMeta.lore(cityLore);
-			}).setOnClick(inventoryClickEvent ->
+			}).setOnClick(_ ->
 					new CityListDetailsMenu(getOwner(), city).open()
 			).hide(ItemUtils.getDataComponentType()));
 		}
@@ -158,7 +157,7 @@ public class CityListMenu extends PaginatedMenu {
 		map.put(49, new ItemMenuBuilder(this, Material.HOPPER, itemMeta -> {
 			itemMeta.displayName(TranslationManager.translation("feature.city.menus.list.sort.title"));
 			itemMeta.lore(generateSortLoreText());
-		}).setOnClick(inventoryClickEvent -> {
+		}).setOnClick(_ -> {
 			changeSortType();
 			new CityListMenu(getOwner(), sortType).open();
 		}));
@@ -213,7 +212,8 @@ public class CityListMenu extends PaginatedMenu {
 	 */
 	private Component formatSortOption(SortType type, Component label) {
 		Component prefix = sortType == type ? SELECTED_PREFIX : UNSELECTED_PREFIX;
-		return prefix.append(label);
+	NamedTextColor textColor = sortType == type ? NamedTextColor.GOLD : NamedTextColor.DARK_GRAY;
+		return prefix.append(label.color(textColor));
 	}
 	
 	/**
