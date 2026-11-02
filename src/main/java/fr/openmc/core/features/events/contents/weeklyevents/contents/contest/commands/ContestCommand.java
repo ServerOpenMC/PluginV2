@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.commands;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
@@ -155,7 +156,7 @@ public class ContestCommand {
     @CommandPermission("omc.admin.commands.contest.addpoints")
     public void addPoints(
             Player player,
-            @Named("membre") @SuggestWith(OnlinePlayerAutoComplete.class) Player target,
+            @Named("membre") @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target,
             @Named("points") Integer points
     ) {
         WeeklyEvent contest = OMCRegistry.WEEKLY_EVENTS.getEvent(Contest.class);
