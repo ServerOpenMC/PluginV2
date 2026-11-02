@@ -10,7 +10,7 @@ import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CustomItemCommand;
 import fr.openmc.core.commands.debug.ToastCommand;
 import fr.openmc.core.commands.fun.Diceroll;
-import fr.openmc.core.commands.fun.PlayerSize;
+import fr.openmc.core.commands.fun.PlayerSizeCommand;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.RTPCommands;
 import fr.openmc.core.commands.utils.Restart;
@@ -66,7 +66,7 @@ public class CommandsManager {
                 new CustomMobsCommands(),
                 new ToastCommand(),
                 new GithubLinkCommand(),
-                new PlayerSize()
+                new PlayerSizeCommand()
         );
     }
 }
