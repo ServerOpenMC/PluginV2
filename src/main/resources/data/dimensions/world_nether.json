@@ -8,14 +8,14 @@
   "steps": [
     {
       "name": "La structure initiale",
-      "description": "Former le socle du portail.",
+      "description": "Formez le socle du portail.",
       "type": "ITEMS",
       "required": 160,
       "material": "OBSIDIAN",
       "cooldownSeconds": 43200
     },
     {
-      "name": "Le composent n°1",
+      "name": "Le composant n°1",
       "description": "Préparez l'item capable d'enflammer le portail.",
       "type": "ITEMS",
       "required": 1000,
@@ -23,8 +23,8 @@
       "cooldownSeconds": 43200
     },
     {
-      "name": "Le composent n°2",
-      "description": "Le deuxième composent.",
+      "name": "Le composant n°2",
+      "description": "Le deuxième composant.",
       "type": "ITEMS",
       "required": 500,
       "material": "IRON_INGOT",
@@ -32,7 +32,7 @@
     },
     {
       "name": "L'appât des bêtes",
-      "description": "Les bêtes vous redonneront l'appareil quand vous y serez.",
+      "description": "Les bêtes vous redonneront la pareille quand vous y serez.",
       "type": "ITEMS",
       "required": 300,
       "material": "GOLD_INGOT",
@@ -40,7 +40,7 @@
     },
     {
       "name": "Collecte infernal",
-      "description": "Financez les protections necessaires a l'ouverture.",
+      "description": "Financez les protections nécessaires à l'ouverture.",
       "type": "MONEY",
       "required": 100000,
       "material": "GOLD_INGOT",

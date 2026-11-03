@@ -8,7 +8,7 @@
   "steps": [
     {
       "name": "Monstre insomniaque",
-      "description": "Tuer ceux qui vous empêche de dormir",
+      "description": "Tuez ceux qui vous empêchent de dormir",
       "type": "ITEMS",
       "required": 16,
       "material": "PHANTOM_MEMBRANE",
@@ -24,7 +24,7 @@
     },
     {
       "name": "Eclat de corruption",
-      "description": "Déclencher le pouvoir du Cube pour vous faire rever",
+      "description": "Déclenchez le pouvoir du Cube pour vous faire rêver",
       "type": "ITEMS",
       "required": 32,
       "material": "ECHO_SHARD",
