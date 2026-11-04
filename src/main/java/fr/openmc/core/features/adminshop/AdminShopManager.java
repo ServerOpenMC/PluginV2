@@ -76,7 +76,7 @@ public class AdminShopManager extends Feature implements HasCommands {
 
     /**
      * Total spillover applied to the rest of the category, as a share of the traded item's rate
-     * (0.1 = the whole category together moves 10% as much as the traded item, before price weighting).
+     * (0.3 = the whole category together moves 30% as much as the traded item, before price weighting).
      * The effect is split evenly between the other items, so it does not grow with category size.
      */
     private static final double SPILLOVER_RATIO = 0.3;
@@ -303,12 +303,13 @@ public class AdminShopManager extends Feature implements HasCommands {
      * Makes the other items of the category slightly more attractive after a transaction.
      *
      * <p>When an item is bought, the other items get a bit cheaper to buy. When it is sold, the other
-     * items pay a bit more when sold. The effect is weighted by relative price: a cheap item barely moves
-     * expensive ones, while an expensive item moves cheap ones fully. This prevents farming a worthless
-     * item to push up the prices of valuable ones.</p>
+     * items pay a bit more when sold.</p>
      *
-     * <p>Guard: a buy price is never lowered below the item's sell price, and a sell price is never raised
-     * above the item's buy price, so players can't buy and resell the same item for a profit.</p>
+     * <p>The total effect on the category is {@link #SPILLOVER_RATIO} of the traded item's rate, split
+     * evenly between the other items tradable on that side, so it does not grow with category size.
+     * It is also weighted by relative price: a cheap item barely moves expensive ones, while an
+     * expensive item moves cheap ones fully. This prevents farming a worthless item to push up the
+     * prices of valuable ones.</p>
      *
      * @param categoryId The ID of the category.
      * @param traded     The item that was just traded.
@@ -316,44 +317,66 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param isBuying   True if the player bought, false if sold.
      */
     private static void applySpillover(String categoryId, ShopItem traded, int amount, boolean isBuying) {
-        double rate = isBuying ? BUY_PRICE_CHANGE_RATE : SELL_PRICE_CHANGE_RATE;
-        double tradedBase = isBuying ? traded.getInitialBuyPrice() : traded.getInitialSellPrice();
+        double tradedBase = baseFor(traded, isBuying);
         if (tradedBase <= 0) return;
 
         Collection<ShopItem> category = items.getOrDefault(categoryId, Map.of()).values();
 
-        // Count the other items that can be traded on this side, so the effect can be split between them.
-        int affected = 0;
-        for (ShopItem other : category) {
-            if (other == traded) continue;
-
-            double otherBase = isBuying ? other.getInitialBuyPrice() : other.getInitialSellPrice();
-            if (otherBase > 0) affected++;
-        }
-
+        // Other items tradable on this side: the total effect is split between them.
+        long affected = category.stream()
+                .filter(other -> other != traded && baseFor(other, isBuying) > 0)
+                .count();
         if (affected == 0) return;
 
+        double rate = isBuying ? BUY_PRICE_CHANGE_RATE : SELL_PRICE_CHANGE_RATE;
+
         for (ShopItem other : category) {
             if (other == traded) continue;
 
-            // Items that can't be traded on this side (price 0) are left untouched.
-            double otherBase = isBuying ? other.getInitialBuyPrice() : other.getInitialSellPrice();
-            if (otherBase <= 0) continue;
+            double otherBase = baseFor(other, isBuying);
+            if (otherBase <= 0) continue; // can't be traded on this side
 
             double weight = Math.min(1.0, tradedBase / otherBase);
             double step = rate * SPILLOVER_RATIO * weight / affected;
             double spill = Math.pow(isBuying ? 1 - step : 1 + step, amount);
 
-            if (isBuying) {
-                double newBuy = clamp(other.getActualBuyPrice() * spill, otherBase, MIN_BUY_MULTIPLIER);
-                double sell = other.getActualSellPrice();
-                other.setActualBuyPrice(sell > 0 ? Math.max(newBuy, sell) : newBuy);
-            } else {
-                double newSell = clamp(other.getActualSellPrice() * spill, otherBase, MIN_SELL_MULTIPLIER);
-                double buy = other.getActualBuyPrice();
-                other.setActualSellPrice(buy > 0 ? Math.min(newSell, buy) : newSell);
-            }
+            applySpill(other, otherBase, spill, isBuying);
         }
+    }
+
+    /**
+     * Applies a spillover factor to one item's buy or sell price.
+     *
+     * <p>The result is clamped to the allowed range of that price. Guard: a buy price is never lowered
+     * below the item's sell price, and a sell price is never raised above the item's buy price, so
+     * players can't buy and resell the same item for a profit.</p>
+     *
+     * @param other     The item to adjust.
+     * @param otherBase Its base price on the affected side.
+     * @param spill     The multiplier to apply.
+     * @param isBuying  True to adjust the buy price, false to adjust the sell price.
+     */
+    private static void applySpill(ShopItem other, double otherBase, double spill, boolean isBuying) {
+        if (isBuying) {
+            double newBuy = clamp(other.getActualBuyPrice() * spill, otherBase, MIN_BUY_MULTIPLIER);
+            double sell = other.getActualSellPrice();
+            other.setActualBuyPrice(sell > 0 ? Math.max(newBuy, sell) : newBuy);
+        } else {
+            double newSell = clamp(other.getActualSellPrice() * spill, otherBase, MIN_SELL_MULTIPLIER);
+            double buy = other.getActualBuyPrice();
+            other.setActualSellPrice(buy > 0 ? Math.min(newSell, buy) : newSell);
+        }
+    }
+
+    /**
+     * Gets the base (initial) price of an item on the given side.
+     *
+     * @param item     The item.
+     * @param isBuying True for the base buy price, false for the base sell price.
+     * @return The base price, or 0 or less if the item can't be traded on that side.
+     */
+    private static double baseFor(ShopItem item, boolean isBuying) {
+        return isBuying ? item.getInitialBuyPrice() : item.getInitialSellPrice();
     }
 
     /**
