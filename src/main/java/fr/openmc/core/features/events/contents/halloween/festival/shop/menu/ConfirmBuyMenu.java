@@ -1,6 +1,5 @@
 package fr.openmc.core.features.events.contents.halloween.festival.shop.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
@@ -73,7 +72,6 @@ public class ConfirmBuyMenu extends Menu {
 
         int quantityToStack = Math.max(0, quantity / 64);
 
-        //TODO il bug aaaaaaaaaaaaaaa
         List<Component> lore = TranslationManager.translationLore("feature.events.halloween.festival.shop.confirm_lore",
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
