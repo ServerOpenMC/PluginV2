@@ -100,7 +100,7 @@ public class LogVariantsMenu extends Menu {
 
 
                         Runnable back = () -> new LogVariantsMenu(getOwner(), categoryId, originalItem).open();
-                        if (event.getClick() == ClickType.SHIFT_LEFT && originalItem.getInitialSellPrice() > 0) {
+                        if (event.getClick() == ClickType.SHIFT_RIGHT && originalItem.getInitialSellPrice() > 0) {
                             AdminShopManager.registerNewItem(categoryId, logVariant.getId(), logVariant);
                             AdminShopManager.sellAll(getOwner(), logVariant.getId());
                             back.run();
