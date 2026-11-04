@@ -378,7 +378,7 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param item       The ShopItem instance.
      */
     public static void registerNewItem(String categoryId, String itemId, ShopItem item) {
-        items.computeIfAbsent(categoryId, k -> new HashMap<>()).put(itemId, item);
+        items.computeIfAbsent(categoryId, _ -> new HashMap<>()).put(itemId, item);
     }
 
     /**
@@ -388,16 +388,6 @@ public class AdminShopManager extends Feature implements HasCommands {
      */
     public static Collection<ShopCategory> getCategories() {
         return categories.values();
-    }
-
-    /**
-     * Gets a specific shop category by ID.
-     *
-     * @param categoryId The ID of the category.
-     * @return The ShopCategory, or null if not found.
-     */
-    public static ShopCategory getCategory(String categoryId) {
-        return categories.get(categoryId);
     }
 
     /**
