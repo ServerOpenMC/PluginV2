@@ -1,13 +1,13 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -125,7 +125,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                     if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER))
                         return;
 
-                    ConfirmMenu menu = new ConfirmMenu(
+                    ConfirmMenuTemplate menu = new ConfirmMenuTemplate(
                             player,
                             () -> {
                                 player.closeInventory();

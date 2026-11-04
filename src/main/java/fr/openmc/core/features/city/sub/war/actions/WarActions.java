@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.war.actions;
 
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.city.City;
@@ -143,7 +143,7 @@ public class WarActions {
      * @param player le joueur à notifier
      */
     public static void notifyWarRules(Player player) {
-        ConfirmMenu menu = new ConfirmMenu(player,
+        ConfirmMenuTemplate menu = new ConfirmMenuTemplate(player,
                 player::closeInventory,
                 () -> {
                     MessagesManager.sendMessage(player,
@@ -200,7 +200,7 @@ public class WarActions {
             return;
         }
 
-        ConfirmMenu menu = new ConfirmMenu(player,
+        ConfirmMenuTemplate menu = new ConfirmMenuTemplate(player,
                 () -> {
                     finishLaunchWar(player, cityLaunch, cityAttack, attackers);
                     player.closeInventory();

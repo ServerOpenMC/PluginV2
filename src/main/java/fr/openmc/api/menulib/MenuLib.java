@@ -1,6 +1,6 @@
 package fr.openmc.api.menulib;
 
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
@@ -39,8 +39,9 @@ public final class MenuLib implements Listener {
 
     private static final Set<Class<? extends Menu>> ignoredMenus = new HashSet<>();
     static {
-        ignoredMenus.add(ConfirmMenu.class);
-        ignoredMenus.add(fr.openmc.core.features.adminshop.menus.ConfirmMenu.class);
+        ignoredMenus.add(ConfirmMenuTemplate.class);
+        ignoredMenus.add(fr.openmc.core.features.adminshop.menus.ConfirmBuyMenu.class);
+        ignoredMenus.add(fr.openmc.core.features.adminshop.menus.ConfirmSellMenu.class);
         ignoredMenus.add(HomeDeleteConfirmMenu.class);
     }
     @Getter

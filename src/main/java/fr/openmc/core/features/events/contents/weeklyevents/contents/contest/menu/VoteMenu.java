@@ -2,7 +2,7 @@ package fr.openmc.core.features.events.contents.weeklyevents.contents.contest.me
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
@@ -173,7 +173,7 @@ public class VoteMenu extends Menu {
                         teamComponent
                 );
 
-                ConfirmMenu menu = new ConfirmMenu(
+                ConfirmMenuTemplate menu = new ConfirmMenuTemplate(
                         player,
                         () -> {
                             ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 1, colorFinal));
@@ -226,7 +226,7 @@ public class VoteMenu extends Menu {
                         teamComponent
                 );
 
-                ConfirmMenu menu = new ConfirmMenu(
+                ConfirmMenuTemplate menu = new ConfirmMenuTemplate(
                         player,
                         () -> {
                             ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 2, colorFinal));

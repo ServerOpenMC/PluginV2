@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu.main.buttons;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.features.city.City;
@@ -39,7 +39,7 @@ public class LeaveButton {
                     City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
                     if (!CityLeaveCondition.canCityLeave(cityCheck, player)) return;
 
-                    new ConfirmMenu(player,
+                    new ConfirmMenuTemplate(player,
                             () -> {
                                 CityLeaveAction.startLeave(player);
                                 player.closeInventory();

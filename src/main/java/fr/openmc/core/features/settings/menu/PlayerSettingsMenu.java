@@ -2,7 +2,7 @@ package fr.openmc.core.features.settings.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
@@ -69,7 +69,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
             meta.displayName(TranslationManager.translation("feature.settings.reset.title")
                     .decoration(TextDecoration.ITALIC, false));
         }).setOnClick(_ ->
-                new ConfirmMenu(getOwner(), () -> {
+                new ConfirmMenuTemplate(getOwner(), () -> {
                     settings.resetAllSettings();
                     this.refresh();
                     MessagesManager.sendMessage(getOwner(),
