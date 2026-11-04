@@ -23,24 +23,76 @@ import java.util.*;
 
 /**
  * Manages the admin shop system including items, categories, and player interactions.
+ *
+ * <p>Every item has two independent dynamic prices (buy and sell):</p>
+ * <ul>
+ *   <li>Buying an item raises its buy price, selling it lowers its sell price.</li>
+ *   <li>Trading an item also moves the other items of the same category (spillover):
+ *       buying makes them slightly cheaper to buy, selling makes them slightly better to sell.</li>
+ *   <li>Prices slowly drift back to their base value over time (recovery).</li>
+ *   <li>A buy price can never end up below its sell price (no buy/resell loop).</li>
+ * </ul>
  */
 @Credit(developers = {"Axeno", "PuppyTransGirl"}, graphist = {"Gexary"})
 public class AdminShopManager extends Feature implements HasCommands {
-    private static final double MIN_PRICE_MULTIPLIER = 0.5;
+    /**
+     * Lowest buy price, as a multiplier of the base buy price (only reachable through spillover).
+     */
+    private static final double MIN_BUY_MULTIPLIER = 0.5;
+    /**
+     * Lowest sell price, as a multiplier of the base sell price.
+     */
+    private static final double MIN_SELL_MULTIPLIER = 0.2;
+    /**
+     * Highest price (buy or sell), as a multiplier of the base price.
+     */
     private static final double MAX_PRICE_MULTIPLIER = 3;
 
     /**
-     * Number of stacks to trade to go from the base price to the buy ceiling (or the sell floor).
+     * Stacks of ONE item that must be bought to go from the base buy price to the ceiling.
      */
-    private static final int STACKS_TO_REACH_LIMIT = 100;
+    private static final int STACKS_TO_REACH_BUY_CEILING = 150;
+    /**
+     * Stacks of ONE item that must be sold to go from the base sell price to the floor.
+     */
+    private static final int STACKS_TO_REACH_SELL_FLOOR = 300;
 
     /**
-     * Per-item price change rates, applied multiplicatively (compound) on every item traded.
-     * They are derived from the multipliers above, so the buy ceiling and the sell floor are both
-     * reached after exactly {@link #STACKS_TO_REACH_LIMIT} stacks, whatever min/max you choose.
+     * Per-item buy price increase, applied multiplicatively (compound) for every item bought.
+     * Derived from {@link #MAX_PRICE_MULTIPLIER} and {@link #STACKS_TO_REACH_BUY_CEILING}, so changing
+     * either of them keeps the "number of stacks to reach the limit" correct.
+     * Formula: {@code rate = max^(1 / items) - 1}.
      */
-    private static final double BUY_PRICE_CHANGE_RATE = Math.pow(MAX_PRICE_MULTIPLIER, 1.0 / (STACKS_TO_REACH_LIMIT * 64)) - 1;
-    private static final double SELL_PRICE_CHANGE_RATE = 1 - Math.pow(MIN_PRICE_MULTIPLIER, 1.0 / (STACKS_TO_REACH_LIMIT * 64));
+    private static final double BUY_PRICE_CHANGE_RATE =
+            Math.pow(MAX_PRICE_MULTIPLIER, 1.0 / (STACKS_TO_REACH_BUY_CEILING * 64)) - 1;
+
+    /**
+     * Per-item sell price decrease, applied multiplicatively (compound) for every item sold.
+     * Derived from {@link #MIN_SELL_MULTIPLIER} and {@link #STACKS_TO_REACH_SELL_FLOOR}.
+     * Formula: {@code rate = 1 - min^(1 / items)}.
+     */
+    private static final double SELL_PRICE_CHANGE_RATE =
+            1 - Math.pow(MIN_SELL_MULTIPLIER, 1.0 / (STACKS_TO_REACH_SELL_FLOOR * 64));
+
+    /**
+     * Total spillover applied to the rest of the category, as a share of the traded item's rate
+     * (0.1 = the whole category together moves 10% as much as the traded item, before price weighting).
+     * The effect is split evenly between the other items, so it does not grow with category size.
+     */
+    private static final double SPILLOVER_RATIO = 0.3;
+
+    /**
+     * Share of the gap to the base price recovered at every recovery cycle (0.01 = 1%).
+     */
+    private static final double RECOVERY_RATE = 0.01;
+    /**
+     * Delay between two recovery cycles (10 minutes).
+     */
+    private static final long RECOVERY_INTERVAL_TICKS = 20L * 60 * 10;
+    /**
+     * Below this gap (share of the base price), a price snaps back to its base value.
+     */
+    private static final double RECOVERY_SNAP = 0.001;
 
     public static final Map<String, ShopCategory> categories = new HashMap<>();
     public static final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
@@ -49,12 +101,20 @@ public class AdminShopManager extends Feature implements HasCommands {
     private static AdminShopYAML adminShopYAML;
 
     /**
-     * Initializes the AdminShopManager by loading the configuration.
+     * Initializes the AdminShopManager by loading the configuration
+     * and starting the price recovery task.
      */
     @Override
     public void init() {
         adminShopYAML = new AdminShopYAML();
         adminShopYAML.loadConfig();
+
+        Bukkit.getScheduler().runTaskTimer(
+                OMCPlugin.getInstance(),
+                AdminShopManager::recoverPrices,
+                RECOVERY_INTERVAL_TICKS,
+                RECOVERY_INTERVAL_TICKS
+        );
     }
 
     @Override
@@ -100,6 +160,7 @@ public class AdminShopManager extends Feature implements HasCommands {
 
         new ConfirmMenu(player, item, false, onFinish).open();
     }
+
     /**
      * Handles the purchase of an item by the player.
      *
@@ -204,10 +265,13 @@ public class AdminShopManager extends Feature implements HasCommands {
     }
 
     /**
-     * Dynamically adjusts the price of an item based on quantity and transaction type.
+     * Dynamically adjusts prices after a transaction.
      *
-     * <p>Buying increases the item's actual buy price, while selling decreases
-     * its actual sell price.</p>
+     * <ul>
+     *   <li>Buying increases the item's actual buy price (up to the ceiling).</li>
+     *   <li>Selling decreases the item's actual sell price (down to the floor).</li>
+     *   <li>The other items of the category are nudged by {@link #applySpillover}.</li>
+     * </ul>
      *
      * @param categoryId The ID of the item's category.
      * @param itemId     The ID of the item being traded.
@@ -220,36 +284,131 @@ public class AdminShopManager extends Feature implements HasCommands {
         ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId);
         if (item == null) return;
 
-        // Calculate the cumulative multiplier for the entire quantity.
-        double multiplier = Math.pow(
-                isBuying ? 1 + BUY_PRICE_CHANGE_RATE : 1 - SELL_PRICE_CHANGE_RATE,
-                amount
-        );
-
         if (isBuying) {
             // Increase the buy price based on the quantity purchased.
-            double newPrice = item.getActualBuyPrice() * multiplier;
-            item.setActualBuyPrice(clamp(newPrice, item.getInitialBuyPrice()));
+            double newPrice = item.getActualBuyPrice() * Math.pow(1 + BUY_PRICE_CHANGE_RATE, amount);
+            item.setActualBuyPrice(clamp(newPrice, item.getInitialBuyPrice(), MIN_BUY_MULTIPLIER));
         } else {
             // Decrease the sell price based on the quantity sold.
-            double newPrice = item.getActualSellPrice() * multiplier;
-            item.setActualSellPrice(clamp(newPrice, item.getInitialSellPrice()));
+            double newPrice = item.getActualSellPrice() * Math.pow(1 - SELL_PRICE_CHANGE_RATE, amount);
+            item.setActualSellPrice(clamp(newPrice, item.getInitialSellPrice(), MIN_SELL_MULTIPLIER));
         }
+
+        applySpillover(categoryId, item, amount, isBuying);
 
         adminShopYAML.saveConfig();
     }
 
     /**
+     * Makes the other items of the category slightly more attractive after a transaction.
+     *
+     * <p>When an item is bought, the other items get a bit cheaper to buy. When it is sold, the other
+     * items pay a bit more when sold. The effect is weighted by relative price: a cheap item barely moves
+     * expensive ones, while an expensive item moves cheap ones fully. This prevents farming a worthless
+     * item to push up the prices of valuable ones.</p>
+     *
+     * <p>Guard: a buy price is never lowered below the item's sell price, and a sell price is never raised
+     * above the item's buy price, so players can't buy and resell the same item for a profit.</p>
+     *
+     * @param categoryId The ID of the category.
+     * @param traded     The item that was just traded.
+     * @param amount     The quantity traded.
+     * @param isBuying   True if the player bought, false if sold.
+     */
+    private static void applySpillover(String categoryId, ShopItem traded, int amount, boolean isBuying) {
+        double rate = isBuying ? BUY_PRICE_CHANGE_RATE : SELL_PRICE_CHANGE_RATE;
+        double tradedBase = isBuying ? traded.getInitialBuyPrice() : traded.getInitialSellPrice();
+        if (tradedBase <= 0) return;
+
+        Collection<ShopItem> category = items.getOrDefault(categoryId, Map.of()).values();
+
+        // Count the other items that can be traded on this side, so the effect can be split between them.
+        int affected = 0;
+        for (ShopItem other : category) {
+            if (other == traded) continue;
+
+            double otherBase = isBuying ? other.getInitialBuyPrice() : other.getInitialSellPrice();
+            if (otherBase > 0) affected++;
+        }
+
+        if (affected == 0) return;
+
+        for (ShopItem other : category) {
+            if (other == traded) continue;
+
+            // Items that can't be traded on this side (price 0) are left untouched.
+            double otherBase = isBuying ? other.getInitialBuyPrice() : other.getInitialSellPrice();
+            if (otherBase <= 0) continue;
+
+            double weight = Math.min(1.0, tradedBase / otherBase);
+            double step = rate * SPILLOVER_RATIO * weight / affected;
+            double spill = Math.pow(isBuying ? 1 - step : 1 + step, amount);
+
+            if (isBuying) {
+                double newBuy = clamp(other.getActualBuyPrice() * spill, otherBase, MIN_BUY_MULTIPLIER);
+                double sell = other.getActualSellPrice();
+                other.setActualBuyPrice(sell > 0 ? Math.max(newBuy, sell) : newBuy);
+            } else {
+                double newSell = clamp(other.getActualSellPrice() * spill, otherBase, MIN_SELL_MULTIPLIER);
+                double buy = other.getActualBuyPrice();
+                other.setActualSellPrice(buy > 0 ? Math.min(newSell, buy) : newSell);
+            }
+        }
+    }
+
+    /**
+     * Moves every price a little closer to its base value.
+     *
+     * <p>Run periodically (see {@link #init()}). Without it, a price that reached its ceiling or floor
+     * would stay there until other players trade the other way around.</p>
+     */
+    private static void recoverPrices() {
+        boolean changed = false;
+
+        for (Map<String, ShopItem> category : items.values()) {
+            for (ShopItem item : category.values()) {
+                double buy = recover(item.getActualBuyPrice(), item.getInitialBuyPrice());
+                double sell = recover(item.getActualSellPrice(), item.getInitialSellPrice());
+
+                if (buy != item.getActualBuyPrice()) {
+                    item.setActualBuyPrice(buy);
+                    changed = true;
+                }
+                if (sell != item.getActualSellPrice()) {
+                    item.setActualSellPrice(sell);
+                    changed = true;
+                }
+            }
+        }
+
+        if (changed) adminShopYAML.saveConfig();
+    }
+
+    /**
+     * Computes one recovery step for a single price.
+     *
+     * @param actual  The current price.
+     * @param initial The base price.
+     * @return The price after recovering {@link #RECOVERY_RATE} of the gap, or the base price if almost there.
+     */
+    private static double recover(double actual, double initial) {
+        double gap = initial - actual;
+        if (Math.abs(gap) < initial * RECOVERY_SNAP) return initial;
+        return actual + gap * RECOVERY_RATE;
+    }
+
+    /**
      * Clamps an item's actual price between its configured minimum and maximum.
      *
-     * @param actual  The calculated price before applying the limits.
-     * @param initial The item's original configured price.
+     * @param actual        The calculated price before applying the limits.
+     * @param initial       The item's original configured price.
+     * @param minMultiplier The lowest allowed multiplier (differs for buy and sell prices).
      * @return The price constrained within the allowed range.
      */
-    private static double clamp(double actual, double initial) {
+    private static double clamp(double actual, double initial, double minMultiplier) {
         return Math.clamp(
                 actual,
-                initial * MIN_PRICE_MULTIPLIER,
+                initial * minMultiplier,
                 initial * MAX_PRICE_MULTIPLIER
         );
     }
