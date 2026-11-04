@@ -30,16 +30,17 @@ public class AdminShopManager extends Feature implements HasCommands {
     private static final double MAX_PRICE_MULTIPLIER = 3;
 
     /**
-     * Per-item price change rate, applied multiplicatively (compound) on every item traded.
-     * <ul>
-     *   <li>Buying multiplies the actual buy price by {@code 1.000143} per item, so it reaches the
-     *       ceiling ({@link #MAX_PRICE_MULTIPLIER}, x2.5) after about 6,400 items (100 stacks).</li>
-     *   <li>Selling multiplies the actual sell price by {@code 0.999857} per item, so it reaches the
-     *       floor ({@link #MIN_PRICE_MULTIPLIER}, x0.5) after about 4,850 items (~76 stacks).</li>
-     * </ul>
-     * To reach the buy ceiling after N items, use {@code rate = 2.5^(1/N) - 1}.
+     * Number of stacks to trade to go from the base price to the buy ceiling (or the sell floor).
      */
-    private static final double PRICE_CHANGE_RATE = 0.000143; // 2.5^(1/(64×100)) − 1 = 0.000143
+    private static final int STACKS_TO_REACH_LIMIT = 100;
+
+    /**
+     * Per-item price change rates, applied multiplicatively (compound) on every item traded.
+     * They are derived from the multipliers above, so the buy ceiling and the sell floor are both
+     * reached after exactly {@link #STACKS_TO_REACH_LIMIT} stacks, whatever min/max you choose.
+     */
+    private static final double BUY_PRICE_CHANGE_RATE = Math.pow(MAX_PRICE_MULTIPLIER, 1.0 / (STACKS_TO_REACH_LIMIT * 64)) - 1;
+    private static final double SELL_PRICE_CHANGE_RATE = 1 - Math.pow(MIN_PRICE_MULTIPLIER, 1.0 / (STACKS_TO_REACH_LIMIT * 64));
 
     public static final Map<String, ShopCategory> categories = new HashMap<>();
     public static final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
@@ -221,7 +222,7 @@ public class AdminShopManager extends Feature implements HasCommands {
 
         // Calculate the cumulative multiplier for the entire quantity.
         double multiplier = Math.pow(
-                isBuying ? 1 + PRICE_CHANGE_RATE : 1 - PRICE_CHANGE_RATE,
+                isBuying ? 1 + BUY_PRICE_CHANGE_RATE : 1 - SELL_PRICE_CHANGE_RATE,
                 amount
         );
 
