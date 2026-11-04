@@ -27,8 +27,19 @@ import java.util.*;
 @Credit(developers = {"Axeno", "PuppyTransGirl"}, graphist = {"Gexary"})
 public class AdminShopManager extends Feature implements HasCommands {
     private static final double MIN_PRICE_MULTIPLIER = 0.5;
-    private static final double MAX_PRICE_MULTIPLIER = 2.5;
-    private static final double PRICE_CHANGE_RATE = 0.005;
+    private static final double MAX_PRICE_MULTIPLIER = 3;
+
+    /**
+     * Per-item price change rate, applied multiplicatively (compound) on every item traded.
+     * <ul>
+     *   <li>Buying multiplies the actual buy price by {@code 1.000143} per item, so it reaches the
+     *       ceiling ({@link #MAX_PRICE_MULTIPLIER}, x2.5) after about 6,400 items (100 stacks).</li>
+     *   <li>Selling multiplies the actual sell price by {@code 0.999857} per item, so it reaches the
+     *       floor ({@link #MIN_PRICE_MULTIPLIER}, x0.5) after about 4,850 items (~76 stacks).</li>
+     * </ul>
+     * To reach the buy ceiling after N items, use {@code rate = 2.5^(1/N) - 1}.
+     */
+    private static final double PRICE_CHANGE_RATE = 0.000143; // 2.5^(1/(64×100)) − 1 = 0.000143
 
     public static final Map<String, ShopCategory> categories = new HashMap<>();
     public static final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
