@@ -26,7 +26,7 @@ public class TerrorHouseButton {
                     menu.getOwner().teleport(
                             new Location(
                                     DimensionGenerator.HALLOWEEN_WORLD,
-                                    -58, -60, -67
+                                    -58, -59, -67
                             )
                     );
                     menu.getOwner().closeInventory();
