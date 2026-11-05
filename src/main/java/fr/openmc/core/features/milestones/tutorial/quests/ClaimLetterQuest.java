@@ -6,8 +6,10 @@ import fr.openmc.core.features.milestones.models.MilestoneType;
 import fr.openmc.core.features.milestones.quests.MilestoneQuest;
 import fr.openmc.core.features.milestones.tutorial.TutorialSteps;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
+import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -37,6 +39,13 @@ public class ClaimLetterQuest extends MilestoneQuest implements Listener {
                                 ),
                                 Prefix.MILLESTONE,
                                 MessageType.SUCCESS
+                        ),
+                        new QuestMethodsReward(
+                                player -> {
+                                    if (DiscordLinkManager.isLinked(player.getUniqueId())) {
+                                        TutorialSteps.CONNECT_TO_DISCORD.getQuest().incrementProgress(player.getUniqueId());
+                                    }
+                                }
                         )
                 )
         );
