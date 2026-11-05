@@ -60,7 +60,15 @@ public class MascotUtils {
 		return entity.getPersistentDataContainer().has(MascotsManager.mascotsKey, PersistentDataType.STRING);
 	}
 
+	public static void updateName(LivingEntity entityMascot, Mascot mascot, String newName) {
+		updateDisplayName(entityMascot, mascot, 0, newName);
+	}
+
 	public static void updateDisplayName(LivingEntity entityMascot, Mascot mascot, double damage) {
+		updateDisplayName(entityMascot, mascot, damage, mascot.getCity().getName());
+	}
+
+	public static void updateDisplayName(LivingEntity entityMascot, Mascot mascot, double damage, String newName) {
 		double newHealth = Math.floor(entityMascot.getHealth());
 		entityMascot.setHealth(newHealth);
 		AttributeInstance maxHealthInst = entityMascot.getAttribute(Attribute.MAX_HEALTH);
@@ -74,7 +82,7 @@ public class MascotUtils {
             entityMascot.customName(MascotsManager.getDeadMascotName());
         } else {
             entityMascot.customName(MascotsManager.getAliveMascotName(
-                    mascot.getCity().getName(),
+					newName,
                     healthAfterDamage,
                     maxHealth
             ));

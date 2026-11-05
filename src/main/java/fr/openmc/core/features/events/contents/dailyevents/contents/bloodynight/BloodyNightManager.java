@@ -5,6 +5,7 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.AncientMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CorruptedMonster;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bloodytypes.CursedMonster;
@@ -194,6 +195,7 @@ public class BloodyNightManager extends Feature implements HasListeners {
      */
     private static void applyCorruptedMonsters(World world) {
         for (Entity entity : world.getEntities()) {
+            if (MascotUtils.canBeAMascot(entity)) continue;
             if (!(entity instanceof Monster monster)) continue;
 
             OMCRegistry.CUSTOM_MOBS.CORRUPTED_MONSTER.apply(monster);
