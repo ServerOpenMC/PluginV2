@@ -5,6 +5,8 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -29,7 +31,17 @@ public class SaveTheEarthQuest extends Quest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreak(StructureGrowEvent event) {
-        if (event.getPlayer() != null)
+        Player player = event.getPlayer();
+        System.out.println(1);
+        if (player == null) return;
+        System.out.println(2);
+        if (event.getBlocks().isEmpty()) return;
+        System.out.println(event.getBlocks());
+        Material first = event.getLocation().getBlock().getType();
+        System.out.println(first);
+
+        if (Tag.LOGS.isTagged(first) || Tag.LEAVES.isTagged(first)) {
             this.incrementProgress(event.getPlayer().getUniqueId());
+        }
     }
 }
