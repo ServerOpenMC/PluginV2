@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
@@ -33,6 +34,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -146,7 +148,6 @@ public class City {
     }
 
     public void rename(String newName) {
-
         citiesByName.remove(name);
         citiesByName.put(newName, this);
 
@@ -155,6 +156,9 @@ public class City {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
                 CityManager.saveCity(this)
         );
+
+        if (this.getMascot().getEntity() != null && this.getMascot().getEntity() instanceof LivingEntity living)
+            MascotUtils.updateName(living, getMascot(), newName); // on actualise le nom en la frappant
     }
 
     public void changeType() {

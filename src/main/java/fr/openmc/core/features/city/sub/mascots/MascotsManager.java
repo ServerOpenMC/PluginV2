@@ -278,7 +278,6 @@ public class MascotsManager extends Feature implements HasDatabase, HasCommands,
         ItemUtils.takeAywenite(player, aywenite);
     }
 
-
     private static void setMascotsData(LivingEntity mob, String cityName, double maxHealth, double baseHealth) {
         mob.setAI(false);
 
