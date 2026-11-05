@@ -23,6 +23,8 @@ public class AdminMilestoneCommand {
                      int step) {
         MilestoneType type = MilestoneType.valueOf(milestoneType);
         Milestone<?> milestone = type.getMilestone();
+
+        milestone.getSteps().get(step).setProgress(target.getUniqueId(), 0);
         MilestoneModel model = milestone.getPlayerData().get(target.getUniqueId());
 
         model.setStep(step);

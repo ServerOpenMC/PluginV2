@@ -67,6 +67,9 @@ public class SetHomeCommand {
             }
 
             Home home = new Home(UUID.randomUUID(), target.getUniqueId(), homeName, player.getLocation(), HomeIconRegistry.getDefaultIcon());
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new HomeCreateEvent(home, target.getUniqueId()));
+            });
             target.home().setHome(home);
 
             player.message().sendSuccess(
@@ -116,7 +119,7 @@ public class SetHomeCommand {
 
         Home home = new Home(UUID.randomUUID(), player.getUniqueId(), name, player.getLocation(), HomeIconRegistry.getDefaultIcon());
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new HomeCreateEvent(home, player));
+            Bukkit.getPluginManager().callEvent(new HomeCreateEvent(home, player.getUniqueId()));
         });
         player.home().setHome(home);
 

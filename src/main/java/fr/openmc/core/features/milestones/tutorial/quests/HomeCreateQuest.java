@@ -17,9 +17,10 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.util.UUID;
 
 public class HomeCreateQuest extends MilestoneQuest implements Listener {
 
@@ -48,10 +49,10 @@ public class HomeCreateQuest extends MilestoneQuest implements Listener {
 
     @EventHandler
     public void onHomeCreate(HomeCreateEvent event) {
-        Player player = event.getOwner();
+        UUID playerUUID = event.getOwnerUUID();
 
-        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+        if (MilestonesManager.getPlayerStep(type, playerUUID) != step.ordinal()) return;
 
-        this.incrementProgress(player.getUniqueId());
+        this.incrementProgress(playerUUID);
     }
 }
