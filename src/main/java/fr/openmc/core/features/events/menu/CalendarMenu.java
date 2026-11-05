@@ -148,7 +148,7 @@ public class CalendarMenu extends PaginatedMenu implements OpenMenu {
             eventLore.add(Component.empty());
             eventLore.add(TranslationManager.translation("feature.events.calendar.start_date",
                     Component.text(DateUtils.formatDate(startDate), NamedTextColor.AQUA),
-                    Component.text(DateUtils.formatHourMinute(endDate.getHour(), endDate.getMinute()), NamedTextColor.AQUA)
+                    Component.text(DateUtils.formatHourMinute(startDate.getHour(), startDate.getMinute()), NamedTextColor.AQUA)
             ));
             eventLore.add(TranslationManager.translation("feature.events.calendar.end_date",
                     Component.text(DateUtils.formatDate(endDate), NamedTextColor.AQUA),
