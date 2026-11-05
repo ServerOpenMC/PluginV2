@@ -32,13 +32,9 @@ public class SaveTheEarthQuest extends Quest implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreak(StructureGrowEvent event) {
         Player player = event.getPlayer();
-        System.out.println(1);
         if (player == null) return;
-        System.out.println(2);
         if (event.getBlocks().isEmpty()) return;
-        System.out.println(event.getBlocks());
         Material first = event.getLocation().getBlock().getType();
-        System.out.println(first);
 
         if (Tag.LOGS.isTagged(first) || Tag.LEAVES.isTagged(first)) {
             this.incrementProgress(event.getPlayer().getUniqueId());

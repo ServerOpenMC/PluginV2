@@ -102,7 +102,7 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
     @Override
     public void onBlockBreak(Player player, BlockBreakEvent event) {
         if (player.getGameMode() != GameMode.SURVIVAL) return;
-        if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
+        if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
 
         ItemStack tool = player.getInventory().getItemInMainHand();
         if (tool.getType().isAir()) return;
