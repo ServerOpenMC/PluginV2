@@ -146,7 +146,7 @@ public abstract class ItemQuantityMenuTemplate extends Menu {
 
             meta.displayName(
                     name.append(Component.text(
-                                            text.replace("+", "").replace("-", ""))
+                                            text.replace("+", " ").replace("-", " "))
                             .color(plus ? NamedTextColor.GREEN : NamedTextColor.RED)
                             .decoration(TextDecoration.ITALIC, false)
             ));
