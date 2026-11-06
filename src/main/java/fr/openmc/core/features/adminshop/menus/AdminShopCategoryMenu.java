@@ -80,7 +80,7 @@ public class AdminShopCategoryMenu extends Menu {
                         AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item);
                     else if (item.isHasColorVariant())
                         AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item);
-                    else if (event.getClick() == ClickType.SHIFT_RIGHT && item.getInitialSellPrice() > 0) {
+                    else if (event.getClick() == ClickType.SHIFT_LEFT && item.getInitialSellPrice() > 0) {
                         AdminShopManager.sellAll(getOwner(), item.getId());
                         back.run(); // Refresh prices in the lore
                     }
