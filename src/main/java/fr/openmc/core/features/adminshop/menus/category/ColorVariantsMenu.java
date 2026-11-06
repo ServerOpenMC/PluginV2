@@ -1,4 +1,4 @@
-package fr.openmc.core.features.adminshop.menus;
+package fr.openmc.core.features.adminshop.menus.category;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;

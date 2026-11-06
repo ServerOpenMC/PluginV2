@@ -1,4 +1,4 @@
-package fr.openmc.core.features.adminshop.menus;
+package fr.openmc.core.features.adminshop.menus.confirm;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.template.ItemQuantityMenuTemplate;
@@ -18,8 +18,9 @@ import java.util.List;
 public class ConfirmBuyMenu extends ItemQuantityMenuTemplate {
 
     private final ShopItem shopItem;
+    private final Runnable onFinish;
 
-    public ConfirmBuyMenu(Player owner, ShopItem shopItem) {
+    public ConfirmBuyMenu(Player owner, ShopItem shopItem, Runnable onFinish) {
         super(
                 owner,
                 getMaxBuyQuantity(owner, shopItem),
@@ -28,6 +29,7 @@ public class ConfirmBuyMenu extends ItemQuantityMenuTemplate {
         );
 
         this.shopItem = shopItem;
+        this.onFinish = onFinish;
     }
 
     @Override
@@ -66,6 +68,7 @@ public class ConfirmBuyMenu extends ItemQuantityMenuTemplate {
     protected void onAccept() {
         getOwner().closeInventory();
         AdminShopManager.buyItem(getOwner(), shopItem.getId(), quantity);
+        if (onFinish != null) onFinish.run();
     }
 
     private static int getMaxBuyQuantity(Player player, ShopItem shopItem) {

@@ -66,6 +66,7 @@ public abstract class ItemQuantityMenuTemplate extends Menu {
     protected abstract List<Component> getDisplayLore();
 
     protected abstract void onAccept();
+
     protected void onDeny() {
         getOwner().closeInventory();
     }

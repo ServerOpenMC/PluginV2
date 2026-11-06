@@ -1,4 +1,4 @@
-package fr.openmc.core.features.adminshop.menus;
+package fr.openmc.core.features.adminshop.menus.confirm;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.template.ItemQuantityMenuTemplate;
@@ -19,8 +19,9 @@ import java.util.List;
 public class ConfirmSellMenu extends ItemQuantityMenuTemplate {
 
     private final ShopItem shopItem;
+    private final Runnable onFinish;
 
-    public ConfirmSellMenu(Player owner, ShopItem shopItem) {
+    public ConfirmSellMenu(Player owner, ShopItem shopItem, Runnable onFinish) {
         super(
                 owner,
                 countPlayerItems(owner, shopItem),
@@ -29,6 +30,7 @@ public class ConfirmSellMenu extends ItemQuantityMenuTemplate {
         );
 
         this.shopItem = shopItem;
+        this.onFinish = onFinish;
     }
 
     @Override
@@ -67,6 +69,7 @@ public class ConfirmSellMenu extends ItemQuantityMenuTemplate {
     protected void onAccept() {
         getOwner().closeInventory();
         AdminShopManager.sellItem(getOwner(), shopItem.getId(), quantity);
+        if (onFinish != null) onFinish.run();
     }
 
     @Override

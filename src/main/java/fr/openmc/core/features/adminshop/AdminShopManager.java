@@ -6,7 +6,13 @@ import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
-import fr.openmc.core.features.adminshop.menus.*;
+import fr.openmc.core.features.adminshop.menus.AdminShopCategoryMenu;
+import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
+import fr.openmc.core.features.adminshop.menus.category.ColorVariantsMenu;
+import fr.openmc.core.features.adminshop.menus.category.LeavesVariantsMenu;
+import fr.openmc.core.features.adminshop.menus.category.LogVariantsMenu;
+import fr.openmc.core.features.adminshop.menus.confirm.ConfirmBuyMenu;
+import fr.openmc.core.features.adminshop.menus.confirm.ConfirmSellMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -65,7 +71,7 @@ public class AdminShopManager extends Feature implements HasCommands {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
-        new ConfirmMenu(player, item, true, onFinish).open();
+        new ConfirmBuyMenu(player, item, onFinish).open();
     }
 
     /**
@@ -86,7 +92,7 @@ public class AdminShopManager extends Feature implements HasCommands {
             return;
         }
 
-        new ConfirmMenu(player, item, false, onFinish).open();
+        new ConfirmSellMenu(player, item, onFinish).open();
     }
     /**
      * Handles the purchase of an item by the player.
