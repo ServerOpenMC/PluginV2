@@ -24,7 +24,7 @@ public class HouseSkeletonLV1 extends CustomMob<Skeleton> {
                 3.0,
                 List.of(
                         new XpLoot(25, 40, 0.7),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.4, 1, 2)
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.6, 1, 2)
                 )
         );
     }

@@ -24,11 +24,11 @@ public class HouseBruteLV3 extends CustomMob<PiglinBrute> {
                 8.0,
                 List.of(
                         new XpLoot(200, 350, 1.0),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.8, 4, 10),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 0.3, 1, 5),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.01, 1, 2),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_RED, 0.002, 1),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_YELLOW, 0.0005, 1)
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.9, 4, 10),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 0.4, 1, 5),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.1, 1, 2),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_RED, 0.02, 1),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_YELLOW, 0.05, 1)
                 )
         );
     }
