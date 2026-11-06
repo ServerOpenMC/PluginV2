@@ -8,9 +8,10 @@ import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
 import fr.openmc.core.features.adminshop.menus.AdminShopCategoryMenu;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
+import fr.openmc.core.features.adminshop.menus.AdminShopVariantsMenu;
 import fr.openmc.core.features.adminshop.menus.category.ColorVariantsMenu;
-import fr.openmc.core.features.adminshop.menus.category.LeavesVariantsMenu;
-import fr.openmc.core.features.adminshop.menus.category.LogVariantsMenu;
+import fr.openmc.core.features.adminshop.menus.category.LeavesVariantMenu;
+import fr.openmc.core.features.adminshop.menus.category.LogVariantMenu;
 import fr.openmc.core.features.adminshop.menus.confirm.ConfirmBuyMenu;
 import fr.openmc.core.features.adminshop.menus.confirm.ConfirmSellMenu;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -22,6 +23,8 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
@@ -342,26 +345,27 @@ public class AdminShopManager extends Feature implements HasCommands {
         new ColorVariantsMenu(player, categoryId, originalItem).open();
     }
 
-    /**
-     * Opens the menu displaying leaf variants of a shop item.
-     *
-     * @param player       The player.
-     * @param categoryId   The category ID.
-     * @param originalItem The original ShopItem.
-     */
-    public static void openLeavesVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
-        new LeavesVariantsMenu(player, categoryId, originalItem).open();
+    public static void openVariantMenu(Player p, String categoryId, ShopItem item) {
+        String name = item.getMaterial().name();
+
+        AdminShopVariantsMenu menu;
+        if (name.endsWith("_LEAVES")) menu = new LeavesVariantMenu(p, categoryId, item);
+        else if (name.endsWith("_LOG")) menu = new LogVariantMenu(p, categoryId, item);
+        else menu = new ColorVariantsMenu(p, categoryId, item);
+
+        menu.open();
     }
 
-    /**
-     * Opens the menu displaying log variants of a shop item.
-     *
-     * @param player       The player.
-     * @param categoryId   The category ID.
-     * @param originalItem The original ShopItem.
-     */
-    public static void openLogVariantsMenu(Player player, String categoryId, ShopItem originalItem) {
-        new LogVariantsMenu(player, categoryId, originalItem).open();
+    public static void handleShopClick(Player player, String categoryId, ShopItem item,
+                                       InventoryClickEvent event, Runnable back) {
+        if (event.getClick() == ClickType.SHIFT_LEFT && item.getInitialSellPrice() > 0) {
+            sellAll(player, item.getId());
+            back.run();
+        } else if (event.isLeftClick() && item.getInitialBuyPrice() > 0) {
+            openBuyConfirmMenu(player, categoryId, item.getId(), back);
+        } else if (event.isRightClick() && item.getInitialSellPrice() > 0) {
+            openSellConfirmMenu(player, categoryId, item.getId(), back);
+        }
     }
 
     /**
