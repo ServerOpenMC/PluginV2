@@ -33,8 +33,8 @@ public class CustomMobDeathListener implements Listener {
         customMob.onDeath(customMob, event);
 
         if (customMob.getLootTable() == null) return;
-        for (CustomLoot loot : customMob.getLootTable().rollLoots().loots()) {
-            if (Math.random() >= loot.getChance()) continue;
+        for (CustomLoot loot : customMob.getLootTable().getLoots()) {
+            if (loot.getChance() < 1.0 && Math.random() >= loot.getChance()) continue;
             if (loot instanceof ItemLoot itemLoot) {
                 event.getDrops().add(itemLoot.getItemLootWithAmount());
             } else {
