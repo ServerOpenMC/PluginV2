@@ -15,6 +15,7 @@ import fr.openmc.core.features.events.contents.dailyevents.commands.DailyEventCo
 import fr.openmc.core.features.events.contents.dailyevents.listeners.DailyEventAmbientListeners;
 import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEventsDB;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
+import fr.openmc.core.features.events.contents.dailyevents.models.SlotDailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.NextEventTask;
 import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventTask;
@@ -30,10 +31,6 @@ import java.util.*;
 
 @Credit(developers = {"iambibi_"})
 public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, HasDatabase, HasListeners, HasCommands {
-    private static final List<Integer> SLOT_HOURS_EVENTS = new ArrayList<>(List.of(
-            10, 15, 21
-    ));
-
     public static final int SHOW_BEGINNING_DELAY = 60; // en secondes
 
     // * Données à propos de la gestion des daily event
@@ -132,26 +129,16 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
      * @return la liste prévue des x prochains évenements
      */
     public static List<ScheduleDailyEvent> loadIncomingEvents() {
-        List<ScheduleDailyEvent> scheduledEvents = new ArrayList<>();
         LocalDateTime now = DateUtils.getLocalDateTime();
         IncomingEventsDB data = loadIncomingEventsDB();
-        List<DailyEvent> incomingEvent = data.getDailyEventsIncomings();
+        List<DailyEvent> copyEvents = new ArrayList<>(data.getDailyEventsIncomings());
 
-        // * Si la liste est vide, soit c'est la premiere fois qu'on lance le plugin, soit que tout les events sont fini
-        List<DailyEvent> copyEvents = new ArrayList<>(incomingEvent);
-        for (int hourSlot : SLOT_HOURS_EVENTS) {
+        List<ScheduleDailyEvent> scheduledEvents = new ArrayList<>();
+        for (LocalDateTime slotDate : SlotDailyEvent.getSlotsBetween(now, now.plusDays(1))) {
             if (copyEvents.isEmpty()) {
                 copyEvents = RandomUtils.generateRandomOrder(OMCRegistry.DAILY_EVENTS.values().stream().toList());
             }
-
-            LocalDateTime scheduledDailyEvent;
-            if (hourSlot > now.getHour()) {
-                scheduledDailyEvent = now.withHour(hourSlot).withMinute(0).withSecond(0).withNano(0);
-            } else {
-                scheduledDailyEvent = now.plusDays(1)
-                        .withHour(hourSlot).withMinute(0).withSecond(0).withNano(0);
-            }
-            scheduledEvents.add(new ScheduleDailyEvent(copyEvents.removeFirst(), scheduledDailyEvent));
+            scheduledEvents.add(new ScheduleDailyEvent(copyEvents.removeFirst(), slotDate));
         }
 
         // * Tri chornologique des dates
@@ -170,30 +157,26 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
      */
     public static BukkitTask scheduleNextEventTask() {
         LocalDateTime now = DateUtils.getLocalDateTime();
-        // * On cherche la prochaine heure
-        Integer nextHour = SLOT_HOURS_EVENTS.stream()
-                .filter(hour -> hour > now.getHour())
-                .findFirst()
-                .orElse(null);
 
         // si c'est null, alors on rempli la file et on schedule pour le premier horaire
-        LocalDateTime scheduleTime;
-        if (nextHour == null) {
+        if (incomingEvents.isEmpty()) {
             incomingEvents = loadIncomingEvents();
-            scheduleTime = now.toLocalDate().plusDays(1).atTime(SLOT_HOURS_EVENTS.getFirst(), 0);
-        } else {
-            scheduleTime = now.toLocalDate().atTime(nextHour, 0);
         }
 
-        long delayTicks = DateUtils.getDelayBetweenNow(scheduleTime) * 20;
+        LocalDateTime scheduleTime = SlotDailyEvent.getNextSlot(now);
+        if (scheduleTime == null) return null;
+
+        long delaySeconds = DateUtils.getDelayBetweenNow(scheduleTime);
+        long delayTicks = delaySeconds * 20;
 
         OMCLogger.infoFormatted("Les prochains evenement : " + incomingEvents.stream()
                 .map(s -> s.getDailyEvent().getClass().getSimpleName()).toList());
-        OMCLogger.infoFormatted("Prochain Evenement journalier : " + scheduleTime + "s (dans " + DateUtils.convertSecondToTime(DateUtils.getDelayBetweenNow(scheduleTime)) + ")");
+        OMCLogger.infoFormatted("Prochain Evenement journalier : " + scheduleTime
+                + " (dans " + DateUtils.convertSecondToTime(delaySeconds) + ")");
 
         // * Programation de la tâche qui s'executera peu avant le commencement
         new ShowBeginningEventTask()
-                .runTaskLater(OMCPlugin.getInstance(), delayTicks - SHOW_BEGINNING_DELAY * 20L);
+                .runTaskLater(OMCPlugin.getInstance(), Math.max(0, delayTicks - SHOW_BEGINNING_DELAY * 20L));
 
         // * Renvoie la tache qui executera le début de l'evenement
         return new NextEventTask().runTaskLater(OMCPlugin.getInstance(), delayTicks);

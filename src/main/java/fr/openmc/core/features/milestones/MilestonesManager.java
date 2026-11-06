@@ -220,4 +220,18 @@ public class MilestonesManager extends Feature implements HasDatabase, LoadAfter
             }
         }
     }
+
+    /**
+     * @return Les noms (en minuscules) des milestones ouvrables via {@code /milestones <milestone>}
+     */
+    public static List<String> getMilestoneNames() {
+        List<String> names = new ArrayList<>();
+
+        for (MilestoneType type : MilestoneType.values())
+            names.add(type.name().toLowerCase(Locale.ROOT));
+
+        names.add("city");
+
+        return names;
+    }
 }

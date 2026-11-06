@@ -55,7 +55,7 @@ public class TerrorHouseManager {
         currentRewardToReach = getRewardFromAdvancement(globalAdvancement);
 
         // Floors
-        finalFloorReach = currentFloorToReach.equals(FINAL_FLOOR);
+        finalFloorReach = currentFloorToReach.equals(FINAL_FLOOR) && fAdvancement >= FINAL_FLOOR.getRequire();
         enabledFloors = EnumUtils.getValuesBefore(currentFloorToReach, finalFloorReach);
 
         for (Floors floors : Floors.values()) {
@@ -150,15 +150,15 @@ public class TerrorHouseManager {
     }
 
     public static Floors getFloorFromAdvancement(int advancement) {
-        Floors currentFloors = Floors.FLOOR_2;
+        int i = 0;
 
-        for (Floors floors : Floors.values()) {
-            if (floors.getRequire() < advancement)
-                currentFloors = floors;
-            else break;
+        for (Floors floors : EnumUtils.getValuesAfter(Floors.FLOOR_1 ,false)) {
+            if (floors.getRequire() > advancement - i)
+                return floors;
+            else i += floors.getRequire();
         }
 
-        return currentFloors;
+        return FINAL_FLOOR;
     }
 
     public static PointRewards getRewardFromAdvancement(int points) {

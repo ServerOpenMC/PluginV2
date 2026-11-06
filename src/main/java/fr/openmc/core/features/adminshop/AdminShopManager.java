@@ -24,8 +24,12 @@ import java.util.*;
 /**
  * Manages the admin shop system including items, categories, and player interactions.
  */
-@Credit(developers = {"Axeno"}, graphist = {"Gexary"})
+@Credit(developers = {"Axeno", "PuppyTransGirl"}, graphist = {"Gexary"})
 public class AdminShopManager extends Feature implements HasCommands {
+    private static final double MIN_PRICE_MULTIPLIER = 0.5;
+    private static final double MAX_PRICE_MULTIPLIER = 2.5;
+    private static final double PRICE_CHANGE_RATE = 0.005;
+
     public static final Map<String, ShopCategory> categories = new HashMap<>();
     public static final Map<String, Map<String, ShopItem>> items = new HashMap<>(); // Category -> {ShopID -> ShopItem}
     public static final Map<UUID, String> currentCategory = new HashMap<>();
@@ -54,12 +58,14 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player     The player who initiated the action.
      * @param categoryId The ID of the category.
      * @param itemId     The ID of the item.
+     * @param onFinish   Action run after the purchase is confirmed (typically reopens the menu the player came from).
+     *                   If null, the inventory is simply closed.
      */
-    public static void openBuyConfirmMenu(Player player, String categoryId, String itemId) {
+    public static void openBuyConfirmMenu(Player player, String categoryId, String itemId, Runnable onFinish) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
-        new ConfirmBuyMenu(player, item).open();
+        new ConfirmMenu(player, item, true, onFinish).open();
     }
 
     /**
@@ -68,8 +74,10 @@ public class AdminShopManager extends Feature implements HasCommands {
      * @param player     The player who initiated the action.
      * @param categoryId The ID of the category.
      * @param itemId     The ID of the item.
+     * @param onFinish   Action run after the sale is confirmed (typically reopens the menu the player came from).
+     *                   If null, the inventory is simply closed.
      */
-    public static void openSellConfirmMenu(Player player, String categoryId, String itemId) {
+    public static void openSellConfirmMenu(Player player, String categoryId, String itemId, Runnable onFinish) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
@@ -78,9 +86,8 @@ public class AdminShopManager extends Feature implements HasCommands {
             return;
         }
 
-        new ConfirmSellMenu(player, item).open();
+        new ConfirmMenu(player, item, false, onFinish).open();
     }
-
     /**
      * Handles the purchase of an item by the player.
      *
@@ -162,31 +169,77 @@ public class AdminShopManager extends Feature implements HasCommands {
     }
 
     /**
-     * Dynamically adjusts the price of an item based on quantity and transaction type.
+     * Sells every item of the given type in the player's inventory, without confirmation menu.
      *
-     * @param categoryId The ID of the category.
-     * @param itemId     The ID of the item.
-     * @param amount     The quantity bought/sold.
-     * @param isBuying   True if buying, false if selling.
+     * @param player The player selling the items.
+     * @param itemId The ID of the item.
      */
-    private static void adjustPrice(String categoryId, String itemId, int amount, boolean isBuying) {
-        ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId); // Get the item from the category
+    public static void sellAll(Player player, String itemId) {
+        ShopItem item = getCurrentItem(player, itemId);
         if (item == null) return;
 
-        // Calculate the adjustment factor based on the amount
-        double factor = Math.log10(amount + 1) * 0.003; // Logarithmic scale for adjustment
+        int amount = 0;
+        for (ItemStack stack : player.getInventory().getContents())
+            if (stack != null && stack.getType() == item.getMaterial())
+                amount += stack.getAmount();
 
-        if (isBuying)
-            item.setActualBuyPrice(clamp(item.getActualBuyPrice() * (1 + factor), item.getInitialBuyPrice()));
-        else
-            item.setActualSellPrice(clamp(item.getActualSellPrice() * (1 - factor), item.getInitialSellPrice()));
-        adminShopYAML.saveConfig(); // Save the updated configuration
+        if (amount <= 0) {
+            sendError(player, TranslationManager.translation("feature.adminshop.have_enough_item"));
+            return;
+        }
+
+        sellItem(player, itemId, amount);
     }
 
+    /**
+     * Dynamically adjusts the price of an item based on quantity and transaction type.
+     *
+     * <p>Buying increases the item's actual buy price, while selling decreases
+     * its actual sell price.</p>
+     *
+     * @param categoryId The ID of the item's category.
+     * @param itemId     The ID of the item being traded.
+     * @param amount     The total quantity of items traded.
+     * @param isBuying   True if the player is buying, false if selling.
+     */
+    private static void adjustPrice(String categoryId, String itemId, int amount, boolean isBuying) {
+        if (amount <= 0) return;
+
+        ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId);
+        if (item == null) return;
+
+        // Calculate the cumulative multiplier for the entire quantity.
+        double multiplier = Math.pow(
+                isBuying ? 1 + PRICE_CHANGE_RATE : 1 - PRICE_CHANGE_RATE,
+                amount
+        );
+
+        if (isBuying) {
+            // Increase the buy price based on the quantity purchased.
+            double newPrice = item.getActualBuyPrice() * multiplier;
+            item.setActualBuyPrice(clamp(newPrice, item.getInitialBuyPrice()));
+        } else {
+            // Decrease the sell price based on the quantity sold.
+            double newPrice = item.getActualSellPrice() * multiplier;
+            item.setActualSellPrice(clamp(newPrice, item.getInitialSellPrice()));
+        }
+
+        adminShopYAML.saveConfig();
+    }
+
+    /**
+     * Clamps an item's actual price between its configured minimum and maximum.
+     *
+     * @param actual  The calculated price before applying the limits.
+     * @param initial The item's original configured price.
+     * @return The price constrained within the allowed range.
+     */
     private static double clamp(double actual, double initial) {
-        double min = initial * 0.8;
-        double max = initial * 2.0; // plafond au double du prix existant
-        return Math.max(min, Math.min(actual, max));
+        return Math.clamp(
+                actual,
+                initial * MIN_PRICE_MULTIPLIER,
+                initial * MAX_PRICE_MULTIPLIER
+        );
     }
 
     /**
@@ -259,6 +312,20 @@ public class AdminShopManager extends Feature implements HasCommands {
     }
 
     /**
+     * Opens the menu of a category and marks it as the player's current category.
+     * <p>
+     * The current category is required afterwards by {@link #buyItem} and {@link #sellItem}
+     * to resolve the item, so every way of opening a category menu must go through here.
+     *
+     * @param player     The player.
+     * @param categoryId The ID of the category (must exist, see {@link #findCategory(String)}).
+     */
+    public static void openCategoryMenu(Player player, String categoryId) {
+        currentCategory.put(player.getUniqueId(), categoryId);
+        new AdminShopCategoryMenu(player, categoryId).open();
+    }
+
+    /**
      * Opens the menu displaying color variants of a shop item.
      *
      * @param player       The player.
@@ -319,6 +386,25 @@ public class AdminShopManager extends Feature implements HasCommands {
      */
     public static ShopCategory getCategory(String categoryId) {
         return categories.get(categoryId);
+    }
+
+    /**
+     * Finds a shop category from player input, ignoring case.
+     *
+     * @param input The category ID typed by the player.
+     * @return The matching ShopCategory, or null if there is none.
+     */
+    public static ShopCategory findCategory(String input) {
+        if (input == null) return null;
+
+        String id = input.trim();
+        ShopCategory exact = categories.get(id);
+        if (exact != null) return exact;
+
+        return categories.values().stream()
+                .filter(category -> category.id().equalsIgnoreCase(id))
+                .findFirst()
+                .orElse(null);
     }
 
     /**

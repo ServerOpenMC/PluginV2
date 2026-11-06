@@ -52,10 +52,7 @@ public class AdminShopMenu extends Menu {
             content.put(slot, new ItemMenuBuilder(this, category.material(), meta ->
                     meta.displayName(category.name().decoration(TextDecoration.ITALIC, false)
             )).setItemId(category.id())
-                    .setOnClick(e -> {
-                        AdminShopManager.currentCategory.put(getOwner().getUniqueId(), category.id());
-                        new AdminShopCategoryMenu(getOwner(), category.id()).open();
-                    }));
+                    .setOnClick(e -> AdminShopManager.openCategoryMenu(getOwner(), category.id())));
 
             slot += 2;
         }

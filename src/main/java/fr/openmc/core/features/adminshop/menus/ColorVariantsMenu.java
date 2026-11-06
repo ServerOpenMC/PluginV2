@@ -16,6 +16,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
@@ -141,12 +142,17 @@ public class ColorVariantsMenu extends Menu {
                         );
 
 
-                        if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
+                        Runnable back = () -> new ColorVariantsMenu(getOwner(), categoryId, originalItem).open();
+                        if (event.getClick() == ClickType.SHIFT_LEFT && originalItem.getInitialSellPrice() > 0) {
                             AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            AdminShopManager.sellAll(getOwner(), colorVariant.getId());
+                            back.run();
+                        } else if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
+                            AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                            AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId(), back);
                         } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
                             AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId());
+                            AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId(), back);
                         }
                     }));
         }

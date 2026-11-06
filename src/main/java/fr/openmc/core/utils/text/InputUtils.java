@@ -16,6 +16,17 @@ public class InputUtils {
         // for Sonar
     }
 
+    /**
+     * Vérifie si l'entrée est le mot-clé (insensible à la casse).
+     * Le montant réel doit être résolu par l'appelant, au moment de l'exécution.
+     *
+     * @param input Entrée du joueur
+     * @return true si le joueur a saisi "all"
+     */
+    public static boolean isInputAll(String input) {
+        return input != null && input.trim().equalsIgnoreCase("all");
+    }
+
     public static boolean isInputMoney(String input) {
         if (input == null || input.isEmpty()) {
             return false;

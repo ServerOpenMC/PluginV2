@@ -1,5 +1,6 @@
 package fr.openmc.core.features.economy.commands;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.economy.menu.TransactionsMenu;
@@ -13,7 +14,7 @@ public class History {
     @Cooldown(30)
     public void history(
             OMCPlayer sender,
-            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OMCPlayer target
+            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OMCOfflinePlayer target
     ) {
         if (target == null || !sender.hasPermission("omc.admin.money.history")) {
             target = sender;
