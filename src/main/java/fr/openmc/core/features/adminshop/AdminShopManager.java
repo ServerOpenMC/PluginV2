@@ -82,9 +82,9 @@ public class AdminShopManager extends Feature implements HasCommands {
     private static final double SPILLOVER_RATIO = 0.3;
 
     /**
-     * Share of the gap to the base price recovered at every recovery cycle (0.01 = 1%).
+     * Share of the gap to the base price recovered at every recovery cycle (0.0029 = 0.29%).
      */
-    private static final double RECOVERY_RATE = 0.01;
+    private static final double RECOVERY_RATE = 0.0029;
     /**
      * Delay between two recovery cycles (10 minutes).
      */
