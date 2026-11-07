@@ -3,6 +3,7 @@ name: Build & Test
 on:
   pull_request:
     paths-ignore:
+      - ".github/**"
       - ".gitignore"
       - "LICENSE"
       - "README.md"
@@ -13,6 +14,7 @@ on:
     # pull_request trigger, so pushing to them used to start every run twice.
     branches: [master]
     paths-ignore:
+      - ".github/**"
       - ".gitignore"
       - "LICENSE"
       - "README.md"
