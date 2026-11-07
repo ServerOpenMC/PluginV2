@@ -29,6 +29,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
     public static MoneyLeaderBoard MONEY_LEADERBOARD;
     public static PlayTimeLeaderBoard PLAYTIME_LEADERBOARD;
     public static PumpkinCountLeaderBoard PUMPKIN_COUNT_LEADERBOARD;
+    public static DeathCountLeaderBoard DEATH_COUNT_LEADERBOARD;
 
     private final static List<LeaderBoard> enabledLeaderBoards = new ArrayList<>();
 
@@ -43,6 +44,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         MONEY_LEADERBOARD = new MoneyLeaderBoard();
         PLAYTIME_LEADERBOARD = new PlayTimeLeaderBoard();
         PUMPKIN_COUNT_LEADERBOARD = new PumpkinCountLeaderBoard();
+        DEATH_COUNT_LEADERBOARD = new DeathCountLeaderBoard();
         start();
     }
 
@@ -69,6 +71,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         registerLeaderBoard(MONEY_LEADERBOARD);
         registerLeaderBoard(PLAYTIME_LEADERBOARD);
         registerLeaderBoard(PUMPKIN_COUNT_LEADERBOARD);
+        registerLeaderBoard(DEATH_COUNT_LEADERBOARD);
 
         viewerTimer = new BukkitRunnable() {
             @Override
