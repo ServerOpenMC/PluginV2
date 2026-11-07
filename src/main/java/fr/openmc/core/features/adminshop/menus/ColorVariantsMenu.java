@@ -143,7 +143,7 @@ public class ColorVariantsMenu extends Menu {
 
 
                         Runnable back = () -> new ColorVariantsMenu(getOwner(), categoryId, originalItem).open();
-                        if (event.getClick() == ClickType.SHIFT_LEFT && originalItem.getInitialSellPrice() > 0) {
+                        if (event.getClick() == ClickType.SHIFT_RIGHT && originalItem.getInitialSellPrice() > 0) {
                             AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
                             AdminShopManager.sellAll(getOwner(), colorVariant.getId());
                             back.run();
