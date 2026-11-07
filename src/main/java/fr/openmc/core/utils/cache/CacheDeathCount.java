@@ -1,6 +1,6 @@
-package fr.openmc.core.features.leaderboards.leaderboards;
+package fr.openmc.core.utils.cache;
 
-import fr.openmc.core.utils.cache.TtlCache;
+import com.j256.ormlite.stmt.query.In;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 
@@ -9,17 +9,17 @@ import java.util.concurrent.TimeUnit;
 
 public class CacheDeathCount {
 
-    private static final TtlCache<UUID, Long> cache = new TtlCache<>(5, TimeUnit.MINUTES);
+    private static final TtlCache<UUID, Integer> cache = new TtlCache<>(5, TimeUnit.MINUTES);
 
-    public static long getDeathCount(OfflinePlayer player) {
+    public static int getDeathCount(OfflinePlayer player) {
         return cache.getOrCompute(
                 player.getUniqueId(),
-                _ -> (long) player.getStatistic(Statistic.DEATHS)
+                _ -> player.getStatistic(Statistic.DEATHS)
         );
     }
 
     public static void refresh(OfflinePlayer player) {
-        cache.put(player.getUniqueId(), (long) player.getStatistic(Statistic.DEATHS));
+        cache.put(player.getUniqueId(), player.getStatistic(Statistic.DEATHS));
     }
 
     public static void invalidate(UUID uuid) {

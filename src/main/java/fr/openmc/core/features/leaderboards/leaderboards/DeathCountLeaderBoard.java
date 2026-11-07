@@ -2,6 +2,7 @@ package fr.openmc.core.features.leaderboards.leaderboards;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
+import fr.openmc.core.utils.cache.CacheDeathCount;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -14,6 +15,7 @@ import org.bukkit.Statistic;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 
 public class DeathCountLeaderBoard extends LeaderBoard {
 
@@ -33,7 +35,7 @@ public class DeathCountLeaderBoard extends LeaderBoard {
         List<Map.Entry<OfflinePlayer, Integer>> stats =
                 Arrays.stream(Bukkit.getOfflinePlayers())
                         .filter(p -> p.getName() != null)
-                        .map(p -> Map.entry(p, p.getStatistic(Statistic.DEATHS)))
+                        .map(p -> Map.entry(p, CacheDeathCount.getDeathCount(p)))
                         .sorted(Map.Entry.<OfflinePlayer, Integer>comparingByValue().reversed())
                         .limit(10)
                         .toList();
@@ -72,3 +74,4 @@ public class DeathCountLeaderBoard extends LeaderBoard {
                         .decorate(TextDecoration.BOLD)));
     }
 }
+
