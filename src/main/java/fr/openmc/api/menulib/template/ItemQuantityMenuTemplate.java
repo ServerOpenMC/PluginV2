@@ -85,7 +85,7 @@ public abstract class ItemQuantityMenuTemplate extends Menu {
         content.put(10, createQuantityButton("-64", OMCRegistry.CUSTOM_ITEMS.BTN_64.getBest(),
                 () -> decreaseQuantity(64)));
 
-        content.put(11, createQuantityButton("-10", OMCRegistry.CUSTOM_ITEMS.MINUS_BTN.getBest(),
+        content.put(11, createQuantityButton("-10", OMCRegistry.CUSTOM_ITEMS.BTN_10.getBest(),
                 () -> decreaseQuantity(10)));
 
         content.put(12, createQuantityButton("-1", OMCRegistry.CUSTOM_ITEMS.BTN_1.getBest(),
