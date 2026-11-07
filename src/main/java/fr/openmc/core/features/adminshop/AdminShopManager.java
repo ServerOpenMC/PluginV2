@@ -552,7 +552,7 @@ public class AdminShopManager extends Feature implements HasCommands {
 
     public static void handleShopClick(Player player, String categoryId, ShopItem item,
                                        InventoryClickEvent event, Runnable back) {
-        if (event.getClick() == ClickType.SHIFT_LEFT && item.getInitialSellPrice() > 0) {
+        if (event.getClick() == ClickType.SHIFT_RIGHT && item.getInitialSellPrice() > 0) {
             sellAll(player, item.getId());
             back.run();
         } else if (event.isLeftClick() && item.getInitialBuyPrice() > 0) {

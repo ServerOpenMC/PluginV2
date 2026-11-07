@@ -15,7 +15,8 @@ public class LeavesVariantMenu extends AdminShopVariantsMenu {
             Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.BIRCH_LEAVES, Material.JUNGLE_LEAVES,
             Material.ACACIA_LEAVES, Material.DARK_OAK_LEAVES, Material.MANGROVE_LEAVES, Material.CHERRY_LEAVES,
             Material.PALE_OAK_LEAVES, Material.AZALEA_LEAVES, Material.FLOWERING_AZALEA_LEAVES,
-            Material.ORANGE_POPLAR_LEAVES, Material.YELLOW_POPLAR_LEAVES, Material.RED_POPLAR_LEAVES);
+            Material.ORANGE_POPLAR_LEAVES, Material.YELLOW_POPLAR_LEAVES, Material.RED_POPLAR_LEAVES, Material.DIAMOND,
+            Material.ABANDONED_CAMP_MAP, Material.MAP, Material.AMETHYST_BLOCK, Material.ARMS_UP_POTTERY_SHERD, Material.MELON, Material.OPEN_EYEBLOSSOM);
 
     public LeavesVariantMenu(Player owner, String categoryId, ShopItem item) {
         super(owner, categoryId, item);
