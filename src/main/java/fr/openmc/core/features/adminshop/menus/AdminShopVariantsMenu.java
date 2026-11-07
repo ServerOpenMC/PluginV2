@@ -2,6 +2,7 @@ package fr.openmc.core.features.adminshop.menus;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
@@ -27,7 +28,7 @@ public abstract class AdminShopVariantsMenu extends PaginatedMenu {
             11, 12, 13, 14, 15,
             20, 21, 22, 23, 24,
             29, 30, 31, 32, 33,
-            38, 39, 40, 41, 42
+            39, 40, 41
     };
 
     private static final List<Integer> STATIC_SLOTS = IntStream.range(0, 54)
@@ -132,7 +133,9 @@ public abstract class AdminShopVariantsMenu extends PaginatedMenu {
                         .color(NamedTextColor.GRAY)
                         .decoration(TextDecoration.ITALIC, false))));
 
+        buttons.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_WHITE.apply(this));
         buttons.put(49, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, true));
+        buttons.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_WHITE.apply(this));
         return buttons;
     }
 }
