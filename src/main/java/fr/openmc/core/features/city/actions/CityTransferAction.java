@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
@@ -25,7 +25,7 @@ public class CityTransferAction {
             if (!CityManageConditions.canCityTransfer(city, owner.getPlayer())) return;
         }
 
-        ConfirmMenu menu = new ConfirmMenu(player,
+        ConfirmMenuTemplate menu = new ConfirmMenuTemplate(player,
                 () -> {
                     city.changeOwner(playerToTransfer.getUniqueId());
                     MessagesManager.sendMessage(player,

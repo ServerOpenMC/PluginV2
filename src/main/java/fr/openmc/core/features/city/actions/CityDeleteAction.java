@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
@@ -32,7 +32,7 @@ public class CityDeleteAction {
 
         if (!CityManageConditions.canCityDelete(city, player)) return;
 
-        ConfirmMenu menu = new ConfirmMenu(player,
+        ConfirmMenuTemplate menu = new ConfirmMenuTemplate(player,
                 () -> {
                     for (UUID townMember : city.getMembers()) {
                         if (Bukkit.getPlayer(townMember) instanceof Player member) {

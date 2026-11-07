@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.menu.create;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
@@ -127,7 +127,7 @@ public class MayorColorMenu extends Menu {
                     loreAccept.add(TranslationManager.translation("feature.city.mayor.menu.color.confirm.final"));
 
 
-                    ConfirmMenu menu = new ConfirmMenu(player,
+                    ConfirmMenuTemplate menu = new ConfirmMenuTemplate(player,
                             () -> {
                                 try {
                                     if (menuType == MenuType.CANDIDATE) {
@@ -175,7 +175,7 @@ public class MayorColorMenu extends Menu {
                                 .decoration(TextDecoration.ITALIC, false).color(thisColor);
                         Component toColor = TranslationManager.translation("feature.city.mayor.label.this_one")
                                 .decoration(TextDecoration.ITALIC, false).color(color);
-                        ConfirmMenu menu = new ConfirmMenu(player,
+                        ConfirmMenuTemplate menu = new ConfirmMenuTemplate(player,
                                 () -> {
                                     city.getMayor().setMayorColor(color);
                                     MessagesManager.sendMessage(player, TranslationManager.translation(
@@ -201,7 +201,7 @@ public class MayorColorMenu extends Menu {
                                 .decoration(TextDecoration.ITALIC, false).color(thisColor);
                         Component toColor = TranslationManager.translation("feature.city.mayor.label.this_one")
                                 .decoration(TextDecoration.ITALIC, false).color(color);
-                        ConfirmMenu menu = new ConfirmMenu(player,
+                        ConfirmMenuTemplate menu = new ConfirmMenuTemplate(player,
                                 () -> {
                                     mayorCandidate.setCandidateColor(color);
                                     MessagesManager.sendMessage(player, TranslationManager.translation(
