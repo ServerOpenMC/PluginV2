@@ -22,11 +22,11 @@ public class HouseWitchLV3 extends CustomMob<Witch> {
                 6.0,
                 List.of(
                         new XpLoot(150, 250, 0.9),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.6, 2, 6),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 0.2, 1, 5),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.008, 1, 2),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_RED, 0.002, 1),
-                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_YELLOW, 0.0005, 1)
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BROWN, 0.9, 4, 10),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_GREEN, 0.4, 1, 5),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_BLUE, 0.1, 1, 2),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_RED, 0.02, 1),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CANDY_YELLOW, 0.05, 1)
                 )
         );
     }
