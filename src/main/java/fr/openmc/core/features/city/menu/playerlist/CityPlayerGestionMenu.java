@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.features.city.City;
@@ -92,7 +92,7 @@ public class CityPlayerGestionMenu extends Menu {
             if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget))
                 return;
 
-            ConfirmMenu menu = new ConfirmMenu(
+            ConfirmMenuTemplate menu = new ConfirmMenuTemplate(
                     player,
                     () -> {
                         player.closeInventory();

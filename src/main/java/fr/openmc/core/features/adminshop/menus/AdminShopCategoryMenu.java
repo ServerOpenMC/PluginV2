@@ -14,7 +14,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
@@ -74,20 +73,8 @@ public class AdminShopCategoryMenu extends Menu {
                     meta.lore(category ? List.of(TranslationManager.translation("feature.adminshop.right_click_choice"))
                             : AdminShopUtils.extractLoreForItem(item));
                 }).setOnClick(event -> {
-                    if (material.name().endsWith("_LEAVES"))
-                        AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item);
-                    else if (material.name().endsWith("_LOG"))
-                        AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item);
-                    else if (item.isHasColorVariant())
-                        AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item);
-                    else if (event.getClick() == ClickType.SHIFT_RIGHT && item.getInitialSellPrice() > 0) {
-                        AdminShopManager.sellAll(getOwner(), item.getId());
-                        back.run(); // Refresh prices in the lore
-                    }
-                    else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
-                        AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId(), back);
-                    else if (event.isRightClick() && item.getInitialSellPrice() > 0)
-                        AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId(), back);
+                    if (category) AdminShopManager.openVariantMenu(getOwner(), categoryId, item);
+                    else AdminShopManager.handleShopClick(getOwner(), categoryId, item, event, back);
                 }).setItemId(item.getId()));
             }
         }

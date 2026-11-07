@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCPlugin;
@@ -349,7 +349,7 @@ public class CityChunkMenu extends Menu {
             return;
         }
 
-        ConfirmMenu menu = new ConfirmMenu(
+        ConfirmMenuTemplate menu = new ConfirmMenuTemplate(
                 player,
                 () -> {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
@@ -385,7 +385,7 @@ public class CityChunkMenu extends Menu {
             return;
         }
 
-        ConfirmMenu menu = new ConfirmMenu(
+        ConfirmMenuTemplate menu = new ConfirmMenuTemplate(
                 player,
                 () -> {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {

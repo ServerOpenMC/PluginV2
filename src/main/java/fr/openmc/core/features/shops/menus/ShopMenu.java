@@ -2,7 +2,7 @@ package fr.openmc.core.features.shops.menus;
 
 import fr.openmc.api.input.dialog.DialogInput;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
@@ -86,7 +86,7 @@ public class ShopMenu extends Menu {
             map.put(0, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.HOMES_ICON_BIN_RED.getBest(), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.delete.btn.title"));
                 itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.delete.btn.lore"));
-            }).setOnClick(_ -> new ConfirmMenu(
+            }).setOnClick(_ -> new ConfirmMenuTemplate(
                     getOwner(),
                     () -> {
                         getOwner().closeInventory();
@@ -101,7 +101,7 @@ public class ShopMenu extends Menu {
             map.put(1, new ItemMenuBuilder(this, Material.RED_DYE, itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.shop.menu.main.remove_item.btn.title"));
                 itemMeta.lore(TranslationManager.translationLore("feature.shop.menu.main.remove_item.btn.lore"));
-            }).setOnClick(_ -> new ConfirmMenu(
+            }).setOnClick(_ -> new ConfirmMenuTemplate(
                     getOwner(),
                     () -> {
                         getOwner().closeInventory();

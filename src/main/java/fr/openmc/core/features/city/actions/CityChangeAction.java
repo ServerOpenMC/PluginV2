@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
@@ -57,7 +57,7 @@ public class CityChangeAction {
         confirmLore.add(Component.empty());
 	    confirmLore.add(TranslationManager.translation("feature.city.type.mascot_losing_level"));
 
-        ConfirmMenu menu = new ConfirmMenu(
+        ConfirmMenuTemplate menu = new ConfirmMenuTemplate(
                 player,
                 () -> {
                     finishChange(player);
