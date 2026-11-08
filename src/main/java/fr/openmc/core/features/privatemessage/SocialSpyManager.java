@@ -75,9 +75,7 @@ public class SocialSpyManager extends Feature implements HasCommands  {
         );
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            if (onlinePlayer.equals(sender) || onlinePlayer.equals(receiver)) {
-                continue;
-            }
+            if (onlinePlayer.equals(sender) || onlinePlayer.equals(receiver)) continue;
 
             if (hasSocialSpyEnabled(onlinePlayer) && onlinePlayer.hasPermission("omc.commands.privatemessage.socialspy")) {
                 onlinePlayer.sendMessage(socialSpyMessage);
