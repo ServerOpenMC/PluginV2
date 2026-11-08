@@ -24,7 +24,7 @@ public class MineBlocksChallenge extends ChallengeAnimation {
 
     public MineBlocksChallenge(KeyBlock keyBlock, int target, CustomLootTable reward, long time) {
         super(TranslationManager.translation("feature.chatanimations.challenge.mine_blocks.name",
-                Component.text(target), keyBlock.name()), reward, time);
+                Component.text(target), keyBlock.name(), Component.text(target > 1 ? "s" : "")), reward, time);
         this.keyBlock = keyBlock;
         this.target = target;
     }

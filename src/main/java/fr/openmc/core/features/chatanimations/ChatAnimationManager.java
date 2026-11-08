@@ -78,7 +78,8 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new PlaceBlocksChallenge(KeyBlock.vanilla(BlockType.OAK_PLANKS), 50, 60L),
                 new PlaceBlocksChallenge(KeyBlock.vanilla(BlockType.TORCH), 20, 45L),
                 new PlaceBlocksChallenge(KeyBlock.vanilla(BlockType.WHITE_WOOL), 10, 60L),
-                new PlaceBlocksChallenge(KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_GRAY), 1, 120L),
+                // todo: le remettre dans ItemsAdder Api marche ptdr
+                // new PlaceBlocksChallenge(KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.ELEVATOR_GRAY), 1, 120L),
 
                 new WalkDistanceChallenge(200, 60L),
                 new WalkDistanceChallenge(500, 120L),
