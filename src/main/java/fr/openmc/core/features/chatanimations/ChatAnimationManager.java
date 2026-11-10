@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Credit(developers = {"iambibi_"})
+@Credit(developers = {"iambibi_", "PuppyTransGirl"})
 public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder, HasListeners {
 
     private static final long MIN_DELAY_TICKS = 20 * 60 * 20L; // 20 min
