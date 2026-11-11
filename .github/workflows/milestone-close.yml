@@ -46,6 +46,7 @@ jobs:
           token: ${{ secrets.RELEASE_TOKEN }}
           tag_name: ${{ github.event.milestone.title }}
           name: Release milestone ${{ github.event.milestone.title }}
+          target_commitish: master
           generate_release_notes: true
           fail_on_unmatched_files: true
           make_latest: true
