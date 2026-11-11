@@ -1,9 +1,8 @@
 package fr.openmc.core.features.events.contents.dailyevents.models.dailyevent;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
-import fr.openmc.core.features.events.contents.dailyevents.tasks.EndEventTask;
 import fr.openmc.core.features.events.models.Event;
+import fr.openmc.core.utils.scheduler.OMCScheduler;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -11,6 +10,8 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+
+import static fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager.outgoingEvent;
 
 public abstract class DailyEvent extends Event {
     /**
@@ -73,9 +74,9 @@ public abstract class DailyEvent extends Event {
         }
 
         // * Programmation de la fin de l'evenement
-        DailyEventsManager.endEventTask = new EndEventTask()
-                .runTaskLater(OMCPlugin.getInstance(),
-                        DailyEventsManager.outgoingEvent.getDailyEvent().getDuration() * 60L * 20L);
+        DailyEventsManager.endEventTask = OMCScheduler.runAt(
+                outgoingEvent.getScheduledEndDate(),
+                () -> outgoingEvent.getDailyEvent().end());
     }
 
     /**
@@ -87,7 +88,7 @@ public abstract class DailyEvent extends Event {
                 .filter(p -> p.getWorld().getName().equals(this.getWorldEvent()))
                 .collect(Collectors.toSet());
 
-        DailyEventsManager.outgoingEvent = null;
+        outgoingEvent = null;
         DailyEventsManager.endEventTask = null;
 
         // * Arret de l'evenement

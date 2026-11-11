@@ -4,7 +4,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
@@ -14,9 +13,9 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEvent;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventPhase;
 import fr.openmc.core.features.events.contents.weeklyevents.models.WeeklyEventsData;
+import fr.openmc.core.utils.scheduler.OMCScheduler;
+import fr.openmc.core.utils.scheduler.OMCTask;
 import fr.openmc.core.utils.text.DateUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.time.format.TextStyle;
@@ -28,7 +27,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
 
     private static Dao<WeeklyEventsData, Integer> dao;
     private static WeeklyEventsData data;
-    private static BukkitTask currentTask = null;
+    private static OMCTask currentTask = null;
 
     /**
      * Initialise la gestion des WeeklyEvents.
@@ -145,13 +144,13 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
                 getCurrentEvent().getId());
 
 
-        currentTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+        currentTask = OMCScheduler.runLater(delayTicks, () -> {
             if (findNextPhase() != nextPhase) {
                 scheduleNextPhase();
                 return;
             }
             runPhase(getCurrentEvent(), nextPhase);
-        }, delayTicks);
+        });
     }
 
     /**
