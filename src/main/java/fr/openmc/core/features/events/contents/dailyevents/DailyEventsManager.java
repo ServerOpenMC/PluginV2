@@ -17,11 +17,19 @@ import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEvents
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.SlotDailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.DailyEvent;
-import fr.openmc.core.features.events.contents.dailyevents.tasks.NextEventTask;
-import fr.openmc.core.features.events.contents.dailyevents.tasks.ShowBeginningEventTask;
 import fr.openmc.core.utils.RandomUtils;
+import fr.openmc.core.utils.nms.toast.ToastUtils;
+import fr.openmc.core.utils.scheduler.OMCScheduler;
+import fr.openmc.core.utils.scheduler.OMCTask;
 import fr.openmc.core.utils.text.DateUtils;
-import org.bukkit.scheduler.BukkitTask;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import fr.openmc.core.utils.world.WorldUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minecraft.advancements.AdvancementType;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -35,8 +43,8 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
     // * Données à propos de la gestion des daily event
     public static ScheduleDailyEvent outgoingEvent = null;
-    public static BukkitTask endEventTask = null;
-    public static BukkitTask nextEventTask;
+    public static OMCTask endEventTask = null;
+    public static OMCTask nextEventTask;
     public static List<ScheduleDailyEvent> incomingEvents = new ArrayList<>();
 
     private static Dao<IncomingEventsDB, Integer> dao;
@@ -155,7 +163,7 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
      *
      * @return la tache de lancement de l'événement, qui sera executé à l'heure exacte du début de l'événement
      */
-    public static BukkitTask scheduleNextEventTask() {
+    public static OMCTask scheduleNextEventTask() {
         LocalDateTime now = DateUtils.getLocalDateTime();
 
         // si c'est null, alors on rempli la file et on schedule pour le premier horaire
@@ -167,19 +175,59 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
         if (scheduleTime == null) return null;
 
         long delaySeconds = DateUtils.getDelayBetweenNow(scheduleTime);
-        long delayTicks = delaySeconds * 20;
-
         OMCLogger.infoFormatted("Les prochains evenement : " + incomingEvents.stream()
                 .map(s -> s.getDailyEvent().getClass().getSimpleName()).toList());
         OMCLogger.infoFormatted("Prochain Evenement journalier : " + scheduleTime
                 + " (dans " + DateUtils.convertSecondToTime(delaySeconds) + ")");
 
         // * Programation de la tâche qui s'executera peu avant le commencement
-        new ShowBeginningEventTask()
-                .runTaskLater(OMCPlugin.getInstance(), Math.max(0, delayTicks - SHOW_BEGINNING_DELAY * 20L));
+        OMCScheduler.runAt(scheduleTime.minusSeconds(SHOW_BEGINNING_DELAY), () -> {
+            ScheduleDailyEvent nextEvent = DailyEventsManager.incomingEvents.getFirst();
+            DailyEvent dailyEvent = nextEvent.getDailyEvent();
+
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                Component name;
+
+                // ** Affichage d'un message dans le chat
+                if (dailyEvent.getWorldEvent().contains(onlinePlayer.getWorld().getName())) {
+                    onlinePlayer.sendMessage(
+                            TranslationManager.translation("feature.dailyevents.broadcast.soon"));
+                }
+
+                // ** Affichage du Toast
+                if (dailyEvent.getWorldEvent().contains(onlinePlayer.getWorld().getName())) {
+                    name = TranslationManager.translation("feature.dailyevents.toast.beginning_event_in_world",
+                            Component.text(DailyEventsManager.SHOW_BEGINNING_DELAY, NamedTextColor.YELLOW));
+                } else {
+                    name = TranslationManager.translation("feature.dailyevents.toast.beginning_event_out_world",
+                            TranslationManager.translation(WorldUtils.getDisplayedWorldName(dailyEvent.getWorldEvent())),
+                            Component.text(DailyEventsManager.SHOW_BEGINNING_DELAY, NamedTextColor.YELLOW));
+                }
+
+                ToastUtils.sendCustomToast(
+                        onlinePlayer,
+                        Material.NOTE_BLOCK,
+                        name,
+                        AdvancementType.TASK
+                );
+            }
+        });
 
         // * Renvoie la tache qui executera le début de l'evenement
-        return new NextEventTask().runTaskLater(OMCPlugin.getInstance(), delayTicks);
+        return OMCScheduler.runAt(scheduleTime, () -> {
+            // * Choix de l'evenement à lancer
+            if (DailyEventsManager.incomingEvents.isEmpty()) {
+                DailyEventsManager.incomingEvents = DailyEventsManager.loadIncomingEvents();
+            }
+            DailyEventsManager.outgoingEvent = DailyEventsManager.incomingEvents.removeFirst();
+
+            // * Lancement de l'evenement
+            DailyEventsManager.outgoingEvent.getDailyEvent().start();
+
+            // * 10 secondes d'attente avant de schedule un autre event (evite que plusieurs events se lancent en meme temps)
+            Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
+                    DailyEventsManager.nextEventTask = DailyEventsManager.scheduleNextEventTask(), 20L * 10);
+        });
     }
 
     /**
