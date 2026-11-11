@@ -16,14 +16,13 @@ import java.util.Map;
 
 public class ContributorsLeaderBoard extends LeaderBoard {
 
-    @Override
-    public double getUpdateDelay() {
-        return 45 * 60;
+    public ContributorsLeaderBoard() {
+        super("contributors");
     }
 
     @Override
-    public String getId() {
-        return "contributors";
+    public double getUpdateDelay() {
+        return 45 * 60;
     }
 
     @Override

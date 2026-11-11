@@ -19,14 +19,13 @@ public class PumpkinCountLeaderBoard extends LeaderBoard {
 
     private final TextColor pumpkinColor = TextColor.color(156, 69, 26);
 
-    @Override
-    public double getUpdateDelay() {
-        return 15;
+    public PumpkinCountLeaderBoard() {
+        super("pumpkin-count");
     }
 
     @Override
-    public String getId() {
-        return "pumpkin-count";
+    public double getUpdateDelay() {
+        return 15;
     }
 
     @Override

@@ -23,6 +23,8 @@ public abstract class LeaderBoard {
     public static final FileConfiguration config = YamlConfiguration.loadConfiguration(LeaderBoardManager.getLeaderBoardFile());
 
     @Getter
+    public String id;
+    @Getter
     protected Location location;
 
     protected TextDisplay display;
@@ -30,7 +32,8 @@ public abstract class LeaderBoard {
     private final long updatePeriodTicks;
     private BukkitTask updateTask;
 
-    protected LeaderBoard() {
+    protected LeaderBoard(String id) {
+        this.id = id;
         if (getUpdateDelay() <= 0)
             throw new IllegalArgumentException("updateTimeSeconds must be greater than zero");
         this.updatePeriodTicks = Math.max(1L, Math.round(getUpdateDelay() * 20));
@@ -41,7 +44,7 @@ public abstract class LeaderBoard {
             changed = true;
         }
 
-        String locationKey = getId() + "-location";
+        String locationKey = id + "-location";
         this.location = config.getLocation(locationKey);
         if (this.location == null) {
             Location defaultLocation = getDefaultLocation();
@@ -50,7 +53,7 @@ public abstract class LeaderBoard {
                 config.set(locationKey, defaultLocation);
                 changed = true;
             } else {
-                OMCLogger.warn("Can't initialize location for " + getId() + ": no world is loaded");
+                OMCLogger.warn("Can't initialize location for " + id + ": no world is loaded");
             }
         }
 
@@ -75,8 +78,6 @@ public abstract class LeaderBoard {
     }
 
     public abstract double getUpdateDelay();
-
-    public abstract String getId();
 
     public abstract Component createComponent();
 
