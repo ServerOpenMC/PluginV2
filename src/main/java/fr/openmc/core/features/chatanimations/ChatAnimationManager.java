@@ -33,8 +33,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @Credit(developers = {"iambibi_"})
 public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder, HasListeners {
 
-    private static final long MIN_DELAY_TICKS = 20 * 60 * 20L; // 20 min
-    private static final long MAX_DELAY_TICKS = 20 * 60 * 30L; // 30 min
+    private static final long MIN_DELAY_TICKS = 20 * 60 * 1L; // 20 min
+    private static final long MAX_DELAY_TICKS = 20 * 60 * 1L; // 30 min
 
     private Set<ChatAnimation> ANIMATIONS;
 
@@ -84,6 +84,8 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new WalkDistanceChallenge(500, 120L),
                 new WalkDistanceChallenge(1000, 180L),
 
+                // Quiz en rapport avec la tech
+
                 new Quizz(TranslationManager.translation("quizz.tech.01"), "python"),
                 new Quizz(TranslationManager.translation("quizz.tech.02"), "hypertext markup language", "hyper text markup language"),
                 new Quizz(TranslationManager.translation("quizz.tech.03"), "microsoft"),
@@ -96,6 +98,46 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new Quizz(TranslationManager.translation("quizz.tech.10"), "png"),
                 new Quizz(TranslationManager.translation("quizz.tech.11"), "chrome", "google chrome"),
                 new Quizz(TranslationManager.translation("quizz.tech.12"), "random access memory"),
+                new Quizz(TranslationManager.translation("quizz.tech.13"), "james gosling"),
+                new Quizz(TranslationManager.translation("quizz.tech.14"), "central processing unit"),
+                new Quizz(TranslationManager.translation("quizz.tech.15"), "sony", "sony interactive entertainment"),
+                new Quizz(TranslationManager.translation("quizz.tech.16"), "ios"),
+                new Quizz(TranslationManager.translation("quizz.tech.17"), "solid state drive"),
+                new Quizz(TranslationManager.translation("quizz.tech.18"), "css"),
+                new Quizz(TranslationManager.translation("quizz.tech.19"), "edge", "microsoft edge"),
+                new Quizz(TranslationManager.translation("quizz.tech.20"), "google"),
+                new Quizz(TranslationManager.translation("quizz.tech.21"), "graphics processing unit"),
+                new Quizz(TranslationManager.translation("quizz.tech.22"), "python"),
+                new Quizz(TranslationManager.translation("quizz.tech.23"), "steam"),
+                new Quizz(TranslationManager.translation("quizz.tech.24"), "uniform resource locator"),
+                new Quizz(TranslationManager.translation("quizz.tech.25"), "google"),
+                new Quizz(TranslationManager.translation("quizz.tech.26"), "protect a network", "block unauthorized access", "network security"),
+                new Quizz(TranslationManager.translation("quizz.tech.27"), "java"),
+                new Quizz(TranslationManager.translation("quizz.tech.28"), "universal serial bus"),
+                new Quizz(TranslationManager.translation("quizz.tech.29"), "microsoft"),
+                new Quizz(TranslationManager.translation("quizz.tech.30"), "siri"),
+                new Quizz(TranslationManager.translation("quizz.tech.31"), "virtual private network"),
+                new Quizz(TranslationManager.translation("quizz.tech.32"), "james gosling"),
+                new Quizz(TranslationManager.translation("quizz.tech.33"), "iphone"),
+                new Quizz(TranslationManager.translation("quizz.tech.34"), "mozilla"),
+                new Quizz(TranslationManager.translation("quizz.tech.35"), "hypertext transfer protocol"),
+                new Quizz(TranslationManager.translation("quizz.tech.36"), "kotlin", "java"),
+                new Quizz(TranslationManager.translation("quizz.tech.37"), "bluetooth"),
+                new Quizz(TranslationManager.translation("quizz.tech.38"), "nintendo"),
+                new Quizz(TranslationManager.translation("quizz.tech.39"), "application programming interface"),
+                new Quizz(TranslationManager.translation("quizz.tech.40"), ".py", "py"),
+                new Quizz(TranslationManager.translation("quizz.tech.41"), "git"),
+                new Quizz(TranslationManager.translation("quizz.tech.42"), "html"),
+                new Quizz(TranslationManager.translation("quizz.tech.43"), "flash memory"),
+                new Quizz(TranslationManager.translation("quizz.tech.44"), "apple"),
+                new Quizz(TranslationManager.translation("quizz.tech.45"), "mario"),
+                new Quizz(TranslationManager.translation("quizz.tech.46"), "basic input output system"),
+                new Quizz(TranslationManager.translation("quizz.tech.47"), "swift", "objective-c"),
+                new Quizz(TranslationManager.translation("quizz.tech.48"), "google"),
+                new Quizz(TranslationManager.translation("quizz.tech.49"), "brendan eich"),
+                new Quizz(TranslationManager.translation("quizz.tech.50"), "connect to wireless networks", "wireless internet access"),
+
+                // Quiz général
 
                 new Quizz(TranslationManager.translation("quizz.general.01"), "paris"),
                 new Quizz(TranslationManager.translation("quizz.general.02"), "7"),
@@ -118,6 +160,37 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new Quizz(TranslationManager.translation("quizz.general.19"), "sumo", "le sumo"),
                 new Quizz(TranslationManager.translation("quizz.general.20"), "8", "8 minutes", "8 min"),
                 new Quizz(TranslationManager.translation("quizz.general.21"), "3"),
+                new Quizz(TranslationManager.translation("quizz.general.22"), "russie"),
+                new Quizz(TranslationManager.translation("quizz.general.23"), "206"),
+                new Quizz(TranslationManager.translation("quizz.general.24"), "egypte"),
+                new Quizz(TranslationManager.translation("quizz.general.25"), "mercure"),
+                new Quizz(TranslationManager.translation("quizz.general.26"), "william shakespeare", "shakespeare"),
+                new Quizz(TranslationManager.translation("quizz.general.27"), "baleine bleue", "baleine"),
+                new Quizz(TranslationManager.translation("quizz.general.28"), "chinois", "mandarin"),
+                new Quizz(TranslationManager.translation("quizz.general.29"), "canberra"),
+                new Quizz(TranslationManager.translation("quizz.general.30"), "6", "six"),
+                new Quizz(TranslationManager.translation("quizz.general.31"), "oxygene"),
+                new Quizz(TranslationManager.translation("quizz.general.32"), "voie lactée", "la voie lactée"),
+                new Quizz(TranslationManager.translation("quizz.general.33"), "chine"),
+                new Quizz(TranslationManager.translation("quizz.general.34"), "antarctique", "désert antarctique"),
+                new Quizz(TranslationManager.translation("quizz.general.35"), "alexander fleming", "fleming"),
+                new Quizz(TranslationManager.translation("quizz.general.36"), "32", "trente-deux"),
+                new Quizz(TranslationManager.translation("quizz.general.37"), "ottawa"),
+                new Quizz(TranslationManager.translation("quizz.general.38"), "lion"),
+                new Quizz(TranslationManager.translation("quizz.general.39"), "diamant"),
+                new Quizz(TranslationManager.translation("quizz.general.40"), "espagne"),
+                new Quizz(TranslationManager.translation("quizz.general.41"), "7", "sept"),
+                new Quizz(TranslationManager.translation("quizz.general.42"), "azote"),
+                new Quizz(TranslationManager.translation("quizz.general.43"), "george washington", "washington"),
+                new Quizz(TranslationManager.translation("quizz.general.44"), "océan indien", "indien"),
+                new Quizz(TranslationManager.translation("quizz.general.45"), "peau"),
+                new Quizz(TranslationManager.translation("quizz.general.46"), "brésil"),
+                new Quizz(TranslationManager.translation("quizz.general.47"), "séoul", "seoul"),
+                new Quizz(TranslationManager.translation("quizz.general.48"), "90", "90 degrés"),
+                new Quizz(TranslationManager.translation("quizz.general.49"), "albert einstein", "einstein"),
+                new Quizz(TranslationManager.translation("quizz.general.50"), "livre sterling", "livre", "gbp"),
+
+
 
                 new Quizz(TranslationManager.translation("quizz.server.01"), "aywen1"),
                 new Quizz(TranslationManager.translation("quizz.server.02"), "notch", "markus persson", "persson"),
