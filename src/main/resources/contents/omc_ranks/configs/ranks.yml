@@ -12,7 +12,7 @@ font_images:
     permission: "omc_ranks.player"
     show_in_gui: true
     suggest_in_command: false
-    path: "joueur.png"
+    path: "player.png"
     scale_ratio: 9
     y_position: 8
   builder:
