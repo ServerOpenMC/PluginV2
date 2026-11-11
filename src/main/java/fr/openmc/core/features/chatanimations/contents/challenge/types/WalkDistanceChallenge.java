@@ -16,12 +16,12 @@ public class WalkDistanceChallenge extends ChallengeAnimation {
     private final int target;
     private final Map<UUID, Double> progress = new HashMap<>();
 
-    public WalkDistanceChallenge(int target, long time) {
-        this(target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public WalkDistanceChallenge(String id, int target, long time) {
+        this(id, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public WalkDistanceChallenge(int target, CustomLootTable reward, long time) {
-        super(TranslationManager.translation("feature.chatanimations.challenge.walk_distance.name",
+    public WalkDistanceChallenge(String id, int target, CustomLootTable reward, long time) {
+        super(id, TranslationManager.translation("feature.chatanimations.challenge.walk_distance.name",
                 Component.text(target)), reward, time);
         this.target = target;
     }

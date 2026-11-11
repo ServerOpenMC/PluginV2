@@ -8,17 +8,24 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public abstract class ChallengeAnimation extends ChatAnimation {
+    private final String id;
     private final Component description;
     private final long time;
 
-    public ChallengeAnimation(Component description, long time) {
-       this(description, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public ChallengeAnimation(String id, Component description, long time) {
+        this(id, description, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public ChallengeAnimation(Component description, CustomLootTable reward, long time) {
+    public ChallengeAnimation(String id, Component description, CustomLootTable reward, long time) {
+        this.id = id;
         this.description = description;
         this.reward = reward;
         this.time = time;
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
     }
 
     @Override

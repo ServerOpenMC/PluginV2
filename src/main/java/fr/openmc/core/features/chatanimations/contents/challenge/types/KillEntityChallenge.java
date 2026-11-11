@@ -18,12 +18,12 @@ public class KillEntityChallenge extends ChallengeAnimation {
     private final int target;
     private final Map<UUID, Integer> progress = new HashMap<>();
 
-    public KillEntityChallenge(EntityType entityType, int target, long time) {
-        this(entityType, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public KillEntityChallenge(String id, EntityType entityType, int target, long time) {
+        this(id, entityType, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public KillEntityChallenge(EntityType entityType, int target, CustomLootTable reward, long time) {
-        super(TranslationManager.translation("feature.chatanimations.challenge.kill_entity.name",
+    public KillEntityChallenge(String id, EntityType entityType, int target, CustomLootTable reward, long time) {
+        super(id, TranslationManager.translation("feature.chatanimations.challenge.kill_entity.name",
                 Component.text(target), Component.translatable(entityType.translationKey())), reward, time);
         this.entityType = entityType;
         this.target = target;

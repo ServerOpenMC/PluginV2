@@ -16,12 +16,12 @@ public class FishingChallenge extends ChallengeAnimation {
     private final int target;
     private final Map<UUID, Integer> progress = new HashMap<>();
 
-    public FishingChallenge(int target, long time) {
-        this(target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public FishingChallenge(String id, int target, long time) {
+        this(id, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public FishingChallenge(int target, CustomLootTable reward, long time) {
-        super(TranslationManager.translation("feature.chatanimations.challenge.fishing.name",
+    public FishingChallenge(String id, int target, CustomLootTable reward, long time) {
+        super(id, TranslationManager.translation("feature.chatanimations.challenge.fishing.name",
                 Component.text(target)), reward, time);
         this.target = target;
     }

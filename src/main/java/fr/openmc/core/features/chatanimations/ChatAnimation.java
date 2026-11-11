@@ -14,6 +14,7 @@ public abstract class ChatAnimation {
     @Getter
     protected CustomLootTable reward;
 
+    public abstract String getId();
     public abstract Component getName();
     public abstract Component getAnnounceStart();
     public abstract Component getDescriptionResult();

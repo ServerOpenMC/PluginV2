@@ -13,26 +13,35 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Quizz extends ChatAnimation {
-
+    private final String id;
     private final Component question;
     @Getter
     private final List<String> answers;
     private final long time;
 
-    public Quizz(Component question, String... answers) {
-        this(question,
+    public Quizz(String id, Component question, String... answers) {
+        this(
+                id,
+                question,
                 Arrays.asList(answers),
                 OMCRegistry.CUSTOM_LOOT_TABLES.QUIZZ,
-                30L);
+                30L
+        );
     }
 
-    public Quizz(Component question, List<String> answers, CustomLootTable reward, long time) {
+    public Quizz(String id, Component question, List<String> answers, CustomLootTable reward, long time) {
+        this.id = id;
         this.question = question;
         this.answers = answers.stream()
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
         this.reward = reward;
         this.time = time;
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
     }
 
     @Override

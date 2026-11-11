@@ -19,16 +19,16 @@ public class CraftItemChallenge extends ChallengeAnimation {
     private final int target;
     private final Map<UUID, Integer> progress = new HashMap<>();
 
-    public CraftItemChallenge(CustomItem item, int target, long time) {
-        this(item.getBest(), target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public CraftItemChallenge(String id, CustomItem item, int target, long time) {
+        this(id, item.getBest(), target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public CraftItemChallenge(ItemStack item, int target, long time) {
-        this(item, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public CraftItemChallenge(String id, ItemStack item, int target, long time) {
+        this(id, item, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public CraftItemChallenge(ItemStack item, int target, CustomLootTable reward, long time) {
-        super(TranslationManager.translation("feature.chatanimations.challenge.craft_item.name",
+    public CraftItemChallenge(String id, ItemStack item, int target, CustomLootTable reward, long time) {
+        super(id, TranslationManager.translation("feature.chatanimations.challenge.craft_item.name",
                 Component.text(target), Component.translatable(item.translationKey())), reward, time);
         this.item = item;
         this.target = target;

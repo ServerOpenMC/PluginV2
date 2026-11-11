@@ -18,12 +18,12 @@ public class MineBlocksChallenge extends ChallengeAnimation {
     private final int target;
     private final Map<UUID, Integer> progress = new HashMap<>();
 
-    public MineBlocksChallenge(KeyBlock keyBlock, int target, long time) {
-        this(keyBlock, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public MineBlocksChallenge(String id, KeyBlock keyBlock, int target, long time) {
+        this(id, keyBlock, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public MineBlocksChallenge(KeyBlock keyBlock, int target, CustomLootTable reward, long time) {
-        super(TranslationManager.translation("feature.chatanimations.challenge.mine_blocks.name",
+    public MineBlocksChallenge(String id, KeyBlock keyBlock, int target, CustomLootTable reward, long time) {
+        super(id, TranslationManager.translation("feature.chatanimations.challenge.mine_blocks.name",
                 Component.text(target), keyBlock.name()), reward, time);
         this.keyBlock = keyBlock;
         this.target = target;

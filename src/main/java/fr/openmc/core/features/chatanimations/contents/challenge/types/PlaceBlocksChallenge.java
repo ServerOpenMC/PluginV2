@@ -18,12 +18,12 @@ public class PlaceBlocksChallenge extends ChallengeAnimation {
     private final int target;
     private final Map<UUID, Integer> progress = new HashMap<>();
 
-    public PlaceBlocksChallenge(KeyBlock keyBlock, int target, long time) {
-        this(keyBlock, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
+    public PlaceBlocksChallenge(String id, KeyBlock keyBlock, int target, long time) {
+        this(id, keyBlock, target, OMCRegistry.CUSTOM_LOOT_TABLES.CHALLENGE, time);
     }
 
-    public PlaceBlocksChallenge(KeyBlock keyBlock, int target, CustomLootTable reward, long time) {
-        super(TranslationManager.translation("feature.chatanimations.challenge.place_blocks.name",
+    public PlaceBlocksChallenge(String id, KeyBlock keyBlock, int target, CustomLootTable reward, long time) {
+        super(id, TranslationManager.translation("feature.chatanimations.challenge.place_blocks.name",
                 Component.text(target), keyBlock.name()), reward, time);
         this.keyBlock = keyBlock;
         this.target = target;
