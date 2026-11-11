@@ -11,7 +11,7 @@ items:
     lore:
       - <lang:itemsadder.omc_items.builder_wand.lore.0>
     resource:
-      material: STICK
+      material: PAPER
       generate: false
       model_path: items/builder_wand
     blocked_enchants:
