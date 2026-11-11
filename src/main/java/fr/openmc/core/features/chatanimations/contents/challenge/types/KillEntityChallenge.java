@@ -24,7 +24,7 @@ public class KillEntityChallenge extends ChallengeAnimation {
 
     public KillEntityChallenge(EntityType entityType, int target, CustomLootTable reward, long time) {
         super(TranslationManager.translation("feature.chatanimations.challenge.kill_entity.name",
-                Component.text(target), Component.translatable(entityType.translationKey())), reward, time);
+                Component.text(target), Component.translatable(entityType.translationKey()), Component.text(target > 1 ? "s" : "")), reward, time);
         this.entityType = entityType;
         this.target = target;
     }

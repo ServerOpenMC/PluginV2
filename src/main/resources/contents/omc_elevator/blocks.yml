@@ -2,7 +2,7 @@ info:
   namespace: omc_elevator
 items:
   elevator_gray:
-    display_name: <gray><lang:itemsadder.omc_elevator.elevator.name></gray>
+    display_name: <gray><lang:itemsadder.omc_elevator.elevator_gray.name></gray>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
@@ -26,7 +26,7 @@ items:
             pitch: 1
 
   elevator_red:
-    display_name: <red><lang:itemsadder.omc_elevator.elevator.name></red>
+    display_name: <red><lang:itemsadder.omc_elevator.elevator_red.name></red>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
@@ -50,7 +50,7 @@ items:
             pitch: 1
 
   elevator_orange:
-    display_name: <gold><lang:itemsadder.omc_elevator.elevator.name></gold>
+    display_name: <gold><lang:itemsadder.omc_elevator.elevator_orange.name></gold>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
@@ -74,7 +74,7 @@ items:
             pitch: 1
 
   elevator_yellow:
-    display_name: <yellow><lang:itemsadder.omc_elevator.elevator.name></yellow>
+    display_name: <yellow><lang:itemsadder.omc_elevator.elevator_yellow.name></yellow>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
@@ -98,7 +98,7 @@ items:
             pitch: 1
 
   elevator_lime:
-    display_name: <green><lang:itemsadder.omc_elevator.elevator.name></green>
+    display_name: <green><lang:itemsadder.omc_elevator.elevator_lime.name></green>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
@@ -122,7 +122,7 @@ items:
             pitch: 1
 
   elevator_green:
-    display_name: <dark_green><lang:itemsadder.omc_elevator.elevator.name></dark_green>
+    display_name: <dark_green><lang:itemsadder.omc_elevator.elevator_green.name></dark_green>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
@@ -146,7 +146,7 @@ items:
             pitch: 1
 
   elevator_light_blue:
-    display_name: <blue><lang:itemsadder.omc_elevator.elevator.name></blue>
+    display_name: <blue><lang:itemsadder.omc_elevator.elevator_light_blue.name></blue>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
@@ -170,7 +170,7 @@ items:
             pitch: 1
 
   elevator_blue:
-    display_name: <dark_blue><lang:itemsadder.omc_elevator.elevator.name></dark_blue>
+    display_name: <dark_blue><lang:itemsadder.omc_elevator.elevator_blue.name></dark_blue>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
@@ -194,7 +194,7 @@ items:
             pitch: 1
 
   elevator_purple:
-    display_name: <dark_purple><lang:itemsadder.omc_elevator.elevator.name></dark_purple>
+    display_name: <dark_purple><lang:itemsadder.omc_elevator.elevator_purple.name></dark_purple>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
@@ -218,7 +218,7 @@ items:
             pitch: 1
 
   elevator_pink:
-    display_name: <light_purple><lang:itemsadder.omc_elevator.elevator.name></light_purple>
+    display_name: <light_purple><lang:itemsadder.omc_elevator.elevator_pink.name></light_purple>
     lore:
       - <lang:itemsadder.omc_elevator.elevator.lore.0>
     resource:
