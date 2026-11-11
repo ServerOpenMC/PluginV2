@@ -14,14 +14,13 @@ import java.util.List;
 
 public class CityMoneyLeaderBoard extends LeaderBoard {
 
-    @Override
-    public double getUpdateDelay() {
-        return 15;
+    public CityMoneyLeaderBoard() {
+        super("cities-money");
     }
 
     @Override
-    public String getId() {
-        return "cities-money";
+    public double getUpdateDelay() {
+        return 15;
     }
 
     @Override
