@@ -29,7 +29,6 @@ import java.util.List;
 
 import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 
-@SuppressWarnings("UnstableApiUsage")
 public class NotationDialog {
     private final static String FONT = "minecraft:mono";
     private final static int LENGTH_CASE = 9;
@@ -64,7 +63,7 @@ public class NotationDialog {
                 )
                 .type(DialogType.notice(
                         ActionButton.builder(ButtonType.BACK.getLabelComponent())
-                                .action(DialogAction.customClick((response, audience) -> {
+                                .action(DialogAction.customClick((_, _) -> {
                                     player.closeInventory();
                                 }, ClickCallback.Options.builder().build()))
                                 .build()
@@ -159,7 +158,7 @@ public class NotationDialog {
                     .append(Component.text(" | "))
                     .append(Component.text(PaddingUtils.format(coh, LENGTH_CASE)).hoverEvent(getHoverCoherence()))
                     .append(Component.text(" | "))
-                    .append(Component.text(PaddingUtils.format(total, LENGTH_CASE)).hoverEvent(getHoverTotal(city == null ? null : city.getNotationOfWeek(weekStr))))
+                    .append(Component.text(PaddingUtils.format(total, LENGTH_CASE)).hoverEvent(getHoverTotal(city.getNotationOfWeek(weekStr))))
                     .append(Component.text(" | "))
                     .append(Component.text("+ " + PaddingUtils.format(money, LENGTH_CASE)).color(NamedTextColor.GOLD));
 
@@ -241,7 +240,7 @@ public class NotationDialog {
     public static Component getHoverMilitary() {
         return TranslationManager.translation(
                 "feature.city.notation.hover.military",
-                Component.text(NotationNote.NOTE_PIB.getMaxNote()).color(NamedTextColor.DARK_AQUA)
+                Component.text(NotationNote.NOTE_MILITARY.getMaxNote()).color(NamedTextColor.DARK_AQUA)
         ).color(NamedTextColor.GRAY);
     }
 

@@ -6,8 +6,8 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.api.packetmenulib.events.InventoryClickEvent;
-import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
+import fr.openmc.api.packetmenulib.events.VirtualInventoryClickEvent;
+import fr.openmc.api.packetmenulib.events.VirtualInventoryCloseEvent;
 import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import lombok.Getter;
@@ -15,7 +15,6 @@ import net.kyori.adventure.key.Key;
 import net.minecraft.world.inventory.ContainerInput;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class PacketMenuListener extends PacketAdapter {
@@ -37,7 +36,7 @@ public class PacketMenuListener extends PacketAdapter {
             UUID uuid = player.getUniqueId();
 
             if (PacketMenuLib.getOpenMenus().containsKey(uuid) && PacketMenuLib.getWindowIds().get(uuid) != windowId) {
-                PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player));
+                PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new VirtualInventoryCloseEvent(player));
                 PacketMenuLib.getOpenMenus().remove(uuid);
                 PacketMenuLib.getWindowIds().remove(uuid);
                 PacketMenuLib.updateInv(player);
@@ -76,7 +75,7 @@ public class PacketMenuListener extends PacketAdapter {
                     Menu menu = PacketMenuLib.getOpenMenus().get(uuid);
 
                     if (slot == -999 && (mode == 0 || mode == 4)) {
-                        menu.onInventoryClick(new InventoryClickEvent(ClickType.CLICK_OUTSIDE, slot, player));
+                        menu.onInventoryClick(new VirtualInventoryClickEvent(ClickType.CLICK_OUTSIDE, slot, player));
                     } else {
                         ClickType clickType = switch (mode) {
                             case 0 -> button == 1 ? ClickType.RIGHT_CLICK : ClickType.LEFT_CLICK;
@@ -86,13 +85,13 @@ public class PacketMenuListener extends PacketAdapter {
                         };
 
                         PacketMenuLib.updateMenu(menu, player, stateId);
-                        menu.onInventoryClick(new InventoryClickEvent(clickType, slot, player));
+                        menu.onInventoryClick(new VirtualInventoryClickEvent(clickType, slot, player));
                     }
                 }
             }
         } else if (event.getPacketType() == PacketType.Play.Client.CLOSE_WINDOW) {
             if (PacketMenuLib.getOpenMenus().containsKey(uuid)) {
-                PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new InventoryCloseEvent(player.getPlayer()));
+                PacketMenuLib.getOpenMenus().get(uuid).onInventoryClose(new VirtualInventoryCloseEvent(player.getPlayer()));
                 PacketMenuLib.getOpenMenus().remove(uuid);
                 PacketMenuLib.getWindowIds().remove(uuid);
                 PacketMenuLib.updateInv(player);

@@ -159,7 +159,6 @@ tasks.runServer {
             "-Xms4096M",
             "-XX:+AllowEnhancedClassRedefinition", // Remove if it doesn't launch
             "-XX:HotswapAgent=core" // Remove if it doesn't launch
-
     )
 
     downloadPlugins {
@@ -168,7 +167,7 @@ tasks.runServer {
         modrinth("LuckPerms", "v5.5.71-bukkit")
         modrinth("PlaceholderAPI", "2.12.3")
         modrinth("WorldGuard", "7.0.20")
-        github("dmulloy2", "ProtocolLib", "5.4.0", "ProtocolLib.jar")
+        url("https://github.com/dmulloy2/ProtocolLib/releases/download/dev-build/ProtocolLib.jar")
     }
 }
 

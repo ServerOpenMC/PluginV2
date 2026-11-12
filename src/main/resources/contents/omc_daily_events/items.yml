@@ -42,6 +42,14 @@ items:
       mainhand:
         luck: 1.1
 
+  fragment_fermentum:
+    display_name: <lang:itemsadder.omc_daily_events.fragment_fermentum.name>
+    resource:
+      generate: true
+      textures:
+        - other/fragment_fermentum
+      material: PAPER
+
   fermentum:
     display_name: <lang:itemsadder.omc_daily_events.fermentum.name>
     resource:
@@ -83,24 +91,32 @@ items:
     max_stack_size: 1
 
 recipes:
-  iaa_crafting_table:
-    fermentum:
+  crafting_table:
+    fragment_fermentum:
+      enabled: true
       shapeless: true
       ingredients:
-        - item: omc_daily_events:golden_wheat
-          amount: 5
-        - item: omc_daily_events:golden_beetroot
-          amount: 5
-        - item: omc_daily_events:really_golden_carrot
-          amount: 5
-        - item: omc_daily_events:golden_potato
-          amount: 5
-        - item: omc_daily_events:golden_melon
-          amount: 5
-        - item: omc_daily_events:golden_pumpkin
-          amount: 5
+        A: omc_daily_events:golden_wheat
+        B: omc_daily_events:golden_beetroot
+        C: omc_daily_events:really_golden_carrot
+        D: omc_daily_events:golden_potato
+        E: omc_daily_events:golden_melon
+        F: omc_daily_events:golden_pumpkin
+      result:
+        item: omc_daily_events:fragment_fermentum
+        amount: 1
+
+    fermentum:
+      enabled: true
+      pattern:
+        - FFF
+        - FFX
+        - XXX
+      ingredients:
+        F: omc_daily_events:fragment_fermentum
       result:
         item: omc_daily_events:fermentum
+        amount: 1
 
     blessed_bread:
       enabled: true
@@ -117,9 +133,7 @@ recipes:
         - XXX
         - FFF
       ingredients:
-        F:
-          item: omc_daily_events:golden_wheat
-          amount: 192
+        F: omc_daily_events:golden_wheat_block
       result:
         item: omc_daily_events:blessed_bread
         amount: 1

@@ -1,12 +1,12 @@
 package fr.openmc.core.features.city.menu;
 
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
@@ -88,7 +88,7 @@ public class InvitationsMenu extends PaginatedMenu {
             }).setOnClick(_ -> {
                 OMCPlayer omcPlayer = OMCPlayer.of(player);
                 OMCPlayer omcInviter = OMCPlayer.of(inviter);
-                new ConfirmMenu(player,
+                new ConfirmMenuTemplate(player,
                         () -> {
                             CityInviteCommands.acceptInvitation(omcPlayer, omcInviter);
                             player.closeInventory();

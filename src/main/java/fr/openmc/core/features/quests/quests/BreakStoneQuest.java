@@ -1,22 +1,28 @@
 package fr.openmc.core.features.quests.quests;
 
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.contents.Hammer;
 import fr.openmc.core.registry.items.contents.UseHammerEvent;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class BreakStoneQuest extends Quest implements Listener {
+    private static final Set<Material> STONE_TYPES = Set.of(
+            Material.STONE,
+            Material.DEEPSLATE
+    );
 
     public BreakStoneQuest() {
         super(
@@ -34,23 +40,25 @@ public class BreakStoneQuest extends Quest implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerBreak(BlockDropItemEvent event) {
+    public void onPlayerBreak(BlockBreakEvent event) {
         ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
-        if (tool == null) return;
 
-        List<Item> items = event.getItems();
-        for (Item item : items) {
-            if (item.getItemStack().getType().equals(Material.COBBLESTONE)) {
-                this.incrementProgress(event.getPlayer().getUniqueId());
-                break;
-            }
-        }
+        Optional<CustomItem> custom = OMCRegistry.CUSTOM_ITEMS.get(tool);
+        if (custom.isPresent() && custom.get() instanceof Hammer)
+            return;
+
+        Material material = event.getBlock().getType();
+        if (!STONE_TYPES.contains(material))
+            return;
+
+        this.incrementProgress(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerUseHammer(UseHammerEvent event) {
-        Block block = event.getBlock();
-        if (block == null) return;
+        Material material = event.getBlock().getType();
+        if (!STONE_TYPES.contains(material))
+            return;
 
         this.incrementProgress(event.getPlayer().getUniqueId(), event.getCountBlockBroken());
     }

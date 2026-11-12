@@ -5,6 +5,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -12,17 +13,31 @@ import java.util.zip.ZipOutputStream;
 public class ZipUtils {
     public static void unzip(Path zipPath, Path targetDir) throws IOException {
         Files.createDirectories(targetDir);
+        Path normalizedTarget = targetDir.toAbsolutePath().normalize();
 
         try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(zipPath))) {
             ZipEntry entry;
 
             while ((entry = zis.getNextEntry()) != null) {
-                Path newPath = targetDir.resolve(entry.getName());
+                String name = entry.getName().replace('\\', '/');
 
-                if (entry.isDirectory()) {
+                if (name.replace("/", "").isBlank()) {
+                    zis.closeEntry();
+                    continue;
+                }
+
+                name = name.replaceAll("/{2,}", "/").replaceAll("^/+", "");
+
+                Path newPath = normalizedTarget.resolve(name).normalize();
+
+                if (!newPath.startsWith(normalizedTarget))
+                    throw new IOException("Entrée zip invalide : " + entry.getName());
+
+                if (entry.isDirectory() || name.endsWith("/")) {
                     Files.createDirectories(newPath);
                 } else {
-                    Files.createDirectories(newPath.getParent());
+                    Path parent = newPath.getParent();
+                    if (parent != null) Files.createDirectories(parent);
                     Files.copy(zis, newPath, StandardCopyOption.REPLACE_EXISTING);
                 }
 
@@ -32,28 +47,26 @@ public class ZipUtils {
     }
 
     public static void zip(Path sourceDir, Path zipPath) throws IOException {
-        Files.createDirectories(zipPath.getParent());
+        Path parent = zipPath.toAbsolutePath().getParent();
+        if (parent != null) Files.createDirectories(parent);
 
-        try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipPath))) {
-            Files.walk(sourceDir)
-                    .filter(Files::isRegularFile)
-                    .forEach(path -> {
-                        try {
-                            String entryName = sourceDir
-                                    .relativize(path)
-                                    .toString()
-                                    .replace('\\', '/');
+        try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(zipPath));
+             Stream<Path> walk = Files.walk(sourceDir)) {
 
-                            ZipEntry entry = new ZipEntry(entryName);
-                            zos.putNextEntry(entry);
-                            Files.copy(path, zos);
-                            zos.closeEntry();
+            walk.filter(Files::isRegularFile).forEach(path -> {
+                try {
+                    String entryName = sourceDir
+                            .relativize(path)
+                            .toString()
+                            .replace('\\', '/');
 
-                        } catch (IOException e) {
-                            throw new UncheckedIOException(e);
-                        }
-                    });
+                    zos.putNextEntry(new ZipEntry(entryName));
+                    Files.copy(path, zos);
+                    zos.closeEntry();
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            });
         }
     }
-
 }

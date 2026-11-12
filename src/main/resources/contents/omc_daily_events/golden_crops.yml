@@ -72,6 +72,25 @@ items:
     lore:
       - <lang:itemsadder.omc_daily_events.golden_wheat.lore.0>
 
+  golden_wheat_compacted:
+    display_name: <lang:itemsadder.omc_daily_events.golden_wheat_compacted.name>
+    glint: true
+    resource:
+      generate: true
+      textures:
+        - golden_crops/golden_wheat
+      material: PAPER
+    lore:
+      - <lang:itemsadder.omc_daily_events.golden_wheat.lore.0>
+
+  golden_wheat_block:
+    display_name: <lang:itemsadder.omc_daily_events.golden_wheat_block.name>
+    glint: true
+    resource:
+      generate: false
+      model_path: "minecraft:block/hay_block"
+      material: PAPER
+
   really_golden_carrot:
     display_name: <lang:itemsadder.omc_daily_events.really_golden_carrot.name>
     resource:
@@ -81,3 +100,29 @@ items:
       material: PAPER
     lore:
       - <lang:itemsadder.omc_daily_events.really_golden_carrot.lore.0>
+
+recipes:
+  crafting_table:
+    golden_wheat_compacted:
+      enabled: true
+      pattern:
+        - AAA
+        - AAA
+        - AAA
+      ingredients:
+        A: omc_daily_events:golden_wheat
+      result:
+        item: omc_daily_events:golden_wheat_compacted
+        amount: 1
+
+    golden_wheat_block:
+      enabled: true
+      pattern:
+        - AAA
+        - AAA
+        - AAA
+      ingredients:
+        A: omc_daily_events:golden_wheat_compacted
+      result:
+        item: omc_daily_events:golden_wheat_block
+        amount: 1

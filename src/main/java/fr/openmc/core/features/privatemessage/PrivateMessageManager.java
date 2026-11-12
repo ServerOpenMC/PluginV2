@@ -1,5 +1,6 @@
 package fr.openmc.core.features.privatemessage;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
@@ -11,7 +12,6 @@ import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,12 +78,12 @@ public class PrivateMessageManager extends Feature implements HasCommands {
             return;
         }
 
-        OMCPlayer receiver = OMCPlayer.of(Bukkit.getPlayer(lastReceiverId));
+        OMCOfflinePlayer receiver = OMCPlayer.of(lastReceiverId);
         if (receiver == null || !receiver.isOnline()) {
             MessagesManager.sendMessage(sender, TranslationManager.translation("messages.global.player_not_found"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
-
-        sendPrivateMessage(sender, receiver, message);
+        OMCPlayer receiverPlayer = OMCPlayer.of(receiver.getUniqueId());
+        sendPrivateMessage(sender, receiverPlayer, message);
     }
 }

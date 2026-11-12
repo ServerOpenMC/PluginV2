@@ -3,8 +3,8 @@ package fr.openmc.core.features.mainmenu.menus;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
-import fr.openmc.api.packetmenulib.events.InventoryClickEvent;
-import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
+import fr.openmc.api.packetmenulib.events.VirtualInventoryClickEvent;
+import fr.openmc.api.packetmenulib.events.VirtualInventoryCloseEvent;
 import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.InventoryType;
 import fr.openmc.api.packetmenulib.menu.Menu;
@@ -16,7 +16,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -61,7 +60,7 @@ public class Page1 implements Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(VirtualInventoryClickEvent event) {
         OMCPlayer player = OMCPlayer.of(event.player());
         if (event.clickType() == ClickType.CLICK_OUTSIDE) {
             PacketMenuLib.closeMenu(player);
@@ -94,7 +93,7 @@ public class Page1 implements Menu {
     }
 
     @Override
-    public void onInventoryClose(InventoryCloseEvent event) {
+    public void onInventoryClose(VirtualInventoryCloseEvent event) {
     }
 
     @Override

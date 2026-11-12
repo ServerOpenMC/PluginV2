@@ -40,7 +40,8 @@ public class ChallengeListener implements Listener {
         if (animation == null) return;
         if (!(animation instanceof MineBlocksChallenge challenge)) return;
         if (animation.isFinished()) return;
-        if (!challenge.getKeyBlock().matches(event.getBlock())) return;
+        if (!(challenge.getKeyBlock().isCustom()
+                && challenge.getKeyBlock().getCustomBlock().getNamespacedID().equals(event.getNamespacedID()))) return;
 
         Player player = event.getPlayer();
         int count = challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);
@@ -149,7 +150,8 @@ public class ChallengeListener implements Listener {
         if (animation == null) return;
         if (!(animation instanceof PlaceBlocksChallenge challenge)) return;
         if (animation.isFinished()) return;
-        if (!challenge.getKeyBlock().matches(event.getBlock())) return;
+        if (!(challenge.getKeyBlock().isCustom()
+                && challenge.getKeyBlock().getCustomBlock().getNamespacedID().equals(event.getNamespacedID()))) return;
 
         Player player = event.getPlayer();
         int count = challenge.getProgress().merge(player.getUniqueId(), 1, Integer::sum);

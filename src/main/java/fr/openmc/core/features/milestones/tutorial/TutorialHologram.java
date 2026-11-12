@@ -19,7 +19,7 @@ public class TutorialHologram extends Hologram {
                 ),
                 TranslationManager.translation("feature.milestones.tutorial.hologram.welcome"),
                 TranslationManager.translation("feature.milestones.tutorial.hologram.based_on"),
-                TranslationManager.translation("empty"),
+                Component.empty(),
                 TranslationManager.translation("feature.milestones.tutorial.hologram.how_to"),
                 TranslationManager.translation("feature.milestones.tutorial.hologram.server"),
                 TranslationManager.translation("feature.milestones.tutorial.hologram.separator"),

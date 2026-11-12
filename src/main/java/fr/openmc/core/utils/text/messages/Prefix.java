@@ -24,7 +24,7 @@ public enum Prefix {
     CORPSE("<gradient:#F82C5D:#F64545>corpse</gradient>"),
     HOME("<gradient:#80EF80:#9aec9a>home</gradient>"),
     FRIEND("<gradient:#68E98B:#0EFF6D>friend</gradient>"),
-    MAYOR("<gradient:#FCD05C:#FBEF22>mayor</gradient><#FBEF22>OR</#FBEF22>"),
+    MAYOR("<gradient:#FCD05C:#FBEF22>mayor</gradient>"),
     QUEST("<gradient:#4E76E3:#1A51E7>quest</gradient>"),
     BANK("<gradient:#084CFB:#ADB6FD>bank</gradient>"),
     SHOP("<gradient:#084CFB:#5AAFC4>shop</gradient>"),

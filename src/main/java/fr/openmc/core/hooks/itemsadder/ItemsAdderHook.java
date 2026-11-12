@@ -8,8 +8,8 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.hooks.itemsadder.behaviours.BehaviourUpBlock;
 import fr.openmc.core.hooks.itemsadder.events.IAItemLoadEvent;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholderRegistry;
-import fr.openmc.core.utils.file.FilesUtils;
 import fr.openmc.core.utils.ZipUtils;
+import fr.openmc.core.utils.file.FilesUtils;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -59,7 +59,7 @@ public class ItemsAdderHook extends Hooks implements ApiHook<ItemsAdder> {
         mergeResourcePack(Set.of("OpenMC/generated-rp-langs"));
 
         // * Unzip (néccesite que les protections soient désactivé)
-        this.extractedGeneratedResourcePack = extractResourcePack();
+        extractedGeneratedResourcePack = extractResourcePack();
     }
 
     private Path extractResourcePack() throws IOException {

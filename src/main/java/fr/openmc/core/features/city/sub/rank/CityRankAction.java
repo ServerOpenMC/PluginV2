@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.sub.rank;
 
 import fr.openmc.api.input.dialog.DialogInput;
-import fr.openmc.api.menulib.template.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenuTemplate;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
@@ -142,7 +142,7 @@ public class CityRankAction {
 			return;
 		}
 		
-		new ConfirmMenu(player, () -> {
+		new ConfirmMenuTemplate(player, () -> {
 			try {
 				if (!CityRankCondition.canDeleteRank(city, player, rankName)) {
 					return;
