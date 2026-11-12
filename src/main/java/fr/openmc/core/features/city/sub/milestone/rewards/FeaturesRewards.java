@@ -19,9 +19,9 @@ public enum FeaturesRewards implements CityRewards {
     LEVEL_3(Feature.NOTATION, Feature.RANK),
     LEVEL_4(Feature.MAYOR, Feature.PERK_AGRICULTURAL),
     LEVEL_5(Feature.TYPE_WAR, Feature.WAR),
-    LEVEL_6(Feature.PERK_ECONOMY),
-    LEVEL_7(Feature.PERK_MILITARY),
-    LEVEL_8(),
+    LEVEL_6(Feature.EXTERNAL_MEMBER_PERM),
+    LEVEL_7(Feature.PERK_ECONOMY),
+    LEVEL_8(Feature.PERK_MILITARY),
     LEVEL_9(Feature.PERK_DREAM),
     LEVEL_10(Feature.PERK_STRATEGY);
 
@@ -129,6 +129,7 @@ public enum FeaturesRewards implements CityRewards {
         NOTATION("feature.city.levels.rewards.feature.notation"),
         RANK("feature.city.levels.rewards.feature.rank"),
         MAYOR("feature.city.levels.rewards.feature.mayor"),
+        EXTERNAL_MEMBER_PERM("feature.city.levels.rewards.feature.external_member_perm"),
         PERK_AGRICULTURAL("feature.city.levels.rewards.feature.perk_agricultural"),
         PERK_ECONOMY("feature.city.levels.rewards.feature.perk_economy"),
         TYPE_WAR("feature.city.levels.rewards.feature.type_war"),

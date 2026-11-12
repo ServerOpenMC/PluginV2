@@ -52,6 +52,7 @@ public class City {
     @Getter private final UUID uniqueId;
     private Set<UUID> members;
     private Set<ChunkPos> chunks; // Liste des chunks claims par la ville
+    @Getter
     private HashMap<UUID, Set<CityPermission>> permissions;
     private Set<DBCityRank> cityRanks;
     private HashMap<Integer, ItemStack[]> chestContent;
@@ -475,10 +476,9 @@ public class City {
             this.permissions = CityManager.getCityPermissions(this);
 
         Set<CityPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
-        
-        if (playerPerms.contains(CityPermission.OWNER)) {
-            return true;
-        }
+
+        if (playerPerms.isEmpty()) return false;
+        if (playerPerms.contains(CityPermission.OWNER)) return true;
 
         return playerPerms.contains(CityPermission.OWNER) || playerPerms.contains(permission);
     }
@@ -761,17 +761,24 @@ public class City {
     /**
      * Retrieves the rank of a specific member in the city. (Propriétaire, Maire, ou un grade personalisé)
      *
-     * @param member The UUID of the member to check.
+     * @param playerUUID The UUID of the member to check.
      * @return The CityRank object representing the member's rank, or null if not found.
      */
-    public String getRankName(UUID member) {
-        if (this.hasPermission(member, CityPermission.OWNER)) {
+    public String getRankName(UUID playerUUID) {
+        System.out.println("this.getMembers()" + this.getMembers());
+        System.out.println(" playerUUID " +playerUUID);
+
+        // TODO: continuer le fix
+        // TODO: translation en anglais
+        if (!this.getMembers().contains(playerUUID)) {
+            return "Externe";
+        } else if (this.hasPermission(playerUUID, CityPermission.OWNER)) {
             return "Propriétaire";
-        } else if (this.hasMayor() && this.getMayor().getMayorUUID().equals(member)) {
+        } else if (this.hasMayor() && this.getMayor().getMayorUUID().equals(playerUUID)) {
             return "Maire";
         } else {
             for (DBCityRank rank : cityRanks) {
-                if (rank.getMembersSet().contains(member)) {
+                if (rank.getMembersSet().contains(playerUUID)) {
                     return rank.getName();
                 }
             }

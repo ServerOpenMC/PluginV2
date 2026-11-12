@@ -228,10 +228,10 @@ public class CityManager extends Feature implements HasDatabase, LoadAfterItemsA
             List<DBCityPermission> dbPermissions = permissionsDao.query(query.prepare());
 
             dbPermissions.forEach(dbPermission -> {
-                Set<CityPermission> playerPermissions = permissions.getOrDefault(dbPermission.getPlayer(),
+                Set<CityPermission> playerPermissions = permissions.getOrDefault(dbPermission.getPlayerUUID(),
                         new HashSet<>());
                 playerPermissions.add(dbPermission.getPermission());
-                permissions.put(dbPermission.getPlayer(), playerPermissions);
+                permissions.put(dbPermission.getPlayerUUID(), playerPermissions);
             });
         } catch (SQLException e) {
             throw new RuntimeException(e);

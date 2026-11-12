@@ -1,7 +1,5 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
@@ -59,21 +57,12 @@ public class InteractProtection implements Listener {
                 return;
             }
             
-            City city = CityManager.getCityFromChunk(location.getChunk().getX(), location.getChunk().getZ());
-            if (city == null) return;
-            
-            if (city.isMember(player)) {
-                if (clickedBlock.getType().name().endsWith("SHULKER_BOX")) return;
-                if (clickedBlock.getType().name().endsWith("CHEST") || clickedBlock.getType().name().endsWith("BARREL")) {
-                    ProtectionsManager.checkPermissions(player, event, city, CityPermission.OPEN_CHEST);
-                } else {
-                    ProtectionsManager.checkPermissions(player, event, city, CityPermission.INTERACT);
-                }
-
+            if (clickedBlock.getType().name().endsWith("SHULKER_BOX")) return;
+            if (clickedBlock.getType().name().endsWith("CHEST") || clickedBlock.getType().name().endsWith("BARREL")) {
+                ProtectionsManager.checkPermissions(player, event, CityPermission.OPEN_CHEST, true);
             } else {
-                ProtectionsManager.checkCity(player, event, city, true);
+                ProtectionsManager.checkPermissions(player, event, CityPermission.INTERACT, true);
             }
-
         }
 
         if (!isMinecart) return;

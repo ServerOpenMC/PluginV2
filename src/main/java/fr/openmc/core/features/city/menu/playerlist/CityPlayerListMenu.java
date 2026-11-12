@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.template.ItemMenuTemplate;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.city.City;
@@ -15,9 +16,10 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.menu.CityPermsMenu;
+import fr.openmc.core.features.city.menu.permissions.CityExternalPlayerListMenu;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.InputUtils;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -26,7 +28,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -67,7 +68,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
+        OMCPlayer player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
@@ -76,15 +77,23 @@ public class CityPlayerListMenu extends PaginatedMenu {
         boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS);
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
-        for (UUID uuid : city.getMembers()) {
-            OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+        Set<UUID> members = city.getMembers();
+
+        members.addAll(city.getPermissions().keySet().stream()
+                .filter(uuid -> !city.getMembers().contains(uuid))
+                .toList());
+
+        for (UUID uuid : members) {
+            OMCOfflinePlayer playerOffline = OMCOfflinePlayer.of(uuid);
 
             String title = city.getRankName(uuid) + " ";
+
+            boolean isMember = city.getMembers().contains(playerOffline.getUniqueId());
 
             List<Component> lorePlayer;
             if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
                 lorePlayer = TranslationManager.translationLore("feature.city.menus.members.owner.lore");
-            } else if (hasPermissionPerms && hasPermissionKick) {
+            } else if (hasPermissionPerms && hasPermissionKick && isMember) {
                 if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
                     lorePlayer = TranslationManager.translationLore("feature.city.menus.members.cant_edit_owner.lore");
                 } else {
@@ -92,7 +101,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                 }
             } else if (hasPermissionPerms) {
                 lorePlayer = TranslationManager.translationLore("feature.city.menus.members.perms.lore");
-            } else if (hasPermissionKick) {
+            } else if (hasPermissionKick && isMember) {
                 if (player.getUniqueId().equals(playerOffline.getUniqueId())) {
                     lorePlayer = TranslationManager.translationLore("feature.city.menus.members.cant_self_kick.lore");
                 } else if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
@@ -108,17 +117,17 @@ public class CityPlayerListMenu extends PaginatedMenu {
             items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
                 itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(finalLorePlayer);
-            }).setOnClick(inventoryClickEvent -> {
-                if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
-                    return;
-                }
+            }).setOnClick(_ -> {
+                if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) return;
 
-                if (hasPermissionPerms && hasPermissionKick) {
+                boolean isMember1 = city.getMembers().contains(playerOffline.getUniqueId());
+
+                if (hasPermissionPerms && hasPermissionKick && isMember1) {
                     CityPlayerGestionMenu menu = new CityPlayerGestionMenu(player, playerOffline);
                     menu.open();
                 } else if (hasPermissionPerms) {
                     new CityPermsMenu(player, playerOffline.getUniqueId(), false).open();
-                } else if (hasPermissionKick) {
+                } else if (hasPermissionKick && isMember1) {
                     if (player.getUniqueId().equals(playerOffline.getUniqueId()))
                         return;
 
@@ -161,6 +170,18 @@ public class CityPlayerListMenu extends PaginatedMenu {
         map.put(48, ItemMenuTemplate.BTN_PREVIOUS_PAGE_ORANGE.apply(this));
         map.put(50, ItemMenuTemplate.BTN_NEXT_PAGE_ORANGE.apply(this));
 
+        if (FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.EXTERNAL_MEMBER_PERM)
+            && playerCity.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS)) {
+            map.put(52, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.PLUS_BTN, itemMeta -> {
+                itemMeta.displayName(TranslationManager.translation("feature.city.menus.members.add_external_perm"));
+                itemMeta.lore(
+                        TranslationManager.translationLore("feature.city.menus.members.add_external_perm.lore")
+                );
+            }).setOnClick(_ -> {
+                new CityExternalPlayerListMenu(getOwner()).open();
+            }));
+        }
+
         map.put(53, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ICON_SEARCH, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.members.invite.title"));
             itemMeta.lore(
@@ -170,7 +191,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                             Component.text(MemberLimitRewards.getMemberLimit(playerCity.getLevel())).color(NamedTextColor.GRAY)
                     )
             );
-        }).setOnClick(inventoryClickEvent -> {
+        }).setOnClick(_ -> {
             DialogInput.send(player, TranslationManager.translation("feature.city.menus.members.invite.prompt"), MAX_LENGTH_PLAYERNAME, input -> {
                 if (input == null) return;
 
@@ -182,6 +203,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                 }
             });
         }));
+
         return map;
     }
 

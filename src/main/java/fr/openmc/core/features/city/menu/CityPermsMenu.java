@@ -12,7 +12,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityPermsCommands;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
+import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -35,10 +35,10 @@ public class CityPermsMenu extends PaginatedMenu {
     private final UUID memberUUID;
     private final boolean edit;
 
-    public CityPermsMenu(Player owner, UUID memberUUID, boolean edit) {
+    public CityPermsMenu(Player owner, UUID playerUUID, boolean edit) {
         super(owner);
         this.city = CityManager.getPlayerCity(owner.getUniqueId());
-        this.memberUUID = memberUUID;
+        this.memberUUID = playerUUID;
         this.edit = edit;
     }
 
@@ -59,6 +59,7 @@ public class CityPermsMenu extends PaginatedMenu {
 
         Set<CityPermission> memberPerms = city.getPermissions(memberUUID);
         for (CityPermission permission : CityPermission.values()) {
+            if (!city.getMembers().contains(memberUUID) && !permission.isExternalPermission()) continue;
             if (permission == CityPermission.OWNER) continue;
 
             boolean hasPerm = memberPerms != null && memberPerms.contains(permission);
@@ -87,7 +88,7 @@ public class CityPermsMenu extends PaginatedMenu {
                 } else {
                     itemMeta.lore(List.of());
                 }
-            }).setOnClick(inventoryClickEvent -> {
+            }).setOnClick(_ -> {
                 if (!edit)
                     MessagesManager.sendMessage(getOwner(), TranslationManager.translation("messages.city.player_no_permission_access"), Prefix.CITY, MessageType.ERROR, true);
                 else {
@@ -135,7 +136,7 @@ public class CityPermsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull Component getName() {
-        return TranslationManager.translation("feature.city.menus.perms.name", Component.text(CacheOfflinePlayer.getOfflinePlayer(memberUUID).getName()));
+        return TranslationManager.translation("feature.city.menus.perms.name", CachePlayerName.name(memberUUID));
     }
 
     @Override
