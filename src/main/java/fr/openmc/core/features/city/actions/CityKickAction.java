@@ -1,5 +1,7 @@
 package fr.openmc.core.features.city.actions;
 
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
@@ -9,12 +11,10 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 
 public class CityKickAction {
-    public static void startKick(Player sender, OfflinePlayer playerKick) {
+    public static void startKick(OMCPlayer sender, OMCOfflinePlayer playerKick) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (!CityKickCondition.canCityKickPlayer(city, sender, playerKick)) return;
@@ -34,7 +34,7 @@ public class CityKickAction {
         );
 
         if (playerKick.isOnline()) {
-            MessagesManager.sendMessage((Player) playerKick,
+            MessagesManager.sendMessage(playerKick,
                     TranslationManager.translation(
                             "feature.city.kick.info",
                             Component.text(city.getName())
