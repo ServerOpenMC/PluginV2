@@ -31,7 +31,7 @@ public class PoissonSteve extends CustomMob<Mannequin> {
                                 0.5, 1),
                         new XpLoot(20, 35, 1),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_DISC,
-                                0.2, 1)
+                                0.05, 1)
                 )
         );
     }
