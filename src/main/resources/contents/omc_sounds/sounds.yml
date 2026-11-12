@@ -13,3 +13,7 @@ sounds:
     path: ambient/cube_idle2
     settings:
       subtitle: sounds.ambient.cube.idle2
+  steve_the_fish:
+    path: music/steve_the_fish
+    settings:
+      subtitle: sounds.music.steve_the_fish

@@ -29,7 +29,9 @@ public class PoissonSteve extends CustomMob<Mannequin> {
                                 1, 10, 20),
                         new ItemLoot(OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_HEAD,
                                 0.5, 1),
-                        new XpLoot(20, 35, 1)
+                        new XpLoot(20, 35, 1),
+                        new ItemLoot(OMCRegistry.CUSTOM_ITEMS.POISSON_STEVE_DISC,
+                                0.05, 1)
                 )
         );
     }
