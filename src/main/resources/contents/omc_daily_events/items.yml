@@ -66,6 +66,22 @@ items:
       - <lang:itemsadder.omc_daily_events.blessed_bread.lore.0>
       - <lang:itemsadder.omc_daily_events.blessed_bread.lore.1>
 
+  steve_the_fish_disc:
+    display_name: <lang:itemsadder.omc_items.steve_the_fish_disc.name>
+    lore:
+      - '&7Tomo - Le poisson Steve'
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - other/steve_the_fish_disc.png
+    behaviours:
+      music_disc:
+        song:
+          name: omc_sounds:steve_the_fish
+          description: Tomo - Le poisson Steve
+    max_stack_size: 1
+
 recipes:
   iaa_crafting_table:
     fermentum:
