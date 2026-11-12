@@ -35,7 +35,7 @@ public class AdminShopUtils {
         if(buy) lore.add(TranslationManager.translation("feature.adminshop.right_click_buy"));
         if (sell) {
             lore.add(TranslationManager.translation("feature.adminshop.left_click_sell"));
-            lore.add(TranslationManager.translation("feature.adminshop.shift_left_click.sell_all"));
+            lore.add(TranslationManager.translation("feature.adminshop.shift_right_click.sell_all"));
         }
 
         return lore;

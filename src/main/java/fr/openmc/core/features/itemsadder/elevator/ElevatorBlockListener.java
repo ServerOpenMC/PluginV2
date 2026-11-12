@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
+import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -34,6 +35,13 @@ public class ElevatorBlockListener implements Listener {
         if (!ElevatorManager.isSafeGround(player.getLocation()))  {
             MessagesManager.sendMessage(offlinePlayer, TranslationManager.translation("messages.elevator.obstructed_1"),
                     Prefix.OPENMC, MessageType.WARNING, true);
+            return;
+        }
+
+        ProtectionsManager.verify(player, event, player.getLocation());
+        if (event.isCancelled()) {
+            // We don't want the player to be rollback from their jump
+            event.setCancelled(false);
             return;
         }
 
@@ -68,6 +76,13 @@ public class ElevatorBlockListener implements Listener {
         }
 
         if (event.isSneaking()) return;
+
+        ProtectionsManager.verify(player, event, player.getLocation());
+        if (event.isCancelled()) {
+            // We don't want the player to be rollback from their sneak
+            event.setCancelled(false);
+            return;
+        }
 
         Location locAfterTP = ElevatorManager.getNextDown(player);
 

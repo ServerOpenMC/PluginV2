@@ -18,9 +18,6 @@ dependencies:
     ItemsAdder:
       load: BEFORE
       required: false
-    ItemsAdderAdditions:
-      load: BEFORE
-      required: false
     ProtocolLib:
       load: BEFORE
       required: false

@@ -29,7 +29,7 @@ public class CraftItemChallenge extends ChallengeAnimation {
 
     public CraftItemChallenge(ItemStack item, int target, CustomLootTable reward, long time) {
         super(TranslationManager.translation("feature.chatanimations.challenge.craft_item.name",
-                Component.text(target), Component.translatable(item.translationKey())), reward, time);
+                Component.text(target), Component.translatable(item.translationKey()), Component.text(target > 1 ? "s" : "")), reward, time);
         this.item = item;
         this.target = target;
     }

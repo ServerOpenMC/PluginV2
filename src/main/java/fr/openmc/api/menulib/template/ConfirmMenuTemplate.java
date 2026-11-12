@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ConfirmMenu extends Menu {
+public class ConfirmMenuTemplate extends Menu {
 
     private final List<Component> loreAcceptMsg;
     private final List<Component> loreDenyMsg;
@@ -40,7 +40,7 @@ public class ConfirmMenu extends Menu {
      * @param loreAccept   Put your lore for Accept
      * @param loreDeny     Run your lore for Deny
      */
-    public ConfirmMenu(Player owner, Runnable methodAccept, Runnable methodDeny, List<Component> loreAccept, List<Component> loreDeny) {
+    public ConfirmMenuTemplate(Player owner, Runnable methodAccept, Runnable methodDeny, List<Component> loreAccept, List<Component> loreDeny) {
         super(owner);
         this.accept = methodAccept != null ? methodAccept : () -> {};
         this.deny = methodDeny != null ? methodDeny : () -> {};
@@ -59,7 +59,7 @@ public class ConfirmMenu extends Menu {
      * @param texture      set textures
      * @param size         Set inventory size
      */
-    public ConfirmMenu(Player owner, Runnable methodAccept, Runnable methodDeny, List<Component> loreAccept, List<Component> loreDeny, String texture, InventorySize size, int posAcceptBtn, int posDenyBtn) {
+    public ConfirmMenuTemplate(Player owner, Runnable methodAccept, Runnable methodDeny, List<Component> loreAccept, List<Component> loreDeny, String texture, InventorySize size, int posAcceptBtn, int posDenyBtn) {
         super(owner);
         this.accept = methodAccept != null ? methodAccept : () -> {};
         this.deny = methodDeny != null ? methodDeny : () -> {};
@@ -112,7 +112,7 @@ public class ConfirmMenu extends Menu {
         inventory.put(posDenyBtn, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.REFUSE_BTN, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("api.menulib.menu.confirm.deny.title"));
             itemMeta.lore(loreDeny);
-        }).setOnClick(event -> {
+        }).setOnClick(_ -> {
             try {
                 deny.run();
             } catch (Exception e) {
@@ -125,7 +125,7 @@ public class ConfirmMenu extends Menu {
         inventory.put(posAcceptBtn, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.ACCEPT_BTN, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("api.menulib.menu.confirm.accept.title"));
             itemMeta.lore(loreAccept);
-        }).setOnClick(event -> {
+        }).setOnClick(_ -> {
             try {
                 accept.run();
             } catch (Exception e) {

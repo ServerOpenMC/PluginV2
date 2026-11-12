@@ -9,6 +9,11 @@ import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.leaderboards.commands.LeaderBoardCommands;
 import fr.openmc.core.features.leaderboards.leaderboards.*;
+import fr.openmc.core.utils.text.DateUtils;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -27,8 +32,9 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
     public static CityMoneyLeaderBoard CITY_MONEY_LEADERBOARD;
     public static ContributorsLeaderBoard CONTRIBUTORS_LEADERBOARD;
     public static MoneyLeaderBoard MONEY_LEADERBOARD;
-    public static PlayTimeLeaderBoard PLAYTIME_LEADERBOARD;
+    public static StatsLeaderBoard PLAYTIME_LEADERBOARD;
     public static PumpkinCountLeaderBoard PUMPKIN_COUNT_LEADERBOARD;
+    public static StatsLeaderBoard DEATH_COUNT_LEADERBOARD;
 
     private final static List<LeaderBoard> enabledLeaderBoards = new ArrayList<>();
 
@@ -41,8 +47,27 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         CITY_MONEY_LEADERBOARD = new CityMoneyLeaderBoard();
         CONTRIBUTORS_LEADERBOARD = new ContributorsLeaderBoard();
         MONEY_LEADERBOARD = new MoneyLeaderBoard();
-        PLAYTIME_LEADERBOARD = new PlayTimeLeaderBoard();
         PUMPKIN_COUNT_LEADERBOARD = new PumpkinCountLeaderBoard();
+        PLAYTIME_LEADERBOARD = new StatsLeaderBoard(Statistic.PLAY_ONE_MINUTE,
+                TranslationManager.translation("feature.leaderboards.header.playtime"),
+                ((player, valueStats, rank) -> {
+                    String time = DateUtils.convertTime(valueStats);
+
+                    return TranslationManager.translation(
+                            "feature.leaderboards.line.playtime",
+                            rank,
+                            player.getNameWithHead().color(NamedTextColor.LIGHT_PURPLE),
+                            Component.text(time).color(NamedTextColor.WHITE));
+                }));
+        DEATH_COUNT_LEADERBOARD = new StatsLeaderBoard(Statistic.DEATHS,
+                TranslationManager.translation("feature.leaderboards.header.deaths"),
+                ((player, deaths, rank) ->
+                        TranslationManager.translation(
+                                "feature.leaderboards.line.deaths",
+                                rank,
+                                player.getNameWithHead().color(NamedTextColor.LIGHT_PURPLE),
+                                Component.text(deaths).color(NamedTextColor.WHITE)
+                        )));
         start();
     }
 
@@ -69,6 +94,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         registerLeaderBoard(MONEY_LEADERBOARD);
         registerLeaderBoard(PLAYTIME_LEADERBOARD);
         registerLeaderBoard(PUMPKIN_COUNT_LEADERBOARD);
+        registerLeaderBoard(DEATH_COUNT_LEADERBOARD);
 
         viewerTimer = new BukkitRunnable() {
             @Override

@@ -4,7 +4,6 @@ import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderBoard;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -18,14 +17,13 @@ import java.util.UUID;
 
 public class MoneyLeaderBoard extends LeaderBoard {
 
-    @Override
-    public double getUpdateDelay() {
-        return 15;
+    public MoneyLeaderBoard() {
+        super("money");
     }
 
     @Override
-    public String getId() {
-        return "money";
+    public double getUpdateDelay() {
+        return 15;
     }
 
     @Override

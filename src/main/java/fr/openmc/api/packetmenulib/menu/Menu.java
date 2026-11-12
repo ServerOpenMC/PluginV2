@@ -1,8 +1,8 @@
 package fr.openmc.api.packetmenulib.menu;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.api.packetmenulib.events.InventoryClickEvent;
-import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
+import fr.openmc.api.packetmenulib.events.VirtualInventoryClickEvent;
+import fr.openmc.api.packetmenulib.events.VirtualInventoryCloseEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,7 +15,7 @@ public interface Menu {
     Component getTitle(OMCPlayer player);
     InventoryType getInventoryType();
     Map<Integer, ItemStack> getContent();
-    void onInventoryClick(InventoryClickEvent inventoryClickEvent);
-    void onInventoryClose(InventoryCloseEvent inventoryCloseEvent);
+    void onInventoryClick(VirtualInventoryClickEvent inventoryClickEvent);
+    void onInventoryClose(VirtualInventoryCloseEvent inventoryCloseEvent);
     boolean isCursorItemEnabled();
 }

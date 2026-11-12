@@ -15,9 +15,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class Hammer extends CustomItem implements BlockBreakableItem {
 
     public static final float MAX_HARDNESS = 41.0f;
+    public static final Set<UUID> BREAKERS = new HashSet<>();
 
     private final Material vanillaMaterial;
     @Getter
@@ -51,7 +56,7 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
         };
     }
 
-    private void breakArea(Player player, Block origin, BlockFace face, ItemStack tool, Material targetType) {
+    private void breakArea(Player player, Block origin, BlockFace face, Material targetType) {
         World world = origin.getWorld();
         int ox = origin.getX();
         int oy = origin.getY();
@@ -65,7 +70,7 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
                     if (dx == 0 && dy == 0 && dz == 0) continue;
 
                     Vector offset = rotateOffset(dx, dy, dz, face);
-                    boolean isBroken = breakBlock(world, player, tool, ox + offset.getBlockX(), oy + offset.getBlockY(), oz + offset.getBlockZ(), targetType);
+                    boolean isBroken = breakBlock(world, player, ox + offset.getBlockX(), oy + offset.getBlockY(), oz + offset.getBlockZ(), targetType);
                     if (isBroken) blockBroken++;
                 }
             }
@@ -73,9 +78,10 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
 
         UseHammerEvent event = new UseHammerEvent(origin, this, player, blockBroken);
         Bukkit.getPluginManager().callEvent(event);
+        BREAKERS.remove(player.getUniqueId());
     }
 
-    private boolean breakBlock(World world, Player player, ItemStack tool, int x, int y, int z, Material targetType) {
+    private boolean breakBlock(World world, Player player, int x, int y, int z, Material targetType) {
         Block block = world.getBlockAt(x, y, z);
 
         if (block.getType() != targetType) return false;
@@ -87,7 +93,8 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
             customBlock.drop(block.getLocation());
             return customBlock.remove();
         }
-        return block.breakNaturally(tool);
+
+        return player.breakBlock(block);
     }
 
     private boolean isBreakable(Material material) {
@@ -111,8 +118,10 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
         Material targetType = origin.getType();
 
         if (!isBreakable(targetType)) return;
+        if (BREAKERS.contains(player.getUniqueId())) return;
 
+        BREAKERS.add(player.getUniqueId());
         BlockFace face = getTargetFace(player).getOppositeFace();
-        breakArea(player, origin, face, tool, targetType);
+        breakArea(player, origin, face, targetType);
     }
 }

@@ -3,8 +3,8 @@ package fr.openmc.core.features.mainmenu.menus;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
-import fr.openmc.api.packetmenulib.events.InventoryClickEvent;
-import fr.openmc.api.packetmenulib.events.InventoryCloseEvent;
+import fr.openmc.api.packetmenulib.events.VirtualInventoryClickEvent;
+import fr.openmc.api.packetmenulib.events.VirtualInventoryCloseEvent;
 import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.InventoryType;
 import fr.openmc.api.packetmenulib.menu.Menu;
@@ -55,7 +55,7 @@ public class Page2 implements Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(VirtualInventoryClickEvent event) {
         OMCPlayer player = OMCPlayer.of(event.player());
 
         if (event.clickType() == ClickType.CLICK_OUTSIDE) {
@@ -88,7 +88,7 @@ public class Page2 implements Menu {
     }
 
     @Override
-    public void onInventoryClose(InventoryCloseEvent event) {
+    public void onInventoryClose(VirtualInventoryCloseEvent event) {
     }
 
     @Override
