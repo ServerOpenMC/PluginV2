@@ -2,15 +2,15 @@ package fr.openmc.core.features.mailboxes.utils;
 
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 public class MailboxUtils {
@@ -24,11 +24,12 @@ public class MailboxUtils {
     }
 
     public static ItemStack getHead(OfflinePlayer player, Component name) {
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) head.getItemMeta();
-        meta.setOwningPlayer(player);
-        meta.displayName(nonItalic(name));
-        head.setItemMeta(meta);
+        ItemStack head = SkullUtils.getPlayerSkull(player != null ? player.getUniqueId() : null);
+        ItemMeta meta = head.getItemMeta();
+        if (meta != null) {
+            meta.displayName(nonItalic(name));
+            head.setItemMeta(meta);
+        }
         return head;
     }
 

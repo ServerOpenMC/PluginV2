@@ -19,6 +19,7 @@ import java.util.UUID;
 public class SkullUtils {
 
     private static final Map<String, ItemStack> CACHE = new HashMap<>();
+    private static final Map<UUID, ItemStack> PLAYER_HEAD_CACHE = new HashMap<>();
 
     /**
      * Creates a player skull item for the specified player UUID.
@@ -27,10 +28,27 @@ public class SkullUtils {
      * @return an {@link ItemStack} representing the player's skull
      */
     public static ItemStack getPlayerSkull(UUID playerUUID) {
+        if (playerUUID == null)
+            return new ItemStack(Material.PLAYER_HEAD);
+
+        ItemStack cached = PLAYER_HEAD_CACHE.get(playerUUID);
+        if (cached != null)
+            return cached.clone();
+
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         PlayerProfile profile = CachePlayerProfile.getPlayerProfile(playerUUID);
-        skull.setData(DataComponentTypes.PROFILE, ResolvableProfile.resolvableProfile(profile));
+        if (profile != null && profile.hasTextures()) {
+            skull.setData(DataComponentTypes.PROFILE, ResolvableProfile.resolvableProfile(profile));
+        }
+        PLAYER_HEAD_CACHE.put(playerUUID, skull.clone());
         return skull;
+    }
+
+    public static void updatePlayerHeadCache(UUID playerUUID, PlayerProfile profile) {
+        if (playerUUID == null || profile == null || !profile.hasTextures()) return;
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        skull.setData(DataComponentTypes.PROFILE, ResolvableProfile.resolvableProfile(profile));
+        PLAYER_HEAD_CACHE.put(playerUUID, skull);
     }
 
     /**

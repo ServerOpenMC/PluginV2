@@ -148,7 +148,7 @@ public class CityListMenu extends PaginatedMenu {
 
 	@Override
 	public int getSizeOfItems() {
-		return getItems().size();
+		return this.cities.size();
 	}
 
 	@Override

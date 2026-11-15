@@ -25,7 +25,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -182,22 +181,22 @@ public class ItemUtils {
 
     // IMPORT FROM MAILBOX
     public static ItemStack getPlayerHead(UUID playerUUID) {
+        ItemStack item = SkullUtils.getPlayerSkull(playerUUID);
         Player player = Bukkit.getPlayer(playerUUID);
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
-        SkullMeta meta = (SkullMeta) item.getItemMeta();
         String playerName;
         if (player != null) {
             playerName = player.getName();
-            meta.setOwningPlayer(player);
         } else {
             OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
-            playerName = offlinePlayer.getName();
-            meta.setOwningPlayer(offlinePlayer);
+            playerName = (offlinePlayer != null && offlinePlayer.getName() != null) ? offlinePlayer.getName() : "Unknown";
         }
 
-        Component displayName = Component.text(playerName, NamedTextColor.GOLD, TextDecoration.BOLD);
-        meta.displayName(nonItalic(displayName));
-        item.setItemMeta(meta);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            Component displayName = Component.text(playerName, NamedTextColor.GOLD, TextDecoration.BOLD);
+            meta.displayName(nonItalic(displayName));
+            item.setItemMeta(meta);
+        }
         return item;
     }
 

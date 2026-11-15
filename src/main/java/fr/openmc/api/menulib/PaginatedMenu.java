@@ -101,14 +101,16 @@ public abstract class PaginatedMenu extends Menu {
         }
         List<Integer> staticSlots = StaticSlots.removeRecurringIntegers(getStaticSlots(), getInventorySize().getSize());
         int maxItems = getInventorySize().getSize() - staticSlots.size();
-        numberOfPages = Math.max(0, (int) Math.ceil((double) getSizeOfItems() / maxItems) - 1);
+        List<ItemStack> items = getItems();
+        int itemsSize = items != null ? items.size() : 0;
+        numberOfPages = Math.max(0, (int) Math.ceil((double) itemsSize / maxItems) - 1);
 
         // Check if the page is out of bounds
         int index = 0;
         for (int i = 0; i < getInventory().getSize(); i++) {
             if (!staticSlots.contains(i)) {
-                if (index + maxItems * page < getItems().size()) {
-                    map.put(i, new ItemMenuBuilder(this, getItems().get(index + maxItems * page)));
+                if (items != null && index + maxItems * page < itemsSize) {
+                    map.put(i, new ItemMenuBuilder(this, items.get(index + maxItems * page)));
                     index++;
                 }
             }
