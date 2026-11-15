@@ -765,7 +765,6 @@ public class City {
      * @return The CityRank object representing the member's rank, or null if not found.
      */
     public Component getRankName(UUID playerUUID) {
-        // TODO: translation en anglais
         if (!this.getMembers().contains(playerUUID)) {
             return TranslationManager.translation("feature.city.grades.extern");
         } else if (this.hasPermission(playerUUID, CityPermission.OWNER)) {
