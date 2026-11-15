@@ -46,7 +46,7 @@ public class RankButton {
         if (FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
             lore = TranslationManager.translationLore(
                     "feature.city.menus.main.ranks.lore.unlocked",
-                    Component.text(city.getRankName(player.getUniqueId())).color(NamedTextColor.LIGHT_PURPLE)
+                    city.getRankName(player.getUniqueId()).color(NamedTextColor.LIGHT_PURPLE)
             );
         } else {
             lore = TranslationManager.translationLore(

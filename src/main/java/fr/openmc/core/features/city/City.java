@@ -764,23 +764,23 @@ public class City {
      * @param playerUUID The UUID of the member to check.
      * @return The CityRank object representing the member's rank, or null if not found.
      */
-    public String getRankName(UUID playerUUID) {
+    public Component getRankName(UUID playerUUID) {
         // TODO: translation en anglais
         if (!this.getMembers().contains(playerUUID)) {
-            return "Externe";
+            return TranslationManager.translation("feature.city.grades.extern");
         } else if (this.hasPermission(playerUUID, CityPermission.OWNER)) {
-            return "Propriétaire";
+            return TranslationManager.translation("feature.city.grades.owner");
         } else if (this.hasMayor() && this.getMayor().getMayorUUID().equals(playerUUID)) {
-            return "Maire";
+            return TranslationManager.translation("feature.city.grades.mayor");
         } else {
             for (DBCityRank rank : cityRanks) {
                 if (rank.getMembersSet().contains(playerUUID)) {
-                    return rank.getName();
+                    return Component.text(rank.getName());
                 }
             }
         }
 
-        return "Membre";
+        return TranslationManager.translation("feature.city.grades.member");
     }
     
     /**
