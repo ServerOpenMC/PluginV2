@@ -126,13 +126,11 @@ public class CityPlayerListMenu extends PaginatedMenu {
                     CityPlayerGestionMenu menu = new CityPlayerGestionMenu(player, playerOffline);
                     menu.open();
                 } else if (hasPermissionPerms) {
-                    new CityPermsMenu(player, playerOffline.getUniqueId(), false).open();
+                    new CityPermsMenu(player, playerOffline.getUniqueId(), true).open();
                 } else if (hasPermissionKick && isMember1) {
-                    if (player.getUniqueId().equals(playerOffline.getUniqueId()))
-                        return;
+                    if (player.getUniqueId().equals(playerOffline.getUniqueId())) return;
 
-                    if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER))
-                        return;
+                    if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) return;
 
                     ConfirmMenuTemplate menu = new ConfirmMenuTemplate(
                             player,

@@ -26,6 +26,7 @@ public class CityPermsCommands {
             OMCPlayer sender,
             @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player,
             @SuggestWith(CityPermissionsAutoComplete.class) CityPermission permission) {
+        if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
@@ -34,13 +35,13 @@ public class CityPermsCommands {
         }
 
         if (FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.EXTERNAL_MEMBER_PERM) &&
-                !city.getMembers().contains(player.getUniqueId())) {
+                !city.getMembers().contains(player.getUniqueId()) &&
+                permission.isExternalPermission()) {
             swapPermission(city, sender, player, permission);
             return;
         }
 
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
-        if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
 
         swapPermission(city, sender, player, permission);
     }
@@ -71,6 +72,7 @@ public class CityPermsCommands {
             @Named("membre") @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player,
             @Named("permission") @SuggestWith(CityPermissionsAutoComplete.class) CityPermission permission
     ) {
+        if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
@@ -79,14 +81,13 @@ public class CityPermsCommands {
         }
 
         if (FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.EXTERNAL_MEMBER_PERM) &&
-                !city.getMembers().contains(player.getUniqueId())&&
-                !permission.isExternalPermission()) {
+                !city.getMembers().contains(player.getUniqueId()) &&
+                permission.isExternalPermission()) {
             addPermission(city, sender, player, permission);
             return;
         }
 
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
-        if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
 
         addPermission(city, sender, player, permission);
     }
@@ -115,6 +116,7 @@ public class CityPermsCommands {
             @Named("membre") @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player,
             @Named("permission") @SuggestWith(CityPermissionsAutoComplete.class) CityPermission permission
     ) {
+        if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
@@ -124,13 +126,12 @@ public class CityPermsCommands {
 
         if (FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.EXTERNAL_MEMBER_PERM) &&
                 !city.getMembers().contains(player.getUniqueId()) &&
-                !permission.isExternalPermission()) {
+                permission.isExternalPermission()) {
             removePermission(city, sender, player, permission);
             return;
         }
 
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
-        if (!CityPermsConditions.canModifyPerms(sender, permission)) return;
 
         removePermission(city, sender, player, permission);
     }
@@ -162,7 +163,9 @@ public class CityPermsCommands {
     @Subcommand("removeall")
     @CommandPermission("omc.commands.city.perm.removeall")
     @Description("Retirer toutes les permissions d'un membre")
-    public static void removeAll(OMCPlayer sender, @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player) {
+    public static void removeAll(OMCPlayer sender,
+                                 @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player) {
+        if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
@@ -177,7 +180,6 @@ public class CityPermsCommands {
         }
 
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
-        if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         
         removeAllPermissions(city, player);
     }
@@ -195,6 +197,7 @@ public class CityPermsCommands {
     @CommandPermission("omc.commands.city.perm.addall")
     @Description("Ajouter toutes les permissions à un membre")
     public static void addAll(OMCPlayer sender, @SuggestWith(CityMembersAutoComplete.class) OMCOfflinePlayer player) {
+        if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
@@ -209,7 +212,6 @@ public class CityPermsCommands {
         }
 
         if (!CityPermsConditions.canSeePerms(sender, player.getUniqueId())) return;
-        if (!CityPermsConditions.canModifyPerms(sender, null)) return;
         
         addAllPermissions(city, player);
     }

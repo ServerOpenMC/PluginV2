@@ -765,10 +765,6 @@ public class City {
      * @return The CityRank object representing the member's rank, or null if not found.
      */
     public String getRankName(UUID playerUUID) {
-        System.out.println("this.getMembers()" + this.getMembers());
-        System.out.println(" playerUUID " +playerUUID);
-
-        // TODO: continuer le fix
         // TODO: translation en anglais
         if (!this.getMembers().contains(playerUUID)) {
             return "Externe";

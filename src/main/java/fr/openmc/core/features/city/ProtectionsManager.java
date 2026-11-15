@@ -75,6 +75,10 @@ public class ProtectionsManager {
     }
 
 	public static boolean havePermission(Player player, Location loc, CityPermission permission) {
+		return havePermission(player, loc, permission, false);
+	}
+
+	public static boolean havePermission(Player player, Location loc, CityPermission permission, boolean allowBypassInWar) {
 		if (!player.getWorld().getName().equals("world")) return true;
 
 		City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
@@ -82,7 +86,7 @@ public class ProtectionsManager {
 		if (cityAtLoc == null) return true;
 
 		if (canBypassPlayer.contains(player.getUniqueId())) return true; // Le joueur peut bypass les protections
-		if (cityAtLoc.isInWar()) return true; // En guerre, pas de protection
+		if (allowBypassInWar && cityAtLoc.isInWar()) return true; // En guerre, pas de protection
 
 		return cityAtLoc.hasPermission(player.getUniqueId(), permission);
 	}
@@ -91,7 +95,7 @@ public class ProtectionsManager {
         City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
         return city == null;
     }
-	
+
 	public static void verify(Entity entity, Cancellable event, Location loc) {
 		if (!entity.getWorld().getName().equals("world")) return;
 		
@@ -137,8 +141,8 @@ public class ProtectionsManager {
 		}
 	}
 	
-	public static void checkPermissions(@NotNull Player player, Cancellable event, CityPermission permission, boolean allowBypassInWar) {
-		if (!havePermission(player, player.getLocation(), permission)) {
+	public static void checkPermissions(@NotNull Player player, Location actionLocation, Cancellable event, CityPermission permission, boolean allowBypassInWar) {
+		if (!havePermission(player, actionLocation, permission, allowBypassInWar)) {
 			event.setCancelled(true);
 			cancelMessage(player);
 		}

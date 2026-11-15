@@ -59,9 +59,9 @@ public class InteractProtection implements Listener {
             
             if (clickedBlock.getType().name().endsWith("SHULKER_BOX")) return;
             if (clickedBlock.getType().name().endsWith("CHEST") || clickedBlock.getType().name().endsWith("BARREL")) {
-                ProtectionsManager.checkPermissions(player, event, CityPermission.OPEN_CHEST, true);
+                ProtectionsManager.checkPermissions(player, event.getClickedBlock().getLocation(), event, CityPermission.OPEN_CHEST, true);
             } else {
-                ProtectionsManager.checkPermissions(player, event, CityPermission.INTERACT, true);
+                ProtectionsManager.checkPermissions(player, event.getClickedBlock().getLocation(), event, CityPermission.INTERACT, true);
             }
         }
 

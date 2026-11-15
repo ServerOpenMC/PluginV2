@@ -10,11 +10,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class BlockProtection implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlaceBlock(BlockPlaceEvent event) {
-        ProtectionsManager.checkPermissions(event.getPlayer(), event, CityPermission.PLACE, true);
+        ProtectionsManager.checkPermissions(event.getPlayer(), event.getBlock().getLocation(), event, CityPermission.PLACE, true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-       ProtectionsManager.checkPermissions(event.getPlayer(), event, CityPermission.BREAK, false);
+       ProtectionsManager.checkPermissions(event.getPlayer(), event.getBlock().getLocation(), event, CityPermission.BREAK, false);
     }
 }
