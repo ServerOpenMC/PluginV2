@@ -152,11 +152,11 @@ public class ShopManager extends Feature implements LoadAfterItemsAdder, HasData
      */
     public static Shop getShopAt(Location location) {
 		if (location == null) return null;
-		location.setRotation(0, 0);
-	    Shop shop1 = shopsByLocation.get(location);
-	    Shop shop2 = shopsByLocation.get(location.subtract(0, 1, 0));
+		Location loc = location.toBlockLocation();
+		loc.setRotation(0, 0);
+	    Shop shop1 = shopsByLocation.get(loc);
 	    if (shop1 != null) return shop1;
-		else return shop2;
+		return shopsByLocation.get(loc.clone().subtract(0, 1, 0));
     }
 	
 	/**
