@@ -133,9 +133,9 @@ public class City {
      */
     public Set<UUID> getMembers() {
         if (this.members == null)
-            this.members = CityManager.getCityMembers(this);
+            this.members = new HashSet<>(CityManager.getCityMembers(this));
 
-        return this.members;
+        return new HashSet<>(this.members);
     }
 
     /**
