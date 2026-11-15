@@ -93,10 +93,10 @@ public class FriendManager extends Feature implements HasDatabase, HasCommands {
         return null;
     }
 
-    public static boolean hasRequestBetween(UUID firstUUID, UUID secondUUID) {
+    public static boolean hasRequestBetween(UUID senderUUID, UUID receiverUUID) {
         return friendsRequests.stream().anyMatch(request ->
-                (request.getSenderUUID().equals(firstUUID) && request.getReceiverUUID().equals(secondUUID)) ||
-                        (request.getSenderUUID().equals(secondUUID) && request.getReceiverUUID().equals(firstUUID))
+                (request.getSenderUUID().equals(senderUUID) && request.getReceiverUUID().equals(receiverUUID)) ||
+                        (request.getSenderUUID().equals(receiverUUID) && request.getReceiverUUID().equals(senderUUID))
         );
     }
 
