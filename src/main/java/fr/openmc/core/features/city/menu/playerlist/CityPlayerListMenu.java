@@ -86,7 +86,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
         for (UUID uuid : members) {
             OMCOfflinePlayer playerOffline = OMCOfflinePlayer.of(uuid);
 
-            String title = city.getRankName(uuid) + " ";
+            Component title = city.getRankName(uuid)
+                    .appendSpace()
+                    .append(Component.text(playerOffline.getName()));
 
             boolean isMember = city.getMembers().contains(playerOffline.getUniqueId());
 
@@ -115,7 +117,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
             List<Component> finalLorePlayer = lorePlayer;
             items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
-                itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                itemMeta.displayName(title.decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(finalLorePlayer);
             }).setOnClick(_ -> {
                 if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) return;
