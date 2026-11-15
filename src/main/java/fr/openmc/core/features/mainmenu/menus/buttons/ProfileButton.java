@@ -1,5 +1,6 @@
 package fr.openmc.core.features.mainmenu.menus.buttons;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.mainmenu.menus.ButtonItems;
@@ -35,7 +36,12 @@ public class ProfileButton implements ButtonMenu {
             meta.customName(ButtonItems.name("feature.mainmenu.item.profile.name")
                     .decoration(TextDecoration.ITALIC, false));
             meta.lore(List.of(ButtonItems.red("feature.mainmenu.item.profile.lore")));
-            if (meta instanceof SkullMeta skull) skull.setOwningPlayer(player);
+            if (meta instanceof SkullMeta skull && player != null && player.getPlayer() != null) {
+                PlayerProfile profile = player.getPlayer().getPlayerProfile();
+                if (profile.hasTextures()) {
+                    skull.setPlayerProfile(profile);
+                }
+            }
         });
         return head;
     }
