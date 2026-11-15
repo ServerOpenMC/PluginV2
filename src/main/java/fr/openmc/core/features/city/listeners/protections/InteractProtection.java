@@ -8,7 +8,6 @@ import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -53,11 +52,7 @@ public class InteractProtection implements Listener {
                 if (!type.isInteractable()) return;
             }
             
-            if (ShopManager.getShopAt(location) != null) {
-                if (clickedBlock.getState() instanceof Barrel) return;
-                event.setCancelled(true);
-                return;
-            }
+            if (ShopManager.getShopAt(location) != null) return;
             
             City city = CityManager.getCityFromChunk(location.getChunk().getX(), location.getChunk().getZ());
             if (city == null) return;
