@@ -4,7 +4,6 @@ import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.Dim
 import fr.openmc.core.features.shops.managers.ShopManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -50,11 +49,7 @@ public class InteractProtection implements Listener {
                 if (!type.isInteractable()) return;
             }
             
-            if (ShopManager.getShopAt(location) != null) {
-                if (clickedBlock.getState() instanceof Barrel) return;
-                event.setCancelled(true);
-                return;
-            }
+            if (ShopManager.getShopAt(location) != null) return;
 
             if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
                 return;

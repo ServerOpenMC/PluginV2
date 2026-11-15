@@ -1,6 +1,7 @@
 package fr.openmc.core.features.mailboxes.letter;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
@@ -9,9 +10,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,21 +34,26 @@ public class LetterHead extends ItemStack {
         this.letterId = letterId;
         this.itemsCount = itemsCount;
         this.items = items;
-        SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
-        skullMeta.setOwningPlayer(player);
-        skullMeta.displayName(getPlayerName(player));
-        skullMeta.lore(List.of(
-                nonItalic(formatRelativeDate(sentAt).color(NamedTextColor.DARK_GRAY)),
-                nonItalic(translation(
-                        "feature.mailboxes.letter.contains",
-                        Component.text(itemsCount).color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD),
-                        pluralize(TranslationManager.translation("global.item"), itemsCount).color(NamedTextColor.DARK_GREEN)
-                ).color(NamedTextColor.DARK_GREEN))
-        ));
+        ItemStack skull = SkullUtils.getPlayerSkull(player != null ? player.getUniqueId() : null);
+        if (skull.hasData(DataComponentTypes.PROFILE)) {
+            this.setData(DataComponentTypes.PROFILE, skull.getData(DataComponentTypes.PROFILE));
+        }
+        ItemMeta meta = this.getItemMeta();
+        if (meta != null) {
+            meta.displayName(getPlayerName(player));
+            meta.lore(List.of(
+                    nonItalic(formatRelativeDate(sentAt).color(NamedTextColor.DARK_GRAY)),
+                    nonItalic(translation(
+                            "feature.mailboxes.letter.contains",
+                            Component.text(itemsCount).color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD),
+                            pluralize(TranslationManager.translation("global.item"), itemsCount).color(NamedTextColor.DARK_GREEN)
+                    ).color(NamedTextColor.DARK_GREEN))
+            ));
+            this.setItemMeta(meta);
+        }
         TooltipDisplay tooltipDisplay = TooltipDisplay.tooltipDisplay().addHiddenComponents(
                 DataComponentTypes.PROFILE
         ).build();
         this.setData(DataComponentTypes.TOOLTIP_DISPLAY, tooltipDisplay);
-        this.setItemMeta(skullMeta);
     }
 }

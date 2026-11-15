@@ -57,7 +57,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return getItems().size();
+        City city = CityManager.getPlayerCity(getOwner().getUniqueId());
+        return city != null ? city.getMembers().size() : 0;
     }
 
     @Override
@@ -71,7 +72,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         OMCPlayer player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        assert city != null;
+        if (city == null) return items;
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
         boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_PERMS);

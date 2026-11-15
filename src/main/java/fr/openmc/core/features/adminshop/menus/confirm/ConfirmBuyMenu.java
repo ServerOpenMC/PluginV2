@@ -55,7 +55,7 @@ public class ConfirmBuyMenu extends ItemQuantityMenuTemplate {
                 "feature.adminshop.menu.confirm.lore",
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
-                quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
+                quantityToStack > 1 ? Component.text("s", NamedTextColor.GRAY) : Component.empty(),
                 Component.text(AdminShopManager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
                 Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
                 Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),

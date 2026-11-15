@@ -105,7 +105,8 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return getItems().size();
+        City city = CityManager.getPlayerCity(getOwner().getUniqueId());
+        return city != null ? Math.max(0, city.getMembers().size() - 1) : 0;
     }
 
     @Override

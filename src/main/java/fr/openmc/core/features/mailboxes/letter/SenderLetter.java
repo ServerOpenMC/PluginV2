@@ -1,15 +1,16 @@
 package fr.openmc.core.features.mailboxes.letter;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,21 +25,26 @@ public class SenderLetter extends ItemStack {
 
     public SenderLetter(OMCOfflinePlayer player, int itemsCount, LocalDateTime sentAt, boolean refused) {
         super(Material.PLAYER_HEAD, 1);
-        SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
-        skullMeta.setOwningPlayer(player);
-        skullMeta.displayName(getStatus(refused));
-        ArrayList<Component> lore = new ArrayList<>();
-        lore.add(TranslationManager.translation("feature.mailboxes.letter.cancel_hint")
-                .color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
-        lore.add(getPlayerName(player));
-        lore.add(TranslationManager.translation(
-                "feature.mailboxes.letter.sent_info",
-                formatRelativeDate(sentAt),
-                Component.text(itemsCount),
-                pluralize(TranslationManager.translation("global.item"), itemsCount)
-        ).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
-        skullMeta.lore(lore);
-        this.setItemMeta(skullMeta);
+        ItemStack skull = SkullUtils.getPlayerSkull(player != null ? player.getUniqueId() : null);
+        if (skull.hasData(DataComponentTypes.PROFILE)) {
+            this.setData(DataComponentTypes.PROFILE, skull.getData(DataComponentTypes.PROFILE));
+        }
+        ItemMeta meta = this.getItemMeta();
+        if (meta != null) {
+            meta.displayName(getStatus(refused));
+            ArrayList<Component> lore = new ArrayList<>();
+            lore.add(TranslationManager.translation("feature.mailboxes.letter.cancel_hint")
+                    .color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+            lore.add(getPlayerName(player));
+            lore.add(TranslationManager.translation(
+                    "feature.mailboxes.letter.sent_info",
+                    formatRelativeDate(sentAt),
+                    Component.text(itemsCount),
+                    pluralize(TranslationManager.translation("global.item"), itemsCount)
+            ).color(NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false));
+            meta.lore(lore);
+            this.setItemMeta(meta);
+        }
     }
 
     public static Component getStatus(boolean refused) {

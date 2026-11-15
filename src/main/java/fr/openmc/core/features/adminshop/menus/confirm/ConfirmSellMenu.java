@@ -56,12 +56,12 @@ public class ConfirmSellMenu extends ItemQuantityMenuTemplate {
                 "feature.adminshop.menu.confirm.lore",
                 Component.text(String.valueOf(quantity), NamedTextColor.WHITE),
                 Component.text(String.valueOf(quantityToStack), NamedTextColor.WHITE),
-                quantityToStack > 1 ? Component.text("s", NamedTextColor.WHITE) : Component.empty(),
+                quantityToStack > 1 ? Component.text("s", NamedTextColor.GRAY) : Component.empty(),
                 Component.text(AdminShopManager.priceFormat.format(pricePerUnit), NamedTextColor.GREEN),
                 Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
                 Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
                 Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
-                TranslationManager.translation("feature.adminshop.menu.confirm.sell_all")
+                TranslationManager.translation("feature.adminshop.shift_right_click.sell_all")
         );
     }
 

@@ -113,18 +113,22 @@ public class ItemDepositRequirement implements CityRequirement {
      */
     @Override
     public Component getName(City city, CityLevels level) {
+        Component itemName = ItemUtils.getItemName(itemType)
+                .color(null)
+                .decoration(TextDecoration.ITALIC, TextDecoration.State.NOT_SET);
+
         if (city.getLevel() != level.ordinal()) {
             return TranslationManager.translation(
                     "feature.city.levels.requirements.deposit",
                     Component.text(amountRequired),
-                    ItemUtils.getItemName(itemType)
+                    itemName
             );
         }
 
         return TranslationManager.translation(
                 "feature.city.levels.requirements.deposit.progress",
                 Component.text(amountRequired),
-                ItemUtils.getItemName(itemType),
+                itemName,
                 Component.text(Objects.requireNonNull(
                         CityStatisticsManager.getOrCreateStat(city.getUniqueId(), getScope())
                 ).asInt())

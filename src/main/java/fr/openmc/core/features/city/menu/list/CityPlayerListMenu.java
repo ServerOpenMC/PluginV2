@@ -48,7 +48,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return getItems().size();
+        return city != null ? city.getMembers().size() : 0;
     }
 
     @Override
