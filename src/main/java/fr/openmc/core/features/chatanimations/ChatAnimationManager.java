@@ -4,15 +4,18 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
+import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeListener;
 import fr.openmc.core.features.chatanimations.contents.challenge.types.*;
+import fr.openmc.core.features.chatanimations.contents.quizz.QuizSQLManager;
 import fr.openmc.core.features.chatanimations.contents.quizz.Quizz;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizzListener;
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.LootReward;
+
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
@@ -24,17 +27,18 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
-
+import com.j256.ormlite.support.ConnectionSource;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Credit(developers = {"iambibi_"})
-public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder, HasListeners {
+public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder, HasListeners, HasDatabase {
 
-    private static final long MIN_DELAY_TICKS = 20 * 60 * 20L; // 15 min
-    private static final long MAX_DELAY_TICKS = 20 * 60 * 30L; // 25 min
+    private static final long MIN_DELAY_TICKS = 20 * 60 * 15L; // 15 min
+    private static final long MAX_DELAY_TICKS = 20 * 60 * 25L; // 25 min
 
     private Set<ChatAnimation> ANIMATIONS;
 
@@ -45,9 +49,16 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
     private BukkitTask scheduleTask;
     private static BukkitTask endAnimationTask;
 
+
+
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(QuizzListener::new, ChallengeListener::new);
+    }
+
+    @Override
+    public void initDB(ConnectionSource connectionSource) throws SQLException {
+        QuizSQLManager.initDB(connectionSource);
     }
 
     @Override

@@ -11,6 +11,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Locale;
 
 public class Quizz extends ChatAnimation {
 
@@ -29,7 +30,7 @@ public class Quizz extends ChatAnimation {
     public Quizz(Component question, List<String> answers, CustomLootTable reward, long time) {
         this.question = question;
         this.answers = answers.stream()
-                .map(String::toLowerCase)
+                .map(answer -> answer.toLowerCase(Locale.ROOT).trim())
                 .collect(Collectors.toList());
         this.reward = reward;
         this.time = time;
