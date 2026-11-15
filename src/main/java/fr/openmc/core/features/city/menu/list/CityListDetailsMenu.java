@@ -123,7 +123,7 @@ public class CityListDetailsMenu extends Menu {
 						TranslationManager.translation(perk3.getNameKey()));
 				loreMayor.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
-				map.put(14, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
+				map.put(14, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(this.city.getMayor().getMayorUUID()),
 								itemMeta -> {
 									itemMeta.displayName(
 										TranslationManager.translation(
