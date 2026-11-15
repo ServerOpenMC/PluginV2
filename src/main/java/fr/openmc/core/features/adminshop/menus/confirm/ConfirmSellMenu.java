@@ -61,7 +61,7 @@ public class ConfirmSellMenu extends ItemQuantityMenuTemplate {
                 Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
                 Component.text(AdminShopManager.priceFormat.format(totalPrice), NamedTextColor.GREEN),
                 Component.text(EconomyManager.getEconomyIcon(), NamedTextColor.GREEN),
-                TranslationManager.translation("feature.adminshop.menu.confirm.sell_all")
+                TranslationManager.translation("feature.adminshop.shift_right_click.sell_all")
         );
     }
 
