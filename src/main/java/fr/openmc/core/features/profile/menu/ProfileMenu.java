@@ -24,9 +24,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -239,10 +237,8 @@ public class ProfileMenu extends Menu {
                     meta.lore(TranslationManager.translationLore(
                             "feature.profile.item.city.lore",
                             Component.text(city.getName(), NamedTextColor.GRAY),
-                            Component.text(
-                                    city.getRankName(target.getUniqueId()),
-                                    NamedTextColor.GRAY
-                            )
+                            city.getRankName(target.getUniqueId())
+                                    .color(NamedTextColor.GRAY)
                     ));
                 }
         ).setOnClick(event -> new CityListDetailsMenu(getOwner(), city).open()));

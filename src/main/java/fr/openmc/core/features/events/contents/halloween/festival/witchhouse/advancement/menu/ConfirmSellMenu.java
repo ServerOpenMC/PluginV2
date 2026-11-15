@@ -49,7 +49,6 @@ public class ConfirmSellMenu extends ItemQuantityMenuTemplate {
         double scorePerUnit = shopItem.getScores();
         double totalScore = scorePerUnit * quantity;
 
-        // todo: ede
         int quantityToStack = quantity / 64;
 
         return TranslationManager.translationLore(

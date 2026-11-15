@@ -61,10 +61,12 @@ public class CityTransferMenu extends PaginatedMenu {
 
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-            String title = city.getRankName(uuid) + " ";
+            Component title = city.getRankName(uuid)
+                    .appendSpace()
+                    .append(Component.text(playerOffline.getName()));
 
             items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
-                itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                itemMeta.displayName(title.decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(TranslationManager.translationLore(
                         "feature.city.menus.transfer.item.lore",
                         Component.text(title + playerOffline.getName()).color(NamedTextColor.LIGHT_PURPLE)

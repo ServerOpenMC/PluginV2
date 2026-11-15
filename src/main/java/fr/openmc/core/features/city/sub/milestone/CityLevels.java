@@ -401,6 +401,7 @@ public enum CityLevels {
                     new ItemDepositRequirement(Material.NETHER_STAR, 1)
             ),
             List.of(
+                    FeaturesRewards.LEVEL_6,
                     PlayerBankLimitRewards.LEVEL_6,
                     InterestRewards.LEVEL_6,
                     MascotsLevelsRewards.LEVEL_6,

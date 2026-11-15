@@ -11,9 +11,9 @@ import java.util.UUID;
 public class DBCityPermission {
     @DatabaseField(columnName = "city_uuid", canBeNull = false)
     private UUID cityUUID;
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    @DatabaseField(canBeNull = false, uniqueCombo = true, columnName = "player")
     @Getter
-    private UUID player;
+    private UUID playerUUID;
     @DatabaseField(canBeNull = false, uniqueCombo = true)
     private String permission;
 
@@ -21,9 +21,9 @@ public class DBCityPermission {
         // required for ORMLite
     }
 
-    public DBCityPermission(UUID cityUUID, UUID player, String permission) {
+    public DBCityPermission(UUID cityUUID, UUID playerUUID, String permission) {
         this.cityUUID = cityUUID;
-        this.player = player;
+        this.playerUUID = playerUUID;
         this.permission = permission;
     }
 
