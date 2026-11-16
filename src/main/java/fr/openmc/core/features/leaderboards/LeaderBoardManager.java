@@ -20,10 +20,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Credit(developers = {"ElitGaimix"})
@@ -35,6 +32,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
     public static StatsLeaderBoard PLAYTIME_LEADERBOARD;
     public static PumpkinCountLeaderBoard PUMPKIN_COUNT_LEADERBOARD;
     public static StatsLeaderBoard DEATH_COUNT_LEADERBOARD;
+    public static QuizCountLeaderBoard QUIZ_COUNT_LEADERBOARD;
 
     private final static List<LeaderBoard> enabledLeaderBoards = new ArrayList<>();
 
@@ -48,6 +46,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         CONTRIBUTORS_LEADERBOARD = new ContributorsLeaderBoard();
         MONEY_LEADERBOARD = new MoneyLeaderBoard();
         PUMPKIN_COUNT_LEADERBOARD = new PumpkinCountLeaderBoard();
+        QUIZ_COUNT_LEADERBOARD = new QuizCountLeaderBoard();
         PLAYTIME_LEADERBOARD = new StatsLeaderBoard(Statistic.PLAY_ONE_MINUTE,
                 TranslationManager.translation("feature.leaderboards.header.playtime"),
                 ((player, valueStats, rank) -> {
@@ -95,6 +94,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         registerLeaderBoard(PLAYTIME_LEADERBOARD);
         registerLeaderBoard(PUMPKIN_COUNT_LEADERBOARD);
         registerLeaderBoard(DEATH_COUNT_LEADERBOARD);
+        registerLeaderBoard(QUIZ_COUNT_LEADERBOARD);
 
         viewerTimer = new BukkitRunnable() {
             @Override
