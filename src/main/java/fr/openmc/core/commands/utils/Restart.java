@@ -39,8 +39,6 @@ public class Restart {
             return;
         }
 
-        System.out.println("RESTART ! ");
-
         // protection pour le bug de duplication
         for (City city : CityManager.getCities()) {
             UUID watcherUUID = city.getChestWatcher();

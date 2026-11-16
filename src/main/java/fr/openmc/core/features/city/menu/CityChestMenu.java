@@ -206,7 +206,6 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        System.out.println("close men " + Restart.isRestarting);
         if (Restart.isRestarting) return;
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) return;
