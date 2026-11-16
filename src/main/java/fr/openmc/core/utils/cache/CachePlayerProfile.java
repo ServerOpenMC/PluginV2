@@ -58,7 +58,8 @@ public class CachePlayerProfile {
                     playerProfileCache.put(uuid, updated);
                     SkullUtils.updatePlayerHeadCache(uuid, updated);
                 }
-            }).exceptionally(_ -> null);
+            }).exceptionally(_ -> null)
+                    .whenComplete((_, _) -> requestedProfiles.remove(uuid));;
         }
 
         return newProfile;

@@ -38,9 +38,14 @@ public class SkullUtils {
         ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
         PlayerProfile profile = CachePlayerProfile.getPlayerProfile(playerUUID);
         if (profile != null && profile.hasTextures()) {
-            skull.setData(DataComponentTypes.PROFILE, ResolvableProfile.resolvableProfile(profile));
+            skull.setData(
+                    DataComponentTypes.PROFILE,
+                    ResolvableProfile.resolvableProfile(profile)
+            );
+
+            PLAYER_HEAD_CACHE.put(playerUUID, skull.clone());
         }
-        PLAYER_HEAD_CACHE.put(playerUUID, skull.clone());
+
         return skull;
     }
 
