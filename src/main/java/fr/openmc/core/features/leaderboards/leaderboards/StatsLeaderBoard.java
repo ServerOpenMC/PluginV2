@@ -32,6 +32,15 @@ public class StatsLeaderBoard extends LeaderBoard {
         this.componentBuilder = componentBuilder;
     }
 
+    public StatsLeaderBoard(String id, Statistic statistic,
+                            Component header,
+                            TriFunction<OMCOfflinePlayer, Integer, Component, Component> componentBuilder) {
+        super(id);
+        this.statistic = statistic;
+        this.header = header;
+        this.componentBuilder = componentBuilder;
+    }
+
     @Override
     public double getUpdateDelay() {
         return 15;
