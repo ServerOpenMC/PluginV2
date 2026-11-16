@@ -101,6 +101,67 @@ items:
     lore:
       - <lang:itemsadder.omc_daily_events.really_golden_carrot.lore.0>
 
+  aywenite_lamp_template:
+    name: <lang:itemsadder.omc_daily_events.aywenite_lamp.name>
+    lore:
+      - <lang:itemsadder.omc_daily_events.aywenite_lamp.lore.0>
+    template: true
+    resource:
+      generate: true
+      textures:
+        - blocks/aywenite_lamp/aywenite_lamp_off
+      material: PAPER
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+        cancel_drop: false
+
+  aywenite_lamp_off:
+    name: <lang:itemsadder.omc_daily_events.aywenite_lamp.name>
+    lore:
+      - <lang:itemsadder.omc_daily_events.aywenite_lamp.lore.0>
+    resource:
+      generate: true
+      textures:
+        - blocks/aywenite_lamp/aywenite_lamp_off
+      material: PAPER
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+        cancel_drop: false
+    events:
+      placed_block:
+        interact:
+          replace_block:
+            from: aywenite_lamp_off
+            to: aywenite_lamp_on
+            decrement_durability: 0
+
+  aywenite_lamp_on:
+    name: <lang:itemsadder.omc_daily_events.aywenite_lamp.name>
+    lore:
+      - <lang:itemsadder.omc_daily_events.aywenite_lamp.lore.0>
+    resource:
+      generate: true
+      textures:
+        - blocks/aywenite_lamp/aywenite_lamp_on
+      material: PAPER
+    behaviours:
+      block:
+        placed_model:
+          type: REAL_NOTE
+        cancel_drop: false
+        light_level: 15
+    events:
+      placed_block:
+        interact:
+          replace_block:
+            from: aywenite_lamp_on
+            to: aywenite_lamp_off
+            decrement_durability: 0
+
 recipes:
   crafting_table:
     golden_wheat_compacted:
@@ -125,4 +186,17 @@ recipes:
         A: omc_daily_events:golden_wheat_compacted
       result:
         item: omc_daily_events:golden_wheat_block
+        amount: 1
+
+    aywenite_lamp:
+      enabled: true
+      pattern:
+        - AAA
+        - ALA
+        - AAA
+      ingredients:
+        A: omc_blocks:aywenite_block
+        L: minecraft:redstone_lamp
+      result:
+        item: omc_daily_events:aywenite_lamp_on
         amount: 1

@@ -1,11 +1,13 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestEvent;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.GoldenHarvestManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.obesecrops.ObeseCropsRegistry;
 import fr.openmc.core.registry.items.keys.KeyBlock;
+import fr.openmc.core.utils.bukkit.BlocksUtils;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -34,6 +36,12 @@ public class ObeseCropsListener implements Listener {
 
         if (ageable.getAge() == ageable.getMaximumAge()) {
             if (ThreadLocalRandom.current().nextDouble() > GoldenHarvestManager.OBESE_CROP_CHANCE) return;
+
+            if (BlocksUtils.isNearbyBlocks(
+                    KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.AYWENITE_LAMP_ON),
+                    event.getBlock(),
+                    15)
+            ) return;
 
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
                     GoldenHarvestManager.setObeseCrop(event.getBlock()), 1L);
