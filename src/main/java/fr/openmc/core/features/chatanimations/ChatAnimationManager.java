@@ -8,8 +8,10 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeAnimation;
 import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeListener;
 import fr.openmc.core.features.chatanimations.contents.challenge.types.*;
+import fr.openmc.core.features.chatanimations.contents.mathsQuestions.CalculGenerator;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizSQLManager;
 import fr.openmc.core.features.chatanimations.contents.quizz.Quizz;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizzListener;
@@ -19,6 +21,7 @@ import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
+
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -28,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import com.j256.ormlite.support.ConnectionSource;
+
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +42,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder, HasListeners, HasDatabase {
 
     private static final long MIN_DELAY_TICKS = 20 * 60 * 15L; // 15 min
-    private static final long MAX_DELAY_TICKS = 20 * 60 * 25L; // 25 min
+    private static final long MAX_DELAY_TICKS = 20 * 60 * 20L; // 20 min
 
     private Set<ChatAnimation> ANIMATIONS;
 
@@ -48,8 +52,6 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
     private static ChatAnimation lastAnimation;
     private BukkitTask scheduleTask;
     private static BukkitTask endAnimationTask;
-
-
 
     @Override
     public Set<ListenerFactory> getListeners() {
@@ -61,8 +63,17 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
         QuizSQLManager.initDB(connectionSource);
     }
 
+    private Quizz generateMathQuizz() {
+        CalculGenerator calcul = new CalculGenerator();
+        return new Quizz(
+                calcul.getQuestion(),
+                String.valueOf(calcul.getResult())
+        );
+    }
+
     @Override
     public void init() {
+
         ANIMATIONS = new HashSet<>(Set.of(
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.DIAMOND_ORE), 2, 60L),
                 new MineBlocksChallenge(KeyBlock.vanilla(BlockType.SCULK), 15, 60L),
@@ -152,7 +163,7 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
 
                 new Quizz(TranslationManager.translation("quizz.general.01"), "paris"),
                 new Quizz(TranslationManager.translation("quizz.general.02"), "7"),
-                new Quizz(TranslationManager.translation("quizz.general.03"), "léonard de vinci", "leonard de vinci", "de vinci"),
+                new Quizz(TranslationManager.translation("quizz.general.03"), "léonard de vinci", "leonard de vinci", "de vinci", "leonardo da vinci"),
                 new Quizz(TranslationManager.translation("quizz.general.04"), "pacifique", "océan pacifique", "ocean pacifique"),
                 new Quizz(TranslationManager.translation("quizz.general.05"), "1789"),
                 new Quizz(TranslationManager.translation("quizz.general.06"), "everest", "mont everest"),
@@ -165,8 +176,8 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
                 new Quizz(TranslationManager.translation("quizz.general.13"), "italie"),
                 new Quizz(TranslationManager.translation("quizz.general.14"), "beethoven", "ludwig van beethoven"),
                 new Quizz(TranslationManager.translation("quizz.general.15"), "nil", "le nil"),
-                new Quizz(TranslationManager.translation("quizz.general.16"), "au"),
-                new Quizz(TranslationManager.translation("quizz.general.17"), "groenland"),
+                new Quizz(TranslationManager.translation("quizz.general.16"), "au", "Au"),
+                new Quizz(TranslationManager.translation("quizz.general.17"), "vatican", "Vatican"),
                 new Quizz(TranslationManager.translation("quizz.general.18"), "neil armstrong", "armstrong"),
                 new Quizz(TranslationManager.translation("quizz.general.19"), "sumo", "le sumo"),
                 new Quizz(TranslationManager.translation("quizz.general.20"), "8", "8 minutes", "8 min"),
@@ -239,14 +250,38 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
     public void startNext() {
         if (isAnimationRunning()) return;
 
-        List<ChatAnimation> pool = ANIMATIONS.stream()
-                .filter(a -> !a.equals(lastAnimation))
+        List<ChatAnimation> challenges = ANIMATIONS.stream()
+                .filter(animation -> animation instanceof ChallengeAnimation)
                 .toList();
-        if (pool.isEmpty()) return;
 
-        ChatAnimation animation = pool.get(ThreadLocalRandom.current().nextInt(pool.size()));
+        List<ChatAnimation> quizz = ANIMATIONS.stream()
+                .filter(animation -> animation instanceof Quizz)
+                .toList();
 
-        launch(animation);
+        boolean hasChallenges = !challenges.isEmpty();
+        boolean hasQuizz = !quizz.isEmpty();
+
+        int availableCategories = 1
+                + (hasChallenges ? 1 : 0)
+                + (hasQuizz ? 1 : 0);
+
+        int category = ThreadLocalRandom.current().nextInt(availableCategories);
+
+        if (hasChallenges) {
+            if (category == 0) {
+                launch(challenges.get(ThreadLocalRandom.current().nextInt(challenges.size())));
+                return;
+            }
+            category--;
+        }
+
+        if (hasQuizz) {
+            if (category == 0) {
+                launch(quizz.get(ThreadLocalRandom.current().nextInt(quizz.size())));
+                return;
+            }
+        }
+        launch(generateMathQuizz());
     }
 
     private void launch(ChatAnimation animation) {
@@ -294,7 +329,6 @@ public class ChatAnimationManager extends Feature implements LoadAfterItemsAdder
             currentAnimation.complete(null);
         }
     }
-
     public static ChatAnimation getActive() {
         return currentAnimation;
     }
