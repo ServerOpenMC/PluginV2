@@ -34,7 +34,8 @@ public class ListenersManager {
                 () -> new RegionTrackingListener(),
                 () -> new SpawnerExtractorListener(),
                 () -> new ItemsAddersListener(),
-                RemovePostEffectListener::new
+                RemovePostEffectListener::new,
+                RestartListener::new
         );
     }
 
