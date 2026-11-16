@@ -195,14 +195,12 @@ recipes:
         amount: 1
 
     aywenite_lamp:
-      enabled: true
       pattern:
         - AAA
         - ALA
         - AAA
       ingredients:
         A: omc_blocks:aywenite_block
-        L: minecraft:redstone_lamp
+        L: REDSTONE_LAMP
       result:
         item: omc_daily_events:aywenite_lamp_on
-        amount: 1
