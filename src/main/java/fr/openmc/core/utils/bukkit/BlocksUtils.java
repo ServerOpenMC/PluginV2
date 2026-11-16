@@ -5,10 +5,12 @@ import org.bukkit.block.Block;
 
 public class BlocksUtils {
 
-    public static boolean isNearbyBlocks(KeyBlock keyBlock, Block origin, int radius) {
-        for (int x = -(radius/2); x < radius/2; x++) {
-            for (int y = -(radius/2); y < radius/2; y++) {
-                for (int z = -(radius/2); z < radius/2; z++) {
+    public static boolean isNearbyBlocks(KeyBlock keyBlock, Block origin, int diameter) {
+        int radius = (diameter/2);
+        int minusRadius = -radius;
+        for (int x = -minusRadius; x < radius; x++) {
+            for (int y = -minusRadius; y < radius; y++) {
+                for (int z = -minusRadius; z < radius; z++) {
                     if (keyBlock.matches(origin.getRelative(x, y, z))) {
                         return true;
                     }

@@ -8,3 +8,5 @@ categories:
     name: "OpenMC Daily Events"
     items:
       - omc_daily_events:*
+    hide_items:
+      - omc_daily_events:aywenite_lamp_on
