@@ -1,0 +1,52 @@
+{
+  "has_precipitation": true,
+  "temperature": -0.5,
+  "downfall": 0.4,
+  "effects": {
+    "water_color": "#3d9bd6"
+  },
+  "attributes": {
+    "minecraft:visual/sky_color": "#9fc4ff",
+    "minecraft:visual/fog_color": "#dbe9ff",
+    "minecraft:visual/fog_end_distance": 120.0,
+    "minecraft:visual/water_fog_color": "#0b2a5c",
+    "minecraft:visual/ambient_particles": [
+      {
+        "particle": {
+          "type": "minecraft:snowflake"
+        },
+        "probability": 0.02
+      }
+    ],
+    "minecraft:audio/ambient_sounds": {
+      "additions": [
+        {
+          "sound": "minecraft:block.amethyst_block.chime",
+          "tick_chance": 0.0008
+        }
+      ]
+    }
+  },
+  "carvers": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "omc_christmas:snow_layers/layer1",
+      "omc_christmas:snow_layers/layer2",
+      "omc_christmas:snow_layers/layer3"
+    ],
+    [],
+    [],
+    [
+      "omc_christmas:snow_layers/layer1",
+      "omc_christmas:snow_layers/layer2",
+      "omc_christmas:snow_layers/layer3"
+    ]
+  ]
+}

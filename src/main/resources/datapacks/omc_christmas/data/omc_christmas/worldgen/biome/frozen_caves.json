@@ -1,0 +1,62 @@
+{
+  "has_precipitation": false,
+  "temperature": -0.8,
+  "downfall": 0.0,
+  "effects": {
+    "water_color": "#4aa8e0"
+  },
+  "attributes": {
+    "minecraft:visual/sky_color": "#0a1226",
+    "minecraft:visual/fog_color": "#0d1a33",
+    "minecraft:visual/fog_end_distance": 74.0,
+    "minecraft:visual/water_fog_color": "#050533",
+    "minecraft:visual/ambient_particles": [
+      {
+        "particle": {
+          "type": "minecraft:ominous_spawning"
+        },
+        "probability": 0.0001
+      }
+    ],
+    "minecraft:audio/ambient_sounds": {
+      "mood": {
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 6000,
+        "block_search_extent": 8,
+        "offset": 2.0
+      },
+      "additions": [
+        {
+          "sound": "minecraft:block.pointed_dripstone.drip_water",
+          "tick_chance": 0.004
+        },
+        {
+          "sound": "minecraft:block.amethyst_cluster.hit",
+          "tick_chance": 0.001
+        }
+      ]
+    }
+  },
+  "carvers": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "omc_christmas:snow_layers/layer1",
+      "omc_christmas:snow_layers/layer2",
+      "omc_christmas:snow_layers/layer3"
+    ],
+    [],
+    [],
+    [
+      "omc_christmas:snow_layers/layer1",
+      "omc_christmas:snow_layers/layer2",
+      "omc_christmas:snow_layers/layer3"
+    ]
+  ]
+}
