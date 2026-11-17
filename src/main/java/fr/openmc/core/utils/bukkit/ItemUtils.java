@@ -5,7 +5,6 @@ import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -13,12 +12,8 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
@@ -30,9 +25,6 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
-
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 
 public class ItemUtils {
     /**
@@ -177,27 +169,6 @@ public class ItemUtils {
         }
 
         return freePlace;
-    }
-
-    // IMPORT FROM MAILBOX
-    public static ItemStack getPlayerHead(UUID playerUUID) {
-        ItemStack item = SkullUtils.getPlayerSkull(playerUUID);
-        Player player = Bukkit.getPlayer(playerUUID);
-        String playerName;
-        if (player != null) {
-            playerName = player.getName();
-        } else {
-            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
-            playerName = (offlinePlayer != null && offlinePlayer.getName() != null) ? offlinePlayer.getName() : "Unknown";
-        }
-
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            Component displayName = Component.text(playerName, NamedTextColor.GOLD, TextDecoration.BOLD);
-            meta.displayName(nonItalic(displayName));
-            item.setItemMeta(meta);
-        }
-        return item;
     }
 
     /**

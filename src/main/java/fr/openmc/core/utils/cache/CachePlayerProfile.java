@@ -1,67 +1,79 @@
 package fr.openmc.core.utils.cache;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import fr.openmc.core.utils.bukkit.SkullUtils;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import fr.openmc.core.OMCPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 public class CachePlayerProfile {
-    private static final Object2ObjectMap<UUID, PlayerProfile> playerProfileCache = new Object2ObjectOpenHashMap<>();
-    private static final Set<UUID> requestedProfiles = ConcurrentHashMap.newKeySet();
+    private static final int SPACING_TICKS = 30; // 1,5s
+    private static final int MAX_RETRIES = 2;
 
-    public static void setPlayerProfile(UUID uuid, PlayerProfile profile) {
-        if (uuid == null || profile == null) return;
-        playerProfileCache.put(uuid, profile);
-    }
+    private static final Map<UUID, PlayerProfile> CACHE = new ConcurrentHashMap<>();
+    private static final Map<UUID, List<Consumer<PlayerProfile>>> PENDING = new HashMap<>();
+    private static int nextSlot = 0;
 
-    /**
-     * Donne le PlayerProfile s'il est déjà mis en cache, sinon il exécute la méthode basique
-     */
-    public static PlayerProfile getPlayerProfile(UUID uuid) {
+    public static PlayerProfile getCached(UUID uuid) {
         if (uuid == null) return null;
 
-        PlayerProfile profile = playerProfileCache.get(uuid);
-        if (profile != null
-                && (profile.hasTextures()
-                || !Bukkit.getOnlineMode()
-                || uuid.version() != 4)) {
-            return profile;
+        PlayerProfile cached = CACHE.get(uuid);
+        if (cached != null) return cached;
+
+        Player online = Bukkit.getPlayer(uuid);
+        if (online != null && online.getPlayerProfile().hasTextures()) {
+            cached = online.getPlayerProfile();
+            CACHE.put(uuid, cached);
+        }
+        return cached;
+    }
+
+    public static void request(UUID uuid, Consumer<PlayerProfile> callback) {
+        PlayerProfile cached = getCached(uuid);
+        if (cached != null) {
+            if (callback != null) callback.accept(cached);
+            return;
         }
 
-        Player onlinePlayer = Bukkit.getPlayer(uuid);
-        if (onlinePlayer != null) {
-            PlayerProfile onlineProfile = onlinePlayer.getPlayerProfile();
-            playerProfileCache.put(uuid, onlineProfile);
-            return onlineProfile;
+        List<Consumer<PlayerProfile>> waiting = PENDING.get(uuid);
+        if (waiting != null) {
+            if (callback != null) waiting.add(callback);
+            return;
         }
 
-        if (profile != null) return profile;
+        waiting = new ArrayList<>();
+        if (callback != null) waiting.add(callback);
+        PENDING.put(uuid, waiting);
+        fetch(uuid, 0);
+    }
 
-        OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
-        String name = (offlinePlayer != null) ? offlinePlayer.getName() : null;
-        PlayerProfile newProfile = (name != null) ? Bukkit.createProfile(uuid, name) : Bukkit.createProfile(uuid);
-        playerProfileCache.put(uuid, newProfile);
+    private static void fetch(UUID uuid, int attempt) {
+        int now = Bukkit.getCurrentTick();
+        nextSlot = Math.max(nextSlot, now) + SPACING_TICKS;
 
-        if (Bukkit.getOnlineMode()
-                && uuid.version() == 4
-                && !newProfile.hasTextures()
-                && requestedProfiles.add(uuid)) {
-            newProfile.update().thenAccept(updated -> {
-                if (updated != null && updated.hasTextures()) {
-                    playerProfileCache.put(uuid, updated);
-                    SkullUtils.updatePlayerHeadCache(uuid, updated);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(OMCPlugin.getInstance(), () -> {
+            PlayerProfile found = null;
+            try {
+                PlayerProfile profile = Bukkit.createProfile(uuid).update().join();
+                if (profile.hasTextures()) found = profile;
+            } catch (Exception ignored) {}
+
+            PlayerProfile result = found;
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                if (result == null && attempt < MAX_RETRIES) {
+                    fetch(uuid, attempt + 1);
+                    return;
                 }
-            }).exceptionally(_ -> null)
-                    .whenComplete((_, _) -> requestedProfiles.remove(uuid));;
-        }
 
-        return newProfile;
+                List<Consumer<PlayerProfile>> callbacks = PENDING.remove(uuid);
+                if (result == null) return;
+
+                CACHE.put(uuid, result);
+                callbacks.forEach(c -> c.accept(result));
+            });
+        }, nextSlot - now);
     }
 }

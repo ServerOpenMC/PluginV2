@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -17,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHead;
 
 public class HomeMailbox extends Menu {
 
@@ -53,7 +52,7 @@ public class HomeMailbox extends Menu {
             );
         }).setOnClick(e -> new PendingMailbox(getOwner()).open()));
 
-        content.put(4, new ItemMenuBuilder(this, getHead(getOwner()), meta -> {
+        content.put(4, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(getOwner().getUniqueId(), this) , meta -> {
             meta.displayName(TranslationManager.translation("feature.mailboxes.menu.player.item")
                     .color(NamedTextColor.GOLD)
                     .decorate(TextDecoration.BOLD)

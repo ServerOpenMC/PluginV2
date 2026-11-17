@@ -98,7 +98,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
                     ? TranslationManager.translation("feature.city.war.menu.players.role.mayor")
                     : TranslationManager.translation("feature.city.war.menu.players.role.member");
 
-            ItemMenuBuilder item = new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID), meta -> {
+            ItemMenuBuilder item = new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID, this), meta -> {
                 Component prefixComponent = isSelected
                         ? TranslationManager.translation("feature.city.war.menu.participants.selected_prefix")
                         : Component.empty();

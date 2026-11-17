@@ -90,12 +90,12 @@ public class MayorNpcMenu extends Menu {
                     TranslationManager.translation(perk3.getNameKey()));
             loreMayor.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
-            inventory.put(4, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(city.getMayor().getMayorUUID()), itemMeta -> {
+            inventory.put(4, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(city.getMayor().getMayorUUID(), this), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.mayor.title", city.getMayor().getName()).color(NamedTextColor.YELLOW));
                     itemMeta.lore(loreMayor);
                 }));
 
-                ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
+            ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             Component namePerk2 = (perk2 != null) ? TranslationManager.translation(perk2.getNameKey()) :
                     TranslationManager.translation("feature.city.mayor.perk.none.name");
                 List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(TranslationManager.translationLore(perk2.getLoreKey())) : null;

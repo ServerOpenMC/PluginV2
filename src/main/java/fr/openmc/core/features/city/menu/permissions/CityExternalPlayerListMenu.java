@@ -66,7 +66,7 @@ public class CityExternalPlayerListMenu extends PaginatedMenu {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (city.getMembers().contains(onlinePlayer.getUniqueId())) continue;
 
-            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(onlinePlayer.getUniqueId()), itemMeta -> {
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(onlinePlayer.getUniqueId(), this), itemMeta -> {
                 itemMeta.displayName(Component.text(onlinePlayer.getName()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(TranslationManager.translationLore("feature.city.menus.members.perms.lore"));
             }).setOnClick(_ -> {

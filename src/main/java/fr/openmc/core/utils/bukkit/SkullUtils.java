@@ -2,24 +2,32 @@ package fr.openmc.core.utils.bukkit;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.cache.CachePlayerProfile;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SkullUtils {
 
-    private static final Map<String, ItemStack> CACHE = new HashMap<>();
-    private static final Map<UUID, ItemStack> PLAYER_HEAD_CACHE = new HashMap<>();
+    private static final Map<String, ItemStack> CUSTOM_CACHE = new ConcurrentHashMap<>();
+
+    private static NamespacedKey uuidKey() {
+        return new NamespacedKey(OMCPlugin.getInstance(), "pending_head");
+    }
 
     /**
      * Creates a player skull item for the specified player UUID.
@@ -28,32 +36,47 @@ public class SkullUtils {
      * @return an {@link ItemStack} representing the player's skull
      */
     public static ItemStack getPlayerSkull(UUID playerUUID) {
-        if (playerUUID == null)
-            return new ItemStack(Material.PLAYER_HEAD);
+        PlayerProfile cached = CachePlayerProfile.getCached(playerUUID);
+        if (cached != null) return buildHead(cached);
 
-        ItemStack cached = PLAYER_HEAD_CACHE.get(playerUUID);
-        if (cached != null)
-            return cached.clone();
-
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        PlayerProfile profile = CachePlayerProfile.getPlayerProfile(playerUUID);
-        if (profile != null && profile.hasTextures()) {
-            skull.setData(
-                    DataComponentTypes.PROFILE,
-                    ResolvableProfile.resolvableProfile(profile)
-            );
-
-            PLAYER_HEAD_CACHE.put(playerUUID, skull.clone());
-        }
-
-        return skull;
+        CachePlayerProfile.request(playerUUID, null);
+        return new ItemStack(Material.PLAYER_HEAD);
     }
 
-    public static void updatePlayerHeadCache(UUID playerUUID, PlayerProfile profile) {
-        if (playerUUID == null || profile == null || !profile.hasTextures()) return;
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        skull.setData(DataComponentTypes.PROFILE, ResolvableProfile.resolvableProfile(profile));
-        PLAYER_HEAD_CACHE.put(playerUUID, skull);
+    public static ItemStack getPlayerSkull(UUID uuid, Menu menu) {
+        PlayerProfile cached = CachePlayerProfile.getCached(uuid);
+        if (cached != null) return buildHead(cached);
+
+        ItemStack placeholder = new ItemStack(Material.PLAYER_HEAD);
+        placeholder.editMeta(meta -> meta.getPersistentDataContainer()
+                .set(uuidKey(), PersistentDataType.STRING, uuid.toString()));
+
+        CachePlayerProfile.request(uuid, profile -> replaceInMenu(menu, uuid, profile));
+
+        return placeholder;
+    }
+
+    private static void replaceInMenu(Menu menu, UUID uuid, PlayerProfile profile) {
+        Inventory menuInventory = menu.getInventory();
+
+        Player owner = menu.getOwner();
+        Inventory top = owner.getOpenInventory().getTopInventory();
+
+        if (!Objects.equals(top.getHolder(), menuInventory.getHolder())) return;
+
+        String id = uuid.toString();
+        for (int slot = 0; slot < top.getSize(); slot++) {
+            ItemStack current = top.getItem(slot);
+            if (current == null
+                    || current.getType() != Material.PLAYER_HEAD) continue;
+
+            String tag = current.getPersistentDataContainer().get(uuidKey(), PersistentDataType.STRING);
+            if (!id.equals(tag)) continue;
+
+            ItemStack updated = current.clone();
+            updated.setData(DataComponentTypes.PROFILE, ResolvableProfile.resolvableProfile(profile));
+            top.setItem(slot, updated);
+        }
     }
 
     /**
@@ -64,29 +87,19 @@ public class SkullUtils {
      * @return ItemStack de tête (copie sûre)
      */
     public static ItemStack getCustomHead(String base64, Component name) {
-        ItemStack cached = CACHE.get(base64);
-        if (cached != null) {
-            ItemStack clone = cached.clone();
-            if (name != null) {
-                SkullMeta meta = (SkullMeta) clone.getItemMeta();
-                if (meta != null) meta.displayName(name);
-                clone.setItemMeta(meta);
-            }
-            return clone;
-        }
+        ItemStack head = CUSTOM_CACHE.computeIfAbsent(base64, key -> {
+            PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+            profile.setProperty(new ProfileProperty("textures", key));
+            return buildHead(profile);
+        }).clone();
 
+        if (name != null) head.setData(DataComponentTypes.CUSTOM_NAME, name);
+        return head;
+    }
+
+    private static ItemStack buildHead(PlayerProfile profile) {
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-
-        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
-        profile.setProperty(new ProfileProperty("textures", base64));
-
         head.setData(DataComponentTypes.PROFILE, ResolvableProfile.resolvableProfile(profile));
-
-        ItemMeta meta = head.getItemMeta();
-        if (meta == null) return null;
-        if (name != null) meta.displayName(name);
-
-        CACHE.put(base64, head.clone());
         return head;
     }
 }
