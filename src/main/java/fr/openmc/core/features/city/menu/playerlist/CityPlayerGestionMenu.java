@@ -108,7 +108,7 @@ public class CityPlayerGestionMenu extends Menu {
 
         List<Component> lorePlayerTarget = TranslationManager.translationLore("feature.city.menus.members.manage.target.lore");
 
-        inventory.put(13, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
+        inventory.put(13, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(playerTarget.getUniqueId(), this), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.menus.members.manage.target.title", Component.text(playerTarget.getName()).color(NamedTextColor.YELLOW)));
             itemMeta.lore(lorePlayerTarget);
         }));

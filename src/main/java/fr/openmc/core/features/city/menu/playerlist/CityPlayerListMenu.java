@@ -117,7 +117,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
             }
 
             List<Component> finalLorePlayer = lorePlayer;
-            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid, this), itemMeta -> {
                 itemMeta.displayName(title.decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(finalLorePlayer);
             }).setOnClick(_ -> {

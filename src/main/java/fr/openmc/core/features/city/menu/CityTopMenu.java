@@ -131,7 +131,7 @@ public class CityTopMenu extends PaginatedMenu {
 
                 int currentRank = rank.getAndIncrement();
 
-                items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+                items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID, this), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.city.menus.top.item.title",
                             Component.text(currentRank).color(ColorUtils.getRankColor(currentRank)),

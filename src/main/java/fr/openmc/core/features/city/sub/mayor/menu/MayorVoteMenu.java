@@ -105,7 +105,7 @@ public class MayorVoteMenu extends PaginatedMenu {
             boolean ench = playerVote != null && candidate == playerVote;
 
 
-            ItemStack mayorItem = new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(candidate.getCandidateUUID()), itemMeta -> {
+            ItemStack mayorItem = new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(candidate.getCandidateUUID(), this), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.city.mayor.menu.vote.mayor.title",
                             Component.text(candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false)

@@ -18,8 +18,6 @@ import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -128,7 +126,7 @@ public class SendingLetter extends Menu {
             items.put(slot, new ItemMenuBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
-        items.put(49, new ItemMenuBuilder(this, getHead(receiver)));
+        items.put(49, new ItemMenuBuilder(this, getHead(this, receiver)));
         items.put(45, ItemMenuTemplate.BTN_MAILBOX_HOME.apply(this));
         items.put(48, ItemMenuTemplate.BTN_MAILBOX_SEND.apply(this).setOnClick(e -> sendLetter(e.getInventory())));
         items.put(50, ItemMenuTemplate.BTN_CLOSE.apply(this).setOnClick(_ -> getOwner().closeInventory()));

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.mailboxes.utils;
 
 
+import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -23,8 +24,8 @@ public class MailboxUtils {
                         .decoration(TextDecoration.ITALIC, false);
     }
 
-    public static ItemStack getHead(OfflinePlayer player, Component name) {
-        ItemStack head = SkullUtils.getPlayerSkull(player != null ? player.getUniqueId() : null);
+    public static ItemStack getHead(Menu menu, OfflinePlayer player, Component name) {
+        ItemStack head = SkullUtils.getPlayerSkull(player != null ? player.getUniqueId() : null, menu);
         ItemMeta meta = head.getItemMeta();
         if (meta != null) {
             meta.displayName(nonItalic(name));
@@ -46,7 +47,7 @@ public class MailboxUtils {
         return HoverEvent.showText(message.color(NamedTextColor.GRAY));
     }
 
-    public static ItemStack getHead(OMCOfflinePlayer player) {
-        return getHead(player, getPlayerName(player));
+    public static ItemStack getHead(Menu menu, OMCOfflinePlayer player) {
+        return getHead(menu, player, getPlayerName(player));
     }
 }

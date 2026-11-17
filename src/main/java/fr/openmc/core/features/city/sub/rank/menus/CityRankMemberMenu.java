@@ -64,7 +64,7 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				lore.add(TranslationManager.translation("feature.city.rank.menu.members.item.click_assign")
 						.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 			}
-            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid, this), itemMeta -> {
 				Component displayName = player.getName() != null
 						? Component.text(player.getName())
 						: TranslationManager.translation("feature.city.rank.menu.members.item.name_unknown")

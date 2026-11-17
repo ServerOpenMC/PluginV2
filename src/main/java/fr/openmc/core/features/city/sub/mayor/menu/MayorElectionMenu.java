@@ -133,7 +133,7 @@ public class MayorElectionMenu extends Menu {
                 lorePerkOwner = TranslationManager.translationLore("feature.city.mayor.menu.election.owner_reform.lore.choice");
             }
 
-            inventory.put(22, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(player.getUniqueId()), itemMeta -> {
+            inventory.put(22, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(player.getUniqueId(), this), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.election.owner_reform.name"));
                 itemMeta.lore(lorePerkOwner);
             }).setOnClick(inventoryClickEvent -> {
