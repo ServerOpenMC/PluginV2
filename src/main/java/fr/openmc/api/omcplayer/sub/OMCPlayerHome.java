@@ -41,7 +41,7 @@ public class OMCPlayerHome extends OMCPlayerFeat {
     }
 
     public void relocateHome(Home home, Location newLoc) {
-        HomesManager.homes.remove(home);
+        home.setLocation(newLoc);
     }
 
     public HomeLimits getHomeLimit() {
