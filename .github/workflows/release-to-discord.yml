@@ -13,8 +13,9 @@ jobs:
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           color: "16021398" # decimal of #f47796
-          username: "Mise à jour de OpenMC"
-          avatar_url: "https://raw.githubusercontent.com/ServerOpenMC/.github/refs/heads/master/brandkit/logo.png"
+          content: "<@&1481720005400854629>"
+          username: "Toor"
+          avatar_url: "cdn.discordapp.com/avatars/1481723894745534474/d5cd8478f26e954629f58760e8ab049d?size=256"
           footer_title: "Changements"
           footer_icon_url: "https://raw.githubusercontent.com/ServerOpenMC/.github/refs/heads/master/brandkit/logo.png"
           footer_timestamp: true
