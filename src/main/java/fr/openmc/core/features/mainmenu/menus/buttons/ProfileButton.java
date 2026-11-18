@@ -16,7 +16,9 @@ import java.util.Set;
 public class ProfileButton implements ButtonMenu {
     @Override
     public Set<Integer> slots() {
-        return Set.of(59, 60, 61, 62, 68, 69, 70, 71, 77, 78, 79, 80);
+        return Set.of(54, 55, 56, 57,
+                63, 64, 65, 66,
+                72, 73, 74, 75);
     }
 
     @Override
@@ -29,13 +31,13 @@ public class ProfileButton implements ButtonMenu {
 
     @Override
     public ItemStack itemAt(OMCPlayer player, int slot) {
-        if (slot != 60) return item(player);
+        if (slot != 54) return item(player);
 
         ItemStack head = CustomStack.getInstance("omc_main_menu:player_head").getItemStack();
         head.editMeta(meta -> {
             meta.customName(ButtonItems.name("feature.mainmenu.item.profile.name")
                     .decoration(TextDecoration.ITALIC, false));
-            meta.lore(List.of(ButtonItems.red("feature.mainmenu.item.profile.lore")));
+            meta.lore(List.of(ButtonItems.red("feature.mainmenu.item.profile.command")));
             if (meta instanceof SkullMeta skull && player != null && player.getPlayer() != null) {
                 PlayerProfile profile = player.getPlayer().getPlayerProfile();
                 if (profile.hasTextures()) {
