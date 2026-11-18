@@ -6,8 +6,8 @@
     "water_color": "#4aa8e0"
   },
   "attributes": {
-    "minecraft:visual/sky_color": "#0a1226",
-    "minecraft:visual/fog_color": "#0d1a33",
+    "minecraft:visual/sky_color": "#192951",
+    "minecraft:visual/fog_color": "#2d4674",
     "minecraft:visual/fog_end_distance": 74.0,
     "minecraft:visual/water_fog_color": "#050533",
     "minecraft:visual/ambient_particles": [
@@ -18,6 +18,7 @@
         "probability": 0.0001
       }
     ],
+    "minecraft:visual/ambient_light_color": "#101116",
     "minecraft:audio/ambient_sounds": {
       "mood": {
         "sound": "minecraft:ambient.cave",
@@ -40,19 +41,28 @@
   "carvers": [],
   "features": [
     [],
+    ["omc_christmas:sculk_patch"],
     [],
     [],
     [],
     [],
-    [],
-    [],
+    [
+      "omc_christmas:ice_wall/ice_wall",
+      "omc_christmas:ice_wall/ice_packed_wall"
+    ],
     [
       "omc_christmas:snow_layers/layer1",
       "omc_christmas:snow_layers/layer2",
       "omc_christmas:snow_layers/layer3"
     ],
     [],
-    [],
+    [
+      "omc_christmas:ice_patch",
+      "omc_christmas:glow_lichen_frozen",
+      "omc_christmas:vegetation/amethyst_large",
+      "omc_christmas:vegetation/amethyst_medium",
+      "omc_christmas:vegetation/amethyst_small"
+    ],
     [
       "omc_christmas:snow_layers/layer1",
       "omc_christmas:snow_layers/layer2",

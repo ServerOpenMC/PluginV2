@@ -1,0 +1,64 @@
+{
+  "type": "minecraft:block_column",
+  "direction": "up",
+  "allowed_placement": {
+    "type": "minecraft:matching_blocks",
+    "blocks": "minecraft:air"
+  },
+  "prioritize_tip": false,
+  "layers": [
+    {
+      "height": 2,
+      "provider": {
+        "type": "minecraft:simple",
+        "state": "minecraft:red_concrete"
+      }
+    },
+    {
+      "height": 2,
+      "provider": {
+        "type": "minecraft:simple",
+        "state": "minecraft:white_concrete"
+      }
+    },
+    {
+      "height": 2,
+      "provider": {
+        "type": "minecraft:simple",
+        "state": "minecraft:red_concrete"
+      }
+    },
+    {
+      "height": 2,
+      "provider": {
+        "type": "minecraft:simple",
+        "state": "minecraft:white_concrete"
+      }
+    },
+    {
+      "height": 2,
+      "provider": {
+        "type": "minecraft:simple",
+        "state": "minecraft:red_concrete"
+      }
+    },
+    {
+      "height": 2,
+      "provider": {
+        "type": "minecraft:simple",
+        "state": "minecraft:white_concrete"
+      }
+    },
+    {
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": 1,
+        "max_inclusive": 6
+      },
+      "provider": {
+        "type": "minecraft:simple",
+        "state": "minecraft:red_concrete"
+      }
+    }
+  ]
+}

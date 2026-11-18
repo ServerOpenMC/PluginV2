@@ -1,25 +1,36 @@
 {
   "type": "max",
   "left": {
-    "type": "add",
-    "left": 0.5,
+    "type": "max",
+    "left": "omc_christmas:terrains/cave_shape",
     "right": {
-      "type": "mul",
-      "left": -1,
-      "right": {
-        "type": "noise",
-        "noise": "omc_christmas:cave_noise",
-        "xz_scale": 0.7,
-        "y_scale": 2
-      }
+      "type": "minecraft:gradient",
+      "axis": "y",
+      "from_coordinate": 80,
+      "to_coordinate": 320,
+      "from_value": -1,
+      "to_value": 1
     }
   },
   "right": {
-    "type": "minecraft:gradient",
-    "axis": "y",
-    "from_coordinate": 80,
-    "to_coordinate": 320,
-    "from_value": -1,
-    "to_value": 1
+    "type": "minecraft:range_choice",
+    "input": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:noise",
+        "noise": "minecraft:pillar",
+        "xz_scale": 10,
+        "y_scale": 0.3
+      },
+      "right": {
+        "type": "minecraft:mul",
+        "left": "omc_christmas:terrains/cave_shape",
+        "right": 0.6
+      }
+    },
+    "min_inclusive": -1000000,
+    "max_exclusive": 0.3,
+    "when_in_range": -1000000,
+    "when_out_of_range": 1
   }
 }

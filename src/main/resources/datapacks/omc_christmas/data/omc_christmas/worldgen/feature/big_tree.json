@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:tree",
+  "below_trunk_provider": {
+    "id": "snow"
+  },
+  "decorators": [],
+  "foliage_placer": {
+    "type": "minecraft:mega_pine_foliage_placer",
+    "crown_height": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 24,
+      "min_inclusive": 19
+    },
+    "offset": 0,
+    "radius": 0
+  },
+  "foliage_provider": {
+    "id": "minecraft:spruce_leaves",
+    "properties": {
+      "distance": "7",
+      "persistent": "false",
+      "waterlogged": "false"
+    }
+  },
+  "ignore_vines": false,
+  "minimum_size": {
+    "type": "minecraft:two_layers_feature_size",
+    "lower_size": 3,
+    "upper_size": 5
+  },
+  "trunk_placer": {
+    "type": "minecraft:giant_trunk_placer",
+    "base_height": 13,
+    "height_rand_a": 5,
+    "height_rand_b": 14
+  },
+  "trunk_provider": {
+    "id": "minecraft:spruce_log",
+    "properties": {
+      "axis": "y"
+    }
+  }
+}

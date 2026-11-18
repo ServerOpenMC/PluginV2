@@ -43,7 +43,10 @@
       "omc_christmas:snow_layers/layer3"
     ],
     [],
-    [],
+    [
+      "omc_christmas:candy_cane",
+      "omc_christmas:big_tree"
+    ],
     [
       "omc_christmas:snow_layers/layer1",
       "omc_christmas:snow_layers/layer2",

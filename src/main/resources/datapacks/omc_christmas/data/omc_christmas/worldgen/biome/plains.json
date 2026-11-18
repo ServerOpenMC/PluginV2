@@ -42,7 +42,8 @@
       "omc_christmas:snow_layers/layer3"
     ],
     [],
-    [],
+    ["omc_christmas:candy_cane",
+  "ice_spike"],
     [
       "omc_christmas:snow_layers/layer1",
       "omc_christmas:snow_layers/layer2",
