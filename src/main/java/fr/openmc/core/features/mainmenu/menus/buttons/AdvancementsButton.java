@@ -17,7 +17,7 @@ import java.util.Set;
 public class AdvancementsButton implements ButtonMenu {
     @Override
     public Set<Integer> slots() {
-        return Set.of(88);
+        return Set.of(85);
     }
 
     @Override

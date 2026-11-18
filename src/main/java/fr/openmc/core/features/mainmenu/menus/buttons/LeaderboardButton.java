@@ -18,7 +18,9 @@ public class LeaderboardButton implements ButtonMenu {
 
     @Override
     public Set<Integer> slots() {
-        return Set.of(18, 19, 20, 21, 22, 23, 24, 25, 26);
+        return Set.of(58, 59, 60, 61, 62,
+                67, 68, 69, 70, 71,
+                76, 77, 78, 79, 80);
     }
 
     @Override

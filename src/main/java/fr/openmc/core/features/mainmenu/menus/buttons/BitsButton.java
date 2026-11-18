@@ -1,29 +1,31 @@
 package fr.openmc.core.features.mainmenu.menus.buttons;
 
 import fr.openmc.api.omcplayer.OMCPlayer;
-import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.bits.commands.BitsCommands;
 import fr.openmc.core.features.mainmenu.menus.ButtonItems;
 import fr.openmc.core.features.mainmenu.menus.ButtonMenu;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Set;
 
-public class ShopButton implements ButtonMenu {
+public class BitsButton implements ButtonMenu {
+
     @Override
     public Set<Integer> slots() {
-        return Set.of(63, 64, 65, 66, 67);
+        return Set.of(84);
     }
 
     @Override
     public ItemStack item(OMCPlayer player) {
         return ButtonItems.item(
-                ButtonItems.name("feature.mainmenu.item.shop.name"),
-                ButtonItems.gray("feature.mainmenu.item.shop.command")
-        );
+                TranslationManager.translation("feature.mainmenu.item.bits").color(NamedTextColor.BLUE),
+                ButtonItems.gray("feature.mainmenu.item.bits.command"));
     }
 
     @Override
     public void open(OMCPlayer player) {
-        AdminShopManager.openMainMenu(player);
+        BitsCommands.mainCommand(player);
     }
 }

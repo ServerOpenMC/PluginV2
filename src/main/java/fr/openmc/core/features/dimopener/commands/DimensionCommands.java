@@ -16,7 +16,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 public class DimensionCommands {
 
     @CommandPlaceholder()
-    public void openMenu(Player player) {
+    public static void openMenu(Player player) {
         new DimensionListMenu(player).open();
     }
 
