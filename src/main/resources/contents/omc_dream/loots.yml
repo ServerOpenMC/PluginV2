@@ -1,0 +1,30 @@
+info:
+  namespace: omc_dream
+loots:
+  blocks:
+    ewenite_ore:
+      type: omc_dream:ewenite_ore
+      items:
+        ruby:
+          item: omc_dream:ewenite
+          min_amount: 1
+          max_amount: 2
+          chance: 100
+      exp:
+        exp_1:
+          chance: 0
+          min_amount: 1
+          max_amount: 3
+    deepslate_ewenite_ore:
+      type: omc_dream:deepslate_ewenite_ore
+      items:
+        ruby:
+          item: omc_dream:ewenite
+          min_amount: 1
+          max_amount: 2
+          chance: 100
+      exp:
+        exp_1:
+          chance: 0
+          min_amount: 1
+          max_amount: 3

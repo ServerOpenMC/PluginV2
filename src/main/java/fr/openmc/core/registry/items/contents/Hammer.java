@@ -91,7 +91,9 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
         if (customBlock != null) {
-            customBlock.drop(block.getLocation());
+            customBlock.getLoot(player.getInventory().getItemInMainHand(), false).forEach(
+                    item -> world.dropItemNaturally(block.getLocation(), item)
+            );
             return customBlock.remove();
         }
 
