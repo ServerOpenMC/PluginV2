@@ -15,7 +15,12 @@ import java.util.Set;
 public class CityButton implements ButtonMenu {
     @Override
     public Set<Integer> slots() {
-        return Set.of(0, 1, 2, 3, 9, 10, 11, 12, 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38, 39, 45, 46, 47, 48);
+        return Set.of(0, 1, 2, 3,
+                9, 10, 11, 12,
+                18, 19, 20, 21,
+                27, 28, 29, 30,
+                36, 37, 38, 39,
+                45, 46, 47, 48);
     }
 
     @Override

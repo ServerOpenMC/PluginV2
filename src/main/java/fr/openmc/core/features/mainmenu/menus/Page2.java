@@ -24,9 +24,10 @@ import java.util.Map;
 public class Page2 implements Menu {
 
     private final List<ButtonMenu> buttons = List.of(
-            new ShopsDisabledButton(), new CompanyDisabledButton(), new LeaderboardButton(),
-            new BankButton(), new ComingSoonButton(), new PreviousPageButton(),
-            new SettingsButton(), new MailboxButton(), new AdvancementsButton()
+            new HomeButton(), new BankButton(),
+            new DimensionButton(), new AdminShopButton(),
+            new ProfileButton(), new LeaderboardButton(),
+            new PreviousPageButton(), new SettingsButton(), new BitsButton(), new MailboxButton(), new AdvancementsButton()
     );
 
     private final Map<Integer, ItemStack> content = new HashMap<>();
@@ -41,7 +42,7 @@ public class Page2 implements Menu {
 
     @Override
     public Component getTitle(OMCPlayer player) {
-        return Component.text(FontImageWrapper.replaceFontImages(":offset_-26::omc_main_menu_page_2:"));
+        return Component.text(FontImageWrapper.replaceFontImages(":offset_-19::omc_main_menu_page_2:"));
     }
 
     @Override

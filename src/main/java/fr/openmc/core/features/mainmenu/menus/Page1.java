@@ -9,7 +9,6 @@ import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.InventoryType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.features.mainmenu.menus.buttons.*;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -24,9 +23,9 @@ import java.util.Map;
 
 public class Page1 implements Menu {
     private final List<ButtonMenu> buttons = List.of(
-            new CityButton(), new QuestsButton(), new MilestonesButton(), new ContestButton(),
-            new ShopButton(), new HomeButton(), new ProfileButton(), new SettingsButton(),
-            new MailboxButton(), new AdvancementsButton(), new NextPageButton()
+            new CityButton(), new QuestsButton(), new MilestonesButton(),
+            new ProfileButton(), new EventsButton(),
+            new SettingsButton(), new BitsButton(), new MailboxButton(), new AdvancementsButton(), new NextPageButton()
     );
 
     private final Map<Integer, ItemStack> content = new HashMap<>();
@@ -41,11 +40,8 @@ public class Page1 implements Menu {
 
     @Override
     public Component getTitle(OMCPlayer player) {
-        boolean hasCity = CityManager.getPlayerCity(player.getUniqueId()) != null;
         return Component.text(FontImageWrapper.replaceFontImages(
-                hasCity
-                        ? ":offset_-26::omc_main_menu_page_1:"
-                        : ":offset_-26::omc_main_menu_page_1_sans_ville:"
+                ":offset_-19::omc_main_menu_page_1:"
         ));
     }
 
