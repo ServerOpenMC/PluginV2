@@ -1,0 +1,17 @@
+{
+  "type": "add",
+  "left": {
+    "type": "minecraft:gradient",
+    "axis": "y",
+    "from_coordinate": 34,
+    "to_coordinate": 150,
+    "from_value": 3,
+    "to_value": -3
+  },
+  "right": {
+    "type": "noise",
+    "noise": "omc_christmas:terrain_noise",
+    "xz_scale": 1,
+    "y_scale": 0.32
+  }
+}

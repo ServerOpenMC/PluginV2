@@ -1,0 +1,14 @@
+{
+    "structures": [
+        {
+            "weight": 1,
+            "structure": "omc_christmas:candy_cane"
+        }
+    ],
+    "placement": {
+        "type": "minecraft:random_spread",
+        "separation": 2,
+        "spacing": 3,
+        "salt": 88
+    }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#omc_christmas:has_christmas_train",
+  "step": "raw_generation",
+  "spawn_overrides": {},
+  "start_pool": "omc_christmas:christmas_train/part_1",
+  "size": 2,
+  "start_height": {
+    "type": "minecraft:uniform",
+    "max_inclusive": {
+        "absolute": 170
+    },
+    "min_inclusive": {
+        "absolute": 160
+    }
+  },
+  "max_distance_from_center": 80,
+  "use_expansion_hack": false
+}
