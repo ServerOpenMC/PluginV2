@@ -1,0 +1,40 @@
+{
+  "has_precipitation": true,
+  "temperature": 0,
+  "downfall": 0.2,
+  "effects": {
+    "water_color": "#3d290c"
+  },
+  "attributes": {
+    "minecraft:visual/sky_color": "#7f6435",
+    "minecraft:visual/fog_color": "#876a22",
+    "minecraft:visual/fog_start_distance": 100.0,
+    "minecraft:visual/fog_end_distance": 150.0,
+    "minecraft:visual/water_fog_color": "#362500",
+    "minecraft:visual/ambient_light_color": "#100e0c",
+    "minecraft:visual/ambient_particles": [
+      {
+        "particle": {
+          "type": "minecraft:wax_on"
+        },
+        "probability": 0.002
+      }
+    ]
+  },
+  "carvers": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "omc_christmas:glow_lichen_frozen",
+      "omc_christmas:gingerbread_tree"],
+    []
+  ]
+}

@@ -1,0 +1,174 @@
+{
+    "processors": [
+        {
+            "processor_type": "minecraft:rule",
+            "rules": [
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:oak_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:oak_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:spruce_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:spruce_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:birch_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:birch_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:jungle_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:jungle_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:acacia_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:acacia_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:dark_oak_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:dark_oak_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:mangrove_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:mangrove_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:cherry_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:cherry_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:pale_oak_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:pale_oak_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:azalea_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:azalea_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                },
+                {
+                    "input_predicate": {
+                        "predicate_type": "minecraft:block_match",
+                        "block": "minecraft:flowering_azalea_leaves"
+                    },
+                    "location_predicate": {
+                        "predicate_type": "minecraft:always_true"
+                    },
+                    "output_state": {
+                        "id": "minecraft:flowering_azalea_leaves",
+                        "properties": {
+                            "persistent": "true"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

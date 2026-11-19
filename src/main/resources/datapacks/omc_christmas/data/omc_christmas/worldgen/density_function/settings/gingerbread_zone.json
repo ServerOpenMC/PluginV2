@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:add",
+  "left": {
+    "type": "minecraft:noise",
+    "noise": "omc_christmas:gingerbread_zone",
+    "xz_scale": 0.25,
+    "y_scale": 0
+  },
+  "right": {
+    "type": "minecraft:mul",
+    "left": 0.15,
+    "right": {
+      "type": "minecraft:noise",
+      "noise": "omc_christmas:gingerbread_smooth",
+      "xz_scale": 1,
+      "y_scale": 0
+    }
+  }
+}

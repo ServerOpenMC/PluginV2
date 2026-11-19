@@ -1,6 +1,41 @@
 {
   "default_block": "minecraft:diorite",
-  "default_fluid": "minecraft:ice",
+  "aquifers": {
+    "barrier": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_barrier",
+      "xz_scale": 1,
+      "y_scale": 0.5
+    },
+    "fluid_level_floodedness": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:noise",
+        "noise": "minecraft:aquifer_fluid_level_floodedness",
+        "xz_scale": 0.3,
+        "y_scale": 0.67
+      },
+      "right": 0.4
+    },
+    "fluid_level_spread": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_fluid_level_spread",
+      "xz_scale": 0.3,
+      "y_scale": 0.7142857142857143
+    },
+    "lava": 0,
+    "surface_level": 80,
+    "exclusion": {
+      "type": "minecraft:add",
+      "left": 0.5,
+      "right": {
+        "type": "minecraft:mul",
+        "left": -1,
+        "right": "omc_christmas:settings/gingerbread_smooth"
+      }
+    }
+  },
+  "default_fluid": "minecraft:water",
   "sea_level": -64,
   "disable_mob_generation": true,
   "legacy_random_source": false,
@@ -23,17 +58,27 @@
     },
     "depth": "omc_christmas:settings/depth",
     "continents": 0,
-    "erosion": 0,
+    "erosion": "omc_christmas:settings/gingerbread_zone",
     "ridges": 0,
     "chunk_surface_level": 0,
     "final_density": {
-      "type": "add",
+      "type": "minecraft:add",
       "left": {
-        "type": "minecraft:min",
-        "left": "omc_christmas:terrains/base_terrain",
-        "right": "omc_christmas:terrains/base_cave"
+        "type": "minecraft:add",
+        "left": {
+          "type": "minecraft:min",
+          "left": {
+            "type": "minecraft:min",
+            "left": "omc_christmas:terrains/base_terrain",
+            "right": "omc_christmas:terrains/final_cave"
+          },
+          "right": "omc_christmas:terrains/final_lake_cavern"
+        },
+        "right": "omc_christmas:terrains/bedrock_floor"
       },
-      "right": "omc_christmas:terrains/bedrock_floor"
+      "right": {
+        "type": "minecraft:beardifier"
+      }
     }
   },
   "spawn_target": [],
@@ -62,21 +107,37 @@
       {
         "type": "minecraft:condition",
         "if_true": {
-          "type": "minecraft:not",
-          "invert": {
-            "type": "minecraft:y_above",
-            "anchor": {
-              "above_bottom": 3
-            },
-            "surface_depth_multiplier": 0,
-            "add_stone_depth": false
-          }
+          "type": "minecraft:biome",
+          "biome_is": [
+            "omc_christmas:gingerbread"
+          ]
         },
         "then_run": {
-          "type": "minecraft:block",
-          "result_state": {
-            "id": "minecraft:packed_ice"
-          }
+          "type": "minecraft:sequence",
+          "sequence": [
+            {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:stone_depth",
+                "offset": 0,
+                "surface_type": "floor",
+                "add_surface_depth": false,
+                "secondary_depth_range": 0
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": {
+                  "id": "minecraft:packed_mud"
+                }
+              }
+            },
+            {
+              "type": "minecraft:block",
+              "result_state": {
+                "id": "minecraft:brown_terracotta"
+              }
+            }
+          ]
         }
       },
       {

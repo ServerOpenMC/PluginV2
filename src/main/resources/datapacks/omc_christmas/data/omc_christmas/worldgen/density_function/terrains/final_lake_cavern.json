@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:add",
+  "left": "omc_christmas:terrains/lake_cavern",
+  "right": {
+    "type": "minecraft:mul",
+    "left": 10,
+    "right": {
+      "type": "minecraft:add",
+      "left": 1,
+      "right": {
+        "type": "minecraft:mul",
+        "left": -1,
+        "right": "omc_christmas:settings/gingerbread_smooth"
+      }
+    }
+  }
+}
