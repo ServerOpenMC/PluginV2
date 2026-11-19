@@ -12,6 +12,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharves
 import fr.openmc.core.registry.items.keys.KeyBlock;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
+import fr.openmc.core.utils.bukkit.BlocksUtils;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
@@ -81,6 +82,11 @@ public class GoldenCropsListener implements Listener {
 
         CustomBlock customBlock = keyBlockGolden.getCustomBlock();
         if (customBlock == null) return;
+        if (BlocksUtils.isNearbyBlocks(
+                KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.AYWENITE_LAMP_ON),
+                event.getBlock(),
+                15)
+        ) return;
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
                 customBlock.place(event.getBlock().getLocation()), 1L);

@@ -11,7 +11,7 @@ import java.util.Set;
 public class SettingsButton implements ButtonMenu {
     @Override
     public Set<Integer> slots() {
-        return Set.of(82, 83, 84);
+        return Set.of(82, 83);
     }
 
     @Override
