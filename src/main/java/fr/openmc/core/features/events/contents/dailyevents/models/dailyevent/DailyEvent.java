@@ -55,9 +55,6 @@ public abstract class DailyEvent extends Event {
                 .filter(p -> p.getWorld().getName().equals(this.getWorldEvent()))
                 .collect(Collectors.toSet());
 
-        // * Lancement de l'evenement
-        this.onStart().run();
-
         // * Application de l'ambience
         if (this instanceof HasAmbient ambient) {
             ambient.apply(receivers);
@@ -72,6 +69,9 @@ public abstract class DailyEvent extends Event {
         if (this instanceof HasToast toast) {
             toast.getStartToastData().send(receivers);
         }
+
+        // * Lancement de l'evenement
+        this.onStart().run();
 
         // * Programmation de la fin de l'evenement
         DailyEventsManager.endEventTask = OMCScheduler.runAt(

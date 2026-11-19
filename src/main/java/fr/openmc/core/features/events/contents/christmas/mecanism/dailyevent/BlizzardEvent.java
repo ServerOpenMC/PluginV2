@@ -4,7 +4,6 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasFeature;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.MiraculousFishingManager;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.menu.MiraculousFishingMenu;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
 import fr.openmc.core.features.events.models.HasMenu;
@@ -40,12 +39,12 @@ public class BlizzardEvent extends DailyEvent
 
     @Override
     public Runnable onStart() {
-        return () -> {};
+        return BlizzardEventManager::start;
     }
 
     @Override
     public Runnable onEnd() {
-        return () -> {};
+        return BlizzardEventManager::stop;
     }
 
     @Override
@@ -109,7 +108,7 @@ public class BlizzardEvent extends DailyEvent
 
     @Override
     public Feature getFeature() {
-        return new MiraculousFishingManager();
+        return new BlizzardEventManager();
     }
 
     @Override
