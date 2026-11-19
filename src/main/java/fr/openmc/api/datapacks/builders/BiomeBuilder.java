@@ -25,10 +25,10 @@ import java.util.function.Consumer;
  *   "temperature": 2
  * }
  */
+@Getter
 public final class BiomeBuilder implements ContentBuilder {
     private JsonObject attributes = new JsonObject();
     private final JsonArray carvers = new JsonArray();
-    @Getter
     private final JsonObject effects = new JsonObject();
     private final JsonArray features = new JsonArray();
     private String temperatureModifier = "none";
@@ -150,7 +150,10 @@ public final class BiomeBuilder implements ContentBuilder {
         json.add("effects", effects);
         json.add("features", features);
         if (hasPrecipitation != null) json.addProperty("has_precipitation", hasPrecipitation);
-        if (temperatures != null) json.addProperty("temperature", temperatures);
+        if (temperatures != null) {
+            System.out.println("temperatures" + temperatures);
+            json.addProperty("temperature", temperatures);
+        }
 
         return json;
     }

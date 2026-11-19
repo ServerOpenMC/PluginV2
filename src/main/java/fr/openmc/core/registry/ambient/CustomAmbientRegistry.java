@@ -7,6 +7,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.events.contents.christmas.contents.ambient.BlizzardAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.ambient.BloodyAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.contents.ambient.GoldenAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.ambient.BlessedAmbient;
@@ -41,6 +42,7 @@ public class CustomAmbientRegistry extends Registry<String, CustomAmbient>
     public final CustomAmbient BLOODY = register(new BloodyAmbient());
     public final CustomAmbient BLESSED = register(new BlessedAmbient());
     public final CustomAmbient TERROR_HOUSE = register(new TerrorHouseAmbient());
+    public final CustomAmbient BLIZZARD = register(new BlizzardAmbient());
 
     @Override
     public Set<ListenerFactory> getListeners() {
