@@ -38,7 +38,8 @@ public enum Prefix {
     DIMOPENER("<gradient:#A5FFA8:#DAFFE4>dimopener</gradient>"),
     GOLDEN_HARVEST("<gradient:#EFDA3A:#93AE0E>golden harvest</gradient>"),
     MIRACULOUS_FISHING("<gradient:#4498DB:#0FB590>miraculous fishing</gradient>"),
-    LUCKYBLOCK("<gradient:#fc4582:#ffffff>luckyblock</gradient>");
+    LUCKYBLOCK("<gradient:#fc4582:#ffffff>luckyblock</gradient>"),
+    CHRISTMAS("<gradient:#FF1B53:#FF9797:#FFD4D4:#FF9797:#FF1B53>noel</gradient>");
 
     @Getter
     private final Component prefix;

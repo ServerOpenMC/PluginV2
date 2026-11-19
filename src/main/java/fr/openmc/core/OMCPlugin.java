@@ -34,6 +34,7 @@ import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.events.EventsManager;
+import fr.openmc.core.features.events.contents.christmas.gingerbread.managers.GingerBreadManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 //import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
@@ -144,7 +145,8 @@ public class OMCPlugin extends JavaPlugin {
             BossbarManager::new,
             ShopManager::new,
             HomeIconCacheManager::new,
-            DimensionOpenerManager::new
+            DimensionOpenerManager::new,
+            GingerBreadManager::new
     ));
 
     public static final List<Feature> loadedFeature = new ArrayList<>();
