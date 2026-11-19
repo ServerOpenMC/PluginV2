@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -112,5 +113,13 @@ public abstract class DailyEvent extends Event {
 
     public World getWorld() {
         return Bukkit.getWorld(this.getWorldEvent());
+    }
+
+    public boolean isAvailableAt(LocalDateTime date) {
+        if (this instanceof HasExclusiveMonth exclusive) {
+            return exclusive.getMonth() == date.getMonth();
+        }
+
+        return true;
     }
 }

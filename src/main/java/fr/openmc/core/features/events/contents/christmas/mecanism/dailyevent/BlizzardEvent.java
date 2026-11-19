@@ -18,10 +18,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Month;
 import java.util.List;
 
 public class BlizzardEvent extends DailyEvent
-        implements HasToast, HasAmbient, HasBroadcast, HasMenu, HasFeature, HasBossBar {
+        implements HasToast, HasAmbient, HasBroadcast, HasMenu,
+        HasFeature, HasBossBar, HasExclusiveMonth {
     @Override
     public String getEventId() {
         return "blizzard";
@@ -102,7 +104,7 @@ public class BlizzardEvent extends DailyEvent
 
     @Override
     public Menu getInfoMenu(Player player) {
-        // todo: info menu
+        // todo: Faire le menu des infos de l'evenement lorsque les loot table des coffres, les cadeaux
         return new MiraculousFishingMenu(player);
     }
 
@@ -119,5 +121,10 @@ public class BlizzardEvent extends DailyEvent
     @Override
     public BossBar.Overlay getBossBarOverlay() {
         return BossBar.Overlay.NOTCHED_12;
+    }
+
+    @Override
+    public Month getMonth() {
+        return Month.DECEMBER;
     }
 }
