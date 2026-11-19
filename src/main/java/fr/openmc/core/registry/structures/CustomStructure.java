@@ -11,6 +11,9 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.registry.structures.events.CustomStructurePlaceEvent;
+import fr.openmc.core.registry.structures.events.CustomStructureRemoveEvent;
 import fr.openmc.core.registry.structures.model.CustomStructureManager;
 import fr.openmc.core.registry.structures.model.DBPlacedStructure;
 import lombok.Getter;
@@ -56,15 +59,14 @@ public class CustomStructure {
     public UUID place(UUID placementId, Location location) throws Exception {
         requireMainThread();
 
-        if (!CustomStructureManager.actionAllow()) {
+        if (!CustomStructureManager.actionAllow())
             throw new IllegalStateException("WorldEdit or FastAsyncWorldEdit is not enabled.");
-        }
-        if (placementId == null || location == null || location.getWorld() == null) {
+
+        if (placementId == null || location == null || location.getWorld() == null)
             throw new IllegalArgumentException("Placement ID, location and world must not be null.");
-        }
-        if (CustomStructureManager.existsPlacement(placementId)) {
+
+        if (CustomStructureManager.existsPlacement(placementId))
             throw new IllegalStateException("A structure placement with ID " + placementId + " already exists.");
-        }
 
         Clipboard structure = readStructure(file);
         World world = location.getWorld();
@@ -112,6 +114,11 @@ public class CustomStructure {
             throw exception;
         }
 
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            CustomStructurePlaceEvent event = new CustomStructurePlaceEvent(placementId, this, min, max, world);
+            Bukkit.getPluginManager().callEvent(event);
+        });
+
         return placementId;
     }
 
@@ -123,23 +130,26 @@ public class CustomStructure {
     public boolean remove(UUID placementId) throws Exception {
         requireMainThread();
 
-        if (!CustomStructureManager.actionAllow()) {
+        if (!CustomStructureManager.actionAllow())
             throw new IllegalStateException("WorldEdit or FastAsyncWorldEdit is not enabled.");
-        }
 
         DBPlacedStructure placement = CustomStructureManager.getPlacement(placementId);
-        if (placement == null || !id.equals(placement.getStructureId())) {
+        if (placement == null || !id.equals(placement.getStructureId()))
             return false;
-        }
 
         World world = Bukkit.getWorld(UUID.fromString(placement.getWorld()));
-        if (world == null) {
+        if (world == null)
             throw new IllegalStateException("World not found: " + placement.getWorld());
-        }
 
         BlockVector3 min = BlockVector3.at(placement.getX(), placement.getY(), placement.getZ());
         restoreBackup(world, min, placement.getBackup());
         CustomStructureManager.deletePlacement(placementId);
+
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            CustomStructureRemoveEvent event = new CustomStructureRemoveEvent(placementId, this);
+            Bukkit.getPluginManager().callEvent(event);
+        });
+
         return true;
     }
 

@@ -2,12 +2,11 @@ package fr.openmc.core.registry.regions;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
-import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 public abstract class CustomRegion {
-    public abstract Key getKey();
+    public abstract String getKey();
     public abstract World getWorld();
 
     public abstract boolean contains(BlockVector3 pos);
