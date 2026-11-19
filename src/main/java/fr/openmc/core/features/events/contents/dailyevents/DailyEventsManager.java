@@ -242,10 +242,13 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     }
 
     public static DailyEvent chooseDailyEvent(List<DailyEvent> events, LocalDateTime date) {
-        for (DailyEvent event : events) {
-            if (!event.isAvailableAt(date)) continue;
-
-            return event;
+        Iterator<DailyEvent> iterator = events.iterator();
+        while (iterator.hasNext()) {
+            DailyEvent event = iterator.next();
+            if (event.isAvailableAt(date)) {
+                iterator.remove();
+                return event;
+            }
         }
 
         return null;
