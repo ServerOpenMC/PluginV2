@@ -1,0 +1,23 @@
+{
+  "structures": [
+    {
+      "structure": "omc_christmas:gift/small_gift",
+      "weight": 5
+    },
+    {
+      "structure": "omc_christmas:gift/medium_gift",
+      "weight": 3
+    },
+    {
+      "structure": "omc_christmas:gift/big_gift",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 12,
+    "separation": 7,
+    "salt": 83674633
+  }
+}
+

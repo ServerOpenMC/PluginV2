@@ -1,26 +1,23 @@
 package fr.openmc.core.registry.regions;
 
 import com.sk89q.worldedit.math.BlockVector3;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
 import fr.openmc.core.registry.regions.content.ExampleRegion;
 import fr.openmc.core.registry.regions.preset.SquareRegion;
-import net.kyori.adventure.key.Key;
 import org.bukkit.Location;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CustomRegionRegistry extends Registry<Key, CustomRegion>
-        implements KeyedRegistry<Key, CustomRegion> {
+public class CustomRegionRegistry extends Registry<String, CustomRegion>
+        implements KeyedRegistry<String, CustomRegion> {
 
     public final ExampleRegion EXAMPLE_REGION = register(new ExampleRegion());
 
     //Terror House Floor
-
     private final int MIN_X = -91;
     private final int MAX_X = -22;
     private final int MIN_Z = -94;
@@ -129,7 +126,7 @@ public class CustomRegionRegistry extends Registry<Key, CustomRegion>
     ));
 
     @Override
-    public Key key(CustomRegion registryObject) {
+    public String key(CustomRegion registryObject) {
         return registryObject.getKey();
     }
 

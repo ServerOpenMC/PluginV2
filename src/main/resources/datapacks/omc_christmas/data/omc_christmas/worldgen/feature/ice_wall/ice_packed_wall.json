@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:ore",
+    "size": 10,
+    "discard_chance_on_air_exposure": 0.0,
+    "targets": [
+        {
+            "target": {
+                "predicate_type": "minecraft:block_match",
+                "block": "minecraft:diorite"
+            },
+            "state": {
+                "id": "minecraft:packed_ice"
+            }
+        },
+        {
+            "target": {
+                "predicate_type": "minecraft:block_match",
+                "block": "minecraft:calcite"
+            },
+            "state": {
+                "id": "minecraft:packed_ice"
+            }
+        }
+    ]
+}

@@ -2,7 +2,6 @@ package fr.openmc.core.registry.regions.content;
 
 import com.sk89q.worldedit.math.BlockVector3;
 import fr.openmc.core.registry.regions.types.SphericalRegion;
-import net.kyori.adventure.key.Key;
 import org.bukkit.World;
 
 public class ExampleSphericalRegion extends SphericalRegion {
@@ -18,7 +17,7 @@ public class ExampleSphericalRegion extends SphericalRegion {
     }
 
     @Override
-    public Key getKey() {
+    public String getKey() {
         return null;
     }
 

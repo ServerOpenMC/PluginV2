@@ -1,0 +1,32 @@
+{
+  "clock": "minecraft:overworld",
+  "period_ticks": 100,
+  "tracks": {
+    "minecraft:visual/star_brightness": {
+      "modifier": "multiply",
+      "ease": "in_out_sine",
+      "keyframes": [
+        {
+          "ticks": 0,
+          "value": 2.0
+        },
+        {
+          "ticks": 17,
+          "value": 0.3
+        },
+        {
+          "ticks": 41,
+          "value": 1.5
+        },
+        {
+          "ticks": 58,
+          "value": 0.4
+        },
+        {
+          "ticks": 80,
+          "value": 3.0
+        }
+      ]
+    }
+  }
+}

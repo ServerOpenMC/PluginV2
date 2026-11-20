@@ -1,0 +1,14 @@
+{
+  "type": "add",
+  "left": 0.35,
+  "right": {
+    "type": "mul",
+    "left": -1,
+    "right": {
+      "type": "noise",
+      "noise": "omc_christmas:cave_noise",
+      "xz_scale": 0.8,
+      "y_scale": 1.3
+    }
+  }
+}

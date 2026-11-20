@@ -1,0 +1,83 @@
+{
+  "type": "minecraft:tree",
+  "below_trunk_provider": "minecraft:soil_beneath_tree",
+  "decorators": [
+    {
+      "type": "minecraft:attached_to_leaves",
+      "block_provider": "minecraft:mangrove_propagule",
+      "directions": [
+        "down"
+      ],
+      "exclusion_radius_xz": 1,
+      "exclusion_radius_y": 0,
+      "probability": 0.14,
+      "required_empty_blocks": 2
+    },
+    {
+      "type": "minecraft:beehive",
+      "probability": 0
+    }
+  ],
+  "foliage_placer": {
+    "type": "minecraft:random_spread_foliage_placer",
+    "foliage_height": 1,
+    "leaf_placement_attempts": 70,
+    "offset": 0,
+    "radius": 3
+  },
+  "foliage_provider": {
+    "id": "minecraft:brown_concrete"
+  },
+  "ignore_vines": true,
+  "minimum_size": {
+    "type": "minecraft:two_layers_feature_size",
+    "limit": 2,
+    "upper_size": 2
+  },
+  "root_placer": {
+    "type": "minecraft:mangrove_root_placer",
+    "mangrove_root_placement": {
+      "can_grow_through": "#minecraft:mangrove_roots_can_grow_through",
+      "max_root_length": 8,
+      "max_root_width": 5,
+      "muddy_roots_in": [],
+      "muddy_roots_provider": {
+        "id": "minecraft:stripped_dark_oak_log"
+      },
+      "random_skew_chance": 0.2
+    },
+    "root_provider": {
+      "id": "minecraft:stripped_dark_oak_log",
+      "properties": {}
+    },
+    "trunk_offset_y": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 3,
+      "min_inclusive": 1
+    }
+  },
+  "trunk_placer": {
+    "type": "minecraft:upwards_branching_trunk_placer",
+    "base_height": 2,
+    "can_grow_through": "#minecraft:mangrove_logs_can_grow_through",
+    "extra_branch_length": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 1,
+      "min_inclusive": 0
+    },
+    "extra_branch_steps": {
+      "type": "minecraft:uniform",
+      "max_inclusive": 4,
+      "min_inclusive": 1
+    },
+    "height_rand_a": 1,
+    "height_rand_b": 4,
+    "place_branch_per_log_probability": 0.5
+  },
+  "trunk_provider": {
+    "id": "minecraft:stripped_spruce_log",
+    "properties": {
+      "axis": "y"
+    }
+  }
+}

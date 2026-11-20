@@ -1,0 +1,16 @@
+{
+  "name": "omc_christmas:village/decor",
+  "fallback": "omc_christmas:village/terminators",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:village/church",
+        "processors": "minecraft:empty",
+        "projection": "rigid"
+      }
+    }
+  ]
+}
+

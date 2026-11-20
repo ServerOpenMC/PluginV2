@@ -9,7 +9,6 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.hooks.WorldEditHook;
-import fr.openmc.core.utils.file.CustomCopyOption;
 import fr.openmc.core.utils.file.FilesUtils;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class CustomStructureManager extends Feature implements
     @Override
     public void init() {
         try {
-            FilesUtils.copyResourceFolder("data/omc_structure", STRUCTURE_FOLDER, CustomCopyOption.SKIP_EXISTING);
+            FilesUtils.copyResourceFolder("data/omc_structure", STRUCTURE_FOLDER);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

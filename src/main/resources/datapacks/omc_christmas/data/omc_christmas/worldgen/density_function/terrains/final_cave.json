@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:add",
+  "left": "omc_christmas:terrains/base_cave",
+  "right": {
+    "type": "minecraft:mul",
+    "left": "omc_christmas:settings/gingerbread_smooth",
+    "right": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:add",
+        "left": "omc_christmas:terrains/base_cave",
+        "right": {
+          "type": "minecraft:mul",
+          "left": "omc_christmas:settings/gingerbread_smooth",
+          "right": {
+            "type": "minecraft:add",
+            "left": "omc_christmas:terrains/base_cave_gingerbread",
+            "right": {
+              "type": "minecraft:mul",
+              "left": -1,
+              "right": "omc_christmas:terrains/base_cave"
+            }
+          }
+        }
+      },
+      "right": {
+        "type": "minecraft:mul",
+        "left": -1,
+        "right": "omc_christmas:terrains/base_cave"
+      }
+    }
+  }
+}
