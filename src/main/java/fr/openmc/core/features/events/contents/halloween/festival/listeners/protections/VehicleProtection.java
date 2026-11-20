@@ -1,7 +1,7 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners.protections;
 
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -18,7 +18,7 @@ public class VehicleProtection implements Listener {
     public void onVehicleDestroy(VehicleDestroyEvent event) {
         if (!(event.getAttacker() instanceof Player player)) return;
 
-        if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         if (!player.isOp())
@@ -42,7 +42,7 @@ public class VehicleProtection implements Listener {
         }
 
         if (player != null) {
-            if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            if (!player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                 return;
 
             if (!player.isOp())

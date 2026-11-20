@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners.protections;
 
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +26,7 @@ public class TeleportProtection implements Listener {
 
         Player player = event.getPlayer();
 
-        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         if (!event.getPlayer().isOp())

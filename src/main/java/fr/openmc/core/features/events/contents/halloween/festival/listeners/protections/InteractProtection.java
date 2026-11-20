@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners.protections;
 
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -51,7 +51,7 @@ public class InteractProtection implements Listener {
             
             if (ShopManager.getShopAt(location) != null) return;
 
-            if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                 return;
 
             if (!event.getPlayer().isOp())
@@ -61,7 +61,7 @@ public class InteractProtection implements Listener {
         if (!isMinecart) return;
         if (isTnt) return;
 
-        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         if (!event.getPlayer().isOp())
@@ -83,7 +83,7 @@ public class InteractProtection implements Listener {
         
         if (!INTERACTION_REFUSED.contains(rightClicked.getType())) return;
 
-        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         if (!event.getPlayer().isOp())
@@ -92,7 +92,7 @@ public class InteractProtection implements Listener {
 
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
-        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         if (!event.getPlayer().isOp())
@@ -101,7 +101,7 @@ public class InteractProtection implements Listener {
 
     @EventHandler
     public void onBucketFill(PlayerBucketFillEvent event) {
-        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         if (!event.getPlayer().isOp())

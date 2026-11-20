@@ -23,7 +23,7 @@ import fr.openmc.core.features.events.contents.halloween.festival.listeners.prot
 import fr.openmc.core.features.events.contents.halloween.festival.model.HalloweenDB;
 import fr.openmc.core.features.events.contents.halloween.festival.npc.WitchNPCS;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.chests.LootChestManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -63,7 +63,7 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
     public void init() {
         halloweenDB = loadEvent();
         participant = halloweenDB.getParticipants();
-        DimensionGenerator.init();
+        TerrorHouseDimensionManager.init();
         WitchShopManager.init();
         TerrorHouseManager.init(
                 halloweenDB.getGlobalAdvancement(),
@@ -203,7 +203,7 @@ public class HalloweenFestivalManager extends Feature implements LoadAfterItemsA
         try {
             OMCRegistry.CUSTOM_STRUCTURES.TERROR_HOUSE.place(
                     TERROR_HOUSE_UUID,
-                    new Location(DimensionGenerator.HALLOWEEN_WORLD, 0, 0, 0)
+                    new Location(TerrorHouseDimensionManager.HALLOWEEN_WORLD, 0, 0, 0)
             );
         } catch (Exception e) {
             throw new RuntimeException(e);

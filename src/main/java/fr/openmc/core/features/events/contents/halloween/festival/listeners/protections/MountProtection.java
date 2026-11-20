@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners.protections;
 
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
@@ -25,13 +25,13 @@ public class MountProtection implements Listener {
 
             if (ownerUUID == null) return;
 
-            if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            if (!player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                 return;
 
             if (!player.isOp())
                 event.setCancelled(true);
         } else {
-            if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            if (!player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                 return;
 
             if (!player.isOp())
