@@ -13,6 +13,7 @@ import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -20,6 +21,7 @@ import fr.openmc.core.features.events.contents.christmas.gingerbread.commands.Gi
 import fr.openmc.core.features.events.contents.christmas.gingerbread.listeners.GingerbreadNPCListener;
 import fr.openmc.core.features.events.contents.christmas.gingerbread.models.GingerbreadData;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -46,12 +48,13 @@ import java.sql.SQLException;
 import java.util.*;
 
 @SuppressWarnings("UnstableApiUsage")
-public class GingerBreadManager extends Feature implements HasDatabase, HasCommands, HasListeners {
+public class GingerBreadManager extends Feature implements HasDatabase, HasCommands, HasListeners, LoadIfEnable<FancyNpcsHook> {
+    public static final String NPC_ID = "gingerbread_deposite_npc";
     private static Object2ObjectMap<UUID, GingerbreadData> gingerbreadData;
     private static Dao<GingerbreadData, String> gingerbreadDataDao;
 
     public void init() {
-       gingerbreadData = loadAllgingerbreadData();
+        gingerbreadData = loadAllgingerbreadData();
     }
 
     @Override
@@ -225,12 +228,28 @@ public class GingerBreadManager extends Feature implements HasDatabase, HasComma
         }
 
         MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
-
-        NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
-        Npc gingerbreadNPC = npcManager.getNpc("gingerbread_pumpkin_deposit_npc");
-        gingerbreadNPC.removeForAll();
-        npcManager.removeNpc(gingerbreadNPC);
+        removeNpc();
 
         Bukkit.getServer().sendMessage(TranslationManager.translation("feature.events.gingerbread.event.end.broadcast"));
+    }
+
+    private static void removeNpc() {
+        NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
+        if (npcManager == null) return;
+        Npc gingerbreadNPC = npcManager.getNpc(NPC_ID);
+        if (gingerbreadNPC == null) return;
+        gingerbreadNPC.removeForAll();
+        npcManager.removeNpc(gingerbreadNPC);
+    }
+
+    public static void resetDatabase() {
+        try {
+            TableUtils.clearTable(gingerbreadDataDao.getConnectionSource(), GingerbreadData.class);
+            if (gingerbreadData != null)
+                gingerbreadData.clear();
+            removeNpc();
+        } catch (SQLException e) {
+            OMCLogger.error("failed to reset gingerbread database", e);
+        }
     }
 }

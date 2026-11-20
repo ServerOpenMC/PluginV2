@@ -12,6 +12,7 @@ import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.contents.christmas.gingerbread.managers.GingerBreadManager;
 import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.features.events.sbinfos.ContestInfos;
 import fr.openmc.core.features.events.sbinfos.HalloweenFestivalInfos;
@@ -143,15 +144,25 @@ public class MainScoreboard extends BaseScoreboard {
         if (FancyNpcsHook.isEnable()) {
             NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
             Npc halloweenNPC = null;
-            if (npcManager != null)
+            Npc gingerbreadNPC = null;
+            if (npcManager != null) {
                 halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
-
+                gingerbreadNPC = npcManager.getNpc(GingerBreadManager.NPC_ID);
+            }
             if (halloweenNPC != null) {
                 String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
                 lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
                         .append(TranslationManager.translation(player, "feature.displays.scoreboard.pumpkins.label", true).color(NamedTextColor.GRAY))
                         .appendSpace()
                         .append(toSmall(player, pumpkinCount).color(TextColor.color(0xFF7518)))
+                );
+            }
+            if (gingerbreadNPC != null) {
+                String gingerbreadConut = EconomyManager.getFormattedSimplifiedNumber(GingerBreadManager.getGingerbreadCount(player.getUniqueId()));
+                lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
+                        .append(TranslationManager.translation(player, "feature.displays.scoreboard.gingerbread.label", true).color(NamedTextColor.GRAY))
+                        .appendSpace()
+                        .append(toSmall(player, gingerbreadConut).color(TextColor.color(0xFF1B53)))
                 );
             }
         }
