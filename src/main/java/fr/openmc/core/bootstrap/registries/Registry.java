@@ -14,6 +14,10 @@ public class Registry<K, V> implements LifecycleRegistry {
         return value;
     }
 
+    public void unregister(K key) {
+        entries.remove(key);
+    }
+
     public Optional<V> get(K key) {
         return Optional.ofNullable(entries.get(key));
     }

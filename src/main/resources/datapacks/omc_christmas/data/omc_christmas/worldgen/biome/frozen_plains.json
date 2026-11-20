@@ -6,6 +6,33 @@
     "water_color": "#3d9bd6"
   },
   "attributes": {
+    "minecraft:gameplay/natural_mob_spawns": {
+      "spawns_by_category": {
+        "monster": [
+          {
+            "type": "minecraft:breeze",
+            "weight": 20,
+            "count": 1
+          },
+          {
+            "type": "minecraft:pillager",
+            "weight": 20,
+            "count": 1
+          },
+          {
+            "type": "minecraft:stray",
+            "weight": 40,
+            "count": 1
+          },
+          {
+            "type": "minecraft:vindicator",
+            "weight": 10,
+            "count": 1
+          }
+        ]
+      },
+      "spawn_costs": {}
+    },
     "minecraft:visual/sky_color": "#9fc4ff",
     "minecraft:visual/fog_color": "#dbe9ff",
     "minecraft:visual/fog_end_distance": 120.0,
@@ -42,7 +69,9 @@
       "omc_christmas:snow_layers/layer3"
     ],
     [],
-    ["ice_spike"],
+    [
+      "ice_spike"
+    ],
     [
       "omc_christmas:snow_layers/layer1",
       "omc_christmas:snow_layers/layer2",

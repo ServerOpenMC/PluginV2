@@ -34,6 +34,7 @@ import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.events.EventsManager;
+import fr.openmc.core.features.events.contents.christmas.ChristmasManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 //import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
@@ -132,6 +133,7 @@ public class OMCPlugin extends JavaPlugin {
             DynamicCooldownManager::new,
             ContestManager::new,
             WeeklyEventsManager::new,
+            ChristmasManager::new,
             DailyEventsManager::new,
             ChatAnimationManager::new,
             EventsManager::new,
