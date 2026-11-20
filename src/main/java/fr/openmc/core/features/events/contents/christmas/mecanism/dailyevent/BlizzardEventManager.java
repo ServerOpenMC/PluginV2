@@ -26,6 +26,8 @@ public class BlizzardEventManager extends Feature {
         for (int i = 0; i < RandomUtils.randomBetween(2, 4); i++) {
             Location rift = LocationUtils.randomLocationInWorld(OMCRegistry.DAILY_EVENTS.BLIZZARD.getWorld());
 
+            rift.setY(RandomUtils.randomBetween(140, 200));
+
             RiftManager.placeRift(rift);
 
             Bukkit.broadcast(TranslationManager.translation("feature.dailyevents.blizzard.rift.summoned",
