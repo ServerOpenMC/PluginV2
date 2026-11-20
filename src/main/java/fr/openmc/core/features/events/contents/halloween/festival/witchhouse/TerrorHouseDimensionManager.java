@@ -7,7 +7,7 @@ import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.entity.SpawnCategory;
 
-public class DimensionGenerator {
+public class TerrorHouseDimensionManager {
 
     public static final String DIMENSION_NAME = "world_omc_halloween_witch_house";
     public static World HALLOWEEN_WORLD;

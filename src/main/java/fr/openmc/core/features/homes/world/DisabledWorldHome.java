@@ -2,6 +2,9 @@ package fr.openmc.core.features.homes.world;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.dream.DreamDimensionManager;
+import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.ChristmasDimensionManager;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,16 +16,18 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DisabledWorldHome {
 
     private static File file;
     private static FileConfiguration config;
     private static Map<String, WorldDisableInfo> disabledWorlds;
+    private static Set<String> disabledWorldsSet = new HashSet<>(Set.of(
+            TerrorHouseDimensionManager.DIMENSION_NAME,
+            DreamDimensionManager.DIMENSION_NAME,
+            ChristmasDimensionManager.DIMENSION_NAME
+    ));
 
     public static void init() {
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "disabled_world_home.yml");
@@ -45,11 +50,15 @@ public class DisabledWorldHome {
 
     private static void loadDisabledWorlds() {
         disabledWorlds.clear();
+
+        disabledWorldsSet.forEach(world ->
+                disabledWorlds.put(world, new WorldDisableInfo("unknown", 0)));
+
         ConfigurationSection sections = config.getConfigurationSection("disabled-worlds");
-        if(sections != null) {
-            for(String key : sections.getKeys(false)) {
+        if (sections != null) {
+            for (String key : sections.getKeys(false)) {
                 ConfigurationSection section = sections.getConfigurationSection(key);
-                if(section != null) {
+                if (section != null) {
                     String addedBy = section.getString("added-by", "unknown");
                     long addedOn = section.getLong("added-on", 0);
                     disabledWorlds.put(key, new WorldDisableInfo(addedBy, addedOn));

@@ -3,7 +3,7 @@ package fr.openmc.core.features.events.contents.halloween.festival.listeners;
 import fr.openmc.api.cooldown.CooldownEndEvent;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.chests.LootChestManager;
@@ -41,7 +41,7 @@ public class TerrorHouseListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             player.teleport(SpawnManager.getSpawnLocation());
     }
 
@@ -49,7 +49,7 @@ public class TerrorHouseListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getPlayer();
 
-        if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) {
+        if (player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD)) {
             player.teleport(SpawnManager.getSpawnLocation());
             event.setCancelled(true);
         }
@@ -60,15 +60,15 @@ public class TerrorHouseListener implements Listener {
         Player player = event.getPlayer();
 
         if (HalloweenFestivalManager.getHalloweenDB().isActive()) {
-            if (event.getFrom().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            if (event.getFrom().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                 TerrorHouseManager.getWitchHouseAmbient().reset(player);
 
-            if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            if (player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                 TerrorHouseManager.getWitchHouseAmbient().apply(player);
         } else {
             if (player.isOp()) return;
 
-            if (player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) {
+            if (player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD)) {
                 player.teleport(SpawnManager.getSpawnLocation());
                 MessagesManager.sendMessage(player,
                         TranslationManager.translation("feature.events.halloween.festival.player_not_allow"),
@@ -84,7 +84,7 @@ public class TerrorHouseListener implements Listener {
     public void onHouseRegionEnter(EntityCustomRegionEnterEvent event) {
         CustomRegion region = event.getRegion();
 
-        if (!region.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!region.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         Entity entity = event.getEntity();
@@ -101,7 +101,7 @@ public class TerrorHouseListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
 
-        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         if (block != null && block.getType().equals(Material.CHEST)) {
@@ -129,7 +129,7 @@ public class TerrorHouseListener implements Listener {
 
     @EventHandler
     public void onPlayerBreakBlock(BlockBreakEvent event) {
-        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         if (!event.getPlayer().isOp())
@@ -138,7 +138,7 @@ public class TerrorHouseListener implements Listener {
 
     @EventHandler
     public void onPlayerPlaceBlock(BlockPlaceEvent event) {
-        if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         if (!event.getPlayer().isOp())
@@ -148,7 +148,7 @@ public class TerrorHouseListener implements Listener {
     @EventHandler
     public void onPlayerToggleGlide(EntityToggleGlideEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
+        if (!player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD)) return;
 
         if (event.isGliding()) {
             event.setCancelled(true);

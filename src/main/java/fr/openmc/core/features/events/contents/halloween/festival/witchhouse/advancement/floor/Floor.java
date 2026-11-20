@@ -3,23 +3,20 @@ package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.ad
 import com.sk89q.worldedit.math.BlockVector3;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
 import fr.openmc.core.registry.mobs.CustomMobEntry;
 import fr.openmc.core.registry.regions.preset.SquareRegion;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.world.LocationUtils;
 import lombok.Getter;
-import org.bukkit.*;
-import org.bukkit.block.Block;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 public class Floor {
@@ -97,7 +94,7 @@ public class Floor {
 
         Location newloc = LocationUtils.randomLocation(
                 LocationUtils.fromVector(
-                        DimensionGenerator.HALLOWEEN_WORLD,
+                        TerrorHouseDimensionManager.HALLOWEEN_WORLD,
                         pos
                 ),
                 RADIUS
@@ -109,7 +106,7 @@ public class Floor {
     }
 
     public boolean hasPlayer() {
-        return DimensionGenerator.HALLOWEEN_WORLD.getPlayers()
+        return TerrorHouseDimensionManager.HALLOWEEN_WORLD.getPlayers()
                 .stream()
                 .filter(p -> region.contains(p.getLocation()))
                 .findAny().orElse(null) != null;

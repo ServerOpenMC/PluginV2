@@ -3,7 +3,7 @@ package fr.openmc.core.features.events.contents.halloween.festival.shop.menu.but
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,7 +25,7 @@ public class TerrorHouseButton {
                 }).setOnClick(inventoryClickEvent -> {
                     menu.getOwner().teleport(
                             new Location(
-                                    DimensionGenerator.HALLOWEEN_WORLD,
+                                    TerrorHouseDimensionManager.HALLOWEEN_WORLD,
                                     -58, -59, -67
                             )
                     );

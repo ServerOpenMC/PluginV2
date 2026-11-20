@@ -11,15 +11,28 @@ import fr.openmc.core.features.events.contents.christmas.mecanism.rift.commands.
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.listeners.RegionListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.listeners.StructureListener;
 import fr.openmc.core.registry.regions.preset.SquareRegion;
+import fr.openmc.core.registry.structures.model.CustomStructureManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 public class RiftManager extends Feature implements HasListeners, HasCommands {
     private static final Set<UUID> rifts = new HashSet<>();
+
+    @Override
+    public void init() throws SQLException {
+        CustomStructureManager.getPlacements(OMCRegistry.CUSTOM_STRUCTURES.CHRISTMAS_RIFT.getId()).forEach((placement) -> {
+            try {
+                OMCRegistry.CUSTOM_STRUCTURES.CHRISTMAS_RIFT.remove(placement.getId());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
     public static void placeRift(Location loc) {
         UUID riftUUID = UUID.randomUUID();

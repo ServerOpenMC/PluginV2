@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.contents.christmas;
+package fr.openmc.core.features.events.contents.christmas.mecanism.dimension;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;

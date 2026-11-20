@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners.protections;
 
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
@@ -16,7 +16,7 @@ public class TramplingProtection implements Listener {
     public void onEntityInteract(EntityInteractEvent event) {
         Block block = event.getBlock();
         if (block.getType() == Material.FARMLAND) {
-            if (!event.getEntity().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            if (!event.getEntity().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                 return;
 
             event.setCancelled(true);
@@ -29,7 +29,7 @@ public class TramplingProtection implements Listener {
         if (event.getAction() == Action.PHYSICAL) {
             if (event.getClickedBlock() == null) return;
             if (event.getClickedBlock().getType() == Material.FARMLAND) {
-                if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+                if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                     return;
 
                 if (!event.getPlayer().isOp())

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.christmas.mecanism.rift.listeners;
 
-import fr.openmc.core.features.events.contents.christmas.ChristmasDimensionManager;
+import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.ChristmasDimensionManager;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.RiftManager;
 import fr.openmc.core.registry.regions.events.EntityCustomRegionEnterEvent;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
