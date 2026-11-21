@@ -85,7 +85,7 @@ public class GoldenCropsListener implements Listener {
         if (BlocksUtils.isNearbyBlocks(
                 KeyBlock.custom(OMCRegistry.CUSTOM_ITEMS.AYWENITE_LAMP_ON),
                 event.getBlock(),
-                15)
+                30)
         ) return;
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
