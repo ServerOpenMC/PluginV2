@@ -8,6 +8,9 @@ import fr.openmc.core.features.bits.contents.loottables.ModernLootTable;
 import fr.openmc.core.features.bits.contents.loottables.OfficeLootTable;
 import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeLootTable;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizzLootTable;
+import fr.openmc.core.features.events.contents.christmas.contents.loottable.chest.LargeChristmasChestLootTable;
+import fr.openmc.core.features.events.contents.christmas.contents.loottable.chest.MediumChristmasChestLootTable;
+import fr.openmc.core.features.events.contents.christmas.contents.loottable.chest.SmallChristmasChestLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.VampireLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.AncientMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CorruptedMobLootTable;
@@ -52,7 +55,12 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
 
     public final CustomLootTable QUIZZ = register(new QuizzLootTable());
     public final CustomLootTable CHALLENGE = register(new ChallengeLootTable());
-    public final CustomLootTable LOOTCHEST = register(new LootChestLootTable());
+    public final CustomLootTable TERROR_HOUSE_CHEST = register(new LootChestLootTable());
+
+    public final CustomLootTable SMALL_CHRISTMAS_CHEST = register(new SmallChristmasChestLootTable());
+    public final CustomLootTable MEDIUM_CHRISTMAS_CHEST = register(new MediumChristmasChestLootTable());
+    public final CustomLootTable LARGE_CHRISTMAS_CHEST = register(new LargeChristmasChestLootTable());
+
     @Override
     public String key(CustomLootTable registryObject) {
         return registryObject.getNamespace();

@@ -27,7 +27,8 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
-                PlayerCommandListener::new
+                PlayerCommandListener::new,
+                ReplaceBlockListener::new
         );
     }
 }
