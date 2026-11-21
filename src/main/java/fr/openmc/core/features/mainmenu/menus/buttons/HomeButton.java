@@ -11,7 +11,10 @@ import java.util.Set;
 public class HomeButton implements ButtonMenu {
     @Override
     public Set<Integer> slots() {
-        return Set.of(72, 73, 74, 75, 76);
+        return Set.of(0, 1, 2, 3,
+                9, 10, 11, 12,
+                18, 19, 20, 21
+        );
     }
 
     @Override

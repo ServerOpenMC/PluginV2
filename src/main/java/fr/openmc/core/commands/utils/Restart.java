@@ -39,9 +39,6 @@ public class Restart {
             return;
         }
 
-        isRestarting = true;
-        remainingTime = 60;
-
         // protection pour le bug de duplication
         for (City city : CityManager.getCities()) {
             UUID watcherUUID = city.getChestWatcher();
@@ -53,6 +50,9 @@ public class Restart {
 	        MessagesManager.sendMessage(player, TranslationManager.translation("command.utils.restart.cannot_open_city_chest"), Prefix.OPENMC, MessageType.INFO, false);
             player.closeInventory();
         }
+
+        isRestarting = true;
+        remainingTime = 60;
 
         OMCPlugin plugin = OMCPlugin.getInstance();
         new BukkitRunnable() {

@@ -85,7 +85,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
             }
 
 
-            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID), itemMeta -> itemMeta.displayName(title
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(memberUUID, this), itemMeta -> itemMeta.displayName(title
                     .append(Component.text(playerName).decoration(TextDecoration.ITALIC, false))))
                     .hide(ItemUtils.getDataComponentType())
             );

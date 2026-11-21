@@ -52,6 +52,7 @@ public class City {
     @Getter private final UUID uniqueId;
     private Set<UUID> members;
     private Set<ChunkPos> chunks; // Liste des chunks claims par la ville
+    @Getter
     private HashMap<UUID, Set<CityPermission>> permissions;
     private Set<DBCityRank> cityRanks;
     private HashMap<Integer, ItemStack[]> chestContent;
@@ -132,9 +133,9 @@ public class City {
      */
     public Set<UUID> getMembers() {
         if (this.members == null)
-            this.members = CityManager.getCityMembers(this);
+            this.members = new HashSet<>(CityManager.getCityMembers(this));
 
-        return this.members;
+        return new HashSet<>(this.members);
     }
 
     /**
@@ -475,10 +476,9 @@ public class City {
             this.permissions = CityManager.getCityPermissions(this);
 
         Set<CityPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
-        
-        if (playerPerms.contains(CityPermission.OWNER)) {
-            return true;
-        }
+
+        if (playerPerms.isEmpty()) return false;
+        if (playerPerms.contains(CityPermission.OWNER)) return true;
 
         return playerPerms.contains(CityPermission.OWNER) || playerPerms.contains(permission);
     }
@@ -761,23 +761,25 @@ public class City {
     /**
      * Retrieves the rank of a specific member in the city. (Propriétaire, Maire, ou un grade personalisé)
      *
-     * @param member The UUID of the member to check.
+     * @param playerUUID The UUID of the member to check.
      * @return The CityRank object representing the member's rank, or null if not found.
      */
-    public String getRankName(UUID member) {
-        if (this.hasPermission(member, CityPermission.OWNER)) {
-            return "Propriétaire";
-        } else if (this.hasMayor() && this.getMayor().getMayorUUID().equals(member)) {
-            return "Maire";
+    public Component getRankName(UUID playerUUID) {
+        if (!this.getMembers().contains(playerUUID)) {
+            return TranslationManager.translation("feature.city.grades.extern");
+        } else if (this.hasPermission(playerUUID, CityPermission.OWNER)) {
+            return TranslationManager.translation("feature.city.grades.owner");
+        } else if (this.hasMayor() && this.getMayor().getMayorUUID().equals(playerUUID)) {
+            return TranslationManager.translation("feature.city.grades.mayor");
         } else {
             for (DBCityRank rank : cityRanks) {
-                if (rank.getMembersSet().contains(member)) {
-                    return rank.getName();
+                if (rank.getMembersSet().contains(playerUUID)) {
+                    return Component.text(rank.getName());
                 }
             }
         }
 
-        return "Membre";
+        return TranslationManager.translation("feature.city.grades.member");
     }
     
     /**

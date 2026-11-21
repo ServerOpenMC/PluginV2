@@ -52,23 +52,19 @@ public class CityRankMemberMenu extends PaginatedMenu {
 		Set<UUID> members = city.getMembers();
 		for (UUID uuid : members) {
 			OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
-			if (player == null) {
-				continue;
-			}
-
-			String rankName = city.getRankName(uuid);
+			if (player == null) continue;
 
 			List<Component> lore = new ArrayList<>();
 			lore.add(TranslationManager.translation(
 					"feature.city.rank.menu.members.item.rank",
-					Component.text(rankName).color(NamedTextColor.YELLOW)
+					city.getRankName(uuid).color(NamedTextColor.YELLOW)
 			).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 			if (!city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
 				lore.add(Component.empty());
 				lore.add(TranslationManager.translation("feature.city.rank.menu.members.item.click_assign")
 						.color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 			}
-            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta -> {
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid, this), itemMeta -> {
 				Component displayName = player.getName() != null
 						? Component.text(player.getName())
 						: TranslationManager.translation("feature.city.rank.menu.members.item.name_unknown")

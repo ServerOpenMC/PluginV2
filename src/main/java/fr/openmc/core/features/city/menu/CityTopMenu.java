@@ -12,7 +12,6 @@ import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.ColorUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
@@ -132,7 +131,7 @@ public class CityTopMenu extends PaginatedMenu {
 
                 int currentRank = rank.getAndIncrement();
 
-                items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+                items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID, this), itemMeta -> {
                     itemMeta.displayName(TranslationManager.translation(
                             "feature.city.menus.top.item.title",
                             Component.text(currentRank).color(ColorUtils.getRankColor(currentRank)),
@@ -158,7 +157,7 @@ public class CityTopMenu extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return getItems().size();
+        return cities.size();
     }
 
     @Override

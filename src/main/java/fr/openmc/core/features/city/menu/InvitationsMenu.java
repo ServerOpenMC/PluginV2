@@ -117,7 +117,8 @@ public class InvitationsMenu extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return getItems().size();
+        List<Player> playerInvitations = CityInviteCommands.invitations.get(getOwner());
+        return playerInvitations != null ? playerInvitations.size() : 0;
     }
 
     @Override

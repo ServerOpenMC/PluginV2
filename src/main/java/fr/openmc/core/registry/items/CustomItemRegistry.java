@@ -153,9 +153,13 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
 
     public final CustomItem COIN = register("omc_daily_events:coin", Material.GOLD_INGOT);
     public final CustomItem POISSON_STEVE_HEAD = register("omc_daily_events:poisson_steve_head", Material.PLAYER_HEAD);
+    public final CustomItem POISSON_STEVE_DISC = register("omc_daily_events:steve_the_fish_disc", Material.PAPER);
     public final CustomItem KRAKEN_HEAD = register("omc_daily_events:kraken_head", Material.PLAYER_HEAD);
     public final CustomItem LEVIATHAN_HEAD = register("omc_daily_events:leviathan_head", Material.PLAYER_HEAD);
     public final CustomItem VAMPIRE_HEAD = register("omc_daily_events:vampire_head", Material.PLAYER_HEAD);
+
+    public final CustomItem AYWENITE_LAMP_OFF = register("omc_daily_events:aywenite_lamp_off", Material.REDSTONE_LAMP);
+    public final CustomItem AYWENITE_LAMP_ON = register("omc_daily_events:aywenite_lamp_on", Material.REDSTONE_LAMP);
 
     public final CustomItem OBESE_POTATO = register("omc_daily_events:obese_potato", Material.NOTE_BLOCK);
     public final CustomItem OBESE_POISONOUS_POTATO = register("omc_daily_events:obese_poisonous_potato", Material.NOTE_BLOCK);

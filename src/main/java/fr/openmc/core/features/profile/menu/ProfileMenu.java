@@ -15,7 +15,7 @@ import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.features.toor.DiscordLinkManager;
 import fr.openmc.core.hooks.github.GitHubHook;
-import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -24,9 +24,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -118,7 +116,7 @@ public class ProfileMenu extends Menu {
 
         inventory.put(13, new ItemMenuBuilder(
                 this,
-                ItemUtils.getPlayerHead(target.getUniqueId()),
+                SkullUtils.getPlayerSkull(target.getUniqueId(), this),
                 meta -> {
                     meta.displayName(TranslationManager.translation(
                             "feature.profile.item.identity.name",
@@ -239,10 +237,8 @@ public class ProfileMenu extends Menu {
                     meta.lore(TranslationManager.translationLore(
                             "feature.profile.item.city.lore",
                             Component.text(city.getName(), NamedTextColor.GRAY),
-                            Component.text(
-                                    city.getRankName(target.getUniqueId()),
-                                    NamedTextColor.GRAY
-                            )
+                            city.getRankName(target.getUniqueId())
+                                    .color(NamedTextColor.GRAY)
                     ));
                 }
         ).setOnClick(event -> new CityListDetailsMenu(getOwner(), city).open()));

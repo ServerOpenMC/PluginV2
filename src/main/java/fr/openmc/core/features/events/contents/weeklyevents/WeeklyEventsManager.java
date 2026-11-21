@@ -123,7 +123,7 @@ public class WeeklyEventsManager extends Feature implements LoadAfterItemsAdder,
                 nextPhase.getStartHour(),
                 nextPhase.getStartMinutes(),
                 0
-        ) * 20L;
+        );
 
         if (delayTicks < 0) {
             runPhase(getCurrentEvent(), nextPhase);

@@ -100,8 +100,6 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public Map<Integer, ItemMenuBuilder> getButtons() {
-        if (Restart.isRestarting) return null;
-
         Player player = getOwner();
 
         Map<Integer, ItemMenuBuilder> map = new HashMap<>();

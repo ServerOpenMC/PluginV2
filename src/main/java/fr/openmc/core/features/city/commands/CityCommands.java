@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.input.dialog.DialogInput;
+import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -134,8 +135,8 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.kick")
     @Description("Exclure un habitant de votre ville")
     void kick(
-            Player sender,
-            @SuggestWith(CityMembersAutoComplete.class) @Named("membre à exclure") OfflinePlayer player
+            OMCPlayer sender,
+            @SuggestWith(CityMembersAutoComplete.class) @Named("membre à exclure") OMCOfflinePlayer player
     ) {
         CityKickAction.startKick(sender, player);
     }

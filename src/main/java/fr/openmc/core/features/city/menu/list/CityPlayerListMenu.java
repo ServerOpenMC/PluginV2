@@ -48,7 +48,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public int getSizeOfItems() {
-        return getItems().size();
+        return city != null ? city.getMembers().size() : 0;
     }
 
     @Override
@@ -59,11 +59,12 @@ public class CityPlayerListMenu extends PaginatedMenu {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
             if (playerOffline == null) continue;
 
-            String title = city.getRankName(uuid) + " ";
+            Component title = city.getRankName(uuid)
+                    .appendSpace()
+                    .append(Component.text(playerOffline.getName()));
 
-            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid), itemMeta ->
-                    itemMeta.displayName(
-                            Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuid, this), itemMeta ->
+                    itemMeta.displayName(title.decoration(TextDecoration.ITALIC, false))
             ));
         }
 

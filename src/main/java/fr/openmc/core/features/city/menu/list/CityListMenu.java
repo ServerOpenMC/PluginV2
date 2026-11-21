@@ -123,7 +123,7 @@ public class CityListMenu extends PaginatedMenu {
 			}
 
 
-			items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+			items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID, this), itemMeta -> {
 				itemMeta.displayName(TranslationManager.translation(
 						"feature.city.menus.list.item.title",
 						Component.text(city.getName()).color(NamedTextColor.GREEN)
@@ -148,7 +148,7 @@ public class CityListMenu extends PaginatedMenu {
 
 	@Override
 	public int getSizeOfItems() {
-		return getItems().size();
+		return this.cities.size();
 	}
 
 	@Override

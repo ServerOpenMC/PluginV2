@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.items.contents;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
 import fr.openmc.core.registry.items.CustomItem;
@@ -86,11 +87,13 @@ public class Hammer extends CustomItem implements BlockBreakableItem {
 
         if (block.getType() != targetType) return false;
         if (!isBreakable(block.getType())) return false;
-        if (!ProtectionsManager.canInteract(player, block.getLocation())) return false;
+        if (!ProtectionsManager.havePermission(player, block.getLocation(), CityPermission.BREAK)) return false;
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
         if (customBlock != null) {
-            customBlock.drop(block.getLocation());
+            customBlock.getLoot(player.getInventory().getItemInMainHand(), false).forEach(
+                    item -> world.dropItemNaturally(block.getLocation(), item)
+            );
             return customBlock.remove();
         }
 

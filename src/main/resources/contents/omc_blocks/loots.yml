@@ -1,0 +1,30 @@
+info:
+  namespace: omc_blocks
+loots:
+  blocks:
+    aywenite_ore:
+      type: omc_blocks:aywenite_ore
+      items:
+        ruby:
+          item: omc_items:aywenite
+          min_amount: 1
+          max_amount: 2
+          chance: 100
+      exp:
+        exp_1:
+          chance: 100
+          min_amount: 1
+          max_amount: 3
+    deepslate_aywenite_ore:
+      type: omc_blocks:deepslate_aywenite_ore
+      items:
+        ruby:
+          item: omc_items:aywenite
+          min_amount: 1
+          max_amount: 2
+          chance: 100
+      exp:
+        exp_1:
+          chance: 100
+          min_amount: 1
+          max_amount: 3

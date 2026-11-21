@@ -91,7 +91,7 @@ public class OwnerNpcMenu extends Menu {
                     TranslationManager.translation(perk1.getNameKey()));
             loreOwner.addAll(perk1 == null ? List.of() : TranslationManager.translationLore(perk1.getLoreKey()));
 
-            inventory.put(4, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuidOwner), itemMeta -> {
+            inventory.put(4, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuidOwner, this), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.owner.title", Component.text(nameOwner)).color(NamedTextColor.YELLOW));
                 itemMeta.lore(loreOwner);
             }));
@@ -127,7 +127,7 @@ public class OwnerNpcMenu extends Menu {
                     TranslationManager.translation(perk3.getNameKey()));
             loreOwner.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
-            inventory.put(4, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuidOwner), itemMeta -> {
+            inventory.put(4, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(uuidOwner, this), itemMeta -> {
                 itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.owner.title", Component.text(nameOwner)).color(NamedTextColor.YELLOW));
                 itemMeta.lore(loreOwner);
             }));

@@ -11,7 +11,7 @@ import java.util.Set;
 public class MailboxButton implements ButtonMenu {
     @Override
     public Set<Integer> slots() {
-        return Set.of(85, 86, 87);
+        return Set.of(86, 87, 88);
     }
 
     @Override

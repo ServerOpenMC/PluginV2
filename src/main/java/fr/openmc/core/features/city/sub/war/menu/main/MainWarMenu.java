@@ -21,12 +21,10 @@ import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.bukkit.SkullUtils;
-import fr.openmc.core.utils.cache.CachePlayerName;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -143,7 +141,7 @@ public class MainWarMenu extends PaginatedMenu {
                     .color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
 
 
-            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+            items.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID, this), itemMeta -> {
                 itemMeta.displayName(Component.text(city.getName()).color(NamedTextColor.RED));
                 itemMeta.lore(loreCity);
             }).setOnClick(inventoryClickEvent -> {

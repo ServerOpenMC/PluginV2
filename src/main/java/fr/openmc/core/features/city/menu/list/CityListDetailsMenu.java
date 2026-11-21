@@ -102,7 +102,7 @@ public class CityListDetailsMenu extends Menu {
 
 			UUID ownerUUID = this.city.getPlayerWithPermission(CityPermission.OWNER);
 
-			map.put(12, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID),
+			map.put(12, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(ownerUUID, this),
 					itemMeta -> {
 						itemMeta.displayName(TranslationManager.translation(
 								"feature.city.menus.list.details.owner",
@@ -123,7 +123,7 @@ public class CityListDetailsMenu extends Menu {
 						TranslationManager.translation(perk3.getNameKey()));
 				loreMayor.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
-				map.put(14, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
+				map.put(14, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(this.city.getMayor().getMayorUUID(), this),
 								itemMeta -> {
 									itemMeta.displayName(
 										TranslationManager.translation(
@@ -137,7 +137,7 @@ public class CityListDetailsMenu extends Menu {
 				);
 			}
 		} else {
-			map.put(13, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER)),
+			map.put(13, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(this.city.getPlayerWithPermission(CityPermission.OWNER), this),
 					itemMeta -> itemMeta.displayName(TranslationManager.translation(
 							"feature.city.menus.list.details.owner",
 							CachePlayerName.name(this.city.getPlayerWithPermission(CityPermission.OWNER)).color(NamedTextColor.GRAY)

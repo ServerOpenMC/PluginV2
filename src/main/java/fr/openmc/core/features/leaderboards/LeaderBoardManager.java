@@ -47,7 +47,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         MONEY_LEADERBOARD = new MoneyLeaderBoard();
         PUMPKIN_COUNT_LEADERBOARD = new PumpkinCountLeaderBoard();
         QUIZ_COUNT_LEADERBOARD = new QuizCountLeaderBoard();
-        PLAYTIME_LEADERBOARD = new StatsLeaderBoard(Statistic.PLAY_ONE_MINUTE,
+        PLAYTIME_LEADERBOARD = new StatsLeaderBoard("playtime", Statistic.PLAY_ONE_MINUTE,
                 TranslationManager.translation("feature.leaderboards.header.playtime"),
                 ((player, valueStats, rank) -> {
                     String time = DateUtils.convertTime(valueStats);

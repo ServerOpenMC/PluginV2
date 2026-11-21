@@ -9,7 +9,6 @@ import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import org.bukkit.Location;
-import org.bukkit.block.Barrel;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -74,34 +73,33 @@ public class ProtectionsManager {
         return false;
     }
 
+	public static boolean havePermission(Player player, Location loc, CityPermission permission) {
+		return havePermission(player, loc, permission, false);
+	}
+
+	public static boolean havePermission(Player player, Location loc, CityPermission permission, boolean allowBypassInWar) {
+		if (!player.getWorld().getName().equals("world")) return true;
+
+		City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+
+		if (cityAtLoc == null) return true;
+
+		if (canBypassPlayer.contains(player.getUniqueId())) return true; // Le joueur peut bypass les protections
+		if (allowBypassInWar && cityAtLoc.isInWar()) return true; // En guerre, pas de protection
+
+		return cityAtLoc.hasPermission(player.getUniqueId(), permission);
+	}
+
     public static boolean canExplodeNaturally(Location loc) {
         City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
         return city == null;
     }
-    
-    public static void checkCity(Player player, Cancellable event, City city, boolean allowByPassInWar) {
-        if (!player.getWorld().getName().equals("world")) return;
-        
-		if (city == null) return; // Pas de ville, pas de protection
-	    
-	    if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
-	    
-	    if (allowByPassInWar && city.isInWar()) return; // En guerre, pas de protection
 
-        if (!city.isMember(player)) {
-            event.setCancelled(true);
-			cancelMessage(player);
-        }
-    }
-	
 	public static void verify(Entity entity, Cancellable event, Location loc) {
 		if (!entity.getWorld().getName().equals("world")) return;
 		
-		if (ShopManager.getShopAt(loc) != null) {
-			if (loc.getBlock().getState() instanceof Barrel) return;
-			event.setCancelled(true);
-			return;
-		}
+		if (ShopManager.getShopAt(loc) != null) return;
+
 		
 		City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
 		if (city == null || city.isInWar()) return;
@@ -139,20 +137,10 @@ public class ProtectionsManager {
 		}
 	}
 	
-	public static void checkPermissions(@NotNull Player player, Cancellable event, City city, CityPermission permission) {
-		if (!player.getWorld().getName().equals("world")) return;
-		
-		if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
-		if (city == null) return; // Pas de ville, pas de protection
-		if (city.isInWar()) return; // En guerre, pas de protection
-		
-		if (city.isMember(player)) {
-			if (!city.hasPermission(player.getUniqueId(), permission)) {
-				event.setCancelled(true);
-				cancelMessage(player);
-			}
-		} else {
-			checkCity(player, event, city, false);
+	public static void checkPermissions(@NotNull Player player, Location actionLocation, Cancellable event, CityPermission permission, boolean allowBypassInWar) {
+		if (!havePermission(player, actionLocation, permission, allowBypassInWar)) {
+			event.setCancelled(true);
+			cancelMessage(player);
 		}
 	}
 }

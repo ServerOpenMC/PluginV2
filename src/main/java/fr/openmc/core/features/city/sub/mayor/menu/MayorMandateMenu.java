@@ -86,7 +86,7 @@ public class MayorMandateMenu extends Menu {
                 TranslationManager.translation(perk3.getNameKey()));
         loreMayor.addAll(perk3 == null ? List.of() : TranslationManager.translationLore(perk3.getLoreKey()));
 
-        inventory.put(3, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(mayor.getMayorUUID()), itemMeta -> {
+        inventory.put(3, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(mayor.getMayorUUID(), this), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.city.mayor.menu.mandate.mayor.title", mayor.getName())
                     .color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false));
             itemMeta.lore(loreMayor);
@@ -123,7 +123,7 @@ public class MayorMandateMenu extends Menu {
                 TranslationManager.translation(perk1.getNameKey()));
         loreOwner.addAll(perk1 == null ? List.of() : TranslationManager.translationLore(perk1.getLoreKey()));
 
-        inventory.put(5, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER)), itemMeta -> {
+        inventory.put(5, new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER), this), itemMeta -> {
             itemMeta.displayName(TranslationManager.translation(
                     "feature.city.mayor.menu.mandate.owner.title",
                     Component.text(CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CityPermission.OWNER))).getName())

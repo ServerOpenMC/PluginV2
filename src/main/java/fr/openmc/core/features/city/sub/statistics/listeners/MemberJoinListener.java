@@ -12,8 +12,6 @@ import java.util.UUID;
 
 public class MemberJoinListener implements Listener {
     
-    // todo: implement city inactivity for cleaning innactive city (check https://github.com/ServerOpenMC/PluginV2/issues/247)
-
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         UUID playerUUID = e.getPlayer().getUniqueId();

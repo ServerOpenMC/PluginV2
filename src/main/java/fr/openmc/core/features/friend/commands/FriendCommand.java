@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
+import fr.openmc.core.features.friend.FriendRequest;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsAutoComplete;
 import fr.openmc.core.features.friend.commands.autocomplete.FriendsRequestAutoComplete;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -44,14 +45,22 @@ public class FriendCommand {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.self"), Prefix.FRIEND, true);
                 return;
             }
+
             if (!target.settings().canReceiveFriendRequest(target.getUniqueId())) {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.disabled"), Prefix.FRIEND, true);
                 return;
             }
+
             if (FriendManager.isRequestPending(target.getUniqueId())) {
                 player.message().sendError(TranslationManager.translation("feature.friend.add.already_sent"), Prefix.FRIEND, true);
                 return;
             }
+
+            if (FriendManager.hasRequestBetween(player.getUniqueId(), target.getUniqueId())) {
+                player.message().sendError(TranslationManager.translation("feature.friend.add.already_sent"), Prefix.FRIEND, true);
+                return;
+            }
+
             if (FriendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
                 player.message().sendError(
                         TranslationManager.translation("feature.friend.add.already_friend"),
@@ -82,7 +91,7 @@ public class FriendCommand {
                             MessagesManager.sendMessage(target, TranslationManager.translation("feature.friend.request.expired"), Prefix.FRIEND, MessageType.INFO, true);
                             return;
                         }
-                        FriendManager.removeRequest(FriendManager.getRequest(player.getUniqueId()));
+                        FriendManager.removeRequest(FriendManager.getRequest(player.getUniqueId(), target.getUniqueId()));
                         MessagesManager.sendMessage(
                                 target,
                                 TranslationManager.translation(
@@ -335,6 +344,12 @@ public class FriendCommand {
                 return;
             }
 
+            if (!FriendManager.hasReceivedRequestFrom(player.getUniqueId(), target.getUniqueId())) {
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
+                return;
+            }
+
+
             FriendManager.addFriend(player.getUniqueId(), target.getUniqueId());
             player.message().send(
                     TranslationManager.translation(
@@ -381,7 +396,13 @@ public class FriendCommand {
                 return;
             }
 
-            FriendManager.removeRequest(FriendManager.getRequest(target.getUniqueId()));
+            FriendRequest request = FriendManager.getRequest(target.getUniqueId(), player.getUniqueId());
+            if (request == null) {
+                MessagesManager.sendMessage(player, TranslationManager.translation("feature.friend.request.not_received"), Prefix.FRIEND, MessageType.ERROR, true);
+                return;
+            }
+
+            FriendManager.removeRequest(FriendManager.getRequest(target.getUniqueId(), player.getUniqueId()));
             player.message().send(
                     TranslationManager.translation(
                             "feature.friend.request.denied",

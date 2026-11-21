@@ -1,9 +1,9 @@
 package fr.openmc.api.menulib;
 
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -159,7 +159,11 @@ public abstract class Menu implements InventoryHolder {
             getContent().forEach((slot, item) ->
                     setItem(owner, inventory, slot, item));
 
-            Bukkit.getServer().getPluginManager().callEvent(new OpenMenuEvent(owner, this));
+            OpenMenuEvent event = new OpenMenuEvent(owner, this);
+
+            Bukkit.getServer().getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) return;
 
             InventoryView openedMenu = owner.openInventory(inventory);
 

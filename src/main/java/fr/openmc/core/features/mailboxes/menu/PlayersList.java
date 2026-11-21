@@ -10,7 +10,7 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
-import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.bukkit.SkullUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -58,7 +58,7 @@ public class PlayersList extends PaginatedMenu {
             if (onlinePlayer == getOwner()) continue;
             OMCPlayer omcPlayer = OMCPlayer.of(onlinePlayer);
             if (!MailboxManager.canSend(getOwner(), onlinePlayer)) continue;
-            pageItems.add(new ItemMenuBuilder(this, ItemUtils.getPlayerHead(onlinePlayer.getUniqueId()))
+            pageItems.add(new ItemMenuBuilder(this, SkullUtils.getPlayerSkull(onlinePlayer.getUniqueId(), this))
                     .setOnClick(event -> {
                         new SendingLetter(getOwner(), omcPlayer).open();
                     }));
