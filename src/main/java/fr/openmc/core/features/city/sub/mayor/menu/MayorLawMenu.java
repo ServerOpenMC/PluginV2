@@ -94,8 +94,8 @@ public class MayorLawMenu extends Menu {
                     : TranslationManager.translation("feature.city.mayor.menu.law.pvp.name.enable");
             List<Component> loreLawPVP = new ArrayList<>(List.of(
                     law.isPvp()
-                            ? TranslationManager.translation("feature.city.mayor.menu.law.pvp.lore.active")
-                            : TranslationManager.translation("feature.city.mayor.menu.law.pvp.lore.inactive"),
+                            ? TranslationManager.translation("feature.city.mayor.menu.law.pvp.lore.inactive")
+                            : TranslationManager.translation("feature.city.mayor.menu.law.pvp.lore.active"),
                     TranslationManager.translation("feature.city.mayor.menu.law.pvp.lore.members")
             ));
 
