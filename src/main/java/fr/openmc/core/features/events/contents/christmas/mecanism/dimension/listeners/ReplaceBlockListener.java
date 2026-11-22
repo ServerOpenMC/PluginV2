@@ -3,12 +3,12 @@ package fr.openmc.core.features.events.contents.christmas.mecanism.dimension.lis
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.ChristmasWorldUtils;
+import fr.openmc.core.features.events.contents.christmas.mecanism.gift.GiftManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Container;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -39,6 +39,8 @@ public class ReplaceBlockListener implements Listener {
                                 || mat == Material.HONEYCOMB_BLOCK
                         ) {
                             toReplaces.add(new ToReplace(x, y, z, mat));
+                        } else if (mat == Material.ICE) {
+                            toReplaces.add(new ToReplace(x, y, z, Material.ICE));
                         }
                     }
                 }
@@ -71,10 +73,6 @@ public class ReplaceBlockListener implements Listener {
                         case HONEYCOMB_BLOCK -> {
                             block.setType(Material.CHEST);
 
-                            if (block instanceof Container c) {
-                                c.customName();
-                            }
-
                             double chance = ThreadLocalRandom.current().nextDouble();
 
                             if (chance < 0.5) {
@@ -84,6 +82,9 @@ public class ReplaceBlockListener implements Listener {
                             } else {
                                 OMCRegistry.CUSTOM_LOOT_TABLES.LARGE_CHRISTMAS_CHEST.generateChestLoot(block);
                             }
+                        }
+                        case ICE -> {
+                            GiftManager.placeGiftInBlock(block);
                         }
                     }
                 }

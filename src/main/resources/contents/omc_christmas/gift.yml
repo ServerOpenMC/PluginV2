@@ -1,0 +1,43 @@
+info:
+  namespace: omc_christmas
+items:
+  white_gift:
+    display_name: "<lang:itemsadder.omc_chirstmas.white_gift.name>"
+    resource:
+      material:
+      generate: false
+      model_path: orb/orb_domination
+    lore:
+      - <lang:itemsadder.omc_chirstmas.gift.lore.0>
+      - <lang:itemsadder.omc_chirstmas.gift.lore.1>
+      -
+  green_gift:
+    display_name: "<lang:itemsadder.omc_chirstmas.green_gift.name>"
+    resource:
+      material:
+      generate: false
+      model_path: orb/orb_domination
+    lore:
+      - <lang:itemsadder.omc_chirstmas.gift.lore.0>
+      - <lang:itemsadder.omc_chirstmas.gift.lore.1>
+
+  legendary_gift:
+    display_name: "<lang:itemsadder.omc_chirstmas.legendary_gift.name>"
+    resource:
+      material:
+      generate: false
+      model_path: orb/orb_domination
+    lore:
+      - <lang:itemsadder.omc_chirstmas.gift.lore.0>
+      - <lang:itemsadder.omc_chirstmas.gift.lore.1>
+
+  onirisme_gift:
+    display_name: "<lang:itemsadder.omc_chirstmas.onirisme_gift.name>"
+    resource:
+      material:
+      generate: false
+      model_path: orb/orb_domination
+    lore:
+      - <lang:itemsadder.omc_chirstmas.onirisme_gift.lore.0>
+      - <lang:itemsadder.omc_chirstmas.gift.lore.1>
+
