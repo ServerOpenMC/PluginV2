@@ -1,7 +1,6 @@
 package fr.openmc.api.omcplayer;
 
 import fr.openmc.api.omcplayer.sub.OMCPlayerCity;
-import fr.openmc.api.omcplayer.sub.OMCPlayerEconomy;
 import fr.openmc.api.omcplayer.sub.OMCPlayerMessage;
 import fr.openmc.api.omcplayer.sub.OMCPlayerSettings;
 import lombok.experimental.Delegate;
@@ -23,7 +22,6 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     private final Player player;
     private final OMCPlayerMessage message;
     private final OMCPlayerCity city;
-    private final OMCPlayerEconomy economy;
     private final OMCPlayerSettings settings;
 
     private OMCPlayerImpl(Player player) {
@@ -31,7 +29,6 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
         this.player = player;
         this.message = new OMCPlayerMessage(player);
         this.city = new OMCPlayerCity(player);
-        this.economy = new OMCPlayerEconomy(player);
         this.settings = new OMCPlayerSettings(player);
     }
 
@@ -93,11 +90,6 @@ public class OMCPlayerImpl extends OMCOfflinePlayerImpl implements OMCPlayer {
     @Override
     public OMCPlayerMessage message() {
         return message;
-    }
-
-    @Override
-    public OMCPlayerEconomy economy() {
-        return economy;
     }
 
     @Override

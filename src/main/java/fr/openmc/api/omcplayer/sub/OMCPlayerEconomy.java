@@ -1,13 +1,13 @@
 package fr.openmc.api.omcplayer.sub;
 
 import fr.openmc.core.features.economy.EconomyManager;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class OMCPlayerEconomy extends OMCPlayerFeat {
-    public OMCPlayerEconomy(Player player) {
+    public OMCPlayerEconomy(OfflinePlayer player) {
         super(player);
     }
 

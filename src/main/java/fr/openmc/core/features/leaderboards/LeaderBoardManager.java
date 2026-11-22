@@ -7,6 +7,8 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.events.contents.deposit.DepositEvent;
+import fr.openmc.core.features.events.contents.deposit.DepositEventManager;
 import fr.openmc.core.features.leaderboards.commands.LeaderBoardCommands;
 import fr.openmc.core.features.leaderboards.leaderboards.*;
 import fr.openmc.core.utils.text.DateUtils;
@@ -33,7 +35,6 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
     public static ContributorsLeaderBoard CONTRIBUTORS_LEADERBOARD;
     public static MoneyLeaderBoard MONEY_LEADERBOARD;
     public static StatsLeaderBoard PLAYTIME_LEADERBOARD;
-    public static PumpkinCountLeaderBoard PUMPKIN_COUNT_LEADERBOARD;
     public static StatsLeaderBoard DEATH_COUNT_LEADERBOARD;
 
     private final static List<LeaderBoard> enabledLeaderBoards = new ArrayList<>();
@@ -47,7 +48,6 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         CITY_MONEY_LEADERBOARD = new CityMoneyLeaderBoard();
         CONTRIBUTORS_LEADERBOARD = new ContributorsLeaderBoard();
         MONEY_LEADERBOARD = new MoneyLeaderBoard();
-        PUMPKIN_COUNT_LEADERBOARD = new PumpkinCountLeaderBoard();
         PLAYTIME_LEADERBOARD = new StatsLeaderBoard("playtime", Statistic.PLAY_ONE_MINUTE,
                 TranslationManager.translation("feature.leaderboards.header.playtime"),
                 ((player, valueStats, rank) -> {
@@ -71,37 +71,40 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         start();
     }
 
-    public static Stream<String> getLeaderBoards(){
+    public static Stream<String> getLeaderBoards() {
         return enabledLeaderBoards.stream().map(LeaderBoard::getId);
     }
 
-    public static Optional<LeaderBoard> getLeaderBoard(String id){
+    public static Optional<LeaderBoard> getLeaderBoard(String id) {
         return enabledLeaderBoards.stream().filter(lb -> lb.getId().equalsIgnoreCase(id)).findAny();
     }
 
     public static void stop() {
         enabledLeaderBoards.forEach(LeaderBoard::remove);
         enabledLeaderBoards.clear();
-        if (viewerTimer != null){
+        if (viewerTimer != null) {
             viewerTimer.cancel();
             viewerTimer = null;
         }
     }
 
-    public static void start(){
+    public static void start() {
         registerLeaderBoard(CITY_MONEY_LEADERBOARD);
         registerLeaderBoard(CONTRIBUTORS_LEADERBOARD);
         registerLeaderBoard(MONEY_LEADERBOARD);
         registerLeaderBoard(PLAYTIME_LEADERBOARD);
-        registerLeaderBoard(PUMPKIN_COUNT_LEADERBOARD);
         registerLeaderBoard(DEATH_COUNT_LEADERBOARD);
+
+        for (DepositEvent e : DepositEventManager.getEvents()) {
+            registerLeaderBoard(new DepositLeaderBoard(e));
+        }
 
         viewerTimer = new BukkitRunnable() {
             @Override
             public void run() {
                 updateViewers();
             }
-        }.runTaskTimer(OMCPlugin.getInstance(),0L,20L);
+        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
     }
 
     public static void reload() {
@@ -147,14 +150,14 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         return leaderBoardConfig;
     }
 
-    public static void registerLeaderBoard(LeaderBoard leaderBoard){
+    public static void registerLeaderBoard(LeaderBoard leaderBoard) {
         if (enabledLeaderBoards.stream().noneMatch(existing -> existing.getId().equals(leaderBoard.getId()))) {
             enabledLeaderBoards.add(leaderBoard);
             leaderBoard.start();
         }
     }
 
-    public static void unregisterLeaderBoard(LeaderBoard leaderBoard){
+    public static void unregisterLeaderBoard(LeaderBoard leaderBoard) {
         if (enabledLeaderBoards.remove(leaderBoard))
             leaderBoard.remove();
     }

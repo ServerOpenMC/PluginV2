@@ -34,11 +34,9 @@ import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.events.EventsManager;
-import fr.openmc.core.features.events.contents.christmas.gingerbread.managers.GingerBreadManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
+import fr.openmc.core.features.events.contents.deposit.DepositEventManager;
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
-//import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
-import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import fr.openmc.core.features.events.contents.open.OpenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
@@ -81,6 +79,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+//import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
+
 /**
  * Plugin principal OpenMC.
  * Gère le cycle de vie, les features et les hooks globaux.
@@ -116,7 +116,6 @@ public class OMCPlugin extends JavaPlugin {
             AdminShopManager::new,
             HelpConfigManager::new,
             () -> new AnimationsManager(),
-            () -> new HalloweenManager(),
             QuestProgressSaveManager::new,
             MotdUtils::new,
             MascotsManager::new,
@@ -146,7 +145,7 @@ public class OMCPlugin extends JavaPlugin {
             ShopManager::new,
             HomeIconCacheManager::new,
             DimensionOpenerManager::new,
-            GingerBreadManager::new
+            DepositEventManager::new
     ));
 
     public static final List<Feature> loadedFeature = new ArrayList<>();
