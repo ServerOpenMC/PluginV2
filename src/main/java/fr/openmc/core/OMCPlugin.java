@@ -79,8 +79,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-//import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
-
 /**
  * Plugin principal OpenMC.
  * Gère le cycle de vie, les features et les hooks globaux.

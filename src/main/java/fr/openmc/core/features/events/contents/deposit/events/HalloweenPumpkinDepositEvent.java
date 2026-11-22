@@ -59,7 +59,7 @@ public class HalloweenPumpkinDepositEvent extends DepositEvent {
 
     @Override
     public LocalDateTime getEndDate() {
-        return LocalDateTime.of(2026, 10, 31, 1, 0);
+        return LocalDateTime.of(2026, 11, 1, 0, 0);
     }
 
     @Override

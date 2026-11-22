@@ -54,12 +54,12 @@ public class GingerbreadDepositEvent extends DepositEvent {
 
     @Override
     public LocalDateTime getStartDate() {
-        return LocalDateTime.of(2026, 11, 21, 16, 48);
+        return LocalDateTime.of(2026, 12, 1, 0, 0);
     }
 
     @Override
     public LocalDateTime getEndDate() {
-        return LocalDateTime.of(2026, 11, 21, 17, 0);
+        return LocalDateTime.of(2027, 1, 1, 0, 0);
     }
 
     @Override
