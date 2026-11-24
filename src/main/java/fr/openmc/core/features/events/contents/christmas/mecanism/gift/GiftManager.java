@@ -14,9 +14,11 @@ import fr.openmc.core.features.events.contents.christmas.mecanism.gift.models.Gi
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.IdLoot;
 import fr.openmc.core.utils.bukkit.ItemUtils;
+import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.world.block.BlockPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
@@ -117,34 +119,68 @@ public class GiftManager {
         getGift(pos).thenApply(gift -> {
             if (gift == null) return null;
 
-            switch (gift.getType()) {
-                case COMMON -> {
-                    ItemUtils.giveItem(
-                            player,
-                            OMCRegistry.CUSTOM_ITEMS.COMMON_GIFT.getBest(),
-                            1);
-                }
-                case RARE -> {
-                    ItemUtils.giveItem(
-                            player,
-                            OMCRegistry.CUSTOM_ITEMS.RARE_GIFT.getBest(),
-                            1);
-                }
-                case LEGENDARY -> {
-                    ItemUtils.giveItem(
-                            player,
-                            OMCRegistry.CUSTOM_ITEMS.LEGENDARY_GIFT.getBest(),
-                            1);
-                }
-                case ONIRISME -> {
-                    ItemUtils.giveItem(
-                            player,
-                            OMCRegistry.CUSTOM_ITEMS.ONIRISIME_GIFT.getBest(),
-                            1);
-                }
-            }
+            Location particlePos = pos.toLocation().add(0.5, 0.5, 0.5);
 
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                switch (gift.getType()) {
+                    case COMMON -> {
+                        ParticleUtils.spawnDispersingParticles(
+                                particlePos,
+                                Particle.SCRAPE,
+                                10,
+                                15,
+                                1d,
+                                null
+                        );
+                        ItemUtils.giveItem(
+                                player,
+                                OMCRegistry.CUSTOM_ITEMS.COMMON_GIFT.getBest(),
+                                1);
+                    }
+                    case RARE -> {
+                        ParticleUtils.spawnDispersingParticles(
+                                particlePos,
+                                Particle.SCRAPE,
+                                10,
+                                15,
+                                1d,
+                                null
+                        );
+                        ItemUtils.giveItem(
+                                player,
+                                OMCRegistry.CUSTOM_ITEMS.RARE_GIFT.getBest(),
+                                1);
+                    }
+                    case LEGENDARY -> {
+                        ParticleUtils.spawnDispersingParticles(
+                                particlePos,
+                                Particle.TRAIL,
+                                10,
+                                15,
+                                1d,
+                                null
+                        );
+                        ItemUtils.giveItem(
+                                player,
+                                OMCRegistry.CUSTOM_ITEMS.LEGENDARY_GIFT.getBest(),
+                                1);
+                    }
+                    case ONIRISME -> {
+                        ParticleUtils.spawnDispersingParticles(
+                                particlePos,
+                                Particle.SONIC_BOOM,
+                                10,
+                                15,
+                                1d,
+                                null
+                        );
+                        ItemUtils.giveItem(
+                                player,
+                                OMCRegistry.CUSTOM_ITEMS.ONIRISIME_GIFT.getBest(),
+                                1);
+                    }
+                }
+
                 gift.removeGiftEntity();
                 removeGift(gift);
             });
