@@ -8,6 +8,7 @@ import fr.openmc.core.features.bits.contents.lootboxes.KitchenLootbox;
 import fr.openmc.core.features.bits.contents.lootboxes.MedievalLootbox;
 import fr.openmc.core.features.bits.contents.lootboxes.ModernLootbox;
 import fr.openmc.core.features.bits.contents.lootboxes.OfficeLootbox;
+import fr.openmc.core.features.events.contents.christmas.contents.lootbox.ChristmasFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.lootboxes.EpicFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.lootboxes.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.lootboxes.LegendaryFishingTreasureLootbox;
@@ -34,6 +35,7 @@ public class CustomLootboxRegistry extends Registry<String, CustomLootbox>
     public final CustomLootbox MEDIEVAL_BOX = register(new MedievalLootbox());
     public final CustomLootbox KITCHEN_BOX = register(new KitchenLootbox());
 
+    public final CustomLootbox CHRISTMAS_FURNITURE = register(new ChristmasFurnitureLootbox());
 
     @Override
     public Set<ListenerFactory> getListeners() {

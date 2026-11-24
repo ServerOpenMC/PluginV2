@@ -1,0 +1,16 @@
+info:
+  namespace: omc_christmas
+items:
+  it_time_disc:
+    display_name: Its Time Disc
+    resource:
+      material: PAPER
+      generate: true
+      textures:
+        - cd_santa.png
+    behaviours:
+      music_disc:
+        song:
+          name: omc_sounds:steve_the_fish
+          description: Tomo - Le poisson Steve
+    max_stack_size: 1

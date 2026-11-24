@@ -17,3 +17,7 @@ sounds:
     path: music/steve_the_fish
     settings:
       subtitle: sounds.music.steve_the_fish
+  it_time:
+    path: music/it_time
+    settings:
+      subtitle: sounds.music.it_time

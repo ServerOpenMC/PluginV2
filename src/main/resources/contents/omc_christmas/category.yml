@@ -1,0 +1,10 @@
+info:
+  namespace: omc_christmas
+categories:
+  omc_christmas:
+    enabled: true
+    skip_if_already: false
+    icon: omc_christmas:white_gift
+    name: "OpenMC Christmas"
+    items:
+      - omc_christmas:*

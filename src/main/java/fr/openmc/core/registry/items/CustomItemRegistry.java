@@ -11,7 +11,9 @@ import fr.openmc.core.features.bits.contents.items.KitchenBox;
 import fr.openmc.core.features.bits.contents.items.MedievalBox;
 import fr.openmc.core.features.bits.contents.items.ModernBox;
 import fr.openmc.core.features.bits.contents.items.OfficeBox;
+import fr.openmc.core.features.events.contents.christmas.contents.items.ChristmasFurnitureLootbox;
 import fr.openmc.core.features.events.contents.christmas.contents.items.GiftItem;
+import fr.openmc.core.features.events.contents.christmas.mecanism.gift.models.GiftType;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.EpicFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.LegendaryFishingTreasureLootbox;
@@ -323,10 +325,70 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem OFFICE_BOX = register(new OfficeBox("omc_bits:office_box"));
     public final CustomItem MEDIEVAL_BOX = register(new MedievalBox("omc_bits:medieval_box"));
 
-    public final GiftItem COMMON_GIFT = register(new GiftItem("omc_christmas:white_gift"));
-    public final GiftItem RARE_GIFT = register(new GiftItem("omc_christmas:green_gift"));
-    public final GiftItem LEGENDARY_GIFT = register(new GiftItem("omc_christmas:yellow_gift"));
-    public final GiftItem ONIRISIME_GIFT = register(new GiftItem("omc_christmas:blue_gift"));
+    public final GiftItem COMMON_GIFT = register(new GiftItem(GiftType.COMMON));
+    public final GiftItem RARE_GIFT = register(new GiftItem(GiftType.RARE));
+    public final GiftItem LEGENDARY_GIFT = register(new GiftItem(GiftType.LEGENDARY));
+    public final GiftItem ONIRISIME_GIFT = register(new GiftItem(GiftType.ONIRISME));
+
+    public final CustomItem CHRISTMAS_PACK_RED_RIBBON = register("pack_christmas:red_ribbon", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_YELLOW_RIBBON = register("pack_christmas:yellow_ribbon", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_WHITE_RIBBON = register("pack_christmas:white_ribbon", Material.PAPER);
+
+    public final CustomItem CHRISTMAS_PACK_RED_GIFT_BOX_BLOCK = register("pack_christmas:red_gift_box_block", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_RED_WHITE_GIFT_BOX_BLOCK = register("pack_christmas:red_white_gift_box_block", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_YELLOW_GIFT_BOX_BLOCK = register("pack_christmas:yellow_gift_box_block", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_GREEN_GIFT_BOX_BLOCK = register("pack_christmas:green_gift_box_block", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_GREEN_RED_GIFT_BOX_BLOCK = register("pack_christmas:green_red_gift_box_block", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_BLUE_GIFT_BOX_BLOCK = register("pack_christmas:blue_gift_box_block", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_WHITE_GIFT_BOX_BLOCK = register("pack_christmas:white_gift_box_block", Material.PAPER);
+
+    public final CustomItem CHRISTMAS_PACK_RED_TWIST_CANDY = register("pack_christmas:red_twist_candy", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_RED_SWIRL_CANDY = register("pack_christmas:red_swirl_candy", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_YELLOW_TWIST_CANDY = register("pack_christmas:yellow_twist_candy", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_YELLOW_SWIRL_CANDY = register("pack_christmas:yellow_swirl_candy", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_GREEN_TWIST_CANDY = register("pack_christmas:green_twist_candy", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_GREEN_SWIRL_CANDY = register("pack_christmas:green_swirl_candy", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_BLUE_TWIST_CANDY = register("pack_christmas:blue_twist_candy", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_BLUE_SWIRL_CANDY = register("pack_christmas:blue_swirl_candy", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_PURPLE_TWIST_CANDY = register("pack_christmas:purple_twist_candy", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_PURPLE_SWIRL_CANDY = register("pack_christmas:purple_swirl_candy", Material.PAPER);
+
+    public final CustomItem CHRISTMAS_PACK_CANDLES = register("pack_christmas:candles", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_CANDY_CANE = register("pack_christmas:candy_cane", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_CANDY_CANE2 = register("pack_christmas:candy_cane2", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_CHRISTMAS_TREE = register("pack_christmas:christmas_tree", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_CHRISTMAS_WREATH = register("pack_christmas:christmas_wreath", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_DEER = register("pack_christmas:deer", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_ELVES = register("pack_christmas:elves", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_HOLLY = register("pack_christmas:holly", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_JINGLE_BELLS = register("pack_christmas:jingle_bells", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_LONG_GIFT_BOX = register("pack_christmas:long_gift_box", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_NUTCRACKER = register("pack_christmas:nutcracker", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_OPEN_GIFT_BOX = register("pack_christmas:open_gift_box", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_PENGUIN = register("pack_christmas:penguin", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_SANTA_CLAUS = register("pack_christmas:santa_claus", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_SANTA_CLAUS_BAG = register("pack_christmas:santa_claus_bag", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_SANTA_DECORATION = register("pack_christmas:santa_decoration", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_SANTA_DECORATION2 = register("pack_christmas:santa_decoration2", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_SANTA_SLEIGH = register("pack_christmas:santa_sleigh", Material.PAPER);
+    public final CustomItem CHRISTMAS_PACK_SNOWMAN = register("pack_christmas:snowman", Material.PAPER);
+
+    public final CustomItem CHRISTMAS_LOOTBOX = register(new ChristmasFurnitureLootbox("omc_christmas:christmas_lootbox"));
+
+    public final CustomItem CHRISTMAS_SANTA_HAT = register("omc_christmas:santa_hat", Material.LEATHER_HELMET);
+    public final CustomItem CHRISTMAS_SANTA_CHESTPLATE = register("omc_christmas:santa_chestplate", Material.LEATHER_CHESTPLATE);
+    public final CustomItem CHRISTMAS_SANTA_LEGGINGS = register("omc_christmas:santa_leggings", Material.LEATHER_LEGGINGS);
+    public final CustomItem CHRISTMAS_SANTA_BOOTS = register("omc_christmas:santa_boots", Material.LEATHER_BOOTS);
+
+    public final CustomItem CHRISTMAS_GINGERBREAD_HELMET = register("omc_christmas:gingerbread_helmet", Material.LEATHER_HELMET);
+    public final CustomItem CHRISTMAS_GINGERBREAD_CHESTPLATE = register("omc_christmas:gingerbread_chestplate", Material.LEATHER_CHESTPLATE);
+    public final CustomItem CHRISTMAS_GINGERBREAD_LEGGINGS = register("omc_christmas:gingerbread_leggings", Material.LEATHER_LEGGINGS);
+    public final CustomItem CHRISTMAS_GINGERBREAD_BOOTS = register("omc_christmas:gingerbread_boots", Material.LEATHER_BOOTS);
+
+    public final CustomItem CHRISTMAS_IT_TIME_DISC = register("omc_christmas:it_time_disc", Material.PAPER);
+
+    public final CustomItem CHRISTMAS_PELUCHE_PERE_AYWEN = register("omc_christmas:peluche_pere_aywen", Material.PAPER);
+    public final CustomItem CHRISTMAS_PELUCHE_GINGERBREAD_ROOT = register("omc_christmas:peluche_gingerbread_root", Material.PAPER);
 
     @Override
     public Set<ListenerFactory> getListeners() {
