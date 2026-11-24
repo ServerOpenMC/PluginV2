@@ -13,6 +13,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.commands.DailyEventCommand;
 import fr.openmc.core.features.events.contents.dailyevents.listeners.DailyEventAmbientListeners;
+import fr.openmc.core.features.events.contents.dailyevents.listeners.PlayerJoinListener;
 import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEventsDB;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.SlotDailyEvent;
@@ -80,7 +81,8 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     @Override
     public Set<ListenerFactory> getListeners() {
         Set<ListenerFactory> listeners = new HashSet<>(Set.of(
-                DailyEventAmbientListeners::new
+                DailyEventAmbientListeners::new,
+                PlayerJoinListener::new
         ));
 
         for (DailyEvent event : OMCRegistry.DAILY_EVENTS.values()) {

@@ -7,6 +7,7 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.events.contents.christmas.listeners.PlayerJoinListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.commands.AdminRiftCommands;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.listeners.RegionListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.listeners.StructureListener;
@@ -73,7 +74,8 @@ public class RiftManager extends Feature implements HasListeners, HasCommands {
     public Set<ListenerFactory> getListeners() {
         return Set.of(
                 StructureListener::new,
-                RegionListener::new
+                RegionListener::new,
+                PlayerJoinListener::new
         );
     }
 
