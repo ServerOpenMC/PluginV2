@@ -1,9 +1,9 @@
 {
-    "feature": "omc_christmas:ice_wall/ice_packed_wall",
+    "feature": "omc_christmas:ice_wall/ice_wall",
     "placement": [
         {
             "type": "minecraft:count",
-            "count": 20
+            "count": 400
         },
         {
             "type": "minecraft:in_square"
@@ -16,8 +16,76 @@
                     "absolute": -40
                 },
                 "max_inclusive": {
-                    "absolute": 67
+                    "absolute": 70
                 }
+            }
+        },
+        {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+                "type": "minecraft:all_of",
+                "predicates": [
+                    {
+                        "type": "minecraft:matching_blocks",
+                        "blocks": [
+                            "minecraft:diorite",
+                            "minecraft:calcite"
+                        ]
+                    },
+                    {
+                        "type": "minecraft:any_of",
+                        "predicates": [
+                            {
+                                "type": "minecraft:matching_blocks",
+                                "offset": [
+                                    1,
+                                    0,
+                                    0
+                                ],
+                                "blocks": [
+                                    "minecraft:air",
+                                    "minecraft:cave_air"
+                                ]
+                            },
+                            {
+                                "type": "minecraft:matching_blocks",
+                                "offset": [
+                                    -1,
+                                    0,
+                                    0
+                                ],
+                                "blocks": [
+                                    "minecraft:air",
+                                    "minecraft:cave_air"
+                                ]
+                            },
+                            {
+                                "type": "minecraft:matching_blocks",
+                                "offset": [
+                                    0,
+                                    0,
+                                    1
+                                ],
+                                "blocks": [
+                                    "minecraft:air",
+                                    "minecraft:cave_air"
+                                ]
+                            },
+                            {
+                                "type": "minecraft:matching_blocks",
+                                "offset": [
+                                    0,
+                                    0,
+                                    -1
+                                ],
+                                "blocks": [
+                                    "minecraft:air",
+                                    "minecraft:cave_air"
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
         },
         {

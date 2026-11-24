@@ -11,6 +11,7 @@ import fr.openmc.core.features.chatanimations.contents.quizz.QuizzLootTable;
 import fr.openmc.core.features.events.contents.christmas.contents.loottable.chest.LargeChristmasChestLootTable;
 import fr.openmc.core.features.events.contents.christmas.contents.loottable.chest.MediumChristmasChestLootTable;
 import fr.openmc.core.features.events.contents.christmas.contents.loottable.chest.SmallChristmasChestLootTable;
+import fr.openmc.core.features.events.contents.christmas.contents.loottable.gift.GiftIceLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.VampireLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.AncientMobLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.loottable.bloodymob.CorruptedMobLootTable;
@@ -60,6 +61,7 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable SMALL_CHRISTMAS_CHEST = register(new SmallChristmasChestLootTable());
     public final CustomLootTable MEDIUM_CHRISTMAS_CHEST = register(new MediumChristmasChestLootTable());
     public final CustomLootTable LARGE_CHRISTMAS_CHEST = register(new LargeChristmasChestLootTable());
+    public final CustomLootTable CHRISTMAS_ICE = register(new GiftIceLootTable());
 
     @Override
     public String key(CustomLootTable registryObject) {

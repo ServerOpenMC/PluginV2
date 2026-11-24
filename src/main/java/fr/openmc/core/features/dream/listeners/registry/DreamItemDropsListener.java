@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.listeners.registry;
 
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

@@ -11,6 +11,7 @@ import fr.openmc.core.features.bits.contents.items.KitchenBox;
 import fr.openmc.core.features.bits.contents.items.MedievalBox;
 import fr.openmc.core.features.bits.contents.items.ModernBox;
 import fr.openmc.core.features.bits.contents.items.OfficeBox;
+import fr.openmc.core.features.events.contents.christmas.contents.items.GiftItem;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.EpicFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.LegendaryFishingTreasureLootbox;
@@ -321,6 +322,11 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem KITCHEN_BOX = register(new KitchenBox("omc_bits:kitchen_box"));
     public final CustomItem OFFICE_BOX = register(new OfficeBox("omc_bits:office_box"));
     public final CustomItem MEDIEVAL_BOX = register(new MedievalBox("omc_bits:medieval_box"));
+
+    public final GiftItem COMMON_GIFT = register(new GiftItem("omc_christmas:white_gift"));
+    public final GiftItem RARE_GIFT = register(new GiftItem("omc_christmas:green_gift"));
+    public final GiftItem LEGENDARY_GIFT = register(new GiftItem("omc_christmas:yellow_gift"));
+    public final GiftItem ONIRISIME_GIFT = register(new GiftItem("omc_christmas:blue_gift"));
 
     @Override
     public Set<ListenerFactory> getListeners() {

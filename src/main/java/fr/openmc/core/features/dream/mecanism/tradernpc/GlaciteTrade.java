@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.tradernpc;
 
 import fr.openmc.core.OMCRegistry;
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;

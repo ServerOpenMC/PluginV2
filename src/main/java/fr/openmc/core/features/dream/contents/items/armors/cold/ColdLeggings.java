@@ -1,0 +1,36 @@
+package fr.openmc.core.features.dream.contents.items.armors.cold;
+
+import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
+import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+public class ColdLeggings extends DreamItem implements DreamEquipableItem {
+    public ColdLeggings() {
+        super(new DreamItemMeta(
+                "omc_dream:cold_leggings",
+                TranslationManager.translation("feature.dream.item.cold_leggings.name"),
+                DreamRarity.LEGENDARY,
+                Material.LEATHER_LEGGINGS,
+                true
+        ));
+    }
+
+    @Override
+    public long getAdditionalMaxTime() {
+        return 60;
+    }
+
+    @Override
+    public Integer getColdResistance() {
+        return 1;
+    }
+
+    @Override
+    public ItemStack getTransferableItem() {
+        return this.getBestTransferable();
+    }
+}

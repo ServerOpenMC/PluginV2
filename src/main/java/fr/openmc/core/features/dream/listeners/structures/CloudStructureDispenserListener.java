@@ -1,6 +1,6 @@
 package fr.openmc.core.features.dream.listeners.structures;
 
-import fr.openmc.core.features.dream.registries.DreamStructure;
+import fr.openmc.core.features.dream.contents.DreamStructure;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;

@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.cold;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.utils.bukkit.ParticleUtils;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
