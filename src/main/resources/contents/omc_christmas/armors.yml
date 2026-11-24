@@ -71,6 +71,9 @@ items:
       textures:
         - armor/gingerbread/gingerbread_helmet
       material: LEATHER_HELMET
+    lore:
+      - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
+      - <lang:itemsadder.omc_christmas.gingerbread_helmet.lore>
     durability:
       max_custom_durability: 400
     equipment:
@@ -85,6 +88,9 @@ items:
       textures:
         - armor/gingerbread/gingerbread_chestplate
       material: LEATHER_CHESTPLATE
+    lore:
+      - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
+      - <lang:itemsadder.omc_christmas.gingerbread_chestplate.lore>
     durability:
       max_custom_durability: 400
     equipment:
@@ -99,6 +105,8 @@ items:
       textures:
         - armor/gingerbread/gingerbread_leggings
       material: LEATHER_LEGGINGS
+    lore:
+      - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
     durability:
       max_custom_durability: 375
     equipment:
@@ -113,6 +121,9 @@ items:
       textures:
         - armor/gingerbread/gingerbread_boots
       material: LEATHER_BOOTS
+    lore:
+      - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
+      - <lang:itemsadder.omc_christmas.gingerbread_boots.lore>
     durability:
       max_custom_durability: 325
     equipment:

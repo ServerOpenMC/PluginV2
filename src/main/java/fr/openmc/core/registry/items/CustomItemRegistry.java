@@ -13,6 +13,9 @@ import fr.openmc.core.features.bits.contents.items.ModernBox;
 import fr.openmc.core.features.bits.contents.items.OfficeBox;
 import fr.openmc.core.features.events.contents.christmas.contents.items.ChristmasFurnitureLootbox;
 import fr.openmc.core.features.events.contents.christmas.contents.items.GiftItem;
+import fr.openmc.core.features.events.contents.christmas.contents.items.gingerbread.GingerbreadBoots;
+import fr.openmc.core.features.events.contents.christmas.contents.items.gingerbread.GingerbreadChestplate;
+import fr.openmc.core.features.events.contents.christmas.contents.items.gingerbread.GingerbreadHelmet;
 import fr.openmc.core.features.events.contents.christmas.mecanism.gift.models.GiftType;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.EpicFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
@@ -380,10 +383,10 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem SANTA_LEGGINGS = register("omc_christmas:santa_leggings", Material.LEATHER_LEGGINGS);
     public final CustomItem SANTA_BOOTS = register("omc_christmas:santa_boots", Material.LEATHER_BOOTS);
 
-    public final CustomItem GINGERBREAD_HELMET = register("omc_christmas:gingerbread_helmet", Material.LEATHER_HELMET);
-    public final CustomItem GINGERBREAD_CHESTPLATE = register("omc_christmas:gingerbread_chestplate", Material.LEATHER_CHESTPLATE);
+    public final CustomItem GINGERBREAD_HELMET = register(new GingerbreadHelmet("omc_christmas:gingerbread_helmet"));
+    public final CustomItem GINGERBREAD_CHESTPLATE = register(new GingerbreadChestplate("omc_christmas:gingerbread_chestplate"));
     public final CustomItem GINGERBREAD_LEGGINGS = register("omc_christmas:gingerbread_leggings", Material.LEATHER_LEGGINGS);
-    public final CustomItem GINGERBREAD_BOOTS = register("omc_christmas:gingerbread_boots", Material.LEATHER_BOOTS);
+    public final CustomItem GINGERBREAD_BOOTS = register(new GingerbreadBoots("omc_christmas:gingerbread_boots"));
 
     public final CustomItem CHRISTMAS_IT_TIME_DISC = register("omc_christmas:it_time_disc", Material.PAPER);
 
