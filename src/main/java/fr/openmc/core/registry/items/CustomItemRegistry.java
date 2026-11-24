@@ -375,20 +375,20 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
 
     public final CustomItem CHRISTMAS_LOOTBOX = register(new ChristmasFurnitureLootbox("omc_christmas:christmas_lootbox"));
 
-    public final CustomItem CHRISTMAS_SANTA_HAT = register("omc_christmas:santa_hat", Material.LEATHER_HELMET);
-    public final CustomItem CHRISTMAS_SANTA_CHESTPLATE = register("omc_christmas:santa_chestplate", Material.LEATHER_CHESTPLATE);
-    public final CustomItem CHRISTMAS_SANTA_LEGGINGS = register("omc_christmas:santa_leggings", Material.LEATHER_LEGGINGS);
-    public final CustomItem CHRISTMAS_SANTA_BOOTS = register("omc_christmas:santa_boots", Material.LEATHER_BOOTS);
+    public final CustomItem SANTA_HAT = register("omc_christmas:santa_hat", Material.LEATHER_HELMET);
+    public final CustomItem SANTA_CHESTPLATE = register("omc_christmas:santa_chestplate", Material.LEATHER_CHESTPLATE);
+    public final CustomItem SANTA_LEGGINGS = register("omc_christmas:santa_leggings", Material.LEATHER_LEGGINGS);
+    public final CustomItem SANTA_BOOTS = register("omc_christmas:santa_boots", Material.LEATHER_BOOTS);
 
-    public final CustomItem CHRISTMAS_GINGERBREAD_HELMET = register("omc_christmas:gingerbread_helmet", Material.LEATHER_HELMET);
-    public final CustomItem CHRISTMAS_GINGERBREAD_CHESTPLATE = register("omc_christmas:gingerbread_chestplate", Material.LEATHER_CHESTPLATE);
-    public final CustomItem CHRISTMAS_GINGERBREAD_LEGGINGS = register("omc_christmas:gingerbread_leggings", Material.LEATHER_LEGGINGS);
-    public final CustomItem CHRISTMAS_GINGERBREAD_BOOTS = register("omc_christmas:gingerbread_boots", Material.LEATHER_BOOTS);
+    public final CustomItem GINGERBREAD_HELMET = register("omc_christmas:gingerbread_helmet", Material.LEATHER_HELMET);
+    public final CustomItem GINGERBREAD_CHESTPLATE = register("omc_christmas:gingerbread_chestplate", Material.LEATHER_CHESTPLATE);
+    public final CustomItem GINGERBREAD_LEGGINGS = register("omc_christmas:gingerbread_leggings", Material.LEATHER_LEGGINGS);
+    public final CustomItem GINGERBREAD_BOOTS = register("omc_christmas:gingerbread_boots", Material.LEATHER_BOOTS);
 
     public final CustomItem CHRISTMAS_IT_TIME_DISC = register("omc_christmas:it_time_disc", Material.PAPER);
 
-    public final CustomItem CHRISTMAS_PELUCHE_PERE_AYWEN = register("omc_christmas:peluche_pere_aywen", Material.PAPER);
-    public final CustomItem CHRISTMAS_PELUCHE_GINGERBREAD_ROOT = register("omc_christmas:peluche_gingerbread_root", Material.PAPER);
+    public final CustomItem PLUSH_PERE_AYWEN = register("omc_christmas:peluche_pere_aywen", Material.PAPER);
+    public final CustomItem PLUSH_GINGERBREAD_ROOT = register("omc_christmas:peluche_gingerbread_root", Material.PAPER);
 
     @Override
     public Set<ListenerFactory> getListeners() {

@@ -171,14 +171,19 @@ public abstract class CustomLootTable {
         Inventory inventory = container.getInventory();
         List<CustomLoot> result = new ArrayList<>();
 
+        Set<CustomLoot> loots = this.getLoots();
+        double total = loots.stream().mapToDouble(CustomLoot::getChance).sum();
+        // > 1 : les chances deviennent des poids relatifs ; <= 1 : comportement inchangé (slots vides possibles)
+        double scale = Math.max(1.0, total);
+
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             ItemStack current = inventory.getItem(slot);
             if (current != null && !current.getType().isAir()) continue;
 
-            double roll = ThreadLocalRandom.current().nextDouble();
+            double roll = ThreadLocalRandom.current().nextDouble() * scale;
             double cumulativeChance = 0.0;
 
-            for (CustomLoot loot : this.getLoots()) {
+            for (CustomLoot loot : loots) {
                 cumulativeChance += loot.getChance();
 
                 if (roll < cumulativeChance) {

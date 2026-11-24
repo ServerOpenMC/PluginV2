@@ -28,10 +28,10 @@ public class CommonGiftLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new MoneyLoot(100, 200, 0.35),
+                new MoneyLoot(50, 100, 0.35),
                 new ItemLoot(Material.PAPER, 0.30, 5, 10), //todo: gingerbread
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 0.25, 10, 15),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT, 0.1, 1)
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 0.25, 5, 10),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT, 0.01, 1)
         ));
     }
 }

@@ -27,8 +27,8 @@ public class OnirismGiftLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CHRISTMAS_SANTA_CHESTPLATE, 0.25, 1),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CHRISTMAS_SANTA_LEGGINGS, 0.25, 1),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.SANTA_CHESTPLATE, 0.25, 1),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.SANTA_LEGGINGS, 0.25, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CHRISTMAS_LOOTBOX, 0.15, 1),
                 new ItemLoot(DreamItemRegistry.EWENITE_BLOCK, 0.01, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.PELUCHE_ROOT_HALLOWEEN_2026, 0.001, 1)

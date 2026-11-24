@@ -8,6 +8,8 @@ import fr.openmc.core.bootstrap.features.types.HasDatabase;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.events.contents.christmas.listeners.DimensionListener;
+import fr.openmc.core.features.events.contents.christmas.listeners.GingerbreadListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.ChristmasDimensionManager;
 import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.listeners.PlayerCommandListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.listeners.ReplaceBlockListener;
@@ -37,7 +39,9 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
         return Set.of(
                 PlayerCommandListener::new,
                 ReplaceBlockListener::new,
-                GiftBreakListener::new
+                GiftBreakListener::new,
+                GingerbreadListener::new,
+                DimensionListener::new
         );
     }
 

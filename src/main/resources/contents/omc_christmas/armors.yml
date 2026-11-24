@@ -76,7 +76,7 @@ items:
     equipment:
       id: omc_christmas:gingerbread
       slot_attribute_modifiers:
-        armor: 7
+        armor: 5
 
   gingerbread_chestplate:
     display_name: Gingerbread Chestplate
@@ -90,7 +90,7 @@ items:
     equipment:
       id: omc_christmas:gingerbread
       slot_attribute_modifiers:
-        armor: 7
+        armor: 5
 
   gingerbread_leggings:
     display_name: Gingerbread Leggings
@@ -104,7 +104,7 @@ items:
     equipment:
       id: omc_christmas:gingerbread
       slot_attribute_modifiers:
-        armor: 7
+        armor: 5
 
   gingerbread_boots:
     display_name: Gingerbread Boots
@@ -118,4 +118,4 @@ items:
     equipment:
       id: omc_christmas:gingerbread
       slot_attribute_modifiers:
-        armor: 7
+        armor: 5

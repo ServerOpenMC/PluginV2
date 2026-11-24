@@ -28,8 +28,8 @@ public class LegendaryGiftLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
                 new ItemLoot(Material.PAPER, 0.29, 80, 100), //todo: gingerbread
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CHRISTMAS_SANTA_HAT, 0.25, 1),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CHRISTMAS_SANTA_BOOTS, 0.25, 1),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.SANTA_HAT, 0.25, 1),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.SANTA_BOOTS, 0.25, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CHRISTMAS_IT_TIME_DISC, 0.15, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CHRISTMAS_LOOTBOX, 0.15, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.ONIRISIME_GIFT, 0.005, 1)
