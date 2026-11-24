@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.christmas.mecanism.dimension;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
+import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.task.ChristmasMusicTask;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.World;
@@ -21,17 +22,21 @@ public class ChristmasDimensionManager {
     private static FileConfiguration seedConfig;
     private static boolean seedChanged = false;
 
+    private static final ChristmasMusicTask CHRISTMAS_MUSIC_TASK = new ChristmasMusicTask();
+
     public static void init() {
         seedFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data/christmas", "seed.yml");
         loadSeed();
         CHRISTMAS_WORLD = Bukkit.getWorld(DIMENSION_NAME);
 
         setupDimension();
+        CHRISTMAS_MUSIC_TASK.start();
     }
 
     public static void save() {
         OMCLogger.info("[ChristmasDimensionManager] Saving seed: {}", CHRISTMAS_WORLD.getSeed());
         saveSeed(CHRISTMAS_WORLD.getSeed());
+        CHRISTMAS_MUSIC_TASK.stop();
     }
 
     private static void setupDimension() {

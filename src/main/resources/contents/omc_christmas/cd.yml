@@ -11,6 +11,6 @@ items:
     behaviours:
       music_disc:
         song:
-          name: omc_sounds:steve_the_fish
+          name: omc_sounds:it_time
           description: Tomo - Le poisson Steve
     max_stack_size: 1
