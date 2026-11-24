@@ -4,24 +4,28 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.ChristmasWorldUtils;
 import fr.openmc.core.features.events.contents.christmas.mecanism.gift.GiftManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChunkSnapshot;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ReplaceBlockListener implements Listener {
-
+    private static final NamespacedKey PROCESSED_KEY =
+            new NamespacedKey(OMCPlugin.getInstance(), "cp");
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
         if (!ChristmasWorldUtils.isChristmasWorld(event.getWorld())) return;
+
+        PersistentDataContainer pdc = event.getChunk().getPersistentDataContainer();
+        if (pdc.has(PROCESSED_KEY, PersistentDataType.BYTE)) return;
+        pdc.set(PROCESSED_KEY, PersistentDataType.BYTE, (byte) 1);
 
         Set<ToReplace> toReplaces = new HashSet<>();
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {

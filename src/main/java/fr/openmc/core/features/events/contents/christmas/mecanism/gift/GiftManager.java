@@ -21,11 +21,19 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 
 import java.sql.SQLException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 
 public class GiftManager {
     private static Dao<DBGift, String> giftDao;
+    private static final ExecutorService threadDb =
+            Executors.newSingleThreadExecutor(r -> new Thread(r, "Gift-DB"));
+
+    public static void save() {
+        threadDb.shutdown();
+        try {
+            threadDb.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException ignored) {}
+    }
 
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, DBGift.class);
@@ -33,7 +41,7 @@ public class GiftManager {
     }
 
     public static void addGift(GiftType type, BlockPos pos, Entity entity) {
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+        threadDb.execute(() -> {
             try {
                 giftDao.create(new DBGift(type, pos, entity));
             } catch (SQLException e) {
@@ -45,7 +53,7 @@ public class GiftManager {
     public static void removeGift(DBGift dbGift) {
         if (dbGift == null) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+        threadDb.execute(() -> {
             try {
                 giftDao.delete(dbGift);
             } catch (SQLException e) {
@@ -67,7 +75,7 @@ public class GiftManager {
                 OMCLogger.error("Failed to get gift at {}", pos, e);
                 return null;
             }
-        });
+        }, threadDb);
     }
 
     public static void placeGiftInBlock(Block block) {

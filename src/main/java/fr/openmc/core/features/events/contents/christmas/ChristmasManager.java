@@ -29,6 +29,7 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
     @Override
     public void save() {
         ChristmasDimensionManager.save();
+        GiftManager.save();
     }
 
     @Override
