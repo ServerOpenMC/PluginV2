@@ -1,5 +1,5 @@
 # Comment démarrer le serveur OpenMC en local ?
-### **Information** : Ce tutoriel se base sur Visual Studio Code actuellement et a été écrite sur un ordinateur avec un système d'opération Linux. Il se peut que les différentes moyens d'avoir le résultat ne fonctionnent pas. Dans ce cas aller demander sur le [Discord](discord.openmc.fr) si des gens peuvent vous aider.
+### **Information** : Ce tutoriel se base sur Visual Studio Code actuellement et a été écrite sur un ordinateur avec un système d'exploitation Linux. Il se peut que les différentes moyens d'avoir le résultat ne fonctionnent pas. Dans ce cas aller demander sur le [Discord](discord.openmc.fr) si des gens peuvent vous aider.
 
 ### Durant ce tutoriel il y aura deux méthodes de fonctionnement : une **simple** (Solution 1) et une **"dur" pour les débutants** (Solution 2). 
 
