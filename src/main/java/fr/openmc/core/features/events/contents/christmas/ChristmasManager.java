@@ -142,6 +142,6 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
                                 .clickEvent(ClickEvent.runCommand("/christmas calendar")),
                         Prefix.OPENMC, MessageType.INFO, false);
             }
-        }, 20L * 60L, 20L * 60L);
+        }, 20L * 60L, 20L * 60L * 30L);
     }
 }
