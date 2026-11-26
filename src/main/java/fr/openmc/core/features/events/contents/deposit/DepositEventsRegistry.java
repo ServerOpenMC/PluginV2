@@ -2,8 +2,8 @@ package fr.openmc.core.features.events.contents.deposit;
 
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
-import fr.openmc.core.features.events.contents.deposit.events.GingerbreadDepositEvent;
-import fr.openmc.core.features.events.contents.deposit.events.HalloweenPumpkinDepositEvent;
+import fr.openmc.core.features.events.contents.christmas.contents.deposit.GingerbreadDepositEvent;
+import fr.openmc.core.features.events.contents.halloween.contents.deposit.HalloweenPumpkinDepositEvent;
 
 public class DepositEventsRegistry extends Registry<String, DepositEvent>
         implements KeyedRegistry<String, DepositEvent> {

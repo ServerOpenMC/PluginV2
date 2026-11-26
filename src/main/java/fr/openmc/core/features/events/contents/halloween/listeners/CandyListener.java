@@ -1,7 +1,7 @@
 package fr.openmc.core.features.events.contents.halloween.listeners;
 
 import dev.lone.itemsadder.api.CustomStack;
-import fr.openmc.core.features.events.contents.halloween.CandyItem;
+import fr.openmc.core.features.events.contents.halloween.contents.items.CandyItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

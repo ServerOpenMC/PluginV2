@@ -11,7 +11,7 @@ import fr.openmc.core.features.events.contents.christmas.contents.ambient.Blizza
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.ambient.BloodyAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.contents.goldenharvest.contents.ambient.GoldenAmbient;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.ambient.BlessedAmbient;
-import fr.openmc.core.features.events.contents.halloween.witchhouse.ambient.TerrorHouseAmbient;
+import fr.openmc.core.features.events.contents.halloween.contents.ambient.TerrorHouseAmbient;
 import fr.openmc.core.registry.ambient.contents.DarkAmbient;
 import fr.openmc.core.registry.ambient.contents.HellAmbient;
 import fr.openmc.core.registry.ambient.contents.OpenAmbient;

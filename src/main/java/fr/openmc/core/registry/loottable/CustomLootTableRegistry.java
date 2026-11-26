@@ -26,7 +26,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.FishingFurnitureLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.LegendaryFishingTreasureLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.RareFishingTreasureLootTable;
-import fr.openmc.core.features.events.contents.halloween.witchhouse.chests.loottable.LootChestLootTable;
+import fr.openmc.core.features.events.contents.halloween.contents.loottable.LootChestLootTable;
 import fr.openmc.core.registry.loottable.contents.MachineBallLootTable;
 
 public class CustomLootTableRegistry extends Registry<String, CustomLootTable> implements KeyedRegistry<String, CustomLootTable> {
