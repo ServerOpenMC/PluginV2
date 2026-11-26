@@ -86,6 +86,7 @@ public enum AdventCalendar {
                 meta.lore(TranslationManager.translationLore("feature.events.christmas.menu.case_opener.lore.opened.reclaimed",
                         this.getReward().getDisplayText()));
             } else {
+                meta.setEnchantmentGlintOverride(true);
                 meta.lore(TranslationManager.translationLore("feature.events.christmas.menu.case_opener.lore.opened.not_reclaimed"));
             }
         }).setOnClick(e -> {
@@ -100,7 +101,8 @@ public enum AdventCalendar {
             }
 
             if (ChristmasManager.hasClaimReward(menu.getOwner(), day)) {
-                menu.getOwner().message().sendSuccess(TranslationManager.translation("feature.events.christmas.menu.already_open"));
+                menu.getOwner().message().sendSuccess(TranslationManager.translation("feature.events.christmas.menu.already_open",
+                        Component.text(this.getDay())));
                 return;
             }
 
