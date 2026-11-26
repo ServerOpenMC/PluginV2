@@ -8,11 +8,13 @@ import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.events.contents.deposit.DepositEvent;
 import fr.openmc.core.features.events.contents.deposit.DepositEventManager;
 import fr.openmc.core.features.events.contents.deposit.NpcSettings;
+import fr.openmc.core.features.events.contents.deposit.commands.autocomplete.DepositEventIdAutocomplete;
 import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.EntityType;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"deposit admin"})
@@ -20,7 +22,8 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 public class DepositEventAdminCommands {
 
     @Subcommand("placenpc")
-    public void placeNpc(OMCPlayer player, String eventId) {
+    public void placeNpc(OMCPlayer player,
+                         @SuggestWith(DepositEventIdAutocomplete.class) String eventId) {
         DepositEvent event = find(player, eventId);
         if (event == null) return;
 
@@ -52,7 +55,9 @@ public class DepositEventAdminCommands {
     }
 
     @Subcommand("start")
-    public void start(OMCPlayer player, String eventId, int hours) {
+    public void start(OMCPlayer player,
+                      @SuggestWith(DepositEventIdAutocomplete.class) String eventId,
+                      int hours) {
         DepositEvent event = find(player, eventId);
         if (event == null) return;
         DepositEventManager.start(event, java.time.Duration.ofHours(hours));
@@ -60,13 +65,15 @@ public class DepositEventAdminCommands {
     }
 
     @Subcommand("end")
-    public void end(OMCPlayer player, String eventId) {
+    public void end(OMCPlayer player,
+                    @SuggestWith(DepositEventIdAutocomplete.class) String eventId) {
         DepositEvent event = find(player, eventId);
         if (event != null) DepositEventManager.end(event);
     }
 
     @Subcommand("reset")
-    public void reset(OMCPlayer player, String eventId) {
+    public void reset(OMCPlayer player,
+                      @SuggestWith(DepositEventIdAutocomplete.class) String eventId) {
         DepositEvent event = find(player, eventId);
         if (event != null) DepositEventManager.reset(event);
     }

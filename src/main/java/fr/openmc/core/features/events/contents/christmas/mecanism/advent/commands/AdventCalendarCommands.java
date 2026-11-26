@@ -19,7 +19,7 @@ public class AdventCalendarCommands {
         else {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.events.christmas.calendar.ended"),
-                    Prefix.OPENMC, MessageType.ERROR, false);
+                    Prefix.CHRISTMAS, MessageType.ERROR, false);
         }
     }
 }

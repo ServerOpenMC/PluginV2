@@ -7,6 +7,7 @@ import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.features.events.contents.christmas.ChristmasManager;
 import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.registry.loottable.loots.*;
+import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -91,18 +92,19 @@ public enum AdventCalendar {
             }
         }).setOnClick(e -> {
             if (!isCalendarActive()) {
-                menu.getOwner().message().sendError(TranslationManager.translation("feature.events.christmas.calendar.ended"));
+                menu.getOwner().message().sendError(
+                        TranslationManager.translation("feature.events.christmas.calendar.ended"), Prefix.CHRISTMAS);
                 return;
             }
 
             if (!isCaseOpened()) {
-                menu.getOwner().message().sendError(TranslationManager.translation("feature.events.christmas.menu.case.not_opened"));
+                menu.getOwner().message().sendError(TranslationManager.translation("feature.events.christmas.menu.case.not_opened"), Prefix.CHRISTMAS);
                 return;
             }
 
             if (ChristmasManager.hasClaimReward(menu.getOwner(), day)) {
                 menu.getOwner().message().sendSuccess(TranslationManager.translation("feature.events.christmas.menu.already_open",
-                        Component.text(this.getDay())));
+                        Component.text(this.getDay())), Prefix.CHRISTMAS);
                 return;
             }
 
@@ -111,7 +113,7 @@ public enum AdventCalendar {
 
             menu.getOwner().message().sendSuccess(TranslationManager.translation("feature.events.christmas.menu.open_case",
                     Component.text(day),
-                    reward.buildComponent()));
+                    reward.buildComponent()), Prefix.CHRISTMAS);
 
             menu.open();
         });

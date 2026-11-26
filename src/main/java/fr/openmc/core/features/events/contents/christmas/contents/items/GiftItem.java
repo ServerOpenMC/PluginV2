@@ -57,7 +57,7 @@ public class GiftItem extends CustomItem implements UsableItem {
                         player2.getNameWithHead(),
                         lootComponent
                 ),
-                Prefix.OPENMC,
+                Prefix.CHRISTMAS,
                 false
         );
         player2.message().sendInfo(
@@ -66,7 +66,7 @@ public class GiftItem extends CustomItem implements UsableItem {
                         this.getBest().displayName(),
                         lootComponent
                 ),
-                Prefix.OPENMC,
+                Prefix.CHRISTMAS,
                 false
         );
 

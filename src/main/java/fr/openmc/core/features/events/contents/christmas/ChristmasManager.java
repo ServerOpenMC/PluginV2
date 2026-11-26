@@ -140,7 +140,7 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
                 MessagesManager.sendMessage(player,
                         TranslationManager.translation("feature.events.christmas.advent_calendar.case")
                                 .clickEvent(ClickEvent.runCommand("/christmas calendar")),
-                        Prefix.OPENMC, MessageType.INFO, false);
+                        Prefix.CHRISTMAS, MessageType.INFO, false);
             }
         }, 20L * 60L, 20L * 60L * 30L);
     }
