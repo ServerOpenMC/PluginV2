@@ -12,3 +12,4 @@ items:
         gravity: false
         small: true
         light_level: 8
+    tooltip_style: omc_tooltips:tooltip/christmas_1

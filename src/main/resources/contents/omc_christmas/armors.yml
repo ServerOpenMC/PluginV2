@@ -18,6 +18,7 @@ items:
       material: LEATHER_HELMET
       generate: false
       model_path: santa_hat
+    tooltip_style: omc_tooltips:tooltip/christmas_1
     equipment:
       slot_attribute_modifiers:
         armor: 5
@@ -31,6 +32,7 @@ items:
       material: LEATHER_CHESTPLATE
     durability:
       max_custom_durability: 400
+    tooltip_style: omc_tooltips:tooltip/christmas_1
     equipment:
       id: omc_christmas:santa
       slot_attribute_modifiers:
@@ -43,6 +45,7 @@ items:
       textures:
         - armor/santa/santa_leggings
       material: LEATHER_LEGGINGS
+    tooltip_style: omc_tooltips:tooltip/christmas_1
     durability:
       max_custom_durability: 375
     equipment:
@@ -57,6 +60,7 @@ items:
       textures:
         - armor/santa/santa_boots
       material: LEATHER_BOOTS
+    tooltip_style: omc_tooltips:tooltip/christmas_1
     durability:
       max_custom_durability: 325
     equipment:
@@ -71,6 +75,7 @@ items:
       textures:
         - armor/gingerbread/gingerbread_helmet
       material: LEATHER_HELMET
+    tooltip_style: omc_tooltips:tooltip/christmas_1
     lore:
       - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
       - <lang:itemsadder.omc_christmas.gingerbread_helmet.lore>
@@ -88,6 +93,7 @@ items:
       textures:
         - armor/gingerbread/gingerbread_chestplate
       material: LEATHER_CHESTPLATE
+    tooltip_style: omc_tooltips:tooltip/christmas_1
     lore:
       - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
       - <lang:itemsadder.omc_christmas.gingerbread_chestplate.lore>
@@ -105,6 +111,7 @@ items:
       textures:
         - armor/gingerbread/gingerbread_leggings
       material: LEATHER_LEGGINGS
+    tooltip_style: omc_tooltips:tooltip/christmas_1
     lore:
       - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
     durability:
@@ -121,6 +128,7 @@ items:
       textures:
         - armor/gingerbread/gingerbread_boots
       material: LEATHER_BOOTS
+    tooltip_style: omc_tooltips:tooltip/christmas_1
     lore:
       - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
       - <lang:itemsadder.omc_christmas.gingerbread_boots.lore>
