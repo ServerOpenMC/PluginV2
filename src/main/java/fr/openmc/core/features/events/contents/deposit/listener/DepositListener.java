@@ -2,6 +2,7 @@ package fr.openmc.core.features.events.contents.deposit.listener;
 
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.deposit.DepositEvent;
 import fr.openmc.core.features.events.contents.deposit.DepositEventManager;
 import fr.openmc.core.features.events.contents.deposit.menu.DepositMenu;
@@ -17,7 +18,7 @@ public class DepositListener implements Listener {
         String npcName = event.getNpc().getData().getName();
         OMCPlayer player = OMCPlayer.of(event.getPlayer());
 
-        for (DepositEvent e : DepositEventManager.getEvents()) {
+        for (DepositEvent e : OMCRegistry.DEPOSIT_EVENTS.values()) {
             if (e.getNpcId().equals(npcName)) {
                 if (!DepositEventManager.isActive(e)) {
                     boolean ended = DepositEventManager.getInfo(e).map(DepositEventModel::isEnded).orElse(false);

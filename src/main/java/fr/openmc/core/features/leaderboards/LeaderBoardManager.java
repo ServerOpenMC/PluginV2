@@ -1,6 +1,7 @@
 package fr.openmc.core.features.leaderboards;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.annotations.Credit;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
@@ -8,7 +9,6 @@ import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.features.types.NotLoadInUnitTest;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.events.contents.deposit.DepositEvent;
-import fr.openmc.core.features.events.contents.deposit.DepositEventManager;
 import fr.openmc.core.features.leaderboards.commands.LeaderBoardCommands;
 import fr.openmc.core.features.leaderboards.leaderboards.*;
 import fr.openmc.core.utils.text.DateUtils;
@@ -95,7 +95,7 @@ public class LeaderBoardManager extends Feature implements NotLoadInUnitTest, Lo
         registerLeaderBoard(PLAYTIME_LEADERBOARD);
         registerLeaderBoard(DEATH_COUNT_LEADERBOARD);
 
-        for (DepositEvent e : DepositEventManager.getEvents()) {
+        for (DepositEvent e : OMCRegistry.DEPOSIT_EVENTS.values()) {
             registerLeaderBoard(new DepositLeaderBoard(e));
         }
 

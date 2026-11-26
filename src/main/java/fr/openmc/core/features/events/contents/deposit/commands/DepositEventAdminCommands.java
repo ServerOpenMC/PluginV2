@@ -5,6 +5,7 @@ import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.api.omcplayer.OMCPlayer;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.deposit.DepositEvent;
 import fr.openmc.core.features.events.contents.deposit.DepositEventManager;
 import fr.openmc.core.features.events.contents.deposit.NpcSettings;
@@ -16,6 +17,8 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
+
+import java.time.Duration;
 
 @Command({"deposit admin"})
 @CommandPermission("omc.admins.commands.depositevent")
@@ -60,7 +63,7 @@ public class DepositEventAdminCommands {
                       int hours) {
         DepositEvent event = find(player, eventId);
         if (event == null) return;
-        DepositEventManager.start(event, java.time.Duration.ofHours(hours));
+        DepositEventManager.start(event, Duration.ofHours(hours));
         player.message().send(Component.text("Event démarré pour " + hours + "h !"), Prefix.STAFF);
     }
 
@@ -79,9 +82,8 @@ public class DepositEventAdminCommands {
     }
 
     private DepositEvent find(OMCPlayer player, String id) {
-        return DepositEventManager.getEvent(id).orElseGet(() -> {
-            player.message().sendError(Component.text("Event inconnu : " + id
-                    + " (disponibles : " + String.join(", ", DepositEventManager.getEventIds()) + ")"), Prefix.STAFF);
+        return OMCRegistry.DEPOSIT_EVENTS.get(id).orElseGet(() -> {
+            player.message().sendError(Component.text("Event inconnu : " + id), Prefix.STAFF);
             return null;
         });
     }

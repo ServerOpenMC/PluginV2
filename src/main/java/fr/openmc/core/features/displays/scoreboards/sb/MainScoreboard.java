@@ -1,6 +1,7 @@
 package fr.openmc.core.features.displays.scoreboards.sb;
 
 import fr.openmc.api.scoreboard.SternalBoard;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -137,7 +138,7 @@ public class MainScoreboard extends BaseScoreboard {
                 .append(location.color(TextColor.color(0xFF06DC)))
         );
 
-        for (DepositEvent event : DepositEventManager.getEvents()) {
+        for (DepositEvent event : OMCRegistry.DEPOSIT_EVENTS.values()) {
             if (!DepositEventManager.isActive(event)) continue;
 
             String count = EconomyManager.getFormattedSimplifiedNumber(
