@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.contents.open;
+package fr.openmc.core.features.events.contents.opening;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;

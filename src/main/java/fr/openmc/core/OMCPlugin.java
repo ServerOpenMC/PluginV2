@@ -38,7 +38,7 @@ import fr.openmc.core.features.events.contents.christmas.ChristmasManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.features.events.contents.deposit.DepositEventManager;
 import fr.openmc.core.features.events.contents.halloween.HalloweenFestivalManager;
-import fr.openmc.core.features.events.contents.open.OpenManager;
+import fr.openmc.core.features.events.contents.opening.OpenManager;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsManager;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.ContestParticlesUtils;
 import fr.openmc.core.features.events.contents.weeklyevents.contents.contest.managers.ContestManager;
