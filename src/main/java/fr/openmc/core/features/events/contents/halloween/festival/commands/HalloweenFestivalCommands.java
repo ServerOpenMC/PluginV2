@@ -2,9 +2,7 @@ package fr.openmc.core.features.events.contents.halloween.festival.commands;
 
 import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
 import fr.openmc.core.features.events.contents.halloween.festival.npc.WitchNPCS;
-import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.WitchShopMainMenu;
 import fr.openmc.core.features.events.contents.halloween.festival.shop.menu.WitchShopStoreMenu;
-import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
