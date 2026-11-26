@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntitySnapshot;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 @Getter
-public abstract class CustomMob<T extends LivingEntity> {
+public abstract class CustomMob<T extends Entity> {
     private final String id;
     private final Component name;
     private final Class<T> entityClass;
@@ -95,16 +96,18 @@ public abstract class CustomMob<T extends LivingEntity> {
 
     // * peut etre Override
     public void apply(T entity) {
-        applyStats(entity);
+        if (entity instanceof LivingEntity livingEntity)
+            applyStats(livingEntity);
     }
 
     // * peut etre Override
     public EntitySnapshot getMobSnapshot() {
         World world = Bukkit.getWorld("world");
         if (world == null) return null;
-        LivingEntity entity = world.createEntity(new Location(world, 0, 0, 0), entityClass);
+        Entity entity = world.createEntity(new Location(world, 0, 0, 0), entityClass);
 
-        applyStats(entity);
+        if (entity instanceof LivingEntity livingEntity)
+            applyStats(livingEntity);
 
         return entity.createSnapshot();
     }
@@ -116,11 +119,14 @@ public abstract class CustomMob<T extends LivingEntity> {
 
     // * peut etre Override
     public T getPreBuildMob(Location spawnLocation) {
-        T livingEntity = spawnLocation.getWorld().spawn(spawnLocation.add(0, 1, 0), entityClass, null, CreatureSpawnEvent.SpawnReason.CUSTOM);
-        applyStats(livingEntity);
+        T entity = spawnLocation.getWorld().spawn(spawnLocation.add(0, 1, 0), entityClass, null, CreatureSpawnEvent.SpawnReason.CUSTOM);
 
-        CustomMobRegistry.HAS_BOSSBAR.add(livingEntity.getUniqueId());
-        return livingEntity;
+        if (entity instanceof LivingEntity livingEntity) {
+            applyStats(livingEntity);
+            CustomMobRegistry.HAS_BOSSBAR.add(entity.getUniqueId());
+        }
+
+        return entity;
     }
 
     public void onDeath(CustomMob<?> thisMob, EntityDeathEvent event) {}
@@ -151,7 +157,7 @@ public abstract class CustomMob<T extends LivingEntity> {
                 .orElse(20.0);
     }
 
-    public void registerAsCustomMob(LivingEntity entity) {
+    public void registerAsCustomMob(Entity entity) {
         entity.getPersistentDataContainer().set(
                 CustomMobRegistry.CUSTOM_MOB_KEY,
                 PersistentDataType.STRING,
@@ -159,7 +165,7 @@ public abstract class CustomMob<T extends LivingEntity> {
         );
     }
 
-    public void unregisterAsCustomMob(LivingEntity entity) {
+    public void unregisterAsCustomMob(Entity entity) {
         entity.getPersistentDataContainer().remove(CustomMobRegistry.CUSTOM_MOB_KEY);
     }
 
@@ -180,5 +186,18 @@ public abstract class CustomMob<T extends LivingEntity> {
                 return new HashSet<>(lootList);
             }
         };
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof CustomMob<?> customMob) {
+            return customMob.getId().equals(this.getId());
+        } else if (object instanceof Entity entity) {
+            return entity.getPersistentDataContainer().has(CustomMobRegistry.CUSTOM_MOB_KEY, PersistentDataType.STRING)
+                    && entity.getPersistentDataContainer().get(CustomMobRegistry.CUSTOM_MOB_KEY, PersistentDataType.STRING)
+                    .equals(this.getId());
+        }
+
+        return false;
     }
 }

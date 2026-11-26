@@ -5,6 +5,8 @@ import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
+import fr.openmc.core.features.events.contents.christmas.contents.mobs.GiftMob;
+import fr.openmc.core.features.events.contents.christmas.mecanism.gift.models.GiftType;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.ExplosiveVampireBat;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.LevitationVampireBat;
 import fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.mobs.bat.PoisonVampireBat;
@@ -190,6 +192,26 @@ public class CustomMobRegistry extends Registry<String, CustomMobEntry>
     public final CustomMobEntry HOUSE_BRUTE_LV3 = register(new CustomMobEntry(
             "omc_witch_house:house_brute_lv3",
             HouseBruteLV3::new
+    ));
+
+    public final CustomMobEntry GIFT_COMMON = register(new CustomMobEntry(
+            "omc_christmas:gift_common",
+            (id) -> new GiftMob(id, GiftType.COMMON)
+    ));
+
+    public final CustomMobEntry GIFT_RARE = register(new CustomMobEntry(
+            "omc_christmas:gift_rare",
+            (id) -> new GiftMob(id, GiftType.RARE)
+    ));
+
+    public final CustomMobEntry GIFT_LEGENDARY = register(new CustomMobEntry(
+            "omc_christmas:gift_legendary",
+            (id) -> new GiftMob(id, GiftType.LEGENDARY)
+    ));
+
+    public final CustomMobEntry GIFT_ONIRISME = register(new CustomMobEntry(
+            "omc_christmas:gift_onirisme",
+            (id) -> new GiftMob(id, GiftType.ONIRISME)
     ));
 
     public final static Set<UUID> HAS_BOSSBAR = new HashSet<>();

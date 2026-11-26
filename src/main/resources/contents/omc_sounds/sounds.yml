@@ -17,3 +17,11 @@ sounds:
     path: music/steve_the_fish
     settings:
       subtitle: sounds.music.steve_the_fish
+  it_time:
+    path: music/all_i_want_is_you
+    settings:
+      subtitle: sounds.music.it_time
+  christmas:
+    path: music/christmas
+    settings:
+      subtitle: sounds.music.christmas

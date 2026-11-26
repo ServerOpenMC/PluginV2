@@ -7,19 +7,33 @@ import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.events.contents.christmas.listeners.PlayerJoinListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.commands.AdminRiftCommands;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.listeners.RegionListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.listeners.StructureListener;
 import fr.openmc.core.registry.regions.preset.SquareRegion;
+import fr.openmc.core.registry.structures.model.CustomStructureManager;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 public class RiftManager extends Feature implements HasListeners, HasCommands {
     private static final Set<UUID> rifts = new HashSet<>();
+
+    @Override
+    public void init() throws SQLException {
+        CustomStructureManager.getPlacements(OMCRegistry.CUSTOM_STRUCTURES.CHRISTMAS_RIFT.getId()).forEach((placement) -> {
+            try {
+                OMCRegistry.CUSTOM_STRUCTURES.CHRISTMAS_RIFT.remove(placement.getId());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
     public static void placeRift(Location loc) {
         UUID riftUUID = UUID.randomUUID();
@@ -60,7 +74,8 @@ public class RiftManager extends Feature implements HasListeners, HasCommands {
     public Set<ListenerFactory> getListeners() {
         return Set.of(
                 StructureListener::new,
-                RegionListener::new
+                RegionListener::new,
+                PlayerJoinListener::new
         );
     }
 

@@ -2,6 +2,8 @@ package fr.openmc.core.features.dream.listeners.dream;
 
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.DreamManager;
+import fr.openmc.core.features.dream.contents.DreamBiome;
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.features.dream.events.AltarCraftingEvent;
 import fr.openmc.core.features.dream.events.GlaciteTradeEvent;
 import fr.openmc.core.features.dream.events.MetalDetectorLootEvent;
@@ -9,8 +11,6 @@ import fr.openmc.core.features.dream.mecanism.tradernpc.GlaciteTrade;
 import fr.openmc.core.features.dream.models.db.DBDreamPlayer;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamBiome;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.bukkit.ParticleUtils;

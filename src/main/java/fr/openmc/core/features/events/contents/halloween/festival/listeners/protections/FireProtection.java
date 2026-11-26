@@ -1,7 +1,7 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners.protections;
 
 
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +13,7 @@ public class FireProtection implements Listener {
     public void onFireIgnite(BlockIgniteEvent event) {
         Location loc = event.getBlock().getLocation();
 
-        if (!loc.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+        if (!loc.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
             return;
 
         event.setCancelled(true);

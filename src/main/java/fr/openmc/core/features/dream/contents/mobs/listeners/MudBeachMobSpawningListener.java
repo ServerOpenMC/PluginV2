@@ -1,0 +1,50 @@
+package fr.openmc.core.features.dream.contents.mobs.listeners;
+
+import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.contents.DreamBiome;
+import fr.openmc.core.features.dream.contents.DreamMobsRegistry;
+import fr.openmc.core.registry.mobs.CustomMobRegistry;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+
+/**
+ * Listener pour la gestion de l'apparition de mobs dans le biome MUD_BEACH
+ * dans la dimension Dream.
+ */
+public class MudBeachMobSpawningListener implements Listener {
+
+    private final double CORRUPTED_TADPOLE_PROBABILITY = 0.05;
+
+    /**
+     * Gère l'événement de spawn de créature.
+     * <p>
+     * L'événement est annulé si la créature se trouve dans le biome MUD_BEACH
+     * de la dimension Dream et qu'un mob est généré selon une probabilité définie dans la classe.
+     * </p>
+     *
+     * @param e l'événement de spawn de créature
+     */
+    @EventHandler
+    void onCreatureSpawn(CreatureSpawnEvent e) {
+        if (CustomMobRegistry.isCustomMob(e.getEntity())) return;
+
+        Location spawningLoc = e.getEntity().getLocation();
+
+        if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) return;
+        World world = spawningLoc.getWorld();
+        if (!DreamUtils.isDreamWorld(world)) return;
+
+        e.setCancelled(true);
+
+        if (!DreamBiome.isDreamBiome(spawningLoc, DreamBiome.MUD_BEACH)) return;
+
+        double choice = Math.random();
+        if (choice < CORRUPTED_TADPOLE_PROBABILITY) {
+            DreamMobsRegistry.CORRUPTED_TADPOLE.spawn(spawningLoc);
+            e.setCancelled(true);
+        }
+    }
+}

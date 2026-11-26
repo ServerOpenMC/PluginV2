@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners.protections;
 
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ public class HangingProtection implements Listener {
         Entity entity = event.getRightClicked();
 
         if (entity instanceof Hanging) {
-            if (!event.getPlayer().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            if (!event.getPlayer().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                 return;
 
             if (!event.getPlayer().isOp())
@@ -29,7 +29,7 @@ public class HangingProtection implements Listener {
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
         Entity remover = event.getRemover();
         if (remover != null) {
-            if (!remover.getLocation().getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD))
+            if (!remover.getLocation().getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD))
                 return;
 
             event.setCancelled(true);

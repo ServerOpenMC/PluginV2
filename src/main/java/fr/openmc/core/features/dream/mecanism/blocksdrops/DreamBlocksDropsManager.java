@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.mecanism.blocksdrops;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.registry.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

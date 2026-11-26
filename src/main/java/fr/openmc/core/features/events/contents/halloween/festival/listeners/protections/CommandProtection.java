@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.halloween.festival.listeners.protections;
 
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,7 +22,7 @@ public class CommandProtection implements Listener {
     public void onCommandExecution(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
-        if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
+        if (!player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD)) return;
         if (player.isOp()) return;
 
         String msg = event.getMessage().toLowerCase().trim();
@@ -39,7 +39,7 @@ public class CommandProtection implements Listener {
     public void onCommandSend(PlayerCommandSendEvent event) {
         Player player = event.getPlayer();
 
-        if (!player.getWorld().equals(DimensionGenerator.HALLOWEEN_WORLD)) return;
+        if (!player.getWorld().equals(TerrorHouseDimensionManager.HALLOWEEN_WORLD)) return;
         if (player.isOp()) return;
 
         Collection<String> commands = event.getCommands();

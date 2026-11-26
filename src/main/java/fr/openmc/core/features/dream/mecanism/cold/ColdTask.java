@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.cold;
 
+import fr.openmc.core.features.dream.contents.DreamBiome;
+import fr.openmc.core.features.dream.contents.DreamStructure;
 import fr.openmc.core.features.dream.models.db.DreamPlayer;
-import fr.openmc.core.features.dream.registries.DreamBiome;
-import fr.openmc.core.features.dream.registries.DreamStructure;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

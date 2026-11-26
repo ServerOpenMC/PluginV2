@@ -9,7 +9,6 @@ import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
-import fr.openmc.core.utils.text.messages.TranslationManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,7 +25,7 @@ public class LootChest {
     private final int timeToReload;
     @Getter public final BlockVector3 pos;
 
-    private final CustomLootTable lootTable = OMCRegistry.CUSTOM_LOOT_TABLES.LOOTCHEST;
+    private final CustomLootTable lootTable = OMCRegistry.CUSTOM_LOOT_TABLES.TERROR_HOUSE_CHEST;
 
     public LootChest(int timeToReload, BlockVector3 pos) {
         this.timeToReload = timeToReload;

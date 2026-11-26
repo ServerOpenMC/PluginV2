@@ -3,7 +3,7 @@ package fr.openmc.core.features.events.contents.halloween.festival.witchhouse.ch
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.DimensionGenerator;
+import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,7 +31,7 @@ public class LootChestManager {
 
     private void placeChest() {
         for (LootChest chest : chests) {
-            DimensionGenerator.HALLOWEEN_WORLD
+            TerrorHouseDimensionManager.HALLOWEEN_WORLD
                     .getBlockAt(
                             chest.getPos().x(),
                             chest.getPos().y(),

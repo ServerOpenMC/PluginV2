@@ -1,0 +1,25 @@
+package fr.openmc.core.features.dream.contents.items.loots;
+
+import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
+import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+public class CloudKey extends DreamItem {
+    public CloudKey() {
+        super(new DreamItemMeta(
+                "omc_dream:cloud_key",
+                TranslationManager.translation("feature.dream.item.cloud_key.name"),
+                DreamRarity.RARE,
+                Material.OMINOUS_TRIAL_KEY,
+                false
+        ));
+    }
+
+    @Override
+    public ItemStack getTransferableItem() {
+        return null;
+    }
+}

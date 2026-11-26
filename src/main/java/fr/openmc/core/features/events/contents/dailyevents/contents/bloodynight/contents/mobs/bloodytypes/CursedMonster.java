@@ -52,8 +52,8 @@ public class CursedMonster extends CustomMob<Monster> {
         super(id,
                 TranslationManager.translation("feature.dailyevents.bloody_night.mob.cursed_monster"),
                 Monster.class,
-                1,
-                1,
+                1d,
+                1d,
                 OMCRegistry.CUSTOM_LOOT_TABLES.CURSED_MOB
         );
     }

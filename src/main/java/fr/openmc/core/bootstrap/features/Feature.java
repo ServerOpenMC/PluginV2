@@ -102,7 +102,7 @@ public abstract class Feature {
     /**
      * Initialise la feature.
      */
-    protected void init() {
+    protected void init() throws SQLException {
         // doit etre @Override dans les features qui ont une initialisation a faire
     }
 

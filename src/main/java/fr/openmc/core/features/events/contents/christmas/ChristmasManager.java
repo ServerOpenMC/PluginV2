@@ -8,10 +8,21 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasCommands;
 import fr.openmc.core.bootstrap.features.types.HasDatabase;
+import fr.openmc.core.bootstrap.features.types.HasListeners;
+import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
+import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.events.contents.christmas.listeners.DimensionListener;
+import fr.openmc.core.features.events.contents.christmas.listeners.GingerbreadListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.advent.AdventCalendar;
 import fr.openmc.core.features.events.contents.christmas.mecanism.advent.commands.AdventCalendarCommands;
 import fr.openmc.core.features.events.contents.christmas.mecanism.advent.models.AdventProgression;
+import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.ChristmasDimensionManager;
+import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.listeners.PlayerCommandListener;
+import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.listeners.ReplaceBlockListener;
+import fr.openmc.core.features.events.contents.christmas.mecanism.gift.GiftManager;
+import fr.openmc.core.features.events.contents.christmas.mecanism.gift.commands.AdminGiftCommands;
+import fr.openmc.core.features.events.contents.christmas.mecanism.gift.listeners.GiftBreakListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.RiftManager;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -25,12 +36,12 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ChristmasManager extends Feature implements HasDatabase, HasCommands {
+public class ChristmasManager extends Feature implements HasListeners, LoadAfterItemsAdder, HasDatabase, HasCommands {
     private final static Map<UUID, Set<Integer>> playerProgressionCalendar = new HashMap<>();
     private static Dao<AdventProgression, UUID> adventCalendarProgressionDao;
 
     @Override
-    public void init() {
+    public void init() throws SQLException {
         ChristmasDimensionManager.init();
         OMCPlugin.registerFeature(new RiftManager());
         loadPlayerProgression();
@@ -41,6 +52,7 @@ public class ChristmasManager extends Feature implements HasDatabase, HasCommand
     @Override
     public Set<Object> getCommands() {
         return Set.of(
+                new AdminGiftCommands(),
                 new AdventCalendarCommands()
         );
     }
@@ -48,11 +60,25 @@ public class ChristmasManager extends Feature implements HasDatabase, HasCommand
     @Override
     public void save() {
         ChristmasDimensionManager.save();
+        GiftManager.save();
         savePlayerProgression();
     }
 
     @Override
+    public Set<ListenerFactory> getListeners() {
+        return Set.of(
+                PlayerCommandListener::new,
+                ReplaceBlockListener::new,
+                GiftBreakListener::new,
+                GingerbreadListener::new,
+                DimensionListener::new
+        );
+    }
+
+    @Override
     public void initDB(ConnectionSource connectionSource) throws SQLException {
+        GiftManager.initDB(connectionSource);
+
         TableUtils.createTableIfNotExists(connectionSource, AdventProgression.class);
         adventCalendarProgressionDao = DaoManager.createDao(connectionSource, AdventProgression.class);
     }

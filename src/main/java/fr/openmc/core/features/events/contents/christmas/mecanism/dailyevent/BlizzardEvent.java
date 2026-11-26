@@ -4,7 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
 import fr.openmc.core.bootstrap.features.types.HasFeature;
-import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.menu.MiraculousFishingMenu;
+import fr.openmc.core.features.events.contents.christmas.mecanism.dailyevent.menus.BlizzardEventMenu;
 import fr.openmc.core.features.events.contents.dailyevents.models.dailyevent.*;
 import fr.openmc.core.features.events.models.HasMenu;
 import fr.openmc.core.registry.ambient.CustomAmbient;
@@ -104,8 +104,7 @@ public class BlizzardEvent extends DailyEvent
 
     @Override
     public Menu getInfoMenu(Player player) {
-        // todo: Faire le menu des infos de l'evenement lorsque les loot table des coffres, les cadeaux
-        return new MiraculousFishingMenu(player);
+        return new BlizzardEventMenu(player);
     }
 
     @Override
