@@ -202,6 +202,9 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem CANDY_BLUE = register(new CandyItem("omc_halloween:candy_blue", 5, Material.APPLE));
     public final CustomItem CANDY_BROWN = register(new CandyItem("omc_halloween:candy_brown", 20, Material.APPLE));
 
+    /* Christmas */
+    public final CustomItem GINGERBREAD_ITEM = register("omc_christmas:gingerbread", Material.PAPER);
+
     /* Lootbox */
     public final CustomItem KITCHEN_BARSTOOL = register("kitchen:kitchen_barstool", Material.PAPER);
     public final CustomItem KITCHEN_BIN = register("kitchen:kitchen_bin", Material.PAPER);

@@ -1,0 +1,13 @@
+info:
+  namespace: omc_christmas
+items:
+  gingerbread:
+    display_name: <gradient:#B36429:#7D3E16><lang:itemsadder.omc_christmas.gingerbread.name></gradient>
+    lore:
+      - <lang:itemsadder.omc_christmas.gingerbread.lore.0>
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+    resource:
+      generate: true
+      material: PAPER
+      textures:
+        - item/gingerbread.png
