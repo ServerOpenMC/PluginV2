@@ -4,7 +4,7 @@ categories:
   omc_christmas:
     enabled: true
     skip_if_already: false
-    icon: omc_christmas:white_gift
+    icon: omc_christmas:gingerbread
     name: "OpenMC Christmas"
     items:
       - omc_christmas:*
