@@ -3,7 +3,7 @@ package fr.openmc.core.features.events.contents.christmas.mecanism.advent;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemMenuBuilder;
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.features.events.contents.christmas.ChristmasManager;
 import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.registry.loottable.loots.*;
