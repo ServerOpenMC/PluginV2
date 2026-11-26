@@ -5,9 +5,14 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import net.kyori.adventure.text.Component;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public record LootReward(List<CustomLoot> loots) {
+    public static LootReward empty() {
+        return LootReward.loots(Collections.emptySet());
+    }
+
     public static LootReward loots(Collection<CustomLoot> newLoots) {
         return new LootReward(newLoots.stream().toList());
     }
