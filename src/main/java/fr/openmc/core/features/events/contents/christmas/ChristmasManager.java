@@ -12,6 +12,7 @@ import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.events.contents.christmas.commands.AdminChristmasCommands;
 import fr.openmc.core.features.events.contents.christmas.listeners.DimensionListener;
 import fr.openmc.core.features.events.contents.christmas.listeners.GingerbreadListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.advent.AdventCalendar;
@@ -53,7 +54,8 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
     public Set<Object> getCommands() {
         return Set.of(
                 new AdminGiftCommands(),
-                new AdventCalendarCommands()
+                new AdventCalendarCommands(),
+                new AdminChristmasCommands()
         );
     }
 
