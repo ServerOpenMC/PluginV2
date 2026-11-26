@@ -32,13 +32,6 @@ public abstract class CustomLootbox {
         this.lootTable = lootTable;
     }
 
-    public CustomLootbox(String namespace, Component name, CustomLootTable lootTable) {
-        this.itemDisplayed = null;
-        this.namespace = namespace;
-        this.name = name;
-        this.lootTable = lootTable;
-    }
-
     public CustomLootbox(CustomItem itemDisplayed, String namespace, Component name, CustomLootTable lootTable, LootboxOptions options) {
         this.itemDisplayed = itemDisplayed.getBest();
         this.namespace = namespace;

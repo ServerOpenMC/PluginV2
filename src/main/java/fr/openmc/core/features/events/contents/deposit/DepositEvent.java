@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.contents.deposit;
 
-import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.types.rank.RankLootTable;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -34,7 +35,7 @@ public abstract class DepositEvent {
 
     public abstract NpcSettings getNpcSettings();
 
-    public abstract @Nullable DepositReward getReward(int rank, OMCOfflinePlayer player);
+    public abstract @Nullable RankLootTable getRewards();
 
     public Component getName() {
         return TranslationManager.translation(key("name"));
@@ -58,6 +59,12 @@ public abstract class DepositEvent {
 
     public String key(String suffix) {
         return getTranslationKey() + "." + suffix;
+    }
+
+    public @Nullable CustomLootTable getReward(int rank) {
+        if (getRewards() == null) return null;
+
+        return getRewards().getReward(rank);
     }
 
     protected ItemStack createTrophy(Material material, int rank, OfflinePlayer owner) {

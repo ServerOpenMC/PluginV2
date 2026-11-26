@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,9 @@ public class DepositMenu extends Menu {
         TextColor mainColor = TextColor.color(event.getMainColor());
         TextColor secondaryColor = TextColor.color(event.getSecondaryColor());
 
-        return Map.of(13, new ItemMenuBuilder(this, event.getRequiredItem().clone(), meta -> {
+        Map<Integer, ItemMenuBuilder> content = new HashMap<>();
+
+        content.put(13, new ItemMenuBuilder(this, event.getRequiredItem().clone(), meta -> {
             meta.customName(TranslationManager.translation(event.key("menu.deposit.button.name")).color(mainColor));
             meta.lore(TranslationManager.translationLore(event.key("menu.deposit.button.lore")));
             meta.setEnchantmentGlintOverride(true);
@@ -74,6 +77,17 @@ public class DepositMenu extends Menu {
                     event.getPrefix(), MessageType.SUCCESS, false);
             player.closeInventory();
         }));
+
+        if (event.getRewards() != null) {
+            content.put(18, new ItemMenuBuilder(this, event.getRequiredItem().clone(), meta -> {
+                meta.customName(TranslationManager.translation("feature.events.deposit.rewards").color(mainColor));
+                meta.lore(TranslationManager.translationLore("feature.events.deposit.rewards.lore"));
+                meta.setEnchantmentGlintOverride(true);
+            }).setOnClick(_ ->
+                    event.getRewards().openMenu(getOwner())));
+        }
+
+        return content;
     }
 
     @Override

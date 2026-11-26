@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -11,6 +12,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -142,18 +144,21 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
+    public LootReward run(OfflinePlayer receiver) {
         if (!predicateToLoot) return null;
 
         return runBase((items) -> {
-            for (ItemStack item : items) {
-                if (ItemUtils.hasEnoughSpace(receiver, item)) {
-                    receiver.getInventory().addItem(item);
-                } else {
-                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                        receiver.getWorld().dropItemNaturally(receiver.getLocation(), item)
-                    );
-                }
+            if (receiver.getPlayer() == null) {
+                MailboxManager.sendItemsToOfflinePlayer(receiver, items.toArray(new ItemStack[0]));
+            } else {
+                Player player = receiver.getPlayer();
+                    if (ItemUtils.hasEnoughSpace(player, item)) {
+                        player.getInventory().addItem(item);
+                    } else {
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                                player.getWorld().dropItemNaturally(player.getLocation(), item)
+                        );
+                    }
             }
         });
     }

@@ -1,10 +1,9 @@
 package fr.openmc.core.features.events.contents.halloween.contents.depositevent;
 
-import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.deposit.DepositEvent;
-import fr.openmc.core.features.events.contents.deposit.DepositReward;
 import fr.openmc.core.features.events.contents.deposit.NpcSettings;
+import fr.openmc.core.registry.loottable.types.rank.RankLootTable;
 import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -63,18 +62,7 @@ public class HalloweenPumpkinDepositEvent extends DepositEvent {
     }
 
     @Override
-    public @Nullable DepositReward getReward(int rank, OMCOfflinePlayer player) {
-        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
-        aywenite.setAmount(64);
-
-        return switch (rank) {
-            case 1 -> DepositReward.of(30000, createTrophy(Material.PUMPKIN_PIE, 1, player))
-                    .with(DepositReward.copies(aywenite, 3));
-            case 2 -> DepositReward.of(20000, createTrophy(Material.PUMPKIN_PIE, 2, player))
-                    .with(DepositReward.copies(aywenite, 2));
-            case 3 -> DepositReward.of(10000, createTrophy(Material.PUMPKIN_PIE, 3, player))
-                    .with(DepositReward.copies(aywenite, 1));
-            default -> DepositReward.money(3000);
-        };
+    public @Nullable RankLootTable getRewards() {
+        return OMCRegistry.CUSTOM_LOOT_TABLES.PUMPKIN_DEPOSIT;
     }
 }

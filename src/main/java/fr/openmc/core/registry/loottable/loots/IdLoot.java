@@ -4,7 +4,7 @@ import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 @Getter
 public class IdLoot implements CustomLoot {
@@ -28,7 +28,7 @@ public class IdLoot implements CustomLoot {
     }
 
     @Override
-    public LootReward run(Player receiver) {
+    public LootReward run(OfflinePlayer receiver) {
         return null;
     }
 }

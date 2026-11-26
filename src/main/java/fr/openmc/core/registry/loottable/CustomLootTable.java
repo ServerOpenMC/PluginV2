@@ -5,6 +5,7 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.menu.LootsInfoMenu;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
@@ -32,7 +33,7 @@ public abstract class CustomLootTable {
                 .sum();
     }
 
-    public LootReward rollLoots(Player receiver) {
+    public LootReward rollLoots(OfflinePlayer receiver) {
         List<CustomLoot> guaranted = this.getLoots().stream()
                 .filter(loot -> loot.getChance() >= 1.0)
                 .toList();

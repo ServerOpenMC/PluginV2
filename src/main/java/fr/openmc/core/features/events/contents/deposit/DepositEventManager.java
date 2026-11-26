@@ -20,6 +20,7 @@ import fr.openmc.core.features.events.contents.deposit.models.DepositDataModel;
 import fr.openmc.core.features.events.contents.deposit.models.DepositEventModel;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.scheduler.OMCScheduler;
 import fr.openmc.core.utils.scheduler.OMCTask;
 import fr.openmc.core.utils.text.DateUtils;
@@ -206,11 +207,10 @@ public class DepositEventManager extends Feature implements HasDatabase, HasComm
         int rank = 1;
         for (DepositDataModel d : top) {
             OMCOfflinePlayer player = OMCOfflinePlayer.of(d.getPlayerUUID());
-            DepositReward reward = event.getReward(rank++, player);
+            CustomLootTable reward = event.getReward(rank++);
             if (reward == null) continue;
 
-            if (reward.money() > 0) player.economy().addBalance(reward.money());
-            if (!reward.items().isEmpty()) mail.put(player, reward.items().toArray(new ItemStack[0]));
+            reward.rollLoots(player);
         }
 
         if (!mail.isEmpty()) MailboxManager.sendItemsToAOfflinePlayerBatch(mail);

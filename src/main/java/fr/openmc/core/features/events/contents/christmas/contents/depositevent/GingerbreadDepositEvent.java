@@ -1,13 +1,11 @@
 package fr.openmc.core.features.events.contents.christmas.contents.depositevent;
 
-import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.events.contents.deposit.DepositEvent;
-import fr.openmc.core.features.events.contents.deposit.DepositReward;
 import fr.openmc.core.features.events.contents.deposit.NpcSettings;
+import fr.openmc.core.registry.loottable.types.rank.RankLootTable;
 import fr.openmc.core.utils.text.messages.Prefix;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,6 +41,11 @@ public class GingerbreadDepositEvent extends DepositEvent {
     }
 
     @Override
+    public @Nullable RankLootTable getRewards() {
+        return OMCRegistry.CUSTOM_LOOT_TABLES.GINGERBREAD_DEPOSIT;
+    }
+
+    @Override
     public int getMainColor() {
         return 0xFF1B53;
     }
@@ -62,20 +65,5 @@ public class GingerbreadDepositEvent extends DepositEvent {
         return LocalDateTime.of(2027, 1, 1, 0, 0);
     }
 
-    @Override
-    public @Nullable DepositReward getReward(int rank, OMCOfflinePlayer player) {
-        // TODO: a changer
-        ItemStack aywenite = OMCRegistry.CUSTOM_ITEMS.AYWENITE.getBest();
-        aywenite.setAmount(64);
 
-        return switch (rank) {
-            case 1 -> DepositReward.of(30000, createTrophy(Material.PUMPKIN_PIE, 1, player))
-                    .with(DepositReward.copies(aywenite, 3));
-            case 2 -> DepositReward.of(20000, createTrophy(Material.PUMPKIN_PIE, 2, player))
-                    .with(DepositReward.copies(aywenite, 2));
-            case 3 -> DepositReward.of(10000, createTrophy(Material.PUMPKIN_PIE, 3, player))
-                    .with(DepositReward.copies(aywenite, 1));
-            default -> DepositReward.of(3000, OMCRegistry.CUSTOM_ITEMS.PLUSH_GINGERBREAD_ROOT.getBest());
-        };
-    }
 }

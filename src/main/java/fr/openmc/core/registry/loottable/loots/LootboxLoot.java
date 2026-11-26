@@ -1,11 +1,12 @@
 package fr.openmc.core.registry.loottable.loots;
 
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.registry.lootboxes.CustomLootbox;
 import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
@@ -32,8 +33,13 @@ public class LootboxLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
-        lootbox.open(receiver);
+    public LootReward run(OfflinePlayer receiver) {
+        if (receiver.isOnline() && receiver.getPlayer() != null) {
+            lootbox.open(receiver.getPlayer());
+        } else {
+            MailboxManager.sendItemsToOfflinePlayer(receiver, new ItemStack[] {lootbox.getItemDisplayed()});
+        }
+
         return LootReward.loots(Collections.singleton(this));
     }
 

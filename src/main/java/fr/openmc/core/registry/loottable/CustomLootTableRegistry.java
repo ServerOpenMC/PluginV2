@@ -8,6 +8,7 @@ import fr.openmc.core.features.bits.contents.loottables.ModernLootTable;
 import fr.openmc.core.features.bits.contents.loottables.OfficeLootTable;
 import fr.openmc.core.features.chatanimations.contents.challenge.ChallengeLootTable;
 import fr.openmc.core.features.chatanimations.contents.quizz.QuizzLootTable;
+import fr.openmc.core.features.events.contents.christmas.contents.loottable.GingerbreadDepositRankLootTable;
 import fr.openmc.core.features.events.contents.christmas.contents.loottable.chest.LargeChristmasChestLootTable;
 import fr.openmc.core.features.events.contents.christmas.contents.loottable.chest.MediumChristmasChestLootTable;
 import fr.openmc.core.features.events.contents.christmas.contents.loottable.chest.SmallChristmasChestLootTable;
@@ -27,7 +28,9 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.LegendaryFishingTreasureLootTable;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox.RareFishingTreasureLootTable;
 import fr.openmc.core.features.events.contents.halloween.contents.loottable.LootChestLootTable;
+import fr.openmc.core.features.events.contents.halloween.contents.loottable.PumpkinDepositRankLootTable;
 import fr.openmc.core.registry.loottable.contents.MachineBallLootTable;
+import fr.openmc.core.registry.loottable.types.rank.RankLootTable;
 
 public class CustomLootTableRegistry extends Registry<String, CustomLootTable> implements KeyedRegistry<String, CustomLootTable> {
 
@@ -58,6 +61,7 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable QUIZZ = register(new QuizzLootTable());
     public final CustomLootTable CHALLENGE = register(new ChallengeLootTable());
     public final CustomLootTable TERROR_HOUSE_CHEST = register(new LootChestLootTable());
+    public final RankLootTable PUMPKIN_DEPOSIT = register(new PumpkinDepositRankLootTable());
 
     public final CustomLootTable SMALL_CHRISTMAS_CHEST = register(new SmallChristmasChestLootTable());
     public final CustomLootTable MEDIUM_CHRISTMAS_CHEST = register(new MediumChristmasChestLootTable());
@@ -68,6 +72,7 @@ public class CustomLootTableRegistry extends Registry<String, CustomLootTable> i
     public final CustomLootTable LEGENDARY_GIFT = register(new LegendaryGiftLootTable());
     public final CustomLootTable RARE_GIFT = register(new RareGiftLootTable());
     public final CustomLootTable COMMON_GIFT = register(new CommonGiftLootTable());
+    public final RankLootTable GINGERBREAD_DEPOSIT = register(new GingerbreadDepositRankLootTable());
 
     @Override
     public String key(CustomLootTable registryObject) {
