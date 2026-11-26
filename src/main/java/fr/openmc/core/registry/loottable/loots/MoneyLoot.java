@@ -20,6 +20,11 @@ public class MoneyLoot implements CustomLoot, RepresentedItem {
     private double chance;
     private final int money;
 
+    public MoneyLoot(int money) {
+        this.chance = 1;
+        this.money = money;
+    }
+
     public MoneyLoot(int money, double chance) {
         this.chance = chance;
         this.money = money;

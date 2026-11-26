@@ -22,6 +22,11 @@ public class FreeClaimLoot implements CustomLoot {
     private double chance;
     private final int freeClaim;
 
+    public FreeClaimLoot(int freeClaim) {
+        this.chance = 1;
+        this.freeClaim = freeClaim;
+    }
+
     public FreeClaimLoot(int freeClaim, double chance) {
         this.chance = chance;
         this.freeClaim = freeClaim;

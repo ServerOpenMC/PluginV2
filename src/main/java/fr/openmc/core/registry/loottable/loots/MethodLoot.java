@@ -18,6 +18,10 @@ public class MethodLoot implements CustomLoot, RepresentedItem {
     private double chance;
     private final Consumer<Player> receiverAction;
 
+    public MethodLoot(ItemStack representativeItem, Component text, Consumer<Player> receiverAction) {
+        this(representativeItem, text, receiverAction, 1);
+    }
+
     public MethodLoot(ItemStack representativeItem, Component text, Consumer<Player> receiverAction, double chance) {
         this.representativeItem = representativeItem;
         this.text = text;

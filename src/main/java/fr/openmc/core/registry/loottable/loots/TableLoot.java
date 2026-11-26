@@ -18,6 +18,10 @@ public class TableLoot implements CustomLoot, RepresentedItem {
     private final CustomLootTable lootTable;
     private final boolean giveRewards;
 
+    public TableLoot(CustomLootTable lootTable, boolean giveRewards) {
+        this(lootTable, 1, giveRewards);
+    }
+
     public TableLoot(CustomLootTable lootTable, double chance, boolean giveRewards) {
         this.chance = chance;
         this.lootTable = lootTable;
@@ -29,6 +33,10 @@ public class TableLoot implements CustomLoot, RepresentedItem {
         this(lootTable, ItemStack.of(item), chance, giveRewards);
     }
 
+    public TableLoot(CustomLootTable lootTable, Material item, boolean giveRewards) {
+        this(lootTable, ItemStack.of(item), 1, giveRewards);
+    }
+
     public TableLoot(CustomLootTable lootTable, ItemStack item, double chance, boolean giveRewards) {
         this.chance = chance;
         this.lootTable = lootTable;
@@ -36,8 +44,16 @@ public class TableLoot implements CustomLoot, RepresentedItem {
         this.item = item;
     }
 
+    public TableLoot(CustomLootTable lootTable, ItemStack item, boolean giveRewards) {
+        this(lootTable, item, 1, giveRewards);
+    }
+
     public TableLoot(CustomLootTable lootTable, CustomItem item, double chance, boolean giveRewards) {
         this(lootTable, item.getBest(), chance, giveRewards);
+    }
+
+    public TableLoot(CustomLootTable lootTable, CustomItem item, boolean giveRewards) {
+        this(lootTable, item.getBest(), 1, giveRewards);
     }
 
     @Override

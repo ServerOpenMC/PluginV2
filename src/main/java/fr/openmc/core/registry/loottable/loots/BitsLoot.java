@@ -20,6 +20,11 @@ public class BitsLoot implements CustomLoot, RepresentedItem {
     private double chance;
     private final int bits;
 
+    public BitsLoot(int bits) {
+        this.chance = 1;
+        this.bits = bits;
+    }
+
     public BitsLoot(int bits, double chance) {
         this.chance = chance;
         this.bits = bits;

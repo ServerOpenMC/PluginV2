@@ -1,4 +1,4 @@
-package fr.openmc.core.features.events.contents.christmas.contents.deposit;
+package fr.openmc.core.features.events.contents.christmas.contents.depositevent;
 
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCRegistry;

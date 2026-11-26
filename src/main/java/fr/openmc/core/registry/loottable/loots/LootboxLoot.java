@@ -16,6 +16,11 @@ public class LootboxLoot implements CustomLoot, RepresentedItem {
     private double chance;
     private final CustomLootbox lootbox;
 
+    public LootboxLoot(CustomLootbox lootbox) {
+        this.chance = 1;
+        this.lootbox = lootbox;
+    }
+
     public LootboxLoot(CustomLootbox lootbox, double chance) {
         this.chance = chance;
         this.lootbox = lootbox;

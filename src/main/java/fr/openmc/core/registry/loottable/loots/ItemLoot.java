@@ -55,9 +55,23 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 amount);
     }
 
+    public ItemLoot(ItemStack item, int amount) {
+        this(item,
+                1,
+                amount,
+                amount);
+    }
+
     public ItemLoot(Material item, double chance, int minAmount, int maxAmount) {
         this(ItemStack.of(item),
                 chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(Material item, int minAmount, int maxAmount) {
+        this(ItemStack.of(item),
+                1,
                 minAmount,
                 maxAmount);
     }
@@ -74,6 +88,12 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 amount);
     }
 
+    public ItemLoot(CustomItem item, int amount) {
+        this(item.getBest(),
+                1,
+                amount);
+    }
+
     public ItemLoot(CustomItem item, boolean predicate, double chance, int amount) {
         this(item.getBest(),
                 chance,
@@ -85,6 +105,13 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     public ItemLoot(CustomItem item, double chance, int minAmount, int maxAmount) {
         this(item.getBest(),
                 chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(CustomItem item, int minAmount, int maxAmount) {
+        this(item.getBest(),
+                1,
                 minAmount,
                 maxAmount);
     }

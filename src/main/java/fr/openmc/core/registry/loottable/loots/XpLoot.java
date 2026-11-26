@@ -19,6 +19,11 @@ public class XpLoot implements CustomLoot, RepresentedItem {
     private double chance;
     private final int amountExp;
 
+    public XpLoot(int amountExp) {
+        this.chance = 1;
+        this.amountExp = amountExp;
+    }
+
     public XpLoot(int amountExp, double chance) {
         this.chance = chance;
         this.amountExp = amountExp;
@@ -26,6 +31,10 @@ public class XpLoot implements CustomLoot, RepresentedItem {
 
     public XpLoot(int minAmountExp, int maxAmountExp, double chance) {
         this(RandomUtils.randomBetween(minAmountExp, maxAmountExp), chance);
+    }
+
+    public XpLoot(int minAmountExp, int maxAmountExp) {
+        this(RandomUtils.randomBetween(minAmountExp, maxAmountExp));
     }
 
     @Override

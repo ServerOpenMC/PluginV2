@@ -12,6 +12,11 @@ public class IdLoot implements CustomLoot {
     private double chance;
     private final String id;
 
+    public IdLoot(String id) {
+        this.chance = 1;
+        this.id = id;
+    }
+
     public IdLoot(String id, double chance) {
         this.chance = chance;
         this.id = id;
