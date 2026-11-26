@@ -3,7 +3,7 @@ package fr.openmc.core.registry.regions;
 import com.sk89q.worldedit.math.BlockVector3;
 import fr.openmc.core.bootstrap.registries.KeyedRegistry;
 import fr.openmc.core.bootstrap.registries.Registry;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
+import fr.openmc.core.features.events.contents.halloween.witchhouse.TerrorHouseDimensionManager;
 import fr.openmc.core.registry.regions.content.ExampleRegion;
 import fr.openmc.core.registry.regions.preset.SquareRegion;
 import org.bukkit.Location;

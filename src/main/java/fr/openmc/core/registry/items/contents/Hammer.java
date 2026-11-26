@@ -3,7 +3,7 @@ package fr.openmc.core.registry.items.contents;
 import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.ProtectionsManager;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
+import fr.openmc.core.features.events.contents.halloween.witchhouse.TerrorHouseDimensionManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.items.options.BlockBreakableItem;
 import lombok.Getter;

@@ -2,11 +2,11 @@ package fr.openmc.core.features.events.sbinfos;
 
 import fr.openmc.core.features.displays.scoreboards.sb.InfoSwapper;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.contents.halloween.festival.HalloweenFestivalManager;
-import fr.openmc.core.features.events.contents.halloween.festival.shop.WitchShopManager;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseManager;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.PointRewards;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.advancement.floor.Floors;
+import fr.openmc.core.features.events.contents.halloween.HalloweenFestivalManager;
+import fr.openmc.core.features.events.contents.halloween.shop.WitchShopManager;
+import fr.openmc.core.features.events.contents.halloween.witchhouse.TerrorHouseManager;
+import fr.openmc.core.features.events.contents.halloween.witchhouse.advancement.PointRewards;
+import fr.openmc.core.features.events.contents.halloween.witchhouse.advancement.floor.Floors;
 import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
 import fr.openmc.core.utils.text.DateUtils;
 import fr.openmc.core.utils.text.fonts.SmallCapsUtils;
