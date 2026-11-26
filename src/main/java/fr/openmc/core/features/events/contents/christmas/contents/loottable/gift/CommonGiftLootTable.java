@@ -8,7 +8,6 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,7 +28,7 @@ public class CommonGiftLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
                 new MoneyLoot(50, 100, 0.35),
-                new ItemLoot(Material.PAPER, 0.30, 5, 10), //todo: gingerbread
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD, 0.30, 5, 10),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 0.25, 5, 10),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT, 0.01, 1)
         ));

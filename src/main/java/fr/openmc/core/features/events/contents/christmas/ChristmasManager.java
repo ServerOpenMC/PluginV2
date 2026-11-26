@@ -114,8 +114,6 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
         }
     }
 
-    // todo: faire gestion de la fin (clear db apres le 31 decembre)
-
     public static void claimReward(Player player, Integer day) {
         playerProgressionCalendar.computeIfAbsent(player.getUniqueId(), _ -> new HashSet<>()).add(day);
     }

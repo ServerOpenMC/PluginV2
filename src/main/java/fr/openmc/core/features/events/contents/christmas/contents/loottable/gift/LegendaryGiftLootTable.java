@@ -7,7 +7,6 @@ import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -27,7 +26,7 @@ public class LegendaryGiftLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(Material.PAPER, 0.29, 80, 100), //todo: gingerbread
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD, 0.29, 80, 100),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.SANTA_HAT, 0.25, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.SANTA_BOOTS, 0.25, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.CHRISTMAS_IT_TIME_DISC, 0.15, 1),

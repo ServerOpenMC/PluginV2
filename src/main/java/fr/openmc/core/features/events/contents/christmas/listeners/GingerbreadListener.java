@@ -3,7 +3,6 @@ package fr.openmc.core.features.events.contents.christmas.listeners;
 import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.utils.bukkit.ItemUtils;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,14 +17,13 @@ public class GingerbreadListener implements Listener {
         if (!(event.getEntity().getKiller() instanceof Player player)) return;
         if (!hasFullGingerbreadArmor(player)) return;
 
-        // todo: gingerbread
-        player.getWorld().dropItemNaturally(player.getLocation(), ItemStack.of(Material.PAPER));
+        player.getWorld().dropItemNaturally(player.getLocation(), OMCRegistry.CUSTOM_ITEMS.GINGERBREAD.getBest());
     }
 
     @EventHandler
     public void onCompleteRaid(RaidFinishEvent event) {
         for (Player player : event.getWinners()) {
-            ItemUtils.giveItem(OMCPlayer.of(player), ItemStack.of(Material.PAPER), 150);
+            ItemUtils.giveItem(OMCPlayer.of(player), OMCRegistry.CUSTOM_ITEMS.GINGERBREAD.getBest(), 150);
         }
     }
 

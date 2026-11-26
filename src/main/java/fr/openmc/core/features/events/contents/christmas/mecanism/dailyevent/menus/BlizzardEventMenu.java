@@ -58,7 +58,7 @@ public class BlizzardEventMenu extends Menu {
             itemMeta.setEnchantmentGlintOverride(isActived);
         }).setOnClick(_ -> new GiftTypeMenu(getOwner()).open()));
 
-        inventory.put(4, new ItemMenuBuilder(this, Material.SEA_LANTERN, itemMeta -> { // todo: gingerbread
+        inventory.put(4, new ItemMenuBuilder(this, Material.SEA_LANTERN, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.blizzard.menu.info.rift.name"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.dailyevents.blizzard.menu.info.rift.lore"
@@ -66,7 +66,7 @@ public class BlizzardEventMenu extends Menu {
             itemMeta.setEnchantmentGlintOverride(isActived);
         }));
 
-        inventory.put(13, new ItemMenuBuilder(this, Material.PAPER, itemMeta -> { // todo: gingerbread
+        inventory.put(13, new ItemMenuBuilder(this, OMCRegistry.CUSTOM_ITEMS.GINGERBREAD, itemMeta -> {
             itemMeta.displayName(TranslationManager.translation("feature.dailyevents.blizzard.menu.info.gingerbread.name"));
             itemMeta.lore(TranslationManager.translationLore(
                     "feature.dailyevents.blizzard.menu.info.gingerbread.lore"

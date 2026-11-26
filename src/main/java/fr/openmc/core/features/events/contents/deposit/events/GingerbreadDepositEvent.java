@@ -75,7 +75,7 @@ public class GingerbreadDepositEvent extends DepositEvent {
                     .with(DepositReward.copies(aywenite, 2));
             case 3 -> DepositReward.of(10000, createTrophy(Material.PUMPKIN_PIE, 3, player))
                     .with(DepositReward.copies(aywenite, 1));
-            default -> DepositReward.money(3000);
+            default -> DepositReward.of(3000, OMCRegistry.CUSTOM_ITEMS.PLUSH_GINGERBREAD_ROOT.getBest());
         };
     }
 }

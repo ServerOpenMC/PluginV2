@@ -7,7 +7,6 @@ import fr.openmc.core.registry.loottable.loots.EmptyLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemType;
 
 import java.util.LinkedHashSet;
@@ -29,7 +28,7 @@ public class LargeChristmasChestLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
                 new EmptyLoot(0.8),
-                new ItemLoot(Material.PAPER,0.5, 45, 64), // todo: gingerbread
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD,0.5, 45, 64),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT,0.4, 2, 5),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEGENDARY_GIFT,0.2, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT,0.03, 8),

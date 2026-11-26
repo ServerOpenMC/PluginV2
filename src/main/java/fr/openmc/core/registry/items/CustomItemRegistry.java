@@ -396,6 +396,9 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
     public final CustomItem PLUSH_PERE_AYWEN = register("omc_christmas:peluche_pere_aywen", Material.PAPER);
     public final CustomItem PLUSH_GINGERBREAD_ROOT = register("omc_christmas:peluche_gingerbread_root", Material.PAPER);
 
+    public final CustomItem GINGERBREAD = register("omc_christmas:gingerbread", Material.PAPER);
+
+
     @Override
     public Set<ListenerFactory> getListeners() {
         return Set.of(
