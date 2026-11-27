@@ -64,7 +64,7 @@ public enum AdventCalendar {
     public static boolean isCalendarActive() {
         LocalDate now = LocalDate.now();
 
-        return now.getMonth().equals(Month.NOVEMBER); // todo changer
+        return now.getMonth().equals(Month.DECEMBER);
     }
 
     public boolean isCaseOpened() {
