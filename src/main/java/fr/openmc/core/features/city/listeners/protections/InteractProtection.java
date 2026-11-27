@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.features.shops.managers.ShopManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -52,8 +53,9 @@ public class InteractProtection implements Listener {
             
             if (ShopManager.getShopAt(location) != null) return;
             
-            if (clickedBlock.getType().name().endsWith("SHULKER_BOX")) return;
-            if (clickedBlock.getType().name().endsWith("CHEST") || clickedBlock.getType().name().endsWith("BARREL")) {
+            if (Tag.SHULKER_BOXES.isTagged(clickedBlock.getType())
+                    || clickedBlock.getType().name().endsWith("CHEST")
+                    || clickedBlock.getType().name().endsWith("BARREL")) {
                 ProtectionsManager.checkPermissions(player, event.getClickedBlock().getLocation(), event, CityPermission.OPEN_CHEST, true);
             } else {
                 ProtectionsManager.checkPermissions(player, event.getClickedBlock().getLocation(), event, CityPermission.INTERACT, true);
