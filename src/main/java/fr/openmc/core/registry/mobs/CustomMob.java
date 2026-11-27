@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -172,7 +173,7 @@ public abstract class CustomMob<T extends Entity> {
     private CustomLootTable getPreBuildLootTable(List<CustomLoot> lootList) {
         return new CustomLootTable() {
             @Override
-            public Component getName() {
+            public @NonNull Component getName() {
                 return Component.empty();
             }
 

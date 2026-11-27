@@ -2,7 +2,9 @@ package fr.openmc.core.registry.loottable.types.rank;
 
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
+import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -32,8 +34,8 @@ public record RankLoot(int startRank, int endRank, CustomLootTable loots) {
     private static CustomLootTable getPreBuild(CustomLoot... loots) {
         return new CustomLootTable() {
             @Override
-            public Component getName() {
-                return null;
+            public @NonNull Component getName() {
+                return TranslationManager.translation("feature.events.christmas.loot_table.rank.name");
             }
 
             @Override

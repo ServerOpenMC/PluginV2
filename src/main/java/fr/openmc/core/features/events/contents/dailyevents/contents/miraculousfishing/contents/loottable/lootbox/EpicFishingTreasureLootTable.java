@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.jspecify.annotations.NonNull;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Set;
 
 public class EpicFishingTreasureLootTable extends CustomLootTable {
     @Override
-    public Component getName() {
+    public @NonNull Component getName() {
         return OMCRegistry.CUSTOM_LOOTBOXES.EPIC_FISHING_TREASURE.getName();
     }
 
@@ -29,7 +30,7 @@ public class EpicFishingTreasureLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new ItemLoot(this::generateEnchantedBook, Material.ENCHANTED_BOOK, 0.2, 1, 2),
+                new ItemLoot((_) -> this.generateEnchantedBook(), Material.ENCHANTED_BOOK, 0.2, 1, 2),
                 new ItemLoot(
                         OMCRegistry.CUSTOM_ITEMS.KEBAB_FERMENTED,
                         0.1,

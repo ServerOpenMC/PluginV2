@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jspecify.annotations.NonNull;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Set;
 
 public class VampireLootTable extends CustomLootTable {
     @Override
-    public Component getName() {
+    public @NonNull Component getName() {
         return TranslationManager.translation("feature.dailyevents.bloody_night.loot_table.vampire_boss");
     }
 

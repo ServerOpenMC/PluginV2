@@ -8,6 +8,7 @@ import fr.openmc.core.utils.bukkit.ItemBuilder;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.jspecify.annotations.NonNull;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Set;
 
 public class MachineBallLootTable extends CustomLootTable {
     @Override
-    public Component getName() {
+    public @NonNull Component getName() {
         return OMCRegistry.CUSTOM_LOOTBOXES.MACHINE_BALL.getName();
     }
 
