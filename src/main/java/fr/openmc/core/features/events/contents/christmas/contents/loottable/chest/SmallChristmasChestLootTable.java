@@ -29,7 +29,7 @@ public class SmallChristmasChestLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new EmptyLoot(0.8),
+                new EmptyLoot(0.9),
                 new ItemLoot(Material.SNOWBALL,0.4, 3, 6),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.COMMON_GIFT,0.3, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD,0.3, 1, 2),

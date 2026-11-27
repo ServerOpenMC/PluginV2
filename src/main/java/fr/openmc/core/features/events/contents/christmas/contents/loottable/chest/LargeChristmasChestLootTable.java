@@ -28,9 +28,9 @@ public class LargeChristmasChestLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new EmptyLoot(0.8),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD,0.5, 45, 64),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT,0.4, 2, 5),
+                new EmptyLoot(0.9),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD,0.4, 45, 64),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT,0.3, 2, 5),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEGENDARY_GIFT,0.2, 1),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT,0.03, 8),
                 new ItemLoot(ItemType.OMINOUS_BOTTLE.createItemStack(e -> e

@@ -28,14 +28,14 @@ public class MediumChristmasChestLootTable extends CustomLootTable {
     @Override
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
-                new EmptyLoot(0.8),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.COMMON_GIFT,0.6, 1, 3),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD, 0.4, 5, 10),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT,0.3, 1, 2),
+                new EmptyLoot(0.9),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.COMMON_GIFT,0.5, 1, 3),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD, 0.3, 5, 10),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT,0.1, 1, 2),
                 new ItemLoot(ItemType.OMINOUS_BOTTLE.createItemStack(e -> e
-                        .setAmplifier(3)), 0.2, 1),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEGENDARY_GIFT,0.01, 1),
-                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD,0.01, 40)
+                        .setAmplifier(3)), 0.1, 1),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.LEGENDARY_GIFT,0.007, 1),
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD,0.006, 40)
         ));
     }
 }
