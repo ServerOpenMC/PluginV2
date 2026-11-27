@@ -21,25 +21,22 @@ public abstract class Hooks {
     private static final Map<Class<? extends Hooks>, Boolean> ENABLED = new ConcurrentHashMap<>();
 
     public boolean arePluginEnabled() {
-        if (!(this instanceof HttpsHook)) return true;
-        boolean enabled = true;
+        if (this instanceof HttpsHook) return true;
 
-        Set<String> pluginsName = getPluginsName();
-        for (String pluginName : pluginsName) {
-            PluginManager pluginManager = OMCPlugin.getInstance().getServer().getPluginManager();
-            boolean pluginEnable = pluginManager.getPlugin(pluginName) != null
-                    && pluginManager.isPluginEnabled(pluginName);
-
-            if (!pluginEnable) return false;
+        PluginManager pluginManager = OMCPlugin.getInstance().getServer().getPluginManager();
+        for (String pluginName : getPluginsName()) {
+            if (pluginManager.getPlugin(pluginName) == null
+                    || !pluginManager.isPluginEnabled(pluginName)) {
+                return false;
+            }
         }
-
-        return enabled;
+        return true;
     }
+
     /**
      * Verifie la presence du plugin cible, puis initialise le hook si actif.
      */
     public void startInit() {
-
         if (this instanceof HttpsHook httpsHook) {
             String hookName = httpsHook.getName();
             try {
@@ -53,13 +50,16 @@ public abstract class Hooks {
         }
 
         String hookName = this.getClass().getSimpleName();
+
+        if (!arePluginEnabled()) {
+            OMCLogger.warn("Hook {} ignoré : plugin(s) {} absent(s).", hookName, getPluginsName());
+            return;
+        }
+
         try {
-            boolean enabled = arePluginEnabled();
-            if (enabled) {
-                ENABLED.put(getClass(), enabled);
-                this.init();
-                    OMCLogger.successFormatted("Hook " + hookName + " activé.");
-            }
+            ENABLED.put(getClass(), true);
+            this.init();
+            OMCLogger.successFormatted("Hook " + hookName + " activé.");
         } catch (Throwable e) {
             ENABLED.remove(getClass());
             OMCLogger.errorFormatted("Hook " + hookName + " non activé.");
@@ -83,17 +83,13 @@ public abstract class Hooks {
             return;
         }
 
-        boolean enabled = arePluginEnabled() && ENABLED.get(getClass()) != null
-                && ENABLED.get(getClass());
-
         String hookName = this.getClass().getSimpleName();
-        if (enabled) {
-            ENABLED.remove(getClass());
-            save();
-            OMCLogger.successFormatted("Hook " + hookName + " désactivé avec succès.");
-            return;
-        }
-        OMCLogger.errorFormatted("Hook " + hookName + " désactivé avec échec.");
+
+        if (!ENABLED.get(getClass())) return;
+
+        ENABLED.remove(getClass());
+        save();
+        OMCLogger.successFormatted("Hook " + hookName + " désactivé avec succès.");
     }
 
     /**

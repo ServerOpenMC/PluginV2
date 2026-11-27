@@ -2,8 +2,8 @@
 # Database
 #####
 database:
-  url: "jdbc:mysql://host:port/openmc"
-  username: ""
+  url: "jdbc:sqlite:plugins/OpenMC/openmc.db"  # ou pour une vrai db "jdbc:mysql://host:port/openmc"
+  username: "root"
   password: ""
 
 features:

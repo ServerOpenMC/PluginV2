@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id "com.gradleup.shadow" version "9.6.1"
+    id "com.gradleup.shadow" version "${shadowVersion}"
     id "io.papermc.paperweight.userdev" version "${paperWeightUserDevVersion}"
-    id("xyz.jpenilla.run-paper") version "3.1.0" // Will use ${minecraftVersion} for the paper version
+    id("xyz.jpenilla.run-paper") version "${runPaperVersion}"
 }
 
 def getLatestGitTag() {
@@ -56,19 +56,13 @@ repositories {
 dependencies {
     paperweight.paperDevBundle "${minecraftVersion}.build.${paperVersion}"
 
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:${worldguardVersion}") {
-        exclude group: 'com.google.guava', module: 'guava'
-        exclude group: 'com.google.code.gson', module: 'gson'
-    }
-    compileOnly "beer.devs:itemsadder-api:${itemsAdderVersion}"
-    compileOnly "net.luckperms:api:${luckpermsVersion}"
-    compileOnly "me.clip:placeholderapi:${placeholderApiVersion}"
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:${worldeditVersion}") {
-        exclude group: 'com.google.guava', module: 'guava'
-        exclude group: 'com.google.code.gson', module: 'gson'
-    }
-    compileOnly "de.oliver:FancyNpcs:${fancyNpcsVersion}"
-    compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
+    compileOnly "com.sk89q.worldguard:worldguard-bukkit:${worldguardApiVersion}"
+    compileOnly "beer.devs:itemsadder-api:${itemsAdderApiVersion}"
+    compileOnly "net.luckperms:api:${luckpermsApiVersion}"
+    compileOnly "me.clip:placeholderapi:${papiApiVersion}"
+    compileOnly "com.sk89q.worldedit:worldedit-bukkit:${worldeditApiVersion}"
+    compileOnly "de.oliver:FancyNpcs:${fancyNpcsApiVersion}"
+    compileOnly "net.dmulloy2:ProtocolLib:${protocolLibApiVersion}"
 
     // Bedrock Dependencies
     //compileOnly files("libs/RiftEngine-${riftEngineVersion}.jar")
@@ -90,11 +84,11 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     testImplementation paperweight.paperDevBundle("${minecraftVersion}.build.${paperVersion}")
-    testImplementation "org.mockbukkit.mockbukkit:mockbukkit-v26.2:${mockbukkitVersion}"
+    testImplementation "org.mockbukkit.mockbukkit:mockbukkit-v${mockbukkitMcVersion}:${mockbukkitVersion}"
     testImplementation "com.h2database:h2:${h2DatabaseVersion}"
 }
 
-def targetJavaVersion = 25
+def targetJavaVersion = javaTargetVersion.toInteger()
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(targetJavaVersion)
@@ -146,7 +140,38 @@ tasks.shadowJar {
     relocate("com.j256.ormlite", "fr.openmc.shaded.com.j256.ormlite")
 }
 
+def hotswapAgentFile = layout.buildDirectory.file("hotswap/hotswap-agent-${hotswapAgentVersion}.jar").get().asFile
+
+tasks.register('downloadHotswapAgent') {
+    outputs.file(hotswapAgentFile)
+    onlyIf {
+        !hotswapAgentFile.exists()
+    }
+    doLast {
+        hotswapAgentFile.parentFile.mkdirs()
+        new URL("https://github.com/HotswapProjects/HotswapAgent/releases/download/RELEASE-${hotswapAgentVersion}/hotswap-agent-${hotswapAgentVersion}.jar")
+                .withInputStream {
+                    input -> hotswapAgentFile.withOutputStream {
+                        it << input
+                    }
+                }
+    }
+}
+
+tasks.register('prepareRunServer', Copy) {
+    from 'run-conf'
+    into 'run'
+}
+
 tasks.runServer {
+    dependsOn tasks.named('downloadHotswapAgent')
+    dependsOn tasks.named('prepareRunServer')
+
+    javaLauncher.set(javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+        vendor = JvmVendorSpec.JETBRAINS
+    })
+
     standardInput = System.in
     minecraftVersion("${minecraftVersion}")
 
@@ -160,40 +185,20 @@ tasks.runServer {
     jvmArgs(
             "-Xmx4096M",
             "-Xms4096M",
-            "-XX:+AllowEnhancedClassRedefinition", // Remove if it doesn't launch
-            "-XX:HotswapAgent=core" // Remove if it doesn't launch
+            "-XX:+AllowEnhancedClassRedefinition",
+            "-javaagent:${hotswapAgentFile.absolutePath}"
     )
 
     downloadPlugins {
-        modrinth("FancyNpcs", "2.12.1")
-        modrinth("FastAsyncWorldEdit", "2.16.1")
-        modrinth("LuckPerms", "v5.5.71-bukkit")
-        modrinth("PlaceholderAPI", "2.12.3")
-        modrinth("WorldGuard", "7.0.20")
+        modrinth("FancyNpcs", fancyNpcsVersion)
+        modrinth("FastAsyncWorldEdit", fastAsyncWorldEditVersion)
+        modrinth("LuckPerms", luckPermsVersion)
+        modrinth("PlaceholderAPI", papiVersion)
+        modrinth("WorldGuard", worldGuardVersion)
         url("https://github.com/dmulloy2/ProtocolLib/releases/download/dev-build/ProtocolLib.jar")
     }
 }
 
 tasks.test {
     useJUnitPlatform()
-}
-
-// * Propriété locale
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withInputStream {
-        localProperties.load(it)
-    }
-}
-
-tasks.register('copyJarToServer', Copy) {
-    dependsOn tasks.shadowJar
-
-    from tasks.shadowJar
-
-    if (localProperties.getProperty('minecraftServerDir')) {
-        into file("${localProperties.getProperty('minecraftServerDir')}/plugins")
-    }
 }

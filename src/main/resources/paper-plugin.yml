@@ -8,25 +8,25 @@ dependencies:
   server:
     FancyNpcs:
       load: BEFORE
-      required: false
+      required: true
     PlaceholderAPI:
       load: BEFORE
-      required: false
+      required: true
     LuckPerms:
       load: BEFORE
-      required: false
+      required: true
     ItemsAdder:
       load: BEFORE
       required: false
     ProtocolLib:
       load: BEFORE
-      required: false
+      required: true
     WorldGuard:
       load: BEFORE
-      required: false
+      required: true
     FastAsyncWorldEdit:
       load: BEFORE
-      required: false
+      required: true
 #    Geyser-Spigot:
 #      load: BEFORE
 #      required: false

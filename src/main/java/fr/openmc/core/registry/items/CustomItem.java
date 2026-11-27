@@ -90,7 +90,7 @@ public abstract class CustomItem {
 
     public void updateSprite() {
         // Seulement init si on est dans le runtime
-        if (OMCPlugin.getInstance() != null) {
+        if (OMCPlugin.getInstance() != null && ItemsAdderHook.isEnable()) {
             this.itemEntry = OMCRegistry.SCANNERS.ITEMS.getFromNamespacedId(
                     ItemsAdderHook.getItemsAdderPath(OMCPlugin.getInstance().getDataPath()), id);
             ObjectComponent sprite = SpriteUtils.getSprite(this);
