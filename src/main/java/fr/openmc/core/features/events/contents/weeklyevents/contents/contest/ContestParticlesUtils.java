@@ -38,7 +38,7 @@ public class ContestParticlesUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (WeeklyEventsManager.getCurrentEvent() != null) return;
+                if (WeeklyEventsManager.isEventActive()) return;
 
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
@@ -75,6 +75,7 @@ public class ContestParticlesUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (!WeeklyEventsManager.isEventActive()) return;
                 if (!(WeeklyEventsManager.getCurrentEvent() instanceof Contest)) return;
                 if (WeeklyEventsManager.getCurrentPhase() == ContestPhase.END_PHASE.getPhase()) return;
 
