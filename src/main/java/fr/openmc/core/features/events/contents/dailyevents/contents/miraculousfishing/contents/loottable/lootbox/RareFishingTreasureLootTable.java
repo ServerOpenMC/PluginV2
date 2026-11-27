@@ -6,6 +6,7 @@ import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.jspecify.annotations.NonNull;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 public class RareFishingTreasureLootTable extends CustomLootTable {
     @Override
-    public Component getName() {
+    public @NonNull Component getName() {
         return OMCRegistry.CUSTOM_LOOTBOXES.RARE_FISHING_TREASURE.getName();
     }
 

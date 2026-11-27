@@ -8,7 +8,7 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.MoneyLoot;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
+import org.jspecify.annotations.NonNull;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class CommonGiftLootTable extends CustomLootTable {
     @Override
-    public Component getName() {
+    public @NonNull Component getName() {
         return TranslationManager.translation("feature.events.christmas.loot_table.common_gift");
     }
 
@@ -29,7 +29,7 @@ public class CommonGiftLootTable extends CustomLootTable {
     public Set<CustomLoot> getLoots() {
         return new LinkedHashSet<>(List.of(
                 new MoneyLoot(50, 100, 0.35),
-                new ItemLoot(Material.PAPER, 0.30, 5, 10), //todo: gingerbread
+                new ItemLoot(OMCRegistry.CUSTOM_ITEMS.GINGERBREAD, 0.30, 5, 10),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.AYWENITE, 0.25, 5, 10),
                 new ItemLoot(OMCRegistry.CUSTOM_ITEMS.RARE_GIFT, 0.01, 1)
         ));

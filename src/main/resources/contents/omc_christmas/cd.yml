@@ -14,3 +14,4 @@ items:
           name: omc_sounds:it_time
           description: Tomo - Le poisson Steve
     max_stack_size: 1
+    tooltip_style: omc_tooltips:tooltip/christmas_1

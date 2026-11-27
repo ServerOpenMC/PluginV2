@@ -1,6 +1,6 @@
 package fr.openmc.core.features.events.contents.christmas.listeners;
 
-import fr.openmc.core.features.events.contents.christmas.mecanism.dailyevent.BlizzardEvent;
+import fr.openmc.core.features.events.contents.christmas.contents.dailyevent.BlizzardEvent;
 import fr.openmc.core.features.events.contents.christmas.mecanism.rift.RiftManager;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsManager;
 import fr.openmc.core.registry.structures.model.CustomStructureManager;

@@ -21,7 +21,7 @@ import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfi
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.FishingFurnitureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.LegendaryFishingTreasureLootbox;
 import fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.items.RareFishingTreasureLootbox;
-import fr.openmc.core.features.events.contents.halloween.festival.CandyItem;
+import fr.openmc.core.features.events.contents.halloween.contents.items.CandyItem;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorBlock;
 import fr.openmc.core.features.itemsadder.elevator.ElevatorColor;
 import fr.openmc.core.hooks.itemsadder.ItemsAdderHook;
@@ -395,6 +395,9 @@ public class CustomItemRegistry extends Registry<String, CustomItem>
 
     public final CustomItem PLUSH_PERE_AYWEN = register("omc_christmas:peluche_pere_aywen", Material.PAPER);
     public final CustomItem PLUSH_GINGERBREAD_ROOT = register("omc_christmas:peluche_gingerbread_root", Material.PAPER);
+
+    public final CustomItem GINGERBREAD = register("omc_christmas:gingerbread", Material.PAPER);
+
 
     @Override
     public Set<ListenerFactory> getListeners() {

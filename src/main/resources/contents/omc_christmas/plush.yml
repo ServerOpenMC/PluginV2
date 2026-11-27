@@ -26,6 +26,7 @@ items:
             x: 0.8
             y: 0.8
             z: 0.8
+    tooltip_style: omc_tooltips:tooltip/christmas_1
   peluche_gingerbread_root:
     display_name: Root le gingerbread
     resource:
@@ -51,3 +52,4 @@ items:
             x: 0.8
             y: 0.8
             z: 0.8
+    tooltip_style: omc_tooltips:tooltip/christmas_1

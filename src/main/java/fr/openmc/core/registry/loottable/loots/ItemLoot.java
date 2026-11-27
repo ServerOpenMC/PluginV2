@@ -1,6 +1,7 @@
 package fr.openmc.core.registry.loottable.loots;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.utils.bukkit.ItemUtils;
@@ -11,13 +12,14 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 @Getter
 public class ItemLoot implements CustomLoot, RepresentedItem {
@@ -25,11 +27,11 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     private double chance;
     private final ItemStack item;
     private boolean predicateToLoot = true;
-    private Supplier<ItemStack> itemSupplier = null;
+    private Function<OfflinePlayer, ItemStack> itemSupplier = null;
     private final int minAmount;
     private final int maxAmount;
 
-    public ItemLoot(Supplier<ItemStack> itemSupplier, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
+    public ItemLoot(Function<OfflinePlayer, ItemStack> itemSupplier, ItemStack displayedItem, double chance, int minAmount, int maxAmount) {
         this.chance = chance;
         this.item = displayedItem;
         this.itemSupplier = itemSupplier;
@@ -37,8 +39,20 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
         this.maxAmount = maxAmount;
     }
 
-    public ItemLoot(Supplier<ItemStack> itemSupplier, Material displayedItem, double chance, int minAmount, int maxAmount) {
+    public ItemLoot(Function<OfflinePlayer, ItemStack> itemSupplier, Material displayedItem, double chance, int minAmount, int maxAmount) {
         this(itemSupplier, ItemStack.of(displayedItem), chance, minAmount, maxAmount);
+    }
+
+    public ItemLoot(Function<OfflinePlayer, ItemStack> itemSupplier, Material displayedItem, double chance, int amount) {
+        this(itemSupplier, ItemStack.of(displayedItem), chance, amount, amount);
+    }
+
+    public ItemLoot(Function<OfflinePlayer, ItemStack> itemSupplier, Material displayedItem, int amount) {
+        this(itemSupplier, ItemStack.of(displayedItem), 1, amount, amount);
+    }
+
+    public ItemLoot(Function<OfflinePlayer, ItemStack> itemSupplier, CustomItem displayedItem, int amount) {
+        this(itemSupplier, displayedItem.getBest(), 1, amount, amount);
     }
 
     public ItemLoot(ItemStack item, double chance, int minAmount, int maxAmount) {
@@ -55,9 +69,23 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 amount);
     }
 
+    public ItemLoot(ItemStack item, int amount) {
+        this(item,
+                1,
+                amount,
+                amount);
+    }
+
     public ItemLoot(Material item, double chance, int minAmount, int maxAmount) {
         this(ItemStack.of(item),
                 chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(Material item, int minAmount, int maxAmount) {
+        this(ItemStack.of(item),
+                1,
                 minAmount,
                 maxAmount);
     }
@@ -74,6 +102,12 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 amount);
     }
 
+    public ItemLoot(CustomItem item, int amount) {
+        this(item.getBest(),
+                1,
+                amount);
+    }
+
     public ItemLoot(CustomItem item, boolean predicate, double chance, int amount) {
         this(item.getBest(),
                 chance,
@@ -85,6 +119,13 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     public ItemLoot(CustomItem item, double chance, int minAmount, int maxAmount) {
         this(item.getBest(),
                 chance,
+                minAmount,
+                maxAmount);
+    }
+
+    public ItemLoot(CustomItem item, int minAmount, int maxAmount) {
+        this(item.getBest(),
+                1,
                 minAmount,
                 maxAmount);
     }
@@ -115,17 +156,23 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
+    public LootReward run(OfflinePlayer receiver) {
         if (!predicateToLoot) return null;
 
-        return runBase((items) -> {
-            for (ItemStack item : items) {
-                if (ItemUtils.hasEnoughSpace(receiver, item)) {
-                    receiver.getInventory().addItem(item);
-                } else {
-                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-                        receiver.getWorld().dropItemNaturally(receiver.getLocation(), item)
-                    );
+        return runBase(receiver, (items) -> {
+            if (receiver.getPlayer() == null) {
+                MailboxManager.sendItemsToOfflinePlayer(receiver, items.toArray(new ItemStack[0]));
+            } else {
+                Player player = receiver.getPlayer();
+
+                for (ItemStack item : items) {
+                    if (ItemUtils.hasEnoughSpace(player, item)) {
+                        player.getInventory().addItem(item);
+                    } else {
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                                player.getWorld().dropItemNaturally(player.getLocation(), item)
+                        );
+                    }
                 }
             }
         });
@@ -134,7 +181,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
     public LootReward run(Player receiver, Location location) {
         if (!predicateToLoot) return null;
 
-        return runBase((items) -> {
+        return runBase(receiver, (items) -> {
             for (ItemStack item : items) {
                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                         receiver.getWorld().dropItemNaturally(location, item)
@@ -143,11 +190,11 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
         });
     }
 
-    private LootReward runBase(Consumer<List<ItemStack>> consumer) {
+    private LootReward runBase(OfflinePlayer receiver, Consumer<List<ItemStack>> consumer) {
         ItemStack item;
 
         if (itemSupplier != null) {
-            item = itemSupplier.get();
+            item = itemSupplier.apply(receiver);
         } else {
             item = this.item.clone();
         }

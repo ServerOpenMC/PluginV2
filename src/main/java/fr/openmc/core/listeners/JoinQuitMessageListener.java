@@ -117,7 +117,7 @@ public class JoinQuitMessageListener implements Listener {
             MessagesManager.sendMessage(player,
                     TranslationManager.translation("feature.events.christmas.advent_calendar.case")
                             .clickEvent(ClickEvent.runCommand("/christmas calendar")),
-                    Prefix.OPENMC, MessageType.INFO, false);
+                    Prefix.CHRISTMAS, MessageType.INFO, false);
         }
     }
 

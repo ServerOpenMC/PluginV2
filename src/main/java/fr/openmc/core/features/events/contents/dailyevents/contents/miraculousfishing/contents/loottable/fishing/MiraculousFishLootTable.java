@@ -6,6 +6,7 @@ import fr.openmc.core.registry.loottable.loots.*;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.jspecify.annotations.NonNull;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 public class MiraculousFishLootTable extends CustomLootTable  {
     @Override
-    public Component getName() {
+    public @NonNull Component getName() {
         return TranslationManager.translation("feature.dailyevents.miraculousfishing.loot_table.miraculous_fishing");
     }
 

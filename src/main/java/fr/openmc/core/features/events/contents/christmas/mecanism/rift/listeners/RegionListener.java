@@ -27,6 +27,6 @@ public class RegionListener implements Listener {
                         spawnLoc,
                         0,
                         100,
-                        20));
+                        20).add(0, 1, 0));
     }
 }

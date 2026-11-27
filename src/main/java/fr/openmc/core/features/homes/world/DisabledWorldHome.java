@@ -4,7 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.features.dream.DreamDimensionManager;
 import fr.openmc.core.features.events.contents.christmas.mecanism.dimension.ChristmasDimensionManager;
-import fr.openmc.core.features.events.contents.halloween.festival.witchhouse.TerrorHouseDimensionManager;
+import fr.openmc.core.features.events.contents.halloween.witchhouse.TerrorHouseDimensionManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

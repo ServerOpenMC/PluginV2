@@ -1,7 +1,7 @@
 package fr.openmc.core.registry.loottable.loots;
 
-import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.registry.loottable.LootReward;
 import fr.openmc.core.utils.RandomUtils;
 import fr.openmc.core.utils.text.messages.TranslationManager;
@@ -11,16 +11,22 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
+import java.util.UUID;
 
 @Getter
 public class FreeClaimLoot implements CustomLoot {
     @Setter
     private double chance;
     private final int freeClaim;
+
+    public FreeClaimLoot(int freeClaim) {
+        this.chance = 1;
+        this.freeClaim = freeClaim;
+    }
 
     public FreeClaimLoot(int freeClaim, double chance) {
         this.chance = chance;
@@ -40,15 +46,13 @@ public class FreeClaimLoot implements CustomLoot {
     }
 
     @Override
-    public LootReward run(Player receiver) {
-        OMCPlayer omcPlayer = OMCPlayer.of(receiver);
+    public LootReward run(OfflinePlayer receiver) {
+        UUID receiverUUID = receiver.getUniqueId();
+        City cityReceiver = CityManager.getPlayerCity(receiverUUID);
 
-        if (!omcPlayer.city().hasCity()) return LootReward.empty();
+        if (cityReceiver == null) return LootReward.empty();
 
-        City city = omcPlayer.city().getCity();
-        if (city == null) return LootReward.empty();
-
-        city.updateFreeClaims(freeClaim);
+        cityReceiver.updateFreeClaims(freeClaim);
 
         return LootReward.loots(Collections.singleton(this));
     }

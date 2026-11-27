@@ -9,21 +9,18 @@ import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.api.omcplayer.OMCOfflinePlayer;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.bootstrap.features.Feature;
-import fr.openmc.core.bootstrap.features.types.HasCommands;
-import fr.openmc.core.bootstrap.features.types.HasDatabase;
-import fr.openmc.core.bootstrap.features.types.HasListeners;
-import fr.openmc.core.bootstrap.features.types.LoadIfEnable;
+import fr.openmc.core.bootstrap.features.types.*;
 import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.deposit.commands.DepositEventAdminCommands;
-import fr.openmc.core.features.events.contents.deposit.events.GingerbreadDepositEvent;
-import fr.openmc.core.features.events.contents.deposit.events.HalloweenPumpkinDepositEvent;
 import fr.openmc.core.features.events.contents.deposit.listener.DepositListener;
 import fr.openmc.core.features.events.contents.deposit.models.DepositDataModel;
 import fr.openmc.core.features.events.contents.deposit.models.DepositEventModel;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.hooks.FancyNpcsHook;
+import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.utils.scheduler.OMCScheduler;
 import fr.openmc.core.utils.scheduler.OMCTask;
 import fr.openmc.core.utils.text.DateUtils;
@@ -41,9 +38,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DepositEventManager extends Feature implements HasDatabase, HasCommands, HasListeners, LoadIfEnable<FancyNpcsHook> {
+public class DepositEventManager extends Feature implements HasDatabase, HasCommands, HasListeners, LoadIfEnable<FancyNpcsHook>, LoadAfterItemsAdder {
 
-    private static final Map<String, DepositEvent> EVENTS = new LinkedHashMap<>();
     private static final Map<String, Map<UUID, DepositDataModel>> depositData = new ConcurrentHashMap<>();
     private static final Map<String, DepositEventModel> eventInfo = new ConcurrentHashMap<>();
     private static final Map<String, OMCTask> endTasks = new ConcurrentHashMap<>();
@@ -51,29 +47,11 @@ public class DepositEventManager extends Feature implements HasDatabase, HasComm
     private static Dao<DepositDataModel, String> depositDataDao;
     private static Dao<DepositEventModel, String> eventInfoDao;
 
-    public static void register(DepositEvent event) {
-        EVENTS.put(event.getId(), event);
-    }
-
-    public static Optional<DepositEvent> getEvent(String id) {
-        return Optional.ofNullable(EVENTS.get(id));
-    }
-
-    public static Collection<DepositEvent> getEvents() {
-        return EVENTS.values();
-    }
-
-    public static Set<String> getEventIds() {
-        return EVENTS.keySet();
-    }
-
     @Override
     public void init() {
-        register(new GingerbreadDepositEvent());
-        register(new HalloweenPumpkinDepositEvent());
         loadAll();
 
-        for (DepositEvent event : EVENTS.values()) {
+        for (DepositEvent event : OMCRegistry.DEPOSIT_EVENTS.values()) {
             syncWithEventDates(event);
             scheduleEnd(event);
         }
@@ -229,11 +207,10 @@ public class DepositEventManager extends Feature implements HasDatabase, HasComm
         int rank = 1;
         for (DepositDataModel d : top) {
             OMCOfflinePlayer player = OMCOfflinePlayer.of(d.getPlayerUUID());
-            DepositReward reward = event.getReward(rank++, player);
+            CustomLootTable reward = event.getReward(rank++);
             if (reward == null) continue;
 
-            if (reward.money() > 0) player.economy().addBalance(reward.money());
-            if (!reward.items().isEmpty()) mail.put(player, reward.items().toArray(new ItemStack[0]));
+            reward.rollLoots(player);
         }
 
         if (!mail.isEmpty()) MailboxManager.sendItemsToAOfflinePlayerBatch(mail);

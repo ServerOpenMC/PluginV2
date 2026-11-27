@@ -4,13 +4,18 @@ import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 @Getter
 public class IdLoot implements CustomLoot {
     @Setter
     private double chance;
     private final String id;
+
+    public IdLoot(String id) {
+        this.chance = 1;
+        this.id = id;
+    }
 
     public IdLoot(String id, double chance) {
         this.chance = chance;
@@ -23,7 +28,7 @@ public class IdLoot implements CustomLoot {
     }
 
     @Override
-    public LootReward run(Player receiver) {
+    public LootReward run(OfflinePlayer receiver) {
         return null;
     }
 }

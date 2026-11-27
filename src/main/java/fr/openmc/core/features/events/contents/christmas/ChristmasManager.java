@@ -12,6 +12,7 @@ import fr.openmc.core.bootstrap.features.types.HasListeners;
 import fr.openmc.core.bootstrap.features.types.LoadAfterItemsAdder;
 import fr.openmc.core.bootstrap.integration.DatabaseManager;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
+import fr.openmc.core.features.events.contents.christmas.commands.AdminChristmasCommands;
 import fr.openmc.core.features.events.contents.christmas.listeners.DimensionListener;
 import fr.openmc.core.features.events.contents.christmas.listeners.GingerbreadListener;
 import fr.openmc.core.features.events.contents.christmas.mecanism.advent.AdventCalendar;
@@ -53,7 +54,8 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
     public Set<Object> getCommands() {
         return Set.of(
                 new AdminGiftCommands(),
-                new AdventCalendarCommands()
+                new AdventCalendarCommands(),
+                new AdminChristmasCommands()
         );
     }
 
@@ -114,8 +116,6 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
         }
     }
 
-    // todo: faire gestion de la fin (clear db apres le 31 decembre)
-
     public static void claimReward(Player player, Integer day) {
         playerProgressionCalendar.computeIfAbsent(player.getUniqueId(), _ -> new HashSet<>()).add(day);
     }
@@ -142,8 +142,8 @@ public class ChristmasManager extends Feature implements HasListeners, LoadAfter
                 MessagesManager.sendMessage(player,
                         TranslationManager.translation("feature.events.christmas.advent_calendar.case")
                                 .clickEvent(ClickEvent.runCommand("/christmas calendar")),
-                        Prefix.OPENMC, MessageType.INFO, false);
+                        Prefix.CHRISTMAS, MessageType.INFO, false);
             }
-        }, 20L * 60L, 20L * 60L);
+        }, 20L * 60L, 20L * 60L * 30L);
     }
 }

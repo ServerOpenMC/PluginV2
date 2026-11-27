@@ -1,6 +1,8 @@
 package fr.openmc.core.features.events.contents.deposit;
 
-import fr.openmc.api.omcplayer.OMCOfflinePlayer;
+import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.loottable.CustomLootTable;
+import fr.openmc.core.registry.loottable.types.rank.RankLootTable;
 import fr.openmc.core.utils.text.messages.Prefix;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -21,20 +23,13 @@ import java.time.LocalDateTime;
 public abstract class DepositEvent {
 
     public abstract String getId();
-
     public abstract String getTranslationKey();
-
     public abstract Prefix getPrefix();
-
     public abstract LocalDateTime getStartDate();
-
     public abstract LocalDateTime getEndDate();
-
     public abstract ItemStack getRequiredItem();
-
     public abstract NpcSettings getNpcSettings();
-
-    public abstract @Nullable DepositReward getReward(int rank, OMCOfflinePlayer player);
+    public abstract @Nullable RankLootTable getRewards();
 
     public Component getName() {
         return TranslationManager.translation(key("name"));
@@ -60,8 +55,13 @@ public abstract class DepositEvent {
         return getTranslationKey() + "." + suffix;
     }
 
-    protected ItemStack createTrophy(Material material, int rank, OfflinePlayer owner) {
-        ItemStack item = ItemStack.of(material);
+    public @Nullable CustomLootTable getReward(int rank) {
+        if (getRewards() == null) return null;
+
+        return getRewards().getReward(rank);
+    }
+
+    public ItemStack createTrophy(ItemStack item, int rank, OfflinePlayer owner) {
         item.unsetData(DataComponentTypes.CONSUMABLE);
         item.unsetData(DataComponentTypes.FOOD);
         item.setData(DataComponentTypes.DAMAGE_RESISTANT, DamageResistant.damageResistant(RegistryAccess.registryAccess().getRegistry(RegistryKey.DAMAGE_TYPE).getTag(DamageTypeTagKeys.IS_FIRE)));
@@ -77,4 +77,13 @@ public abstract class DepositEvent {
         });
         return item;
     }
+
+    public ItemStack createTrophy(Material material, int rank, OfflinePlayer owner) {
+        return createTrophy(ItemStack.of(material), rank, owner);
+    }
+
+    public ItemStack createTrophy(CustomItem customItem, int rank, OfflinePlayer owner) {
+        return createTrophy(customItem.getBest(), rank, owner);
+    }
+
 }
