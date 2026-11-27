@@ -381,8 +381,7 @@ public class WarManager {
                 Component.text(loser.getName()).color(NamedTextColor.BLUE),
                 Component.text(killsLoser).color(NamedTextColor.WHITE),
                 lossPower.color(NamedTextColor.GRAY),
-                lossMoney.color(NamedTextColor.GRAY),
-                lossClaims.color(NamedTextColor.GRAY)
+                lossMoney.color(NamedTextColor.GRAY)
         );
 
         for (UUID uuid : loser.getMembers()) {
