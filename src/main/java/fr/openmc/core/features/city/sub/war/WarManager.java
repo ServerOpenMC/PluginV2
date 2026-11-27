@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
 import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
+import fr.openmc.core.features.city.sub.war.listeners.WarVisibilityListener;
 import fr.openmc.core.features.city.sub.war.models.WarHistory;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessagesManager;
@@ -24,10 +25,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class WarManager {
     public static final int TIME_PREPARATION = 5; // in minutes
@@ -41,6 +39,7 @@ public class WarManager {
     public static final Map<UUID, War> warsByDefender = new HashMap<>();
 
     private static final Map<UUID, WarPendingDefense> pendingDefenses = new HashMap<>();
+    private static final Map<War, Map<UUID, Set<UUID>>> hiddenPlayersByWar = new HashMap<>();
 
     private static Dao<WarHistory, String> warHistoryDeo;
 
@@ -56,7 +55,8 @@ public class WarManager {
         );
 
         OMCPlugin.registerEvents(
-                WarKillListener::new
+                WarKillListener::new,
+                WarVisibilityListener::new
         );
 
         loadWarHistories();
@@ -146,6 +146,7 @@ public class WarManager {
 
         warsByAttacker.put(attacker.getUniqueId(), war);
         warsByDefender.put(defender.getUniqueId(), war);
+        updateWarVisibility(war);
     }
 
     /**
@@ -161,6 +162,8 @@ public class WarManager {
 
         pendingDefenses.remove(war.getCityAttacker().getUniqueId());
         pendingDefenses.remove(war.getCityDefender().getUniqueId());
+
+        restoreWarVisibility(war);
 
         if (warRemoved == null) return;
 
@@ -270,6 +273,50 @@ public class WarManager {
         }
 
         broadcastWarResult(war, winner, loser, winReason, powerChange, amountStolen, Math.abs(claimsWon));
+    }
+
+    public static void updateWarVisibility(War war) {
+        Map<UUID, Set<UUID>> hiddenByViewer = hiddenPlayersByWar.computeIfAbsent(war, ignored -> new HashMap<>());
+        hideUnselectedCityMembers(war.getAttackers(), war.getCityDefender().getMembers(), war.getDefenders(), hiddenByViewer);
+        hideUnselectedCityMembers(war.getDefenders(), war.getCityAttacker().getMembers(), war.getAttackers(), hiddenByViewer);
+    }
+
+    private static void hideUnselectedCityMembers(List<UUID> viewers, Set<UUID> cityMembers, List<UUID> selectedOpponents,
+                                                  Map<UUID, Set<UUID>> hiddenByViewer) {
+        for (UUID viewerUUID : viewers) {
+            Player viewer = Bukkit.getPlayer(viewerUUID);
+            if (viewer == null) continue;
+
+            Set<UUID> hiddenByThisViewer = hiddenByViewer.computeIfAbsent(viewerUUID, ignored -> new HashSet<>());
+            for (UUID memberUUID : cityMembers) {
+                if (selectedOpponents.contains(memberUUID)) {
+                    if (hiddenByThisViewer.remove(memberUUID)) {
+                        Player member = Bukkit.getPlayer(memberUUID);
+                        if (member != null) viewer.showPlayer(OMCPlugin.getInstance(), member);
+                    }
+                    continue;
+                }
+
+                Player member = Bukkit.getPlayer(memberUUID);
+                if (member == null || member.equals(viewer)) continue;
+                viewer.hidePlayer(OMCPlugin.getInstance(), member);
+                hiddenByThisViewer.add(memberUUID);
+            }
+        }
+    }
+
+    private static void restoreWarVisibility(War war) {
+        Map<UUID, Set<UUID>> hiddenByViewer = hiddenPlayersByWar.remove(war);
+        if (hiddenByViewer == null) return;
+
+        for (Map.Entry<UUID, Set<UUID>> entry : hiddenByViewer.entrySet()) {
+            Player viewer = Bukkit.getPlayer(entry.getKey());
+            if (viewer == null) continue;
+            for (UUID targetUUID : entry.getValue()) {
+                Player target = Bukkit.getPlayer(targetUUID);
+                if (target != null) viewer.showPlayer(OMCPlugin.getInstance(), target);
+            }
+        }
     }
 
     /**
