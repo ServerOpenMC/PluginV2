@@ -8,6 +8,6 @@ items:
     tooltip_style: omc_tooltips:tooltip/christmas_1
     graphics:
       texture: item/gingerbread.png
-      consumable:
-        nutrition: 6
-        saturation: 5
+    consumable:
+      nutrition: 6
+      saturation: 5
