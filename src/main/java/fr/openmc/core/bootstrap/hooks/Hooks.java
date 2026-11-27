@@ -21,20 +21,18 @@ public abstract class Hooks {
     private static final Map<Class<? extends Hooks>, Boolean> ENABLED = new ConcurrentHashMap<>();
 
     public boolean arePluginEnabled() {
-        if (!(this instanceof HttpsHook)) return true;
-        boolean enabled = true;
+        if (this instanceof HttpsHook) return true;
 
-        Set<String> pluginsName = getPluginsName();
-        for (String pluginName : pluginsName) {
-            PluginManager pluginManager = OMCPlugin.getInstance().getServer().getPluginManager();
-            boolean pluginEnable = pluginManager.getPlugin(pluginName) != null
-                    && pluginManager.isPluginEnabled(pluginName);
-
-            if (!pluginEnable) return false;
+        PluginManager pluginManager = OMCPlugin.getInstance().getServer().getPluginManager();
+        for (String pluginName : getPluginsName()) {
+            if (pluginManager.getPlugin(pluginName) == null
+                    || !pluginManager.isPluginEnabled(pluginName)) {
+                return false;
+            }
         }
-
-        return enabled;
+        return true;
     }
+
     /**
      * Verifie la presence du plugin cible, puis initialise le hook si actif.
      */
