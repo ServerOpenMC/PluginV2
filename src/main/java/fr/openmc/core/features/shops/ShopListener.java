@@ -51,9 +51,6 @@ public class ShopListener implements Listener {
         if (block == null) return;
         if (!block.getType().equals(Material.OAK_SIGN)) return;
 
-        // Check if the clicked block is a sign with tags
-        // Instead of getting the entire state of the block
-        // This is much faster and avoids unnecessary overhead
         if (!Tag.SIGNS.isTagged(block.getType())) return;
         
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
@@ -149,7 +146,7 @@ public class ShopListener implements Listener {
 	    if (ShopManager.getShopAt(source.getLocation().toBlockLocation()) == null) return;
         e.setCancelled(true);
     }
-    
+
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
 	    ShopManager.shopBypass.remove(e.getPlayer().getUniqueId());

@@ -128,7 +128,10 @@ public class ShopSellingMenu extends PaginatedMenu {
 					this.shop.setMenuOpened(false);
 					PlayerShopManager.deleteShop(getOwner(), shop);
 				},
-				() -> new ShopSellingMenu(getOwner(), shop).open(),
+				() -> {
+					shop.setMenuOpened(false);
+					getOwner().closeInventory();
+				},
 				TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.accept"),
 				TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.refuse")
 		).open()));
