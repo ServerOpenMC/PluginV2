@@ -16,6 +16,10 @@ public class CustomStructureRegistry extends Registry<String, CustomStructure>
 
     public final CustomStructure WITCH_SHOP = register("test", "pillar.nbt");
     public final CustomStructure TERROR_HOUSE = register("terror house", "TerrorHouse.schem");
+    public final CustomStructure CHRISTMAS_RIFT = register(
+            "christmas rift",
+            "christmas_rift.schem"
+    );
 
     @Override
     public String key(CustomStructure structure) {

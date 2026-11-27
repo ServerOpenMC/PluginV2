@@ -1,0 +1,42 @@
+{
+  "name": "omc_christmas:village/streets",
+  "fallback": "omc_christmas:village/terminators",
+  "elements": [
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:village/street_straight",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:village/street_turn",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:village/street_t_way",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:village/street_cross",
+        "processors": "minecraft:empty",
+        "projection": "terrain_matching"
+      }
+    }
+  ]
+}

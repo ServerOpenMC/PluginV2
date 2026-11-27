@@ -13,6 +13,7 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.bootstrap.listeners.ListenerFactory;
 import fr.openmc.core.features.events.contents.dailyevents.commands.DailyEventCommand;
 import fr.openmc.core.features.events.contents.dailyevents.listeners.DailyEventAmbientListeners;
+import fr.openmc.core.features.events.contents.dailyevents.listeners.PlayerJoinListener;
 import fr.openmc.core.features.events.contents.dailyevents.models.IncomingEventsDB;
 import fr.openmc.core.features.events.contents.dailyevents.models.ScheduleDailyEvent;
 import fr.openmc.core.features.events.contents.dailyevents.models.SlotDailyEvent;
@@ -80,7 +81,8 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
     @Override
     public Set<ListenerFactory> getListeners() {
         Set<ListenerFactory> listeners = new HashSet<>(Set.of(
-                DailyEventAmbientListeners::new
+                DailyEventAmbientListeners::new,
+                PlayerJoinListener::new
         ));
 
         for (DailyEvent event : OMCRegistry.DAILY_EVENTS.values()) {
@@ -143,10 +145,21 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
 
         List<ScheduleDailyEvent> scheduledEvents = new ArrayList<>();
         for (LocalDateTime slotDate : SlotDailyEvent.getSlotsBetween(now, now.plusDays(1))) {
-            if (copyEvents.isEmpty()) {
-                copyEvents = RandomUtils.generateRandomOrder(OMCRegistry.DAILY_EVENTS.values().stream().toList());
+            DailyEvent chosen = chooseDailyEvent(copyEvents, slotDate);
+
+            if (chosen == null) {
+                List<DailyEvent> available = OMCRegistry.DAILY_EVENTS.values().stream()
+                        .filter(event -> event.isAvailableAt(slotDate))
+                        .toList();
+
+                if (available.isEmpty()) continue;
+
+                copyEvents = new ArrayList<>(RandomUtils.generateRandomOrder(available));
+                chosen = chooseDailyEvent(copyEvents, slotDate);
+                if (chosen == null) continue;
             }
-            scheduledEvents.add(new ScheduleDailyEvent(copyEvents.removeFirst(), slotDate));
+
+            scheduledEvents.add(new ScheduleDailyEvent(chosen, slotDate));
         }
 
         // * Tri chornologique des dates
@@ -228,6 +241,19 @@ public class DailyEventsManager extends Feature implements LoadAfterItemsAdder, 
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () ->
                     DailyEventsManager.nextEventTask = DailyEventsManager.scheduleNextEventTask(), 20L * 10);
         });
+    }
+
+    public static DailyEvent chooseDailyEvent(List<DailyEvent> events, LocalDateTime date) {
+        Iterator<DailyEvent> iterator = events.iterator();
+        while (iterator.hasNext()) {
+            DailyEvent event = iterator.next();
+            if (event.isAvailableAt(date)) {
+                iterator.remove();
+                return event;
+            }
+        }
+
+        return null;
     }
 
     /**

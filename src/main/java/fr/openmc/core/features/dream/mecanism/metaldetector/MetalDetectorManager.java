@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.mecanism.metaldetector;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.registries.DreamLootTableRegistry;
+import fr.openmc.core.features.dream.contents.DreamLootTableRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 
 import java.util.HashMap;

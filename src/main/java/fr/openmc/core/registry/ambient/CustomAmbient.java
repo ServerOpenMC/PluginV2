@@ -170,12 +170,20 @@ public abstract class CustomAmbient {
                 effects.get("grass_color_modifier").getAsString() :
                 initialEffects.grassColorModifier().getName();
 
+        float temperatures = this.getAmbientBuilder().getBiomeBuilder().getTemperatures() == 0.5 ?
+                climate.temperature() :
+                this.getAmbientBuilder().getBiomeBuilder().getTemperatures();
+        boolean hasPrecipitation = this.getAmbientBuilder().getBiomeBuilder().getHasPrecipitation() ?
+                climate.hasPrecipitation() :
+                this.getAmbientBuilder().getBiomeBuilder().getHasPrecipitation();
+
+
         BiomeBuilder builder = new BiomeBuilder()
                 .waterColor(waterColor)
                 .grassColorModifier(grassColorModifier)
-                .hasPrecipitation(climate.hasPrecipitation())
+                .hasPrecipitation(hasPrecipitation)
                 .downfall(climate.downfall())
-                .temperatures(climate.temperature())
+                .temperatures(temperatures)
                 .temperatureModifier(climate.temperatureModifier().getName());
 
         grassColor.ifPresent(builder::grassColor);

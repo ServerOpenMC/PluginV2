@@ -10,7 +10,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
@@ -18,7 +20,7 @@ import java.util.Optional;
 public class InteractListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
-    void onInteract(PlayerInteractEvent event) {
+    public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
@@ -39,4 +41,20 @@ public class InteractListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onClickOnEntity(PlayerInteractAtEntityEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
+        Player player = event.getPlayer();
+        if (player.isSneaking()) return;
+
+        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+        Optional<CustomItem> item = OMCRegistry.CUSTOM_ITEMS.get(itemInHand);
+
+        if (item.isEmpty()) return;
+
+        if (item.get() instanceof UsableItem usable) {
+            usable.onClickOnEntity(player, event);
+        }
+    }
 }

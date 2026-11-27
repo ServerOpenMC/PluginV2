@@ -1,0 +1,36 @@
+package fr.openmc.core.features.dream.contents.items.armors.cloud;
+
+import fr.openmc.core.features.dream.models.registry.items.DreamEquipableItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItem;
+import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
+import fr.openmc.core.features.dream.models.registry.items.DreamRarity;
+import fr.openmc.core.utils.text.messages.TranslationManager;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+public class CloudBoots extends DreamItem implements DreamEquipableItem {
+    public CloudBoots() {
+        super(new DreamItemMeta(
+                "omc_dream:cloud_boots",
+                TranslationManager.translation("feature.dream.item.cloud_boots.name"),
+                DreamRarity.EPIC,
+                Material.LEATHER_BOOTS,
+                true
+        ));
+    }
+
+    @Override
+    public long getAdditionalMaxTime() {
+        return 30;
+    }
+
+    @Override
+    public Integer getColdResistance() {
+        return null;
+    }
+
+    @Override
+    public ItemStack getTransferableItem() {
+        return this.getBestTransferable();
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "omc_christmas:christmas_tree/part_1",
+        "processors": "omc_christmas:persistant_leaves",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

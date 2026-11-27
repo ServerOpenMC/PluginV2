@@ -1,0 +1,50 @@
+{
+    "fallback": "minecraft:empty",
+    "elements": [
+        {
+            "weight": 1,
+            "element": {
+                "element_type": "legacy_single_pool_element",
+                "location": "omc_christmas:medium_gift/gift_1",
+                "processors": "minecraft:empty",
+                "projection": "rigid"
+            }
+        },
+        {
+            "weight": 1,
+            "element": {
+                "element_type": "legacy_single_pool_element",
+                "location": "omc_christmas:medium_gift/gift_2",
+                "processors": "minecraft:empty",
+                "projection": "rigid"
+            }
+        },
+        {
+            "weight": 1,
+            "element": {
+                "element_type": "legacy_single_pool_element",
+                "location": "omc_christmas:medium_gift/gift_3",
+                "processors": "minecraft:empty",
+                "projection": "rigid"
+            }
+        },
+        {
+            "weight": 1,
+            "element": {
+                "element_type": "legacy_single_pool_element",
+                "location": "omc_christmas:medium_gift/gift_4",
+                "processors": "minecraft:empty",
+                "projection": "rigid"
+            }
+        },
+        {
+            "weight": 1,
+            "element": {
+                "element_type": "legacy_single_pool_element",
+                "location": "omc_christmas:medium_gift/gift_5",
+                "processors": "minecraft:empty",
+                "projection": "rigid"
+            }
+        }
+    ]
+}

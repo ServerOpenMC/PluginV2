@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "omc_christmas:christmas_tree",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 30,
+    "separation": 15,
+    "salt": 567767767
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#omc_christmas:has_christmas_tree",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "start_pool": "omc_christmas:christmas_tree/part_1",
+  "size": 4,
+  "start_height": {
+    "absolute": 1
+  },
+  "project_start_to_heightmap": "MOTION_BLOCKING_NO_LEAVES",
+  "max_distance_from_center": 116,
+  "use_expansion_hack": false,
+  "terrain_adaptation": "beard_box"
+}

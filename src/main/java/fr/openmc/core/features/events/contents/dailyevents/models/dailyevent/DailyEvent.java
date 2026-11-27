@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -55,9 +56,6 @@ public abstract class DailyEvent extends Event {
                 .filter(p -> p.getWorld().getName().equals(this.getWorldEvent()))
                 .collect(Collectors.toSet());
 
-        // * Lancement de l'evenement
-        this.onStart().run();
-
         // * Application de l'ambience
         if (this instanceof HasAmbient ambient) {
             ambient.apply(receivers);
@@ -72,6 +70,9 @@ public abstract class DailyEvent extends Event {
         if (this instanceof HasToast toast) {
             toast.getStartToastData().send(receivers);
         }
+
+        // * Lancement de l'evenement
+        this.onStart().run();
 
         // * Programmation de la fin de l'evenement
         DailyEventsManager.endEventTask = OMCScheduler.runAt(
@@ -112,5 +113,13 @@ public abstract class DailyEvent extends Event {
 
     public World getWorld() {
         return Bukkit.getWorld(this.getWorldEvent());
+    }
+
+    public boolean isAvailableAt(LocalDateTime date) {
+        if (this instanceof HasExclusiveMonth exclusive) {
+            return exclusive.getMonth() == date.getMonth();
+        }
+
+        return true;
     }
 }

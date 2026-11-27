@@ -6,6 +6,8 @@ import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.contents.christmas.ChristmasManager;
+import fr.openmc.core.features.events.contents.christmas.mecanism.advent.AdventCalendar;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
@@ -110,6 +112,13 @@ public class JoinQuitMessageListener implements Listener {
 
         if (!player.hasMetadata(OMCPlugin.VANISH_META_KEY))
             event.joinMessage(getJoinMessageComponent(player));
+
+        if (AdventCalendar.isCalendarActive() && !ChristmasManager.hasClaimAllCaseAvailable(player)) {
+            MessagesManager.sendMessage(player,
+                    TranslationManager.translation("feature.events.christmas.advent_calendar.case")
+                            .clickEvent(ClickEvent.runCommand("/christmas calendar")),
+                    Prefix.CHRISTMAS, MessageType.INFO, false);
+        }
     }
 
     @EventHandler

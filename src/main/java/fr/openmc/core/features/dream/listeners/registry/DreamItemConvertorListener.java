@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.listeners.registry;
 
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;

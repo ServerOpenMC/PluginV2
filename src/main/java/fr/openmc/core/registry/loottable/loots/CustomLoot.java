@@ -3,6 +3,7 @@ package fr.openmc.core.registry.loottable.loots;
 import fr.openmc.core.registry.loottable.LootReward;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,7 +11,7 @@ public interface CustomLoot {
     Component getDisplayText();
     double getChance();
     void setChance(double chance);
-    LootReward run(Player receiver);
+    LootReward run(OfflinePlayer receiver);
 
     default ItemStack getRepresentativeItem() {
         if (this instanceof RepresentedItem representedItem)

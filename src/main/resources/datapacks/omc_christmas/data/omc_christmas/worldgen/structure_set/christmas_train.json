@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "omc_christmas:christmas_train",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 30,
+    "separation": 12,
+    "salt": 11111,
+    "exclusion_zone": {
+            "chunk_count": 1,
+            "other_set": "omc_christmas:christmas_tree"
+        }
+  }
+}

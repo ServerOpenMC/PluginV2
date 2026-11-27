@@ -145,3 +145,9 @@ font_images:
         suggestion_in_command: false
         path: "letter_mailbox.png"
         y_position: 22
+    advent_calendar:
+        permission: christmas.advent_calendar
+        show_in_gui: true
+        suggestion_in_command: false
+        path: "advent_calendar.png"
+        y_position: 30

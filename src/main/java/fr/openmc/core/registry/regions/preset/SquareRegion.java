@@ -1,12 +1,9 @@
 package fr.openmc.core.registry.regions.preset;
 
 import com.sk89q.worldedit.math.BlockVector3;
-import fr.openmc.core.bootstrap.integration.OMCLogger;
 import fr.openmc.core.registry.regions.CustomRegion;
 import lombok.Getter;
-import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 
 public class SquareRegion extends CustomRegion {
@@ -21,7 +18,7 @@ public class SquareRegion extends CustomRegion {
     @Getter
     public BlockVector3 max;
 
-    public Key key;
+    public String key;
 
     public SquareRegion(String key, String world, BlockVector3 pos1, BlockVector3 pos2) {
         this.world = world;
@@ -29,11 +26,11 @@ public class SquareRegion extends CustomRegion {
         max = pos1.getMaximum(pos2);
         this.pos1 = pos1;
         this.pos2 = pos2;
-        this.key = new NamespacedKey("openmc_custom_region", key).key();
+        this.key = key;
     }
 
     @Override
-    public Key getKey() {
+    public String getKey() {
         return key;
     }
 

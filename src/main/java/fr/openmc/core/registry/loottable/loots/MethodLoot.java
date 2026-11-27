@@ -4,7 +4,7 @@ import fr.openmc.core.registry.loottable.LootReward;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
@@ -16,9 +16,13 @@ public class MethodLoot implements CustomLoot, RepresentedItem {
     private final Component text;
     @Setter
     private double chance;
-    private final Consumer<Player> receiverAction;
+    private final Consumer<OfflinePlayer> receiverAction;
 
-    public MethodLoot(ItemStack representativeItem, Component text, Consumer<Player> receiverAction, double chance) {
+    public MethodLoot(ItemStack representativeItem, Component text, Consumer<OfflinePlayer> receiverAction) {
+        this(representativeItem, text, receiverAction, 1);
+    }
+
+    public MethodLoot(ItemStack representativeItem, Component text, Consumer<OfflinePlayer> receiverAction, double chance) {
         this.representativeItem = representativeItem;
         this.text = text;
         this.chance = chance;
@@ -31,7 +35,7 @@ public class MethodLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
+    public LootReward run(OfflinePlayer receiver) {
         receiverAction.accept(receiver);
         return LootReward.loots(Collections.singleton(this));
     }

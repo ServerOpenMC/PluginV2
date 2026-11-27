@@ -5,11 +5,13 @@ import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.events.ArmorEquipEvent;
 import fr.openmc.core.features.dream.DreamUtils;
 import fr.openmc.core.registry.items.CustomItem;
+import fr.openmc.core.registry.items.options.ActivableInWorld;
 import fr.openmc.core.registry.items.options.EquipableItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -60,6 +62,13 @@ public class EquipableItemListener implements Listener {
     }
 
     @EventHandler
+    public void onChangeWorld(PlayerChangedWorldEvent event) {
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            recalc(event.getPlayer(), null);
+        }, 20L);
+    }
+
+    @EventHandler
     public void onDreamTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
 
@@ -86,7 +95,6 @@ public class EquipableItemListener implements Listener {
         }
 
         if (oldPiece != null && !oldPiece.getType().isAir()) {
-
             Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(oldPiece);
             if (customItem.isPresent() && customItem.get() instanceof EquipableItem equipable) {
                 equipable.removeEffects(player);
@@ -102,6 +110,8 @@ public class EquipableItemListener implements Listener {
             Optional<CustomItem> customItem = OMCRegistry.CUSTOM_ITEMS.get(piece);
             if (customItem.isEmpty()) continue;
             if (!(customItem.get() instanceof EquipableItem equipable)) continue;
+            if (equipable instanceof ActivableInWorld activable
+                    && !activable.inWorld().equals(player.getWorld().getName())) continue;
 
             for (var entry : equipable.getEffects().entrySet()) {
                 PotionEffectType type = entry.getKey();

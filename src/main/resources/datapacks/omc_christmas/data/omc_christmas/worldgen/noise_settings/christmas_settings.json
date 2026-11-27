@@ -1,0 +1,182 @@
+{
+  "default_block": "minecraft:diorite",
+  "aquifers": {
+    "barrier": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_barrier",
+      "xz_scale": 1,
+      "y_scale": 0.5
+    },
+    "fluid_level_floodedness": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:noise",
+        "noise": "minecraft:aquifer_fluid_level_floodedness",
+        "xz_scale": 0.3,
+        "y_scale": 0.67
+      },
+      "right": 0.4
+    },
+    "fluid_level_spread": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_fluid_level_spread",
+      "xz_scale": 0.3,
+      "y_scale": 0.7142857142857143
+    },
+    "lava": 0,
+    "surface_level": 80,
+    "exclusion": {
+      "type": "minecraft:add",
+      "left": 0.5,
+      "right": {
+        "type": "minecraft:mul",
+        "left": -1,
+        "right": "omc_christmas:settings/gingerbread_smooth"
+      }
+    }
+  },
+  "default_fluid": "minecraft:water",
+  "sea_level": -64,
+  "disable_mob_generation": true,
+  "legacy_random_source": false,
+  "noise": {
+    "min_y": -64,
+    "height": 304
+  },
+  "noise_router": {
+    "temperature": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:temperature",
+      "xz_scale": 0.25,
+      "y_scale": 0
+    },
+    "vegetation": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:vegetation",
+      "xz_scale": 0.25,
+      "y_scale": 0
+    },
+    "depth": "omc_christmas:settings/depth",
+    "continents": 0,
+    "erosion": "omc_christmas:settings/gingerbread_zone",
+    "ridges": 0,
+    "chunk_surface_level": 0,
+    "final_density": {
+      "type": "minecraft:add",
+      "left": {
+        "type": "minecraft:add",
+        "left": {
+          "type": "minecraft:min",
+          "left": {
+            "type": "minecraft:min",
+            "left": "omc_christmas:terrains/base_terrain",
+            "right": "omc_christmas:terrains/final_cave"
+          },
+          "right": "omc_christmas:terrains/final_lake_cavern"
+        },
+        "right": "omc_christmas:terrains/bedrock_floor"
+      },
+      "right": {
+        "type": "minecraft:beardifier"
+      }
+    }
+  },
+  "spawn_target": [],
+  "material_rule": {
+    "type": "minecraft:sequence",
+    "sequence": [
+      {
+        "type": "minecraft:condition",
+        "if_true": {
+          "type": "minecraft:vertical_gradient",
+          "false_at_and_above": {
+            "above_bottom": 1
+          },
+          "random_name": "minecraft:bedrock_floor",
+          "true_at_and_below": {
+            "above_bottom": 0
+          }
+        },
+        "then_run": {
+          "type": "minecraft:block",
+          "result_state": {
+            "id": "minecraft:bedrock"
+          }
+        }
+      },
+      {
+        "type": "minecraft:condition",
+        "if_true": {
+          "type": "minecraft:biome",
+          "biome_is": [
+            "omc_christmas:gingerbread"
+          ]
+        },
+        "then_run": {
+          "type": "minecraft:sequence",
+          "sequence": [
+            {
+              "type": "minecraft:condition",
+              "if_true": {
+                "type": "minecraft:stone_depth",
+                "offset": 0,
+                "surface_type": "floor",
+                "add_surface_depth": false,
+                "secondary_depth_range": 0
+              },
+              "then_run": {
+                "type": "minecraft:block",
+                "result_state": {
+                  "id": "minecraft:packed_mud"
+                }
+              }
+            },
+            {
+              "type": "minecraft:block",
+              "result_state": {
+                "id": "minecraft:brown_terracotta"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "type": "minecraft:condition",
+        "if_true": {
+          "type": "minecraft:stone_depth",
+          "offset": 5,
+          "surface_type": "floor",
+          "add_surface_depth": false,
+          "secondary_depth_range": 0
+        },
+        "then_run": {
+          "type": "minecraft:block",
+          "result_state": {
+            "id": "minecraft:snow_block"
+          }
+        }
+      },
+      {
+        "type": "minecraft:condition",
+        "if_true": {
+          "type": "minecraft:noise_threshold",
+          "noise": "omc_christmas:calcite_gradient",
+          "min_threshold": 0,
+          "max_threshold": 2
+        },
+        "then_run": {
+          "type": "minecraft:block",
+          "result_state": {
+            "id": "minecraft:calcite"
+          }
+        }
+      },
+      {
+        "type": "minecraft:block",
+        "result_state": {
+          "id": "minecraft:diorite"
+        }
+      }
+    ]
+  }
+}

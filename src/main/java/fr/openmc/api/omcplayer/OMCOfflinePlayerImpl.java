@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer;
 
+import fr.openmc.api.omcplayer.sub.OMCPlayerEconomy;
 import fr.openmc.api.omcplayer.sub.OMCPlayerHome;
 import fr.openmc.core.utils.cache.CachePlayerName;
 import lombok.experimental.Delegate;
@@ -15,10 +16,12 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
     @Delegate(types = OfflinePlayer.class)
     private final OfflinePlayer player;
     private final OMCPlayerHome home;
+    private final OMCPlayerEconomy economy;
 
     OMCOfflinePlayerImpl(OfflinePlayer player) {
         this.player = player;
         this.home = new OMCPlayerHome(player);
+        this.economy = new OMCPlayerEconomy(player);
     }
 
     @Override
@@ -45,5 +48,10 @@ public class OMCOfflinePlayerImpl implements OMCOfflinePlayer {
     @Override
     public OMCPlayerHome home() {
         return home;
+    }
+
+    @Override
+    public OMCPlayerEconomy economy() {
+        return this.economy;
     }
 }

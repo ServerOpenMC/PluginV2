@@ -1,0 +1,46 @@
+info:
+  namespace: omc_christmas
+items:
+  white_gift:
+    display_name: "<gradient:#FFFFFF:#B1B1B1><lang:itemsadder.omc_chirstmas.white_gift.name></gradient>"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: gift/white_gift
+    lore:
+      - <lang:itemsadder.omc_chirstmas.gift.lore.0>
+      - <lang:itemsadder.omc_chirstmas.gift.lore.1>
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+
+  green_gift:
+    display_name: "<gradient:#43FF50:#A9F3A1><lang:itemsadder.omc_chirstmas.green_gift.name></gradient>"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: gift/green_gift
+    lore:
+      - <lang:itemsadder.omc_chirstmas.gift.lore.0>
+      - <lang:itemsadder.omc_chirstmas.gift.lore.1>
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+
+  yellow_gift:
+    display_name: "<gradient:#FFB543:#E7E966><lang:itemsadder.omc_chirstmas.yellow_gift.name></gradient>"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: gift/yellow_gift
+    lore:
+      - <lang:itemsadder.omc_chirstmas.gift.lore.0>
+      - <lang:itemsadder.omc_chirstmas.gift.lore.1>
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+
+  blue_gift:
+    display_name: "<gradient:#9BFFE9:#00FFCB><lang:itemsadder.omc_chirstmas.blue_gift.name></gradient>"
+    resource:
+      material: PAPER
+      generate: false
+      model_path: gift/blue_gift
+    lore:
+      - <lang:itemsadder.omc_chirstmas.blue_gift.lore.0>
+      - <lang:itemsadder.omc_chirstmas.gift.lore.1>
+    tooltip_style: omc_tooltips:tooltip/christmas_1

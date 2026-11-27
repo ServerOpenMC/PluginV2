@@ -1,0 +1,140 @@
+info:
+  namespace: omc_christmas
+
+equipments:
+  gingerbread:
+    type: armor
+    layer_1: armor/gingerbread/gingerbread_armor_layer_1
+    layer_2: armor/gingerbread/gingerbread_armor_layer_2
+  santa:
+    type: armor
+    layer_1: armor/santa/santa_armor_layer_1
+    layer_2: armor/santa/santa_armor_layer_2
+
+items:
+  santa_hat:
+    display_name: Santa Hat
+    resource:
+      material: LEATHER_HELMET
+      generate: false
+      model_path: santa_hat
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+    equipment:
+      slot_attribute_modifiers:
+        armor: 5
+
+  santa_chestplate:
+    display_name: Santa Chestplate
+    resource:
+      generate: true
+      textures:
+        - armor/santa/santa_chestplate
+      material: LEATHER_CHESTPLATE
+    durability:
+      max_custom_durability: 400
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+    equipment:
+      id: omc_christmas:santa
+      slot_attribute_modifiers:
+        armor: 7
+
+  santa_leggings:
+    display_name: Santa Leggings
+    resource:
+      generate: true
+      textures:
+        - armor/santa/santa_leggings
+      material: LEATHER_LEGGINGS
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+    durability:
+      max_custom_durability: 375
+    equipment:
+      id: omc_christmas:santa
+      slot_attribute_modifiers:
+        armor: 7
+
+  santa_boots:
+    display_name: Santa Boots
+    resource:
+      generate: true
+      textures:
+        - armor/santa/santa_boots
+      material: LEATHER_BOOTS
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+    durability:
+      max_custom_durability: 325
+    equipment:
+      id: omc_christmas:santa
+      slot_attribute_modifiers:
+        armor: 7
+
+  gingerbread_helmet:
+    display_name: Gingerbread Helmet
+    resource:
+      generate: true
+      textures:
+        - armor/gingerbread/gingerbread_helmet
+      material: LEATHER_HELMET
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+    lore:
+      - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
+      - <lang:itemsadder.omc_christmas.gingerbread_helmet.lore>
+    durability:
+      max_custom_durability: 400
+    equipment:
+      id: omc_christmas:gingerbread
+      slot_attribute_modifiers:
+        armor: 5
+
+  gingerbread_chestplate:
+    display_name: Gingerbread Chestplate
+    resource:
+      generate: true
+      textures:
+        - armor/gingerbread/gingerbread_chestplate
+      material: LEATHER_CHESTPLATE
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+    lore:
+      - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
+      - <lang:itemsadder.omc_christmas.gingerbread_chestplate.lore>
+    durability:
+      max_custom_durability: 400
+    equipment:
+      id: omc_christmas:gingerbread
+      slot_attribute_modifiers:
+        armor: 5
+
+  gingerbread_leggings:
+    display_name: Gingerbread Leggings
+    resource:
+      generate: true
+      textures:
+        - armor/gingerbread/gingerbread_leggings
+      material: LEATHER_LEGGINGS
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+    lore:
+      - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
+    durability:
+      max_custom_durability: 375
+    equipment:
+      id: omc_christmas:gingerbread
+      slot_attribute_modifiers:
+        armor: 5
+
+  gingerbread_boots:
+    display_name: Gingerbread Boots
+    resource:
+      generate: true
+      textures:
+        - armor/gingerbread/gingerbread_boots
+      material: LEATHER_BOOTS
+    tooltip_style: omc_tooltips:tooltip/christmas_1
+    lore:
+      - <lang:itemsadder.omc_christmas.gingerbread_armor.lore>
+      - <lang:itemsadder.omc_christmas.gingerbread_boots.lore>
+    durability:
+      max_custom_durability: 325
+    equipment:
+      id: omc_christmas:gingerbread
+      slot_attribute_modifiers:
+        armor: 5

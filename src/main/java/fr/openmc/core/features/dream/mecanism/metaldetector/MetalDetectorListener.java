@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.mecanism.metaldetector;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.dream.registries.DreamBiome;
+import fr.openmc.core.features.dream.contents.DreamBiome;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

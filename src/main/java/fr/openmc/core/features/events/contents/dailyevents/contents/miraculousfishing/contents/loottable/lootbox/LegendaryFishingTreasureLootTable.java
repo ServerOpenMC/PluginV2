@@ -1,11 +1,12 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.miraculousfishing.contents.loottable.lootbox;
 
 import fr.openmc.core.OMCRegistry;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.registry.loottable.CustomLootTable;
 import fr.openmc.core.registry.loottable.loots.CustomLoot;
 import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import net.kyori.adventure.text.Component;
+import org.jspecify.annotations.NonNull;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 public class LegendaryFishingTreasureLootTable extends CustomLootTable {
     @Override
-    public Component getName() {
+    public @NonNull Component getName() {
         return OMCRegistry.CUSTOM_LOOTBOXES.LEGENDARY_FISHING_TREASURE.getName();
     }
 

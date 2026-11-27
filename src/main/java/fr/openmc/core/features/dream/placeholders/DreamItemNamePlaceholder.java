@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.placeholders;
 
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
 import fr.openmc.core.features.dream.models.registry.items.DreamItemMeta;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import fr.openmc.core.hooks.itemsadder.placeholders.IAPlaceholder;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 

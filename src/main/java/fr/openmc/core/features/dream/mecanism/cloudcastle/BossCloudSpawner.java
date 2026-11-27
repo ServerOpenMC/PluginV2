@@ -2,8 +2,8 @@ package fr.openmc.core.features.dream.mecanism.cloudcastle;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.registries.DreamMobsRegistry;
-import fr.openmc.core.features.dream.registries.mobs.Breezy;
+import fr.openmc.core.features.dream.contents.DreamMobsRegistry;
+import fr.openmc.core.features.dream.contents.mobs.Breezy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

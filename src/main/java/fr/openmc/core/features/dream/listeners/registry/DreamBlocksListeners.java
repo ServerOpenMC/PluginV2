@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.listeners.registry;
 
 import fr.openmc.core.features.dream.DreamUtils;
-import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
+import fr.openmc.core.features.dream.contents.DreamBlocksRegistry;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

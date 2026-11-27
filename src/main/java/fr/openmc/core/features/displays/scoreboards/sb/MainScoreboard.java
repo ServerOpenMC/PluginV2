@@ -1,9 +1,7 @@
 package fr.openmc.core.features.displays.scoreboards.sb;
 
-import de.oliver.fancynpcs.api.FancyNpcsPlugin;
-import de.oliver.fancynpcs.api.Npc;
-import de.oliver.fancynpcs.api.NpcManager;
 import fr.openmc.api.scoreboard.SternalBoard;
+import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.bits.BitsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -12,10 +10,10 @@ import fr.openmc.core.features.corpse.npc.CorpseNPC;
 import fr.openmc.core.features.corpse.npc.CorpseNPCManager;
 import fr.openmc.core.features.displays.scoreboards.BaseScoreboard;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.events.contents.halloween.pumpkin.managers.HalloweenManager;
+import fr.openmc.core.features.events.contents.deposit.DepositEvent;
+import fr.openmc.core.features.events.contents.deposit.DepositEventManager;
 import fr.openmc.core.features.events.sbinfos.ContestInfos;
 import fr.openmc.core.features.events.sbinfos.HalloweenFestivalInfos;
-import fr.openmc.core.hooks.FancyNpcsHook;
 import fr.openmc.core.hooks.LuckPermsHook;
 import fr.openmc.core.hooks.WorldGuardHook;
 import fr.openmc.core.utils.bedrock.CharRemplacementUtils;
@@ -49,8 +47,8 @@ public class MainScoreboard extends BaseScoreboard {
         // Corpse
         if (CorpseNPCManager.getNPC(player.getUniqueId()) instanceof CorpseNPC corpse) {
             lines.add(MiniMessage.miniMessage().deserialize(
-                    "<gradient:#F82C5D:#F64545><title></gradient>",
-                    Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title")))
+                            "<gradient:#F82C5D:#F64545><title></gradient>",
+                            Placeholder.component("title", TranslationManager.translation("feature.displays.scoreboard.corpse.title")))
                     .font(SmallCapsUtils.SMALL_CAPS_FONT)
                     .decoration(TextDecoration.BOLD, true)
                     .appendSpace()
@@ -140,20 +138,17 @@ public class MainScoreboard extends BaseScoreboard {
                 .append(location.color(TextColor.color(0xFF06DC)))
         );
 
-        if (FancyNpcsHook.isEnable()) {
-            NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
-            Npc halloweenNPC = null;
-            if (npcManager != null)
-                halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
+        for (DepositEvent event : OMCRegistry.DEPOSIT_EVENTS.values()) {
+            if (!DepositEventManager.isActive(event)) continue;
 
-            if (halloweenNPC != null) {
-                String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
-                lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
-                        .append(TranslationManager.translation(player, "feature.displays.scoreboard.pumpkins.label", true).color(NamedTextColor.GRAY))
-                        .appendSpace()
-                        .append(toSmall(player, pumpkinCount).color(TextColor.color(0xFF7518)))
-                );
-            }
+            String count = EconomyManager.getFormattedSimplifiedNumber(
+                    DepositEventManager.getCount(event, player.getUniqueId()));
+
+            lines.add(text("  " + CharRemplacementUtils.getPointChar(player) + " ", NamedTextColor.DARK_GRAY)
+                    .append(TranslationManager.translation(player, event.getTranslationKey() + ".scoreboard.label", true).color(NamedTextColor.GRAY))
+                    .appendSpace()
+                    .append(toSmall(player, count).color(TextColor.color(event.getMainColor())))
+            );
         }
 
         lines.add(empty());

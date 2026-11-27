@@ -6,6 +6,7 @@ import fr.openmc.core.bootstrap.registries.LifecycleRegistry;
 import fr.openmc.core.bootstrap.registries.RegistryContext;
 import fr.openmc.core.bootstrap.registries.RegistryLoadingType;
 import fr.openmc.core.features.events.contents.dailyevents.DailyEventsRegistry;
+import fr.openmc.core.features.events.contents.deposit.DepositEventsRegistry;
 import fr.openmc.core.features.events.contents.weeklyevents.WeeklyEventsRegistry;
 import fr.openmc.core.registry.ambient.CustomAmbientRegistry;
 import fr.openmc.core.registry.enchantments.CustomEnchantmentRegistry;
@@ -15,8 +16,8 @@ import fr.openmc.core.registry.loottable.CustomLootTableRegistry;
 import fr.openmc.core.registry.mobs.CustomMobRegistry;
 import fr.openmc.core.registry.regions.CustomRegionRegistry;
 import fr.openmc.core.registry.structures.CustomStructureRegistry;
-import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import fr.openmc.core.registry.worldtemplates.WorldTemplateRegistry;
+import fr.openmc.riftengine.api.registry.scanner.ScannerRegistry;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 
 import java.io.IOException;
@@ -40,6 +41,7 @@ public final class OMCRegistry {
     // * Registre des features
     public static WeeklyEventsRegistry WEEKLY_EVENTS;
     public static DailyEventsRegistry DAILY_EVENTS;
+    public static DepositEventsRegistry DEPOSIT_EVENTS;
 
     // * Registres internes
     public static ScannerRegistry SCANNERS;
@@ -71,6 +73,8 @@ public final class OMCRegistry {
             new RegistryContext(() -> WEEKLY_EVENTS = new WeeklyEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> DAILY_EVENTS = new DailyEventsRegistry(),
+                    RegistryLoadingType.AFTER_IA),
+            new RegistryContext(() -> DEPOSIT_EVENTS = new DepositEventsRegistry(),
                     RegistryLoadingType.AFTER_IA),
             new RegistryContext(() -> CUSTOM_REGIONS = new CustomRegionRegistry(),
                     RegistryLoadingType.AFTER_IA),

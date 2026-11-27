@@ -1,5 +1,6 @@
 package fr.openmc.api.omcplayer;
 
+import fr.openmc.api.omcplayer.sub.OMCPlayerEconomy;
 import fr.openmc.api.omcplayer.sub.OMCPlayerHome;
 import fr.openmc.core.utils.cache.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
@@ -36,4 +37,6 @@ public interface OMCOfflinePlayer extends OfflinePlayer {
     Component getNameWithHead();
 
     OMCPlayerHome home();
+
+    OMCPlayerEconomy economy();
 }

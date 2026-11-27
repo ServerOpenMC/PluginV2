@@ -1,7 +1,7 @@
 package fr.openmc.core.features.dream.mecanism.altar;
 
+import fr.openmc.core.features.dream.contents.DreamItemRegistry;
 import fr.openmc.core.features.dream.models.registry.items.DreamItem;
-import fr.openmc.core.features.dream.registries.DreamItemRegistry;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 

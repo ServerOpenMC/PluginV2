@@ -1,8 +1,8 @@
 package fr.openmc.core.features.dream.mecanism.altar.tasks;
 
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.contents.DreamBlocksRegistry;
 import fr.openmc.core.features.dream.models.registry.DreamBlock;
-import fr.openmc.core.features.dream.registries.DreamBlocksRegistry;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

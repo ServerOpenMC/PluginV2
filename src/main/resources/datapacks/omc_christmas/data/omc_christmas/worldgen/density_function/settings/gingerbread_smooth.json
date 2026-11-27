@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:clamp",
+  "input": {
+    "type": "minecraft:mul",
+    "left": 5,
+    "right": {
+      "type": "minecraft:add",
+      "left": "omc_christmas:settings/gingerbread_zone",
+      "right": -0.05
+    }
+  },
+  "min": 0,
+  "max": 1
+}

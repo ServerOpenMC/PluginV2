@@ -57,6 +57,18 @@ public class LocationUtils {
         return randomLocation(origin, distance);
     }
 
+    public static Location randomLocationInWorld(World world) {
+        WorldBorder border = world.getWorldBorder();
+        Location center = border.getCenter();
+        double half = border.getSize() / 2.0;
+
+        double x = center.getX() + (Math.random() * 2 - 1) * half;
+        double z = center.getZ() + (Math.random() * 2 - 1) * half;
+        double y = world.getHighestBlockYAt((int) x, (int) z) + 1;
+
+        return new Location(world, x, y, z);
+    }
+
     public static Location getSafeNearbySurface(Location location, int radius) {
         World world = location.getWorld();
         int baseY = location.getBlockY();

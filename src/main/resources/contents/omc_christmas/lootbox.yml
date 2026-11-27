@@ -1,0 +1,15 @@
+info:
+  namespace: omc_christmas
+items:
+  christmas_lootbox:
+    display_name: <gradient:#FA0000:#FFFFFF><lang:itemsadder.omc_christmas.christmas_lootbox.name></gradient>
+    resource:
+      material: PAPER
+      generate: false
+      model_path: christmas_lootbox
+    behaviours:
+      furniture:
+        gravity: false
+        small: true
+        light_level: 8
+    tooltip_style: omc_tooltips:tooltip/christmas_1

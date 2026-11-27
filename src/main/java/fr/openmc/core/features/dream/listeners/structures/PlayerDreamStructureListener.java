@@ -2,9 +2,9 @@ package fr.openmc.core.features.dream.listeners.structures;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.dream.DreamUtils;
+import fr.openmc.core.features.dream.contents.DreamStructure;
 import fr.openmc.core.features.dream.events.PlayerEnterStructureEvent;
 import fr.openmc.core.features.dream.events.PlayerExitStructureEvent;
-import fr.openmc.core.features.dream.registries.DreamStructure;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;

@@ -8,7 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
@@ -19,6 +19,11 @@ public class XpLoot implements CustomLoot, RepresentedItem {
     private double chance;
     private final int amountExp;
 
+    public XpLoot(int amountExp) {
+        this.chance = 1;
+        this.amountExp = amountExp;
+    }
+
     public XpLoot(int amountExp, double chance) {
         this.chance = chance;
         this.amountExp = amountExp;
@@ -28,6 +33,10 @@ public class XpLoot implements CustomLoot, RepresentedItem {
         this(RandomUtils.randomBetween(minAmountExp, maxAmountExp), chance);
     }
 
+    public XpLoot(int minAmountExp, int maxAmountExp) {
+        this(RandomUtils.randomBetween(minAmountExp, maxAmountExp));
+    }
+
     @Override
     public Component getDisplayText() {
         return Component.text(amountExp + " XP", NamedTextColor.YELLOW)
@@ -35,8 +44,9 @@ public class XpLoot implements CustomLoot, RepresentedItem {
     }
 
     @Override
-    public LootReward run(Player receiver) {
-        receiver.giveExp(amountExp);
+    public LootReward run(OfflinePlayer receiver) {
+        if (receiver.isOnline() && receiver.getPlayer() != null)
+            receiver.getPlayer().giveExp(amountExp);
         return LootReward.loots(Collections.singleton(this));
     }
 

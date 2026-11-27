@@ -5,6 +5,7 @@ import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.OMCRegistry;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.registry.items.CustomItem;
 import fr.openmc.core.utils.text.messages.MessageType;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.Prefix;
@@ -455,6 +456,18 @@ public class ItemUtils {
 
         if (item1 == null || item2 == null) return false;
         return item1.getType() == item2.getType();
+    }
+
+    /**
+     * Compare deux {@link ItemStack} pour vérifier s'ils sont similaires.
+     * Deux items sont considérés similaires s'ils ont le même type
+     *
+     * @param item1 le premier item à comparer
+     * @param item2 le second item à comparer
+     * @return true si les items sont similaires, false sinon
+     */
+    public static boolean isSimilar(ItemStack item1, CustomItem item2) {
+        return isSimilar(item1, item2.getBest());
     }
 
     /**

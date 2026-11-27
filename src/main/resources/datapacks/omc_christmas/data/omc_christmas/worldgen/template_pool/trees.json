@@ -1,0 +1,51 @@
+{
+  "name": "omc_christmas:trees",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:tree/tree_1",
+        "processors": "omc_christmas:persistant_leaves",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:tree/tree_2",
+        "processors": "omc_christmas:persistant_leaves",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:tree/tree_3",
+        "processors": "omc_christmas:persistant_leaves",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:tree/tree_4",
+        "processors": "omc_christmas:persistant_leaves",
+        "projection": "rigid"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "omc_christmas:tree/tree_5",
+        "processors": "omc_christmas:persistant_leaves",
+        "projection": "rigid"
+      }
+    }
+  ]
+}

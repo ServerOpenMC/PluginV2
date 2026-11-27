@@ -5,7 +5,12 @@ import fr.openmc.core.registry.loottable.loots.ItemLoot;
 import fr.openmc.core.registry.loottable.loots.menu.LootsInfoMenu;
 import fr.openmc.core.utils.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -28,7 +33,7 @@ public abstract class CustomLootTable {
                 .sum();
     }
 
-    public LootReward rollLoots(Player receiver) {
+    public LootReward rollLoots(OfflinePlayer receiver) {
         List<CustomLoot> guaranted = this.getLoots().stream()
                 .filter(loot -> loot.getChance() >= 1.0)
                 .toList();
@@ -155,6 +160,50 @@ public abstract class CustomLootTable {
         }
         Collections.shuffle(pool);
         return LootReward.loots(pool);
+    }
+
+    public LootReward generateChestLoot(Block block, Player receiver) {
+        BlockState state = block.getState();
+        if (!(state instanceof Container container)) return null;
+
+        container.customName(this.getName());
+        state.update();
+
+        Inventory inventory = container.getInventory();
+        List<CustomLoot> result = new ArrayList<>();
+
+        Set<CustomLoot> loots = this.getLoots();
+        double total = loots.stream().mapToDouble(CustomLoot::getChance).sum();
+        // > 1 : les chances deviennent des poids relatifs ; <= 1 : comportement inchangé (slots vides possibles)
+        double scale = Math.max(1.0, total);
+
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            ItemStack current = inventory.getItem(slot);
+            if (current != null && !current.getType().isAir()) continue;
+
+            double roll = ThreadLocalRandom.current().nextDouble() * scale;
+            double cumulativeChance = 0.0;
+
+            for (CustomLoot loot : loots) {
+                cumulativeChance += loot.getChance();
+
+                if (roll < cumulativeChance) {
+                    if (loot instanceof ItemLoot itemLoot) {
+                        inventory.setItem(slot, itemLoot.getItemLootWithAmount());
+                    } else if (receiver != null) {
+                        loot.run(receiver);
+                    }
+                    result.add(loot);
+                    break;
+                }
+            }
+        }
+
+        return LootReward.loots(result);
+    }
+
+    public LootReward generateChestLoot(Block block) {
+        return generateChestLoot(block, null);
     }
 
     public void openMenu(Player player) {

@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "omc_christmas:snowmen",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 17,
+    "separation": 10,
+    "salt": 892374982
+  }
+}
+

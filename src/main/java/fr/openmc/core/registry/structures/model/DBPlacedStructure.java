@@ -32,7 +32,7 @@ public class DBPlacedStructure {
     @DatabaseField
     private int z;
 
-    @DatabaseField(dataType = DataType.BYTE_ARRAY, canBeNull = false)
+    @DatabaseField(dataType = DataType.BYTE_ARRAY, canBeNull = false, columnDefinition = "LONGBLOB")
     private byte[] backup;
 
     @DatabaseField
