@@ -158,8 +158,14 @@ tasks.register('downloadHotswapAgent') {
     }
 }
 
+tasks.register('prepareRunServer', Copy) {
+    from 'run-conf'
+    into 'run'
+}
+
 tasks.runServer {
     dependsOn tasks.named('downloadHotswapAgent')
+    dependsOn tasks.named('prepareRunServer')
 
     javaLauncher.set(javaToolchains.launcherFor {
         languageVersion = JavaLanguageVersion.of(targetJavaVersion)

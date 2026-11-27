@@ -135,6 +135,7 @@ spigot.yml
 .settings/
 bin/
 local.properties
+run-conf/
 
 # Rift Engine lib
 !RiftEngine-*.jar
