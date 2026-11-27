@@ -12,11 +12,11 @@ import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
 import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
+import fr.openmc.core.features.city.sub.war.listeners.WarVisibilityListener;
 import fr.openmc.core.features.city.sub.war.models.WarHistory;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.text.messages.MessagesManager;
 import fr.openmc.core.utils.text.messages.TranslationManager;
-import fr.openmc.core.utils.world.chunk.ChunkPos;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class WarManager {
     public static final int TIME_PREPARATION = 5; // in minutes
@@ -40,6 +39,7 @@ public class WarManager {
     public static final Map<UUID, War> warsByDefender = new HashMap<>();
 
     private static final Map<UUID, WarPendingDefense> pendingDefenses = new HashMap<>();
+    private static final Map<War, Map<UUID, Set<UUID>>> hiddenPlayersByWar = new HashMap<>();
 
     private static Dao<WarHistory, String> warHistoryDeo;
 
@@ -55,7 +55,8 @@ public class WarManager {
         );
 
         OMCPlugin.registerEvents(
-                WarKillListener::new
+                WarKillListener::new,
+                WarVisibilityListener::new
         );
 
         loadWarHistories();
@@ -145,6 +146,7 @@ public class WarManager {
 
         warsByAttacker.put(attacker.getUniqueId(), war);
         warsByDefender.put(defender.getUniqueId(), war);
+        updateWarVisibility(war);
     }
 
     /**
@@ -160,6 +162,8 @@ public class WarManager {
 
         pendingDefenses.remove(war.getCityAttacker().getUniqueId());
         pendingDefenses.remove(war.getCityDefender().getUniqueId());
+
+        restoreWarVisibility(war);
 
         if (warRemoved == null) return;
 
@@ -234,7 +238,6 @@ public class WarManager {
         int claimsWon = -1;
         double amountStolen = -1;
         int powerChange = -1;
-        double bonusMoney = 0;
         if (!winReason.equals(WinReason.DRAW)) {
             int powerPointWinner = winner.getPowerPoints() == 0 ? 4 : winner.getPowerPoints();
             int powerPointLoser = loser.getPowerPoints() == 0 ? 4 : loser.getPowerPoints();
@@ -260,21 +263,60 @@ public class WarManager {
 
             claimsWon = (int) Math.ceil(totalClaims * percent * (1 + (level / 10.0)));
 
+            winner.updateFreeClaims(claimsWon);
+
             DynamicCooldownManager.use(loser.getUniqueId(), "city:immunity", CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN);
             DynamicCooldownManager.use(winner.getUniqueId(), "city:immunity", CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN);
-
-            int actualClaims = transferChunksAfterWar(winner, loser, claimsWon);
-            if (actualClaims < claimsWon) {
-                double missingRatio = (claimsWon - actualClaims) / (double) claimsWon;
-                bonusMoney = Math.ceil(amountStolen * 0.5 * missingRatio);
-                winner.updateBalance(bonusMoney);
-            }
         } else {
             DynamicCooldownManager.use(war.getCityDefender().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
             DynamicCooldownManager.use(war.getCityAttacker().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
         }
 
-        broadcastWarResult(war, winner, loser, winReason, powerChange, amountStolen, bonusMoney, Math.abs(claimsWon));
+        broadcastWarResult(war, winner, loser, winReason, powerChange, amountStolen, Math.abs(claimsWon));
+    }
+
+    public static void updateWarVisibility(War war) {
+        Map<UUID, Set<UUID>> hiddenByViewer = hiddenPlayersByWar.computeIfAbsent(war, ignored -> new HashMap<>());
+        hideUnselectedCityMembers(war.getAttackers(), war.getCityDefender().getMembers(), war.getDefenders(), hiddenByViewer);
+        hideUnselectedCityMembers(war.getDefenders(), war.getCityAttacker().getMembers(), war.getAttackers(), hiddenByViewer);
+    }
+
+    private static void hideUnselectedCityMembers(List<UUID> viewers, Set<UUID> cityMembers, List<UUID> selectedOpponents,
+                                                  Map<UUID, Set<UUID>> hiddenByViewer) {
+        for (UUID viewerUUID : viewers) {
+            Player viewer = Bukkit.getPlayer(viewerUUID);
+            if (viewer == null) continue;
+
+            Set<UUID> hiddenByThisViewer = hiddenByViewer.computeIfAbsent(viewerUUID, ignored -> new HashSet<>());
+            for (UUID memberUUID : cityMembers) {
+                if (selectedOpponents.contains(memberUUID)) {
+                    if (hiddenByThisViewer.remove(memberUUID)) {
+                        Player member = Bukkit.getPlayer(memberUUID);
+                        if (member != null) viewer.showPlayer(OMCPlugin.getInstance(), member);
+                    }
+                    continue;
+                }
+
+                Player member = Bukkit.getPlayer(memberUUID);
+                if (member == null || member.equals(viewer)) continue;
+                viewer.hidePlayer(OMCPlugin.getInstance(), member);
+                hiddenByThisViewer.add(memberUUID);
+            }
+        }
+    }
+
+    private static void restoreWarVisibility(War war) {
+        Map<UUID, Set<UUID>> hiddenByViewer = hiddenPlayersByWar.remove(war);
+        if (hiddenByViewer == null) return;
+
+        for (Map.Entry<UUID, Set<UUID>> entry : hiddenByViewer.entrySet()) {
+            Player viewer = Bukkit.getPlayer(entry.getKey());
+            if (viewer == null) continue;
+            for (UUID targetUUID : entry.getValue()) {
+                Player target = Bukkit.getPlayer(targetUUID);
+                if (target != null) viewer.showPlayer(OMCPlugin.getInstance(), target);
+            }
+        }
     }
 
     /**
@@ -286,10 +328,9 @@ public class WarManager {
      * @param reason     The reason for the win (e.g., mascot death, HP, kills, draw).
      * @param powerChange The change in power points for the winning city.
      * @param amountStolen The amount of money stolen from the losing city.
-     * @param bonusMoney Additional bonus money awarded to the winning city.
      * @param claimNumber The number of claims transferred to the winning city.
      */
-    public static void broadcastWarResult(War war, City winner, City loser, WinReason reason, int powerChange, double amountStolen, double bonusMoney, int claimNumber) {
+    public static void broadcastWarResult(War war, City winner, City loser, WinReason reason, int powerChange, double amountStolen, int claimNumber) {
         int killsWinner = war.getCityAttacker().equals(winner) ? war.getAttackersKill() : war.getDefendersKill();
         int killsLoser = war.getCityAttacker().equals(loser) ? war.getAttackersKill() : war.getDefendersKill();
 
@@ -329,15 +370,7 @@ public class WarManager {
                 "feature.city.war.result.reward.power",
                 Component.text(powerChange).color(NamedTextColor.GREEN)
         );
-        Component rewardMoney = bonusMoney > 0
-                ? TranslationManager.translation(
-                        "feature.city.war.result.reward.money_bonus",
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
-                                .color(NamedTextColor.GOLD),
-                        Component.text(EconomyManager.getFormattedSimplifiedNumber(bonusMoney) + EconomyManager.getEconomyIcon())
-                                .color(NamedTextColor.GOLD)
-                )
-                : TranslationManager.translation(
+        Component rewardMoney = TranslationManager.translation(
                         "feature.city.war.result.reward.money",
                         Component.text(EconomyManager.getFormattedSimplifiedNumber(amountStolen) + EconomyManager.getEconomyIcon())
                                 .color(NamedTextColor.GOLD)
@@ -395,8 +428,7 @@ public class WarManager {
                 Component.text(loser.getName()).color(NamedTextColor.BLUE),
                 Component.text(killsLoser).color(NamedTextColor.WHITE),
                 lossPower.color(NamedTextColor.GRAY),
-                lossMoney.color(NamedTextColor.GRAY),
-                lossClaims.color(NamedTextColor.GRAY)
+                lossMoney.color(NamedTextColor.GRAY)
         );
 
         for (UUID uuid : loser.getMembers()) {
@@ -408,133 +440,16 @@ public class WarManager {
     }
 
     /**
-     * Transfers chunks from the loser city to the winner city after a war.
-     * The transfer is done based on adjacency to the winner's chunks and the mascot's chunk.
-     *
-     * @param winner      The winning city.
-     * @param loser       The losing city.
-     * @param claimAmount The number of chunks to transfer.
-     * @return The number of chunks actually transferred.
-     */
-    public static int transferChunksAfterWar(City winner, City loser, int claimAmount) {
-        if (claimAmount <= 0) return 0;
-
-        ChunkPos mascotVec = new ChunkPos(
-                loser.getMascot().getChunk().getX(),
-                loser.getMascot().getChunk().getZ()
-        );
-
-        Set<ChunkPos> adjacentChunks = new HashSet<>();
-        for (ChunkPos wChunk : winner.getChunks()) {
-            int wx = wChunk.x(), wz = wChunk.z();
-
-            ChunkPos[] neighbors = {
-                    new ChunkPos(wx + 1, wz),
-                    new ChunkPos(wx - 1, wz),
-                    new ChunkPos(wx, wz + 1),
-                    new ChunkPos(wx, wz - 1)
-            };
-            for (ChunkPos nb : neighbors) {
-                if (nb.equals(mascotVec)) continue;
-
-                if (loser.getChunks().contains(nb)) {
-                    adjacentChunks.add(nb);
-                }
-            }
-        }
-
-        final int[] transferred = {0};
-
-        BiConsumer<Queue<ChunkPos>, Set<ChunkPos>> bfsCapture = (queue, visited) -> {
-            while (!queue.isEmpty() && transferred[0] < claimAmount) {
-                ChunkPos current = queue.poll();
-                int cx = current.x(), cz = current.z();
-
-                ChunkPos[] neighs = {
-                        new ChunkPos(cx + 1, cz),
-                        new ChunkPos(cx - 1, cz),
-                        new ChunkPos(cx, cz + 1),
-                        new ChunkPos(cx, cz - 1)
-                };
-                for (ChunkPos nb : neighs) {
-                    if (visited.contains(nb) || nb.equals(mascotVec)) continue;
-
-                    if (loser.getChunks().contains(nb)) {
-                        loser.removeChunk(nb.x(), nb.z());
-                        winner.addChunk(nb.x(), nb.z());
-                        visited.add(nb);
-                        queue.add(nb);
-                        transferred[0]++;
-                        if (transferred[0] >= claimAmount) break;
-                    }
-                }
-            }
-        };
-
-        if (!adjacentChunks.isEmpty()) {
-            List<ChunkPos> toSteal = new ArrayList<>(adjacentChunks);
-            int initialSteal = Math.min(toSteal.size(), claimAmount);
-            Queue<ChunkPos> queue = new LinkedList<>();
-            Set<ChunkPos> visited = new HashSet<>();
-            for (int i = 0; i < initialSteal; i++) {
-                ChunkPos c = toSteal.get(i);
-                loser.removeChunk(c.x(), c.z());
-                winner.addChunk(c.x(), c.z());
-                queue.add(c);
-                visited.add(c);
-                transferred[0]++;
-            }
-            bfsCapture.accept(queue, visited);
-        } else {
-            // Try from border
-            List<ChunkPos> borderChunks = new ArrayList<>();
-            for (ChunkPos lChunk : loser.getChunks()) {
-                if (lChunk.equals(mascotVec)) continue;
-                int lx = lChunk.x(), lz = lChunk.z();
-                ChunkPos[] neighs = {
-                        new ChunkPos(lx + 1, lz),
-                        new ChunkPos(lx - 1, lz),
-                        new ChunkPos(lx, lz + 1),
-                        new ChunkPos(lx, lz - 1)
-                };
-
-                for (ChunkPos nb : neighs) {
-                    if (!loser.getChunks().contains(nb)) {
-                        borderChunks.add(lChunk);
-                        break;
-                    }
-                }
-            }
-            if (!borderChunks.isEmpty()) {
-                Collections.shuffle(borderChunks);
-                ChunkPos seed = borderChunks.getFirst();
-
-                loser.removeChunk(seed.x(), seed.z());
-                winner.addChunk(seed.x(), seed.z());
-                Queue<ChunkPos> queue = new LinkedList<>();
-                Set<ChunkPos> visited = new HashSet<>();
-                queue.add(seed);
-                visited.add(seed);
-                transferred[0]++;
-
-                bfsCapture.accept(queue, visited);
-            }
-        }
-
-        return transferred[0];
-    }
-
-    /**
      * Gets a formatted string representation of the war phase.
      *
      * @param phase The war phase to format.
      * @return A string representing the formatted phase.
      */
-    public static String getFormattedPhase(War.WarPhase phase) {
+    public static Component getFormattedPhase(War.WarPhase phase) {
         return switch (phase) {
-            case PREPARATION -> "Préparation";
-            case COMBAT -> "Combat";
-            case ENDED -> "Fin";
+            case PREPARATION -> TranslationManager.translation("feature.city.war.phase.preparation");
+            case COMBAT -> TranslationManager.translation("feature.city.war.phase.fight");
+            case ENDED -> TranslationManager.translation("feature.city.war.phase.ended");
         };
     }
 
