@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import fr.openmc.core.features.city.ProtectionsManager;
 import io.papermc.paper.event.entity.EntityBreakByEntityEvent;
 import org.bukkit.entity.Enderman;
@@ -40,12 +39,6 @@ public class EntityProtection implements Listener {
     public void onEntityChangeBlock(EntityChangeBlockEvent event) {
         if (!(event.getEntity() instanceof Enderman enderman)) return;
         ProtectionsManager.verify(enderman, event, enderman.getLocation());
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onEntityKnockbackByEntity(EntityKnockbackByEntityEvent event) {
-        if (!(event.getHitBy() instanceof Player player)) return;
-        ProtectionsManager.verify(player, event, event.getEntity().getLocation());
     }
 
     @EventHandler
