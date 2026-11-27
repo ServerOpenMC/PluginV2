@@ -164,6 +164,8 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                 MailboxManager.sendItemsToOfflinePlayer(receiver, items.toArray(new ItemStack[0]));
             } else {
                 Player player = receiver.getPlayer();
+
+                for (ItemStack item : items) {
                     if (ItemUtils.hasEnoughSpace(player, item)) {
                         player.getInventory().addItem(item);
                     } else {
@@ -171,6 +173,7 @@ public class ItemLoot implements CustomLoot, RepresentedItem {
                                 player.getWorld().dropItemNaturally(player.getLocation(), item)
                         );
                     }
+                }
             }
         });
     }
