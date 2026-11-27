@@ -93,7 +93,10 @@ public class ShopMenu extends Menu {
                         this.shop.setMenuOpened(false);
                         PlayerShopManager.deleteShop(getOwner(), shop);
                     },
-                    () -> new ShopMenu(getOwner(), shop).open(),
+                    () -> {
+                        shop.setMenuOpened(false);
+                        getOwner().closeInventory();
+                    },
                     TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.accept"),
                     TranslationManager.translationLore("feature.shop.menu.main.delete.confirm.refuse")
             ).open()));

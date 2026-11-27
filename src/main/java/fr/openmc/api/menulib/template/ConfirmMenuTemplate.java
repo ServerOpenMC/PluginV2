@@ -26,6 +26,7 @@ public class ConfirmMenuTemplate extends Menu {
     private final List<Component> loreDenyMsg;
     private final Runnable accept;
     private final Runnable deny;
+    private boolean closed;
     private String texture = null;
     private InventorySize inventorySize = InventorySize.SMALLEST;
     private int posAcceptBtn = 5;
@@ -93,7 +94,9 @@ public class ConfirmMenuTemplate extends Menu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-
+        if (closed) return;
+        closed = true;
+        deny.run();
     }
 
     @Override
@@ -113,6 +116,8 @@ public class ConfirmMenuTemplate extends Menu {
             itemMeta.displayName(TranslationManager.translation("api.menulib.menu.confirm.deny.title"));
             itemMeta.lore(loreDeny);
         }).setOnClick(_ -> {
+            if (closed) return;
+            closed = true;
             try {
                 deny.run();
             } catch (Exception e) {
@@ -126,6 +131,8 @@ public class ConfirmMenuTemplate extends Menu {
             itemMeta.displayName(TranslationManager.translation("api.menulib.menu.confirm.accept.title"));
             itemMeta.lore(loreAccept);
         }).setOnClick(_ -> {
+            if (closed) return;
+            closed = true;
             try {
                 accept.run();
             } catch (Exception e) {
