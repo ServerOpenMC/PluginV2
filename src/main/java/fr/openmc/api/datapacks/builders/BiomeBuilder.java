@@ -151,7 +151,6 @@ public final class BiomeBuilder implements ContentBuilder {
         json.add("features", features);
         if (hasPrecipitation != null) json.addProperty("has_precipitation", hasPrecipitation);
         if (temperatures != null) {
-            System.out.println("temperatures" + temperatures);
             json.addProperty("temperature", temperatures);
         }
 
