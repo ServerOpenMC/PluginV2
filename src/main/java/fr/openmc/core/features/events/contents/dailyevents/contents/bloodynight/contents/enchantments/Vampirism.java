@@ -1,5 +1,6 @@
 package fr.openmc.core.features.events.contents.dailyevents.contents.bloodynight.contents.enchantments;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.registry.enchantments.CustomEnchantment;
 import fr.openmc.core.utils.text.messages.TranslationManager;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
@@ -7,6 +8,7 @@ import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import io.papermc.paper.registry.tag.TagKey;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -17,8 +19,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 
@@ -102,22 +108,44 @@ public class Vampirism extends CustomEnchantment implements Listener {
 
     @EventHandler
     public void onItemHeldChange(PlayerItemHeldEvent event) {
-        Player player = event.getPlayer();
+        checkHeldItem(event.getPlayer());
+    }
 
-        Enchantment enchant = this.getEnchantment();
-        if (enchant == null) return;
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        checkHeldItem(player);
+    }
 
-        ItemStack item = player.getInventory().getItem(event.getPreviousSlot());
-        if (item == null) return;
-        if (!item.getEnchantments().containsKey(enchant)) return;
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+        checkHeldItem(player);
+    }
 
-        int level = item.getEnchantmentLevel(enchant);
+    @EventHandler
+    public void onSwapHands(PlayerSwapHandItemsEvent event) {
+        checkHeldItem(event.getPlayer());
+    }
 
-        if (level < 2) return;
+    @EventHandler
+    public void onDropItem(PlayerDropItemEvent event) {
+        checkHeldItem(event.getPlayer());
+    }
 
-        AttributeInstance maxHealthAttr = player.getAttribute(Attribute.MAX_HEALTH);
-        if (maxHealthAttr == null) return;
-        maxHealthAttr.removeModifier(MAX_HEALTH_MODIFIER_KEY);
+    private void checkHeldItem(Player player) {
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Enchantment enchant = this.getEnchantment();
+            if (enchant == null) return;
+
+            ItemStack heldItem = player.getInventory().getItemInMainHand();
+            if (heldItem.getEnchantmentLevel(enchant) >= 2) return;
+
+            AttributeInstance maxHealthAttr = player.getAttribute(Attribute.MAX_HEALTH);
+            if (maxHealthAttr != null) {
+                maxHealthAttr.removeModifier(MAX_HEALTH_MODIFIER_KEY);
+            }
+        });
     }
 
     @EventHandler
