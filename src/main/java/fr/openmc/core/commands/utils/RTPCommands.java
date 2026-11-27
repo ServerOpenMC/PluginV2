@@ -2,6 +2,7 @@ package fr.openmc.core.commands.utils;
 
 import fr.openmc.api.cooldown.DynamicCooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.omcplayer.OMCPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.bukkit.PlayerUtils;
 import fr.openmc.core.utils.text.messages.MessageType;
@@ -60,7 +61,12 @@ public class RTPCommands {
             group = "player:rtp",
             messageKey = "command.utils.rtp.must_wait")
     @Cooldown(15)
-    public void rtp(Player player) {
+    public void rtp(OMCPlayer player) {
+        if (!player.getWorld().getName().equals("world")) {
+            player.message().sendError(TranslationManager.translation("command.utils.rtp.other_than_overworld"));
+            return;
+        }
+
         if (DynamicCooldownManager.isReady(player.getUniqueId(), "player:rtp")) {
             rtpPlayer(player, 0);
         }
