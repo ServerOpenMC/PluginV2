@@ -79,6 +79,7 @@ dependencies {
     implementation "io.github.revxrsal:lamp.common:${revxrsalLampVersion}"
     implementation "io.github.revxrsal:lamp.bukkit:${revxrsalLampVersion}"
     implementation "com.j256.ormlite:ormlite-jdbc:${ormVersion}"
+    implementation "com.h2database:h2:${h2DatabaseVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
@@ -95,8 +96,9 @@ dependencies {
 
 def targetJavaVersion = 25
 java {
-    sourceCompatibility = targetJavaVersion
-    targetCompatibility = targetJavaVersion
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
 }
 
 paperweight {
@@ -145,6 +147,7 @@ tasks.shadowJar {
 }
 
 tasks.runServer {
+    standardInput = System.in
     minecraftVersion("${minecraftVersion}")
 
     systemProperty(

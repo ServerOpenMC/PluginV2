@@ -27,6 +27,9 @@ Serveur de jeu : `play.openmc.fr` (26.3 Java Edition)
 Vous voulez en savoir plus ? Vous voulez avoir des tutoriels à propos d'OpenMC ?
 Cliquez [ici](https://github.com/ServerOpenMC/PluginV2/wiki) afin d'accéder au wiki.
 
+## Documentation
+Toute la documentation se trouve dans le dossier [docs](/docs/).
+
 ## 📃 License
 Projet sous [GPL-3.0 license](https://choosealicense.com/licenses/gpl-3.0/).
 
