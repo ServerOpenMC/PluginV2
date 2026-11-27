@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmall;
+import static fr.openmc.core.utils.text.fonts.SmallCapsUtils.toSmallComponent;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
@@ -66,12 +67,12 @@ public class CityWarScoreboard extends BaseScoreboard {
         switch (war.getPhase()) {
             case PREPARATION -> phaseComponent = MiniMessage.miniMessage()
                     .deserialize("<gradient:#FF7518:#FFD580><title></gradient>",
-                            Placeholder.component("title", toSmall(player, WarManager.getFormattedPhase(war.getPhase()))));
-            case COMBAT -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
+                            Placeholder.component("title", toSmallComponent(player, WarManager.getFormattedPhase(war.getPhase()))));
+            case COMBAT -> phaseComponent = toSmallComponent(player, WarManager.getFormattedPhase(war.getPhase()))
                     .color(TextColor.color(0xFC1C1C));
-            case ENDED -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
+            case ENDED -> phaseComponent = toSmallComponent(player, WarManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.GRAY);
-            default -> phaseComponent = toSmall(player, WarManager.getFormattedPhase(war.getPhase()))
+            default -> phaseComponent = toSmallComponent(player, WarManager.getFormattedPhase(war.getPhase()))
                     .color(NamedTextColor.WHITE);
         }
 

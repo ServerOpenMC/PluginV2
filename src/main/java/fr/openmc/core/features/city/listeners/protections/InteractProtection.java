@@ -88,12 +88,12 @@ public class InteractProtection implements Listener {
 
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
-        ProtectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
+        ProtectionsManager.checkPermissions(event.getPlayer(), event.getBlock().getLocation(), event, CityPermission.PLACE, false);
     }
 
     @EventHandler
     public void onBucketFill(PlayerBucketFillEvent event) {
-        ProtectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
+        ProtectionsManager.checkPermissions(event.getPlayer(), event.getBlock().getLocation(), event, CityPermission.BREAK, false);
     }
 
     private boolean isMinecart(Material type) {

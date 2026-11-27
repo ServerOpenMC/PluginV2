@@ -398,11 +398,11 @@ public class WarManager {
      * @param phase The war phase to format.
      * @return A string representing the formatted phase.
      */
-    public static String getFormattedPhase(War.WarPhase phase) {
+    public static Component getFormattedPhase(War.WarPhase phase) {
         return switch (phase) {
-            case PREPARATION -> "Préparation";
-            case COMBAT -> "Combat";
-            case ENDED -> "Fin";
+            case PREPARATION -> TranslationManager.translation("feature.city.war.phase.preparation");
+            case COMBAT -> TranslationManager.translation("feature.city.war.phase.fight");
+            case ENDED -> TranslationManager.translation("feature.city.war.phase.ended");
         };
     }
 
