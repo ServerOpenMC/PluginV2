@@ -32,6 +32,7 @@ import static fr.openmc.core.utils.text.InputUtils.MAX_LENGTH_CITY;
 public class NotationDialog {
     private final static String FONT = "minecraft:mono";
     private final static int LENGTH_CASE = 9;
+    private final static int TABLE_WIDTH = 700;
 
     public static void send(Player player, String weekStr) {
         List<DialogBody> body = new ArrayList<>();
@@ -97,7 +98,7 @@ public class NotationDialog {
 
         return DialogBody.plainMessage(
                 header,
-                1000
+                TABLE_WIDTH
         );
     }
 
@@ -170,7 +171,7 @@ public class NotationDialog {
 
         return DialogBody.plainMessage(
                 base,
-                1000
+                TABLE_WIDTH
         );
     }
 
